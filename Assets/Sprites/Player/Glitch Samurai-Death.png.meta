@@ -1,0 +1,503 @@
+fileFormatVersion: 2
+guid: 43e2e19e79a5dd94dbf1832f6195322f
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -6582591228177854820
+    second: Glitch Samurai-Death_0
+  - first:
+      213: -8439675248856836396
+    second: Glitch Samurai-Death_1
+  - first:
+      213: -5994945449059417077
+    second: Glitch Samurai-Death_2
+  - first:
+      213: -6415400583986362572
+    second: Glitch Samurai-Death_3
+  - first:
+      213: 5287790808293144583
+    second: Glitch Samurai-Death_4
+  - first:
+      213: -8241452774234467709
+    second: Glitch Samurai-Death_5
+  - first:
+      213: 4458857290680439990
+    second: Glitch Samurai-Death_6
+  - first:
+      213: 1557943984324608977
+    second: Glitch Samurai-Death_7
+  - first:
+      213: 7577883375188043073
+    second: Glitch Samurai-Death_8
+  - first:
+      213: 2204664863845249756
+    second: Glitch Samurai-Death_9
+  - first:
+      213: -5796659695906652138
+    second: Glitch Samurai-Death_10
+  - first:
+      213: -7995928337948644347
+    second: Glitch Samurai-Death_11
+  - first:
+      213: -2169361932469050796
+    second: Glitch Samurai-Death_12
+  - first:
+      213: -7661886128695344701
+    second: Glitch Samurai-Death_13
+  - first:
+      213: 2021933325759922337
+    second: Glitch Samurai-Death_14
+  - first:
+      213: 5512085975098245368
+    second: Glitch Samurai-Death_15
+  - first:
+      213: 67832571009070451
+    second: Glitch Samurai-Death_16
+  - first:
+      213: 9014786812501088118
+    second: Glitch Samurai-Death_17
+  - first:
+      213: 4534563864466021215
+    second: Glitch Samurai-Death_18
+  - first:
+      213: 1977092933287323517
+    second: Glitch Samurai-Death_19
+  - first:
+      213: 3646831871431391847
+    second: Glitch Samurai-Death_20
+  - first:
+      213: 5577072680676469645
+    second: Glitch Samurai-Death_21
+  - first:
+      213: -5012851921607454374
+    second: Glitch Samurai-Death_22
+  - first:
+      213: 1780717426924336300
+    second: Glitch Samurai-Death_23
+  - first:
+      213: -1657753717078438612
+    second: Glitch Samurai-Death_24
+  - first:
+      213: -3147563730905729636
+    second: Glitch Samurai-Death_25
+  - first:
+      213: 1429544766683366047
+    second: Glitch Samurai-Death_26
+  - first:
+      213: -3481124426084039885
+    second: Glitch Samurai-Death_27
+  - first:
+      213: 2249219701328449904
+    second: Glitch Samurai-Death_28
+  - first:
+      213: -3899004258446626789
+    second: Glitch Samurai-Death_29
+  - first:
+      213: 6369450500739471780
+    second: Glitch Samurai-Death_30
+  - first:
+      213: 7074734214076584713
+    second: Glitch Samurai-Death_31
+  - first:
+      213: 7726953602027315666
+    second: Glitch Samurai-Death_32
+  - first:
+      213: 5785574321333414318
+    second: Glitch Samurai-Death_33
+  - first:
+      213: 7743227014896327847
+    second: Glitch Samurai-Death_34
+  - first:
+      213: -4994133314207585298
+    second: Glitch Samurai-Death_35
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 9
+  spritePivot: {x: 0.428571, y: 0.03}
+  spritePixelsToUnits: 20
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Glitch Samurai-Death_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 140
+        height: 46
+      alignment: 9
+      pivot: {x: 0.428571, y: 0.03}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c9e4bde6720f5a4a0800000000000000
+      internalID: -6582591228177854820
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Glitch Samurai-Death_1
+      rect:
+        serializedVersion: 2
+        x: 140
+        y: 0
+        width: 140
+        height: 46
+      alignment: 9
+      pivot: {x: 0.428571, y: 0.03}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4d65b34931040ea80800000000000000
+      internalID: -8439675248856836396
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Glitch Samurai-Death_2
+      rect:
+        serializedVersion: 2
+        x: 280
+        y: 0
+        width: 140
+        height: 46
+      alignment: 9
+      pivot: {x: 0.428571, y: 0.03}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b0408fc60ecadcca0800000000000000
+      internalID: -5994945449059417077
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Glitch Samurai-Death_3
+      rect:
+        serializedVersion: 2
+        x: 420
+        y: 0
+        width: 140
+        height: 46
+      alignment: 9
+      pivot: {x: 0.428571, y: 0.03}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 437c8abb82be7f6a0800000000000000
+      internalID: -6415400583986362572
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Glitch Samurai-Death_4
+      rect:
+        serializedVersion: 2
+        x: 560
+        y: 0
+        width: 140
+        height: 46
+      alignment: 9
+      pivot: {x: 0.428571, y: 0.03}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 70873e669b1026940800000000000000
+      internalID: 5287790808293144583
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Glitch Samurai-Death_5
+      rect:
+        serializedVersion: 2
+        x: 700
+        y: 0
+        width: 140
+        height: 46
+      alignment: 9
+      pivot: {x: 0.428571, y: 0.03}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 382d89eed5a70ad80800000000000000
+      internalID: -8241452774234467709
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Glitch Samurai-Death_6
+      rect:
+        serializedVersion: 2
+        x: 840
+        y: 0
+        width: 140
+        height: 46
+      alignment: 9
+      pivot: {x: 0.428571, y: 0.03}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6b41b23f41b01ed30800000000000000
+      internalID: 4458857290680439990
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Glitch Samurai-Death_7
+      rect:
+        serializedVersion: 2
+        x: 980
+        y: 0
+        width: 140
+        height: 46
+      alignment: 9
+      pivot: {x: 0.428571, y: 0.03}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1d300a5accdee9510800000000000000
+      internalID: 1557943984324608977
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Glitch Samurai-Death_8
+      rect:
+        serializedVersion: 2
+        x: 1120
+        y: 0
+        width: 140
+        height: 46
+      alignment: 9
+      pivot: {x: 0.428571, y: 0.03}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 145eb67c7cc0a2960800000000000000
+      internalID: 7577883375188043073
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Glitch Samurai-Death_9
+      rect:
+        serializedVersion: 2
+        x: 1260
+        y: 0
+        width: 140
+        height: 46
+      alignment: 9
+      pivot: {x: 0.428571, y: 0.03}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cd2f74a430b889e10800000000000000
+      internalID: 2204664863845249756
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Glitch Samurai-Death_10
+      rect:
+        serializedVersion: 2
+        x: 1400
+        y: 0
+        width: 140
+        height: 46
+      alignment: 9
+      pivot: {x: 0.428571, y: 0.03}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 61009a5f7b02e8fa0800000000000000
+      internalID: -5796659695906652138
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Glitch Samurai-Death_11
+      rect:
+        serializedVersion: 2
+        x: 1540
+        y: 0
+        width: 140
+        height: 46
+      alignment: 9
+      pivot: {x: 0.428571, y: 0.03}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 50c67177a81c80190800000000000000
+      internalID: -7995928337948644347
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: a7fdb6a2f329dd84eab345664ab8921e
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":12.0,"y":1.0},"gridSpriteSize":{"x":140.0,"y":46.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.46000000834465029,"y":0.029999999329447748},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":9,"pivotUnitMode":0,"slicingType":2,"keepEmptyRects":false,"isAlternate":false}'
+    nameFileIdTable:
+      Glitch Samurai-Death_0: -6582591228177854820
+      Glitch Samurai-Death_1: -8439675248856836396
+      Glitch Samurai-Death_10: -5796659695906652138
+      Glitch Samurai-Death_11: -7995928337948644347
+      Glitch Samurai-Death_2: -5994945449059417077
+      Glitch Samurai-Death_3: -6415400583986362572
+      Glitch Samurai-Death_4: 5287790808293144583
+      Glitch Samurai-Death_5: -8241452774234467709
+      Glitch Samurai-Death_6: 4458857290680439990
+      Glitch Samurai-Death_7: 1557943984324608977
+      Glitch Samurai-Death_8: 7577883375188043073
+      Glitch Samurai-Death_9: 2204664863845249756
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

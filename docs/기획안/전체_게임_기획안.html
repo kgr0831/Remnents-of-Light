@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remnants of Light: 레벨 디자인 및 스테이지 진행 명세서</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Noto+Sans+KR:wght@300;400;700;900&display=swap');
+        :root {
+            --bg-base: #0f1115;
+            --bg-card: #1a1d24;
+            --text-main: #e2e8f0;
+            --text-muted: #94a3b8;
+            --accent: #8b5cf6;
+            --border: #334155;
+            --highlight: #facc15;
+            --red: #ef4444;
+            --blue: #3b82f6;
+        }
+        body { background-color: var(--bg-base); color: var(--text-main); font-family: 'Inter', 'Noto Sans KR', sans-serif; line-height: 1.7; margin: 0; padding: 0; }
+        header { text-align: center; padding: 5rem 2rem 3rem; background: linear-gradient(180deg, rgba(139, 92, 246, 0.08) 0%, var(--bg-base) 100%); border-bottom: 1px solid var(--border); position: relative; }
+        header::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, var(--accent), transparent); }
+        h1 { font-size: 2.5rem; margin: 0 0 1rem 0; color: #fff; font-weight: 900; }
+        .subtitle { color: var(--text-muted); font-size: 1.1rem; font-weight: 300; }
+        .container { max-width: 1100px; margin: 0 auto; padding: 4rem 2rem; }
+        
+        .rule-box { background: rgba(59, 130, 246, 0.1); border: 1px dashed var(--blue); padding: 2rem; border-radius: 8px; margin-bottom: 3rem; }
+        .rule-box h3 { color: var(--blue); margin-top: 0; }
+        
+        .stage-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 4rem; overflow: hidden; box-shadow: 0 15px 30px rgba(0,0,0,0.5); }
+        .stage-header { background: rgba(0,0,0,0.4); padding: 2rem 3rem; border-bottom: 2px solid var(--accent); }
+        .stage-header h2 { font-size: 2rem; margin: 0; color: #fff; display: flex; align-items: center; gap: 1rem; }
+        .stage-meta { margin-top: 1rem; color: var(--highlight); font-weight: bold; font-size: 1.1rem; }
+        
+        .stage-body { padding: 3rem; }
+        .map-block { border-left: 3px solid var(--border); padding-left: 2rem; margin-bottom: 2.5rem; position: relative; }
+        .map-block::before { content: ''; position: absolute; left: -8px; top: 5px; width: 13px; height: 13px; border-radius: 50%; background: var(--bg-base); border: 2px solid var(--accent); }
+        .map-block.boss-map::before { border-color: var(--red); background: var(--red); }
+        
+        .map-title { font-size: 1.3rem; font-weight: 800; color: #fff; margin-bottom: 0.5rem; }
+        .cutscene-tag { display: inline-block; background: rgba(59, 130, 246, 0.2); border: 1px solid var(--blue); color: #60a5fa; padding: 0.2rem 0.6rem; border-radius: 4px; font-size: 0.85rem; font-weight: bold; margin-bottom: 0.5rem; }
+        .desc-text { color: #cbd5e1; margin-bottom: 0.5rem; }
+        .gimmick-list { list-style-type: square; color: #94a3b8; margin-top: 0.5rem; }
+        .gimmick-list li { margin-bottom: 0.3rem; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>레벨 디자인 및 스테이지 진행 명세서</h1>
+        <div class="subtitle">모든 스테이지의 세분화된 룸(Room) 이동 구조와 자동 저장 시스템 가이드</div>
+    </header>
+
+    <div class="container">
+
+        <div class="rule-box">
+            <h3>⚠️ 핵심 레벨 디자인 규칙 (산나비 스타일 구조)</h3>
+            <ul style="color: #e2e8f0; margin-bottom: 0;">
+                <li><strong>세분화된 룸(Room) 이동:</strong> 거대한 하나의 맵 대신, 10~15개 이상의 짧고 호흡이 빠른 맵(씬)들이 연속적으로 이어지는 구조를 채택합니다. 화면 끝에 도달하면 다음 방으로 즉시 넘어갑니다.</li>
+                <li><strong>테마의 일관성:</strong> 한 스테이지 내에서 '산성 늪지대'처럼 갑자기 뜬금없는 컨셉이 튀어나오지 않습니다. 쓰레기장은 끝까지 고철과 쓰레기, 빈민가는 끝까지 판자촌이라는 통일된 비주얼을 유지합니다.</li>
+                <li><strong>상시 자동 저장 (Auto-Save):</strong> 특정 '세이브 룸'이나 '세이브 포인트 오브젝트'를 폐지합니다. <strong>플레이어가 새로운 방(Map)으로 넘어갈 때마다 무조건 게임이 자동 저장</strong>되어, 사망 시 해당 방의 입구에서 즉시 부활하게 만듭니다.</li>
+            </ul>
+        </div>
+
+        <!-- Stage 1 -->
+        <div class="stage-card">
+            <div class="stage-header">
+                <h2>📍 1. 쓰레기장 (Scrapyard)</h2>
+                <div class="stage-meta">총 12개의 방(Room) 구성 / 컷씬 3개 / 테마: 고철 덩어리와 기계 폐기물 더미</div>
+            </div>
+            <div class="stage-body">
+                <div class="map-block">
+                    <div class="map-title">Map 1-1 (부활과 첫걸음)</div>
+                    <div class="cutscene-tag">🎬 컷씬 [1-1] 세부 연출 시나리오</div>
+                    <div class="desc-text">
+                        <ul class="gimmick-list" style="color: #cbd5e1; list-style-type: none; padding-left: 0; margin-top: 0.8rem; border-left: 2px solid #3b82f6; padding-left: 1rem; margin-bottom: 1.5rem;">
+                            <li><strong>[화면/카메라]</strong> 완전한 암전 상태에서 시작. 3초간 블랙아웃 상태 유지 후, 서서히 화면 밝기(알파값)가 페이드 인(Fade-in) 되며 게임 씬이 드러남. 카메라는 하늘(성소 쪽)에서부터 산처럼 쌓인 거대한 고철 쓰레기장 바닥을 향해 수직으로 천천히 틸트 다운(Tilt-Down)함.</li>
+                            <li><strong>[사운드]</strong> 빗방울이 무거운 쇳덩어리에 부딪히는 차갑고 둔탁한 소음(ASMR 질감)만이 맵에 깔림. 배경음악(BGM)은 전혀 없음.</li>
+                            <li><strong>[캐릭터 연출]</strong> 렌즈(눈)가 깨지고 장갑이 벗겨진 채, 무수히 많은 파괴된 기계 병기들의 시체 더미 한가운데에 주인공이 쓰러져 있음. 갑자기 주인공의 부서진 헬멧 틈 사이로 희미하고 불안정한 '푸른빛'이 지지직거리며 점멸하기 시작함.</li>
+                            <li><strong>[이펙트/포스트 프로세싱]</strong> 주인공의 빛이 깜빡일 때마다 화면 전체에 강렬한 TV 노이즈(Static Noise)와 붉은색, 푸른색 채널이 어긋나는 색수차(Chromatic Aberration) 글리치 효과가 0.5초 간격으로 세 번 강하게 발생함. 마치 끊어지기 직전의 시스템이 억지로 재부팅(Reboot)되는 듯한 연출.</li>
+                            <li><strong>[종료점]</strong> 주인공이 관절에서 끼익거리는 기계음을 내며 힘겹게 비틀거리며 일어남. 일어선 주인공의 시선이 오른쪽 방향을 향할 때, 카메라가 주인공의 등 뒤로 부드럽게 줌 인(Zoom-in)되며 밀착하고, UI 가이드(좌우 이동 및 점프)가 타이핑되듯 화면에 출력되면서 플레이어에게 조작권이 넘어감.</li>
+                        </ul>
+                        적은 없으며, 화면에 좌우 이동 및 점프 키 가이드가 텍스트로 나타납니다. 평탄한 고철 바닥을 지나 우측으로 이동합니다.
+                    </div>
+                </div>
+                <div class="map-block">
+                    <div class="map-title">Map 1-2 (가로막힌 벽)</div>
+                    <div class="desc-text">높은 단차가 존재하는 방입니다. 벽 타기(Wall Climb)와 벽 점프(Wall Jump) 조작을 학습해야만 위로 올라갈 수 있습니다.</div>
+                </div>
+                <div class="map-block">
+                    <div class="map-title">Map 1-3 (부서지는 잔해)</div>
+                    <div class="desc-text">바닥에 거대한 구덩이가 있습니다. 밟으면 0.5초 뒤에 무너져 내리는 낡은 철판들을 대시(회피기)를 사용해 빠르게 밟고 지나가야 합니다.</div>
+                </div>
+                <div class="map-block">
+                    <div class="map-title">Map 1-4 (첫 살육)</div>
+                    <div class="desc-text">첫 몬스터 조우 구역. 도망칠 곳 없는 평지에 <code>소형 부패충</code> 1마리가 덩그러니 있습니다. 기본 공격 연타(콤보) 튜토리얼 텍스트가 뜹니다.</div>
+                </div>
+                <div class="map-block">
+                    <div class="map-title">Map 1-5 (포위망)</div>
+                    <div class="desc-text">복수의 적이 배치된 방. <code>소형 부패충</code> 3마리와 처음으로 돌진하는 <code>게헨나 포식견</code> 1마리가 등장합니다. 방어/패링 버튼을 눌러 적의 돌진을 튕겨내는 튜토리얼이 진행됩니다.</div>
+                </div>
+                <div class="map-block">
+                    <div class="map-title">Map 1-6 (도약 타격)</div>
+                    <div class="desc-text">가운데 넓은 낭떠러지가 있고 건너편 언덕에서 포식견 2마리가 짖고 있습니다. 공중 점프 중 대시 공격(일섬)으로 낭떠러지를 건너가 동시에 적을 타격해야 합니다.</div>
+                </div>
+                <div class="map-block">
+                    <div class="map-title">Map 1-7 (수직 등반로)</div>
+                    <div class="desc-text">상하로 길쭉한 수직 맵. 위에서 아래로 일정한 주기로 무거운 쇠파이프 더미가 떨어집니다. 벽에 매달린 채 타이밍을 보며 위로 기어올라가야 합니다.</div>
+                </div>
+                <div class="map-block">
+                    <div class="map-title">Map 1-8 (에너지 추출)</div>
+                    <div class="desc-text">진행 방향이 거대한 고철 쓰레기 덩어리로 막혀 있습니다. 공격으로 파괴 시 <code>빛 에너지</code> 구슬이 쏟아져 나오며 게이지 획득 튜토리얼이 진행됩니다.</div>
+                </div>
+                <div class="map-block">
+                    <div class="map-title">Map 1-9 (압착기 통과)</div>
+                    <div class="desc-text">위아래로 쾅쾅 찍어누르는 대형 프레스기 기믹이 3연속으로 설치되어 있습니다. 타이밍에 맞춰 무적 대시(일섬)를 사용하여 압착기를 무시하고 통과해야 합니다.</div>
+                </div>
+                <div class="map-block">
+                    <div class="map-title">Map 1-10 (자폭 지대)</div>
+                    <div class="desc-text">가까이 다가오면 붉게 점멸하다가 자폭하는 폭발형 부패충들이 다수 등장합니다. 이들의 자폭 범위 밖으로 회피하거나 폭발 직전 돌진으로 빠져나가야 합니다.</div>
+                </div>
+                <div class="map-block">
+                    <div class="map-title">Map 1-11 (폐차장 아레나)</div>
+                    <div class="cutscene-tag">🎬 컷씬 [1-2] 세부 연출 시나리오</div>
+                    <div class="desc-text">
+                        <ul class="gimmick-list" style="color: #cbd5e1; list-style-type: none; padding-left: 0; margin-top: 0.8rem; border-left: 2px solid #3b82f6; padding-left: 1rem; margin-bottom: 1.5rem;">
+                            <li><strong>[트리거]</strong> 플레이어가 맵 중앙에 놓인 부서진 버스 위로 올라서는 순간 트리거 발동. 조작이 잠김.</li>
+                            <li><strong>[사운드 및 액션]</strong> 등 뒤(화면 좌측)에서 녹슨 쇠사슬이 끊어지는 날카로운 마찰음이 울림. 거대한 강철 철창이 천장에서 쾅! 하고 바닥으로 꽂히며 돌아갈 길을 완전히 차단함. 이와 동시에 우측 출구에서도 동일하게 철창이 떨어져 퇴로가 완벽히 차단됨. 철창이 바닥에 꽂힐 때 카메라가 위아래로 심하게 흔들림(Camera Shake).</li>
+                            <li><strong>[적 등장 연출]</strong> 고요하던 쓰레기장 주변부에서, 수십 개의 붉은 안광들이 어둠 속에서 하나둘씩 켜지기 시작함. 게헨나 포식견 특유의 소름 돋는 그르렁거리는 소리가 3D 공간을 둘러싸듯 출력됨(Spatial Audio). 화면 상단 UI에 [위협 감지: 웨이브 디펜스]라는 텍스트가 붉은색으로 점멸함.</li>
+                            <li><strong>[종료점]</strong> 사방에서 포식견들이 동시에 뛰어오르는 순간 슬로우 모션(TimeScale 0.2)이 걸리며, 조작권이 회복됨과 동시에 아레나 전투 전용의 빠른 템포 BGM이 터져 나옴.</li>
+                        </ul>
+                        첫 웨이브 디펜스. 사방에서 포식견 5마리와 부패충들이 쏟아집니다. 좁은 공간에서의 대난투이며, 모든 적 처치 시 닫힌 문이 열립니다.
+                    </div>
+                </div>
+                <div class="map-block boss-map">
+                    <div class="map-title">Map 1-12 (시체 둥지 - 보스전)</div>
+                    <div class="cutscene-tag">🎬 컷씬 [1-3] 세부 연출 시나리오</div>
+                    <div class="desc-text">
+                        <ul class="gimmick-list" style="color: #cbd5e1; list-style-type: none; padding-left: 0; margin-top: 0.8rem; border-left: 2px solid #3b82f6; padding-left: 1rem; margin-bottom: 1.5rem;">
+                            <li><strong>[화면/카메라]</strong> 플레이어가 보스룸 중앙에 도달하면, 카메라는 플레이어를 비추는 대신 시점을 위로 확 들어 올려(Pan-Up) 천장의 거대한 쓰레기 돔(Dome)을 비춤.</li>
+                            <li><strong>[사운드 및 액션]</strong> 돔 천장에 덕지덕지 붙어있던 무수히 많은 사이보그들의 시체가 끔찍한 점액질을 쏟아내며 한 덩어리로 뭉치기 시작함. 살점과 금속이 으깨지는 역겨운(Gore) 사운드가 고음질로 출력됨.</li>
+                            <li><strong>[보스 등장]</strong> 거대하게 뭉친 살덩어리 괴물(시체 더미)이 플레이어 앞 10미터 앞 바닥으로 운석처럼 추락함(쿵!). 엄청난 충격파로 인해 바닥의 흙먼지와 고철 조각들이 사방으로 비산하며 카메라가 극심하게 요동침. 괴물이 수십 개의 팔과 머리를 꿈틀거리며 귀를 찢는 듯한 괴성을 내지르는 타이밍에, 화면 정중앙에 크고 피투성이인 폰트로 <strong>[ 쓰레기장의 군주 : 시체 더미 ]</strong> 타이틀이 찍힘. 이후 보스전 전용 하드 록(Hard Rock) 스타일 BGM 시작과 함께 전투 돌입.</li>
+                            <li><strong>[처치 연출]</strong> 보스의 체력이 0이 되면 컷씬 재돌입. 보스의 몸통이 팽창하다 터져버리며, 그 거대한 살점이 바닥을 부식시킴. 살점 아래 파묻혀 있던 <strong>녹슨 구형 엘리베이터</strong>가 기괴한 소리를 내며 그 모습을 드러냄. 플레이어가 이 엘리베이터 콘솔에 상호작용하면 암전되며 1.5 스테이지로 이동함.</li>
+                        </ul>
+                        보스 아레나. 양 끝이 막힌 넓은 쓰레기장 공터입니다. 전투 종료 후 엘리베이터를 타고 1.5 스테이지로 전환됩니다.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stage 1.5 -->
+        <div class="stage-card">
+            <div class="stage-header">
+                <h2>📍 1.5. 망각의 다리 (중간 조우)</h2>
+                <div class="stage-meta">총 3개의 방(Room) 구성 / 컷씬 1개 / 테마: 한 치 앞도 보이지 않는 짙은 안개 낀 철제 다리</div>
+            </div>
+            <div class="stage-body">
+                <div class="map-block">
+                    <div class="map-title">Map 1.5-1 (어둠 속의 상승)</div>
+                    <div class="desc-text">1스테이지 보스전 직후 탑승한 녹슨 엘리베이터의 내부 맵. 조작은 가능하나 좌우가 완전히 막힌 좁은 공간입니다. 끝없이 수직 스크롤로 올라가며, 덜컹거리는 기계음과 와이어가 팽팽하게 당겨지는 소리만이 공간을 채웁니다. 약 15초의 체공 시간 후, 엘리베이터가 요란한 소음과 함께 정지하며 문이 열립니다.</div>
+                </div>
+                <div class="map-block">
+                    <div class="map-title">Map 1.5-2 (안개 다리 진입)</div>
+                    <div class="desc-text">엘리베이터에서 내려와 탁 트인 철제 다리로 진입하는 구간입니다. 배경은 짙은 안개(Volumetric Fog)로 완전히 가려져 있어 원경이 보이지 않으며, 차가운 바람 소리만 스산하게 들립니다. 플레이어의 발소리에 약간의 에코(Echo)가 가미되어 공간의 광활함을 체감하게 만듭니다. 적은 전혀 등장하지 않습니다.</div>
+                </div>
+                <div class="map-block boss-map">
+                    <div class="map-title">Map 1.5-3 (다리 끝 - 강제 패배 이벤트)</div>
+                    <div class="desc-text">다리의 중간 즈음에 도달하면, 안개 너머에서 거대한 실루엣이 나타나며 이벤트 전투가 시작됩니다. 상대는 성소의 정예인 <code>집행관</code>입니다. 이 전투는 절대 이길 수 없도록 설계되어 있습니다. 플레이어의 모든 공격은 무적 판정(혹은 튕겨남)에 막히며 데미지가 0으로 들어갑니다. 집행관의 공격력은 터무니없이 강하게 설정되어 있어 몇 대만 맞아도 체력이 바닥납니다.</div>
+                    
+                    <div class="cutscene-tag" style="margin-top: 1rem;">🎬 컷씬 [1.5-1] 세부 연출 시나리오</div>
+                    <div class="desc-text">
+                        <ul class="gimmick-list" style="color: #cbd5e1; list-style-type: none; padding-left: 0; margin-top: 0.8rem; border-left: 2px solid #3b82f6; padding-left: 1rem; margin-bottom: 1.5rem;">
+                            <li><strong>[트리거]</strong> 플레이어의 체력이 0이 되거나, 집행관의 특정 강력한 패턴에 피격당하는 순간 발동.</li>
+                            <li><strong>[화면/카메라]</strong> 플레이어가 강한 타격을 입고 바닥에 나뒹굴 때, 시간 흐름이 극단적인 슬로우 모션(TimeScale 0.05)으로 멈춤. 카메라는 바닥에 처박힌 플레이어를 비추다가, 서서히 로우 앵글(Low Angle)로 시점을 올려 플레이어를 내려다보는 집행관의 압도적인 크기와 위압감을 화면 꽉 차게 잡아냄.</li>
+                            <li><strong>[사운드]</strong> 모든 BGM과 바람 소리가 일순간 음소거 됨(Mute). 오직 집행관이 다가오는 무겁고 위협적인 기계식 금속 발소리("쿵... 쿵...")만이 플레이어의 심장 박동처럼 스피커를 크게 울림.</li>
+                            <li><strong>[액션 연출]</strong> 집행관이 플레이어의 머리를 두꺼운 강철 부츠로 무자비하게 짓밟음. 헬멧 유리가 바스러지는 끔찍한 파쇄음(Crack) 발생. 직후, 집행관이 플레이어의 복부를 강하게 걷어차 다리 밖 허공으로 날려버림.</li>
+                            <li><strong>[종료점 및 트랜지션]</strong> 카메라가 다리 밖으로 내던져진 플레이어의 1인칭(혹은 숄더뷰) 시점으로 전환됨. 위로는 멀어지는 다리와 집행관의 실루엣이 보이고, 아래로는 끝없는 칠흑 같은 심연이 기다림. 화면이 빠르게 페이드 아웃(Fade to Black)되며, 공기를 찢는 듯한 날카로운 추락음(Wind Rush)만이 수 초간 이어짐. 이후 자동으로 2스테이지(빈민가) 로딩으로 연결.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stage 2 -->
+        <div class="stage-card">
+            <div class="stage-header">
+                <h2>📍 2. 빈민가 (Slums)</h2>
+                <div class="stage-meta">총 8개의 방(Room) 구성 / 컷씬 2개 / 테마: 끝없는 판자촌과 비좁은 슬럼가</div>
+            </div>
+            <div class="stage-body">
+                <div class="map-block">
+                    <div class="map-title">Map 2-1 (추락의 종착지)</div>
+                    <div class="desc-text">하늘에서 추락해 판잣집 지붕을 뚫고 내려온 뒤 시작. 먼지가 가라앉으며 플레이어가 일어납니다. 배경에서는 공포에 질린 NPC들이 도망치며 문을 걸어 잠그는 실루엣이 보입니다.</div>
+                </div>
+                <div class="map-block">
+                    <div class="map-title">Map 2-2 (골목의 거미줄)</div>
+                    <div class="desc-text">비좁은 실내 판잣집. 천장에서 <code>철창 거미</code>가 떨어지며 기습합니다. 패링 연습 구역입니다.</div>
+                </div>
+                <div class="map-block">
+                    <div class="map-title">Map 2-3 (광인의 방)</div>
+                    <div class="desc-text">닫힌 문을 등지고 <code>광인</code>이 미친 듯이 달려옵니다. 좁은 공간에서 연속 회피가 필요합니다.</div>
+                </div>
+                <div class="map-block">
+                    <div class="map-title">Map 2-4 (도살장 - 중간보스)</div>
+                    <div class="cutscene-tag">🎬 컷씬 [2-1] 세부 연출 시나리오</div>
+                    <div class="desc-text">
+                        <ul class="gimmick-list" style="color: #cbd5e1; list-style-type: none; padding-left: 0; margin-top: 0.8rem; border-left: 2px solid #3b82f6; padding-left: 1rem; margin-bottom: 1.5rem;">
+                            <li><strong>[화면/카메라]</strong> 피로 물든 타일 바닥을 비추며 카메라가 우측으로 패닝(Panning). 거대한 도마 앞에서 등을 돌린 거구의 도살자가 보임.</li>
+                            <li><strong>[사운드]</strong> 쇠칼을 숫돌에 가는 소리("스륵... 스륵...")가 맵에 울려 퍼짐. 플레이어가 발을 내딛는 순간 빈 깡통을 차는 소리(깡!)가 나며 텐션 고조.</li>
+                            <li><strong>[액션 연출]</strong> 도살자가 멈칫하더니, 뒤를 돌아보며 손에 든 거대한 식칼을 플레이어 쪽으로 집어 던짐. 칼이 플레이어 얼굴 바로 옆 기둥에 꽂히고, 도살자가 포효하며 전투 시작.</li>
+                        </ul>
+                        중간보스 <code>도살자</code>와의 전투 룸. 처치 시 막힌 문이 부서지며 진행 가능.
+                    </div>
+                </div>
+                <div class="map-block">
+                    <div class="map-title">Map 2-5 ~ 2-6 (지붕 위 런앤건)</div>
+                    <div class="desc-text">탁 트인 슬럼가 지붕 위를 뛰어다닙니다. 화면 밖이나 멀리서 <code>사냥꾼</code>들이 화살을 쏘아대며, 투사체를 대시로 피하며 낙사 구간을 통과해야 합니다.</div>
+                </div>
+                <div class="map-block">
+                    <div class="map-title">Map 2-7 (광장 진입로)</div>
+                    <div class="desc-text">보스전 직전의 길고 평평한 복도. 체력 회복 오브젝트가 배치되어 있습니다.</div>
+                </div>
+                <div class="map-block boss-map">
+                    <div class="map-title">Map 2-8 (빈민가 광장 - 보스전)</div>
+                    <div class="desc-text">보스 <code>부랑자</code>와의 아레나. 지붕이 없고 좌우로 넓은 판자촌 중앙 광장입니다. 오물이 영구적으로 남는 장판 패턴을 가집니다.</div>
+                    
+                    <div class="cutscene-tag" style="margin-top: 1rem;">🎬 컷씬 [2-2] 세부 연출 시나리오</div>
+                    <div class="desc-text">
+                        <ul class="gimmick-list" style="color: #cbd5e1; list-style-type: none; padding-left: 0; margin-top: 0.8rem; border-left: 2px solid #3b82f6; padding-left: 1rem; margin-bottom: 1.5rem;">
+                            <li><strong>[트리거]</strong> 부랑자의 체력이 0이 되는 순간 발동.</li>
+                            <li><strong>[화면/액션]</strong> 부랑자가 기괴한 단말마를 내지르며 등 뒤의 가스통이 과부하로 붉게 달아오름. 부랑자의 몸 전체가 팽창하며 대폭발(Screen Flash White)을 일으킴.</li>
+                            <li><strong>[지반 붕괴]</strong> 폭발의 충격파로 인해 광장의 얇은 지반에 거대한 균열이 감. 카메라가 미친 듯이 흔들리고, 바닥 전체가 쩍 갈라지며 밑으로 꺼짐. 플레이어도 무너지는 바위 파편들과 함께 끝없는 구덩이 속으로 휩쓸려 추락함. 잔해가 떨어지는 소리(Rumble)와 함께 화면 페이드 아웃. 3스테이지 로딩 돌입.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stage 3 -->
+        <div class="stage-card">
+            <div class="stage-header">
+                <h2>📍 3. 폐허 (Ancient Ruins)</h2>
+                <div class="stage-meta">총 10개의 방(Room) 구성 / 컷씬 2개 / 테마: 잊혀진 고대 기계 및 동력로 잔해</div>
+            </div>
+            <div class="stage-body">
+                <div class="map-block">
+                    <div class="map-title">Map 3-1 ~ 3-2 (기계 무덤)</div>
+                    <div class="desc-text">지하 유적에 추락해 깨어납니다. 거대한 톱니바퀴와 녹슨 파이프들이 배경을 채웁니다. 전류가 흐르는 장판이 존재하여 타이밍 점프가 필요합니다. 구형 기계 병기가 조명을 비추며 순찰합니다.</div>
+                </div>
+                <div class="map-block">
+                    <div class="map-title">Map 3-3 (에너지 링크 퍼즐)</div>
+                    <div class="desc-text">빛 에너지 스위치를 타격해 닫힌 레이저 게이트를 여는 퍼즐 방입니다. 시간 제한 내에 3개의 스위치를 모두 타격해야 합니다.</div>
+                </div>
+                <div class="map-block">
+                    <div class="map-title">Map 3-4 (수호자의 방 - 중간보스)</div>
+                    <div class="desc-text">중간보스 <code>수호자</code>와 조우. 단단한 에너지 쉴드를 전개하며, 패링을 연속 3회 성공해야만 쉴드가 깨지며 딜타임이 열립니다.</div>
+                </div>
+                <div class="map-block">
+                    <div class="map-title">Map 3-5 (동력 스위치)</div>
+                    <div class="cutscene-tag">🎬 컷씬 [3-1] 세부 연출 시나리오</div>
+                    <div class="desc-text">
+                        <ul class="gimmick-list" style="color: #cbd5e1; list-style-type: none; padding-left: 0; margin-top: 0.8rem; border-left: 2px solid #3b82f6; padding-left: 1rem; margin-bottom: 1.5rem;">
+                            <li><strong>[트리거]</strong> 방 중앙의 거대한 메인 레버를 공격(타격)하여 당김.</li>
+                            <li><strong>[연출]</strong> 묵직한 기어 맞물리는 소리가 나며 시설 전체에 붉은 비상등이 켜짐. 화면 전체에 먼지가 떨어지며, 멈춰 있던 바닥의 거대한 컨베이어 벨트들이 초고속으로 회전하기 시작함. 기계 엔진의 웅웅거리는 저음(Bass)이 배경에 깔림.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="map-block">
+                    <div class="map-title">Map 3-6 ~ 3-8 (초고속 컨베이어 지대)</div>
+                    <div class="desc-text">바닥 전체가 뒤로 밀려나는 초고속 컨베이어 벨트입니다. 천장에서 내려오는 압착기 프레스와 레이저를 대시(무적)와 2단 점프를 활용해 아슬아슬하게 통과해야 합니다.</div>
+                </div>
+                <div class="map-block">
+                    <div class="map-title">Map 3-9 (동력로 앞 회랑)</div>
+                    <div class="desc-text">적막한 금속 복도. 거대한 톱니바퀴 그림자가 배경에 드리워집니다. 체력 회복 오브젝트가 있습니다.</div>
+                </div>
+                <div class="map-block boss-map">
+                    <div class="map-title">Map 3-10 (고대 동력로 - 보스전)</div>
+                    <div class="desc-text">보스 <code>구형 전쟁 기계</code> 아레나. 거대한 화물 승강기 입구를 막고 서 있습니다. 레이저 포격과 유도 미사일 패턴을 사용합니다.</div>
+                    
+                    <div class="cutscene-tag" style="margin-top: 1rem;">🎬 컷씬 [3-2] 세부 연출 시나리오</div>
+                    <div class="desc-text">
+                        <ul class="gimmick-list" style="color: #cbd5e1; list-style-type: none; padding-left: 0; margin-top: 0.8rem; border-left: 2px solid #3b82f6; padding-left: 1rem; margin-bottom: 1.5rem;">
+                            <li><strong>[트리거]</strong> 보스 체력 0 도달.</li>
+                            <li><strong>[액션 연출]</strong> 구형 전쟁 기계의 중심 코어가 불안정하게 회전하며 굉음을 냄. 코어가 깨지며 막대한 빛 에너지가 사방으로 뻗어 나가며 기체가 대폭발(Flash Bang)함.</li>
+                            <li><strong>[환경 변화]</strong> 보스의 폭발 에너지가 맵 배경에 있는 거대한 동력로의 코어에 흡수됨. 죽어 있던 폐허 전체의 전력이 복구되며, 맵 뒤편에 자리 잡고 있던 압도적 크기의 '상층부행 화물 엘리베이터'에 황금색 조명이 화려하게 켜짐. 플레이어가 탑승 시 4스테이지로 이동.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stage 4 -->
+        <div class="stage-card">
+            <div class="stage-header">
+                <h2>📍 4. 전초기지 (Outpost)</h2>
+                <div class="stage-meta">총 9개의 방(Room) 구성 / 컷씬 2개 / 테마: 밝은 조명과 정돈된 군사 요새</div>
+            </div>
+            <div class="stage-body">
+                <div class="map-block">
+                    <div class="map-title">Map 4-1 (화물 하역장)</div>
+                    <div class="desc-text">엘리베이터가 도착하는 군사 기지 입구. 폐허와 달리 티끌 하나 없는 대리석 바닥과 눈부신 서치라이트가 비추는 공간입니다.</div>
+                </div>
+                <div class="map-block">
+                    <div class="map-title">Map 4-2 ~ 4-4 (스텔스 잠입 구역)</div>
+                    <div class="desc-text">많은 금속 컨테이너 박스와 감시 카메라(CCTV)가 배치되어 있습니다. 순찰병의 정면 붉은 시야각이나 카메라 범위에 들어가면, 즉시 사이렌이 울리고 해당 방의 입출구가 차단문으로 닫히며 강력한 적들이 스폰됩니다.</div>
+                </div>
+                <div class="map-block">
+                    <div class="map-title">Map 4-5 (제어실 돌파)</div>
+                    <div class="desc-text">비좁은 제어실. 다수의 이단 심문관 소속 병사들과 강제 난전이 펼쳐지는 웨이브 전투 방입니다.</div>
+                </div>
+                <div class="map-block">
+                    <div class="map-title">Map 4-6 ~ 4-7 (외벽 통로)</div>
+                    <div class="desc-text">전초기지 외벽 캣워크(Catwalk). 바깥으로는 짙은 게헨나의 스모그가 끼어 있어 먼 풍경은 보이지 않습니다. 거센 바람이 불어 캐릭터가 살짝씩 뒤로 밀립니다.</div>
+                </div>
+                <div class="map-block">
+                    <div class="map-title">Map 4-8 (처형 광장 입구)</div>
+                    <div class="desc-text">광장으로 향하는 넓은 계단.</div>
+                </div>
+                <div class="map-block boss-map">
+                    <div class="map-title">Map 4-9 (요새 광장 - 보스전)</div>
+                    <div class="cutscene-tag">🎬 컷씬 [4-1] 세부 연출 시나리오</div>
+                    <div class="desc-text">
+                        <ul class="gimmick-list" style="color: #cbd5e1; list-style-type: none; padding-left: 0; margin-top: 0.8rem; border-left: 2px solid #3b82f6; padding-left: 1rem; margin-bottom: 1.5rem;">
+                            <li><strong>[화면/카메라]</strong> 카메라가 광장 중앙을 잡음. 보스 <code>이단 심문관</code>이 한 명의 배신자(NPC)의 목을 잡고 들어 올리고 있음.</li>
+                            <li><strong>[액션 연출]</strong> 심문관이 배신자의 목을 꺾어버린 뒤, 바닥에 내동댕이침. 그 직후 플레이어의 기척을 느끼고 천천히 고개를 돌림. 심문관의 눈이 붉게 발광하며, 입고 있던 제복이 찢어지고 근육이 기괴하게 팽창하는 '괴수화(폭주)' 변신이 이루어짐. 야수와 같은 포효와 함께 전투 돌입.</li>
+                        </ul>
+                    </div>
+                    <div class="desc-text">맵 중앙에 부서지지 않는 거대한 기둥 4개가 있습니다. 괴수화된 보스의 무식한 돌진 공격을 기둥 뒤에 숨어 부딪히게 만들어야 그로기(기절) 상태를 유발할 수 있습니다.</div>
+                    
+                    <div class="cutscene-tag" style="margin-top: 1rem;">🎬 컷씬 [4-2] 세부 연출 시나리오</div>
+                    <div class="desc-text">
+                        <ul class="gimmick-list" style="color: #cbd5e1; list-style-type: none; padding-left: 0; margin-top: 0.8rem; border-left: 2px solid #3b82f6; padding-left: 1rem; margin-bottom: 1.5rem;">
+                            <li><strong>[트리거]</strong> 이단 심문관 체력 0 도달 시.</li>
+                            <li><strong>[액션 연출]</strong> 심문관의 거대한 괴수 몸집이 견디지 못하고 피를 뿜으며 쓰러짐. 그의 육체에서 뿜어져 나온 빛 에너지가 하늘로 치솟음.</li>
+                            <li><strong>[환경 변화]</strong> 치솟은 빛이 전초기지를 덮고 있던 짙고 시커먼 게헨나의 스모그 층을 관통함. 폭풍이 걷히듯 스모그가 흩어지고, 카메라가 플레이어 등 뒤에서 하늘을 향해 빠르게 치솟음(Crane Shot).</li>
+                            <li><strong>[하이퍼랩스 연출]</strong> 구름 위로 뚫고 올라간 카메라 앵글에, 하늘에 떠 있는 눈부시게 찬란하고 거대한 공중 도시 <strong>'성소(Sanctum)'</strong>의 전경이 황금빛 햇살과 함께 압도적으로 드러남. 경건한 성가 코러스 BGM이 깔리며, 성소로 올라가는 마지막 관문인 '메인 궤도 엘리베이터'의 문이 광장 끝에서 열림.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stage 4.5 -->
+        <div class="stage-card">
+            <div class="stage-header">
+                <h2>📍 4.5. 과거의 환영 (Flashback)</h2>
+                <div class="stage-meta">총 4개의 방(Room) 구성 / 컷씬 2개 / 테마: 흑백 필터와 노이즈 낀 과거 쓰레기장</div>
+            </div>
+            <div class="stage-body">
+                <div class="map-block">
+                    <div class="map-title">Map 4.5-1 (글리치 엘리베이터)</div>
+                    <div class="cutscene-tag">🎬 컷씬 [4.5-1] 세부 연출 시나리오</div>
+                    <div class="desc-text">
+                        <ul class="gimmick-list" style="color: #cbd5e1; list-style-type: none; padding-left: 0; margin-top: 0.8rem; border-left: 2px solid #3b82f6; padding-left: 1rem; margin-bottom: 1.5rem;">
+                            <li><strong>[화면/카메라]</strong> 엘리베이터가 무서운 속도로 성소를 향해 상승. 유리 밖으로 구름이 빠르게 지나감.</li>
+                            <li><strong>[연출]</strong> 상승 고도가 높아질수록 성소에서 내뿜는 강력한 '빛의 자기장' 간섭으로 화면 가장자리에 붉은 노이즈가 낌. BGM이 점차 왜곡되고 지지직거리기 시작.</li>
+                            <li><strong>[암전]</strong> 갑자기 화면 전체에 극심한 화면 깨짐(Glitch)이 발생하며, 교주의 목소리 <strong>"너는 실패작이다. 폐기하라."</strong>라는 음성이 서늘하게 출력됨. 쨍그랑! 하는 유리 깨지는 소리와 함께 시야가 완전히 암전됨.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="map-block">
+                    <div class="map-title">Map 4.5-2 ~ 4.5-4 (기억 속의 학살)</div>
+                    <div class="desc-text">암전이 걷히면, 배경은 1스테이지의 쓰레기장과 동일하지만 화면 전체에 흑백 필터와 필름 노이즈(Film Grain) 효과가 강하게 적용되어 있습니다. 플레이어의 캐릭터 모델링이 버려지기 전 완벽한 형태의 '퍼스트 집행관(총/검 동시 사용)' 폼으로 강제 교체됩니다.</div>
+                    <div class="desc-text">지형적 장애물이 전혀 없는 평평하고 긴 3개의 룸이 이어집니다. 수십 마리의 포식견과 부패충이 좌우에서 미친 듯이 몰려오지만, 과거 폼의 사기적인 광역 스킬과 파괴력으로 쾌감 위주의 무쌍(학살) 전투를 즐기게 됩니다. 마지막 4.5-4 방의 모든 적을 썰어버리고 우측 끝에 도달하면, 다시 강력한 글리치 효과가 덮치며 현실(5스테이지)로 강제 복귀합니다.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stage 5 -->
+        <div class="stage-card">
+            <div class="stage-header">
+                <h2>📍 5. 검문소 (Checkpoint)</h2>
+                <div class="stage-meta">총 8개의 방(Room) 구성 / 컷씬 1개 / 테마: 붉은 경광등이 번뜩이는 붕괴 중인 최첨단 보안 구역</div>
+            </div>
+            <div class="stage-body">
+                <div class="map-block">
+                    <div class="map-title">Map 5-1 (게이트 진입)</div>
+                    <div class="desc-text">과거의 환영에서 깨어난 주인공. 엘리베이터 문이 열리고 화려한 성소의 입구인 대형 검문소에 도달합니다. 하지만 한 걸음 내딛는 순간 삐- 삐- 하는 요란한 보안 경보 사이렌이 울리기 시작합니다.</div>
+                </div>
+                <div class="map-block">
+                    <div class="map-title">Map 5-2 ~ 5-7 (하이퍼 도주로)</div>
+                    <div class="desc-text">멈출 수 없는 초고속 도주 방들의 연속입니다. 룸을 넘어갈 때마다, 무적의 <code>킬러 AI 방위 시스템</code>이 조종하는 거대한 붉은 레이저 망(Laser Grid)이 화면 왼쪽 끝에서부터 오른쪽으로 주인공을 분쇄하려 쫓아옵니다. </div>
+                    <ul class="gimmick-list">
+                        <li>레이저에 닿으면 즉사합니다.</li>
+                        <li>도주로 바닥은 밟는 즉시 0.2초 만에 무너져 내리며, 튀어나오는 바리케이드를 일섬으로 부수며 극강의 피지컬 논스톱 질주를 해야 합니다.</li>
+                    </ul>
+                </div>
+                <div class="map-block">
+                    <div class="map-title">Map 5-8 (차단 게이트 - 도주 완료)</div>
+                    <div class="cutscene-tag">🎬 컷씬 [5-1] 세부 연출 시나리오</div>
+                    <div class="desc-text">
+                        <ul class="gimmick-list" style="color: #cbd5e1; list-style-type: none; padding-left: 0; margin-top: 0.8rem; border-left: 2px solid #3b82f6; padding-left: 1rem; margin-bottom: 1.5rem;">
+                            <li><strong>[화면/카메라]</strong> 플레이어가 방에 진입하자마자 우측 끝에서 수십 톤 무게의 거대한 강철 차단문이 위에서 아래로 굉음을 내며 떨어지기 시작함. 뒤에서는 붉은 레이저가 코앞까지 추격해 옴.</li>
+                            <li><strong>[액션 연출]</strong> 플레이어 캐릭터가 닫히기 직전인 문 아래의 좁은 틈을 향해 자동으로 슬라이딩 액션을 취함. 화면에 마찰 스파크 효과가 튐.</li>
+                            <li><strong>[종료점]</strong> 주인공이 아슬아슬하게 문을 통과하는 찰나, 등 뒤로 차단문이 지반을 박살 낼 듯 쾅! 닫힘(화면 흔들림). 쫓아오던 레이저와 폭발음이 닫힌 문 너머로 먹먹하게 끊어지며, 정적과 안도감이 맵을 채움. 자동 저장 수행.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stage 6 -->
+        <div class="stage-card">
+            <div class="stage-header">
+                <h2>📍 6. 도심 (Metropolis)</h2>
+                <div class="stage-meta">총 10개의 방(Room) 구성 / 컷씬 2개 / 테마: 화려한 네온사인과 하얀 대리석 마천루 지붕</div>
+            </div>
+            <div class="stage-body">
+                <div class="map-block">
+                    <div class="map-title">Map 6-1 ~ 6-7 (마천루 타임어택 플랫포밍)</div>
+                    <div class="desc-text">화이트 골드 톤의 대리석 빌딩과 눈부신 홀로그램 네온사인이 가득한 도심. 빌딩 옥상과 고층 외벽을 아슬아슬하게 넘나드는 극한의 수직 및 공중 플랫포머 구간입니다.</div>
+                    <ul class="gimmick-list">
+                        <li><strong>타임어택 기믹:</strong> 각 방마다 진입 시 우측 상단에 10~15초의 타이머가 돌아갑니다. 0초가 되면 무적 판정의 거대 드론 <code>추적자</code>가 허공에 스폰되어 레이저를 난사하며 끝까지 쫓아옵니다. 방을 클리어하여 화면 밖 다음 룸으로 넘어가야만 타이머가 리셋되고 추적자가 사라집니다.</li>
+                        <li>공중에 배치된 환풍구 상승 기류와 대시 무적을 적극 활용해야 합니다.</li>
+                    </ul>
+                </div>
+                <div class="map-block">
+                    <div class="map-title">Map 6-8 (추적자 파괴 - 중간보스)</div>
+                    <div class="desc-text">더 이상 도망갈 길이 없는 넓은 원형 옥상. 끝까지 쫓아오던 <code>추적자</code> 본체와 정면 대결을 펼칩니다. 방어(패링)로 추적자의 레이저 코어를 과열시켜 방어막을 벗겨야 딜이 들어갑니다.</div>
+                    <div class="cutscene-tag" style="margin-top: 1rem;">🎬 컷씬 [6-1] 세부 연출 시나리오</div>
+                    <div class="desc-text">
+                        <ul class="gimmick-list" style="color: #cbd5e1; list-style-type: none; padding-left: 0; margin-top: 0.8rem; border-left: 2px solid #3b82f6; padding-left: 1rem; margin-bottom: 1.5rem;">
+                            <li>추적자의 메인 코어가 불타오르며 옥상 바닥으로 추락. 큰 폭발과 함께 마천루 외벽 일부가 무너짐. 무너진 잔해 너머로 성소의 핵심 구역(황금 대문)으로 이어지는 눈부신 다리가 드러남.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="map-block">
+                    <div class="map-title">Map 6-9 (황금 대문 앞 회랑)</div>
+                    <div class="desc-text">전투 없이 걷는 고요한 대리석 복도. 끝에 거대한 황금 대문이 굳게 닫혀 있습니다. 폭풍전야의 긴장감.</div>
+                </div>
+                <div class="map-block boss-map">
+                    <div class="map-title">Map 6-10 (리벤지 아레나)</div>
+                    <div class="desc-text">1.5 스테이지에서 무참히 패배를 안겨줬던 <code>집행관</code>이 황금 대문 앞을 막아섭니다. 대사가 없는 무언의 칼바람 격돌. 집행관의 눈부신 연격과 순간이동 베기를 완벽하게 패링하고 회피해야 하는 고난도 전투 방입니다.</div>
+                    
+                    <div class="cutscene-tag" style="margin-top: 1rem;">🎬 컷씬 [6-2] 세부 연출 시나리오</div>
+                    <div class="desc-text">
+                        <ul class="gimmick-list" style="color: #cbd5e1; list-style-type: none; padding-left: 0; margin-top: 0.8rem; border-left: 2px solid #3b82f6; padding-left: 1rem; margin-bottom: 1.5rem;">
+                            <li><strong>[트리거]</strong> 집행관의 체력이 0이 되는 순간 '처형' 상호작용 키(F) 프롬프트가 화면 중앙에 뜸.</li>
+                            <li><strong>[액션 연출]</strong> 주인공이 집행관의 무기를 강하게 쳐내어 무장 해제시킴. 이어서 주인공이 집행관의 가슴팍에 손을 찔러 넣어, 성소의 심장부로 들어갈 수 있는 마스터 키인 '빛의 문장(Core)'을 핏빛 스파크와 함께 뜯어냄.</li>
+                            <li><strong>[종료 연출]</strong> 쓰러진 집행관의 시체를 뒤로한 채, 주인공이 피 묻은 빛의 문장을 황금 대문 홈에 억지로 박아 넣음. 육중한 톱니바퀴가 굴러가며 거대한 황금 대문이 양옆으로 갈라지고, 안에서 뿜어져 나오는 성스러운 빛이 화면을 하얗게 채우며 7스테이지 진입.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stage 7 -->
+        <div class="stage-card">
+            <div class="stage-header">
+                <h2>📍 7. 성소 (Inner Sanctum)</h2>
+                <div class="stage-meta">총 5개의 방(Room) 구성 / 컷씬 2개 / 테마: 눈이 부시도록 찬란하고 신성하지만 기괴한 대성당 내부</div>
+            </div>
+            <div class="stage-body">
+                <div class="map-block">
+                    <div class="map-title">Map 7-1 ~ 7-2 (영광의 회랑)</div>
+                    <div class="desc-text">퍼즐이나 낙사 구간, 잡몹이 전혀 없는 평평한 성당의 레드카펫 복도입니다. 거대한 스테인드글라스 창문으로 신성한 빛이 쏟아집니다. 각 방마다 성소의 <code>정예 성기사</code> 1마리씩이 플레이어와 최후의 1:1 혈전을 벌이는 일기토(Duel) 방입니다.</div>
+                </div>
+                <div class="map-block">
+                    <div class="map-title">Map 7-3 (빛의 제단 - 교주전)</div>
+                    <div class="desc-text">원형 대리석 아레나. 중앙에 프리마 룩스(거대 동력원)가 떠 있습니다. 최종 보스 <code>거짓된 교주</code>와의 1페이즈 전투 방. 교주는 텔레포트하며 맵 전체를 뒤덮는 기하학적 패턴의 빛 무기 탄막(Bullet Hell)을 구사합니다.</div>
+                    
+                    <div class="cutscene-tag" style="margin-top: 1rem;">🎬 컷씬 [7-1] 세부 연출 시나리오</div>
+                    <div class="desc-text">
+                        <ul class="gimmick-list" style="color: #cbd5e1; list-style-type: none; padding-left: 0; margin-top: 0.8rem; border-left: 2px solid #3b82f6; padding-left: 1rem; margin-bottom: 1.5rem;">
+                            <li><strong>[액션 연출]</strong> 교주의 체력이 0이 되면 피를 토하며 제단 바닥에 쓰러짐. 교주가 광기 어린 웃음을 터뜨리며, 자신의 육신을 제단 중앙의 '프리마 룩스' 코어에 강제로 던져 넣음.</li>
+                            <li><strong>[코즈믹 호러 변이]</strong> 코어가 폭주하며 빛이 검붉은 색으로 오염됨. 코어 주변의 대리석, 황금 장식, 그리고 교주의 육체가 기괴하게 융합되며 수십 개의 눈알과 날개가 달린 거대한 천사 형태의 이형, <code>거짓된 신(트루 아르콘)</code>으로 변태함.</li>
+                            <li><strong>[지형 파괴]</strong> 신성했던 대리석 아레나 바닥의 가장자리가 모두 박살 나며 추락하는 낭떠러지로 변해버리고, 맵의 크기가 절반으로 줄어듦. 강렬한 코러스 브금과 함께 최종 페이즈 시작.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="map-block boss-map">
+                    <div class="map-title">Map 7-4 (붕괴하는 하늘 - 최종전)</div>
+                    <div class="desc-text">부서진 좁은 낭떠러지 아레나. 진 최종 보스 <code>거짓된 신</code>과의 마지막 혈투. 피할 공간이 매우 좁으므로 완벽한 패링과 무적 일섬 회피가 강요되는 피지컬 극한의 전투입니다.</div>
+                    
+                    <div class="cutscene-tag" style="margin-top: 1rem;">🎬 컷씬 [7-2] 세부 연출 시나리오 (엔딩)</div>
+                    <div class="desc-text">
+                        <ul class="gimmick-list" style="color: #cbd5e1; list-style-type: none; padding-left: 0; margin-top: 0.8rem; border-left: 2px solid #3b82f6; padding-left: 1rem; margin-bottom: 1.5rem;">
+                            <li><strong>[처치 연출]</strong> 거짓된 신의 가슴 한가운데 빛나는 코어에 주인공이 일섬으로 관통해 버림. 시간이 멈추고(TimeScale 0), 균열이 간 코어가 산산조각(Glass Shatter) 나며 허공에 흩뿌려짐.</li>
+                            <li><strong>[도시의 추락]</strong> 동력원 '프리마 룩스'가 소멸하자, 성소 전체에 공급되던 황금빛 조명들이 구역별로 텅- 텅- 텅- 소리를 내며 차례대로 꺼짐(Blackout). 반중력 부력을 상실한 거대한 공중 도시 전체가 지축을 흔드는 굉음과 함께 지상(게헨나)을 향해 곤두박질치기 시작함.</li>
+                            <li><strong>[엔딩 크레딧]</strong> 무너져 내리는 성소의 잔해와 불꽃 비를 배경으로, 복수를 마친 주인공이 무기를 바닥에 끌며 화면 밖을 향해 천천히 걸어 나감. 잔잔하고 쓸쓸한 피아노 아웃트로 BGM이 페이드 인 되며 스크롤 크레딧이 올라감.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>

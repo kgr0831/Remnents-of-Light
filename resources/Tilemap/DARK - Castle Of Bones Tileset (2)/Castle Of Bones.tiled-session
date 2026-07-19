@@ -1,0 +1,37 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "Caste Of Bones Exterior.tmx",
+    "expandedProjectPaths": [
+        "."
+    ],
+    "fileStates": {
+        "Caste Of Bones Exterior.tmx": {
+            "scale": 1,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 151,
+                "y": -285
+            }
+        },
+        "Castle Of Bones.tsx": {
+            "scaleInDock": 1.5,
+            "scaleInEditor": 1
+        }
+    },
+    "map.fixedSize": false,
+    "map.lastUsedFormat": "tmx",
+    "map.tileHeight": 16,
+    "map.tileWidth": 16,
+    "openFiles": [
+        "Castle Of Bones.tsx",
+        "Caste Of Bones Exterior.tmx"
+    ],
+    "project": "Castle Of Bones.tiled-project",
+    "recentFiles": [
+        "Castle Of Bones.tsx",
+        "Caste Of Bones Exterior.tmx"
+    ]
+}
