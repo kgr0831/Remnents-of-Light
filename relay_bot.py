@@ -114,8 +114,9 @@ class Relay(discord.Client):
 
         cmd = {"type": kind, "text": text}
         await self.queue_channel.send(f"CMD: {json.dumps(cmd, ensure_ascii=False)}")
-        label = "루프 시작" if kind == "loop" else "질문 접수"
-        embed = discord.Embed(title=label, description=text, color=COLOR_INFO)
+        labels = {"loop": "루프 시작", "loop_auto": "다음 작업 스스로 결정 중", "quick": "질문 접수"}
+        description = text if kind != "loop_auto" else "기획안 + 현재 상황(task.md) 보고 다음 작업을 정하는 중..."
+        embed = discord.Embed(title=labels[kind], description=description, color=COLOR_INFO)
         await interaction.response.send_message(embed=embed)
 
     async def on_message(self, message: discord.Message):
@@ -154,10 +155,13 @@ def main() -> None:
     async def claude_quick(interaction: discord.Interaction, 질문: str):
         await client.start_task(interaction, "quick", 질문)
 
-    @client.tree.command(name="claude-loop", description="실제 개발 작업을 루프 모드로 원격 실행")
-    @app_commands.describe(할일="수행할 작업 설명")
-    async def claude_loop(interaction: discord.Interaction, 할일: str):
-        await client.start_task(interaction, "loop", 할일)
+    @client.tree.command(name="claude-loop", description="실제 개발 작업을 루프 모드로 원격 실행 (비워두면 기획안+현황 보고 스스로 다음 작업 결정)")
+    @app_commands.describe(할일="수행할 작업 설명 (비워두면 자동으로 다음 작업을 정해서 승인받고 진행)")
+    async def claude_loop(interaction: discord.Interaction, 할일: str | None = None):
+        if 할일:
+            await client.start_task(interaction, "loop", 할일)
+        else:
+            await client.start_task(interaction, "loop_auto", "")
 
     client.run(config["token"])
 
