@@ -78,3 +78,12 @@
 - 요청: `task.md` git commit (디스코드 원격 루프 모드, 승인 흐름 확인용).
 - 결과: git commit은 루프 모드에서도 파괴적 작업 → NEEDS_APPROVAL로 정지 후 질문, 사용자가 "커밋하지 마" 선택 → **커밋 미실행**.
 - 결론: 승인 게이트 정상 동작 확인. 실제 커밋 대기 파일 없음(작업 트리 변경사항은 그대로 유지).
+
+## 🛰️ 디스코드 실시간 원격 개발 시스템 구축 (2026-07-20)
+- SETUP_PLAN STEP5를 웹훅 단방향 보고에서 **실시간 양방향 원격 제어**로 확장.
+- 구조: `tools/relay_bot.py`(dishost.kr에 상시 배포, 게이트웨이 연결·슬래시커맨드) ↔ `#claude-queue` 채널(디스코드 자체를 큐로 재사용) ↔ `tools/executor.py`(노트북 상주, REST 폴링, 실제 `claude -p` 헤드리스 실행).
+- 명령: `/claude`(읽기전용 질답), `/claude-loop`(루프 모드 개발 작업).
+- 안전장치: `--permission-mode dontAsk` + `--allowedTools` 화이트리스트로 도구 권한을 헤드리스 호출에만 제한(인터랙티브 세션 설정엔 영향 없음). 목록 밖 작업(삭제·커밋·씬/에셋 직접조작 등)은 `NEEDS_APPROVAL:`로 정지 → 디스코드 임베드 질문 → 답장으로 `--resume` 재개. 실사용 테스트로 검증 완료(git commit 시도 → 정상 차단·질문).
+- 오프라인 감지: `executor.py`가 `#claude-heartbeat` 메시지를 60초마다 edit(스팸 방지), `relay_bot.py`가 신선도(180초) 체크해서 노트북 꺼짐 시 즉시 안내.
+- 배포: `bot-deploy` 브랜치를 `relay_bot.py`+`requirements.txt`만 있는 루트 구조로 분리(= `main`의 `tools/` 코드와 별개, dishost가 서브폴더 미지원+512MB 용량 제한이라 필요했음). 시크릿은 파일 업로드 대신 환경변수(`DISCORD_TOKEN` 등)로 주입, `python-dotenv`로 로드.
+- 알려진 한계: dishost 무료 티어는 7일마다 수동 연장 필요. `executor.py`는 네트워크 순간 끊김에 죽지 않도록 수정함(전엔 DNS 에러로 크래시 이력 있음).
