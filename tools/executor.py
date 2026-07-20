@@ -74,22 +74,25 @@ async def poll_loop(config: dict) -> None:
     state = load_state()
 
     while True:
-        messages = discord_bot.get_recent_messages(queue_channel_id, config, limit=20)
-        new_cmds = []
-        for m in reversed(messages):  # oldest-first
-            if state["last_queue_msg_id"] and int(m["id"]) <= int(state["last_queue_msg_id"]):
-                continue
-            if m.get("content", "").startswith("CMD:"):
-                try:
-                    new_cmds.append((m["id"], json.loads(m["content"][len("CMD:"):])))
-                except json.JSONDecodeError:
-                    pass
-            state["last_queue_msg_id"] = m["id"]
+        try:
+            messages = discord_bot.get_recent_messages(queue_channel_id, config, limit=20)
+            new_cmds = []
+            for m in reversed(messages):  # oldest-first
+                if state["last_queue_msg_id"] and int(m["id"]) <= int(state["last_queue_msg_id"]):
+                    continue
+                if m.get("content", "").startswith("CMD:"):
+                    try:
+                        new_cmds.append((m["id"], json.loads(m["content"][len("CMD:"):])))
+                    except json.JSONDecodeError:
+                        pass
+                state["last_queue_msg_id"] = m["id"]
 
-        if new_cmds:
-            save_state(state)
-        for _, cmd in new_cmds:
-            await handle_command(cmd, config, command_channel_id, queue_channel_id)
+            if new_cmds:
+                save_state(state)
+            for _, cmd in new_cmds:
+                await handle_command(cmd, config, command_channel_id, queue_channel_id)
+        except Exception as e:
+            print(f"[poll_loop] transient error, continuing: {e}")
 
         await asyncio.sleep(POLL_INTERVAL_S)
 
@@ -101,15 +104,19 @@ async def heartbeat_loop(config: dict) -> None:
 
     while True:
         try:
-            if msg_id:
-                discord_bot.edit_message(heartbeat_channel_id, msg_id, "alive", config)
-            else:
-                raise RuntimeError("no heartbeat message yet")
-        except Exception:
-            msg = discord_bot.send_message(heartbeat_channel_id, "alive", config)
-            msg_id = msg["id"]
-            state["heartbeat_msg_id"] = msg_id
-            save_state(state)
+            try:
+                if msg_id:
+                    discord_bot.edit_message(heartbeat_channel_id, msg_id, "alive", config)
+                else:
+                    raise RuntimeError("no heartbeat message yet")
+            except Exception:
+                msg = discord_bot.send_message(heartbeat_channel_id, "alive", config)
+                msg_id = msg["id"]
+                state["heartbeat_msg_id"] = msg_id
+                save_state(state)
+        except Exception as e:
+            print(f"[heartbeat_loop] transient error, continuing: {e}")
+
         await asyncio.sleep(HEARTBEAT_INTERVAL_S)
 
 
