@@ -2,8 +2,8 @@
 Deployed component of the Discord -> Claude Code bridge (SETUP_PLAN STEP5 ext).
 Runs on a small always-on host (NOT the dev laptop). Holds the real-time Discord
 gateway connection and owns the native slash commands (/claude, /claude-loop,
-/claude-auto) so starting a task feels like using Discord, not typing a
-text-prefix command.
+/claude-auto, /claude-memory, /claude-fix) so starting a task feels like using
+Discord, not typing a text-prefix command.
 Never touches Unity or Claude Code itself - it only routes messages between the
 owner's command channel and an internal queue channel that tools/executor.py
 (running on the laptop) polls.
@@ -115,7 +115,10 @@ class Relay(discord.Client):
 
         cmd = {"type": kind, "text": text}
         await self.queue_channel.send(f"CMD: {json.dumps(cmd, ensure_ascii=False)}")
-        labels = {"loop": "루프 시작", "loop_auto": "다음 작업 스스로 결정 중", "quick": "질문 접수"}
+        labels = {
+            "loop": "루프 시작", "loop_auto": "다음 작업 스스로 결정 중", "quick": "질문 접수",
+            "memory": "영구 기억 저장 중", "fix": "루프 시스템 수정 중",
+        }
         description = text if kind != "loop_auto" else "기획안 + 현재 상황(task.md) 보고 다음 작업을 정하는 중..."
         embed = discord.Embed(title=labels[kind], description=description, color=COLOR_INFO)
         await interaction.response.send_message(embed=embed)
@@ -136,7 +139,7 @@ class Relay(discord.Client):
             await message.channel.send(embed=embed)
             return
 
-        cmd = {"type": "resume", "text": message.content.strip(), "session_id": status["session_id"]}
+        cmd = {"type": "resume", "text": message.content.strip(), "session_id": status["session_id"], "origin_type": status.get("origin_type", "loop")}
         await self.queue_channel.send(f"CMD: {json.dumps(cmd, ensure_ascii=False)}")
         embed = discord.Embed(title="답변 접수", description="이어서 진행할게...", color=COLOR_INFO)
         await message.channel.send(embed=embed)
@@ -164,6 +167,16 @@ def main() -> None:
     @client.tree.command(name="claude-auto", description="기획안 + 현황(task.md) 보고 다음 작업을 스스로 정해서 승인받고 진행")
     async def claude_auto(interaction: discord.Interaction):
         await client.start_task(interaction, "loop_auto", "")
+
+    @client.tree.command(name="claude-memory", description="영구 기억/지침 추가 (다음 세션에도 이어짐)")
+    @app_commands.describe(내용="기억해둘 내용이나 지침")
+    async def claude_memory(interaction: discord.Interaction, 내용: str):
+        await client.start_task(interaction, "memory", 내용)
+
+    @client.tree.command(name="claude-fix", description="이 원격 루프 시스템 자체(tools/*.py)를 수정")
+    @app_commands.describe(문제="고치고 싶은 문제나 원하는 동작 변경")
+    async def claude_fix(interaction: discord.Interaction, 문제: str):
+        await client.start_task(interaction, "fix", 문제)
 
     client.run(config["token"])
 

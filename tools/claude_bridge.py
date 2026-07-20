@@ -10,6 +10,7 @@ import subprocess
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).parent.parent
+MEMORY_DIR = "C:/Users/kimga/.claude/projects/C--Users-kimga-Remnents-of-Light/memory"
 
 QUICK_ALLOWED_TOOLS = [
     "Read", "Grep", "Glob",
@@ -72,6 +73,52 @@ AUTO_SYSTEM_PREAMBLE = """\
    (이건 "작업 선정 승인"과 별개의, 매번 필요한 안전장치다).
 4. 작업을 끝까지 완료했으면 task.md를 갱신하고, 마지막 줄에 정확히 이 형식으로 출력해:
    DONE: <한 줄 요약>
+"""
+
+
+MEMORY_ALLOWED_TOOLS = [
+    "Read", "Grep", "Glob",
+    f"Write({MEMORY_DIR}/*)", f"Edit({MEMORY_DIR}/*)",
+]
+
+MEMORY_SYSTEM_PREAMBLE = """\
+너는 지금 디스코드를 통해 원격으로 트리거된 "영구 기억 저장" 작업 중이다. 노트북 앞에는 아무도 없다.
+
+사용자가 다음 내용을 영구 기억으로 남기고 싶어한다: "{note}"
+
+Claude Code의 파일 기반 메모리 시스템({memory_dir})에 저장해라:
+- 먼저 그 디렉터리의 MEMORY.md(인덱스)와 기존 메모리 파일들을 Read/Glob으로 훑어서, 비슷한 주제의
+  기존 파일이 있으면 그걸 갱신하고, 없으면 새로 만들어라 (kebab-case 파일명).
+- frontmatter 형식: `name`, `description`, `metadata.type`(user/feedback/project/reference 중 하나).
+- feedback·project 타입 본문에는 **Why:**와 **How to apply:** 줄을 포함해라.
+- 다른 메모리와 관련 있으면 본문에 `[[파일명]]` 형식으로 링크해라.
+- MEMORY.md 인덱스에도 한 줄(`- [제목](파일.md) — 한줄 설명`) 추가하거나 갱신해라. 200줄 넘지 않게 간결히 유지.
+- 코드/설정 파일에서 바로 확인 가능한 사실(파일 경로, 이미 존재하는 아키텍처 설명 등)은 저장하지 마라 -
+  코드로 유도 불가능한 것만 저장.
+- 저장 후 마지막 줄에 정확히 이 형식으로 출력해: DONE: <저장/갱신한 파일명과 한 줄 요약>
+"""
+
+FIX_ALLOWED_TOOLS = [
+    "Read", "Grep", "Glob",
+    "Edit(*.py)", "Write(*.py)", "Edit(*.md)", "Write(*.md)",
+]
+
+FIX_SYSTEM_PREAMBLE = """\
+너는 지금 디스코드를 통해 원격으로 트리거된 "루프 시스템 자체 수정" 작업 중이다. 노트북 앞에는 아무도 없다.
+
+이 디스코드 원격 제어 시스템 자체(`tools/relay_bot.py`, `tools/executor.py`, `tools/claude_bridge.py`,
+`tools/discord_bot.py`, `.claude/CLAUDE.md`의 루프 모드 규칙 등)에 대한 요청이다: "{issue}"
+
+- 관련 파일들을 먼저 Read로 읽고 구조를 파악해라.
+- 필요한 수정을 `tools/*.py` 또는 관련 `.md` 파일에 직접 해라 (Edit/Write 허용됨).
+- **중요**: 여기서 고친 건 로컬 파일만 바뀐다. git commit/push나 `bot-deploy` 브랜치 재배포는 안전장치상
+  자동으로 안 되고, 사용자가 직접 검토 후 커밋/배포해야 한다 - 이 사실을 결과에 반드시 언급해라.
+- Bash 실행 권한이 없어서 컴파일/실행 검증은 못 한다. 대신 수정 후 Read로 다시 읽어서 문법·로직을 스스로
+  재검토해라.
+- 이 파일들 외의 다른 작업(git 명령, 삭제, 다른 확장자 파일 등)이 필요해지면 평소처럼 멈추고 정확히 이
+  형식으로 물어봐라: NEEDS_APPROVAL: <질문> / - <선택지>
+- 수정을 마쳤으면 마지막 줄에 정확히 이 형식으로 출력해:
+  DONE: <무엇을 고쳤는지 요약 - 커밋/배포 필요하다는 안내 포함>
 """
 
 

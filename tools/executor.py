@@ -34,6 +34,14 @@ COLOR_APPROVAL = 0xF5A623
 COLOR_DONE = 0x57F287
 
 
+TOOL_PROFILES = {
+    "loop": claude_bridge.LOOP_ALLOWED_TOOLS,
+    "loop_auto": claude_bridge.LOOP_ALLOWED_TOOLS,
+    "memory": claude_bridge.MEMORY_ALLOWED_TOOLS,
+    "fix": claude_bridge.FIX_ALLOWED_TOOLS,
+}
+
+
 async def handle_command(cmd: dict, config: dict, command_channel_id: str, queue_channel_id: str) -> None:
     cmd_type = cmd["type"]
     if cmd_type == "quick":
@@ -45,14 +53,26 @@ async def handle_command(cmd: dict, config: dict, command_channel_id: str, queue
     if cmd_type == "loop":
         prompt = claude_bridge.LOOP_SYSTEM_PREAMBLE.format(task=cmd["text"])
         session_id = None
+        origin_type = "loop"
     elif cmd_type == "loop_auto":
         prompt = claude_bridge.AUTO_SYSTEM_PREAMBLE
         session_id = None
+        origin_type = "loop_auto"
+    elif cmd_type == "memory":
+        prompt = claude_bridge.MEMORY_SYSTEM_PREAMBLE.format(note=cmd["text"], memory_dir=claude_bridge.MEMORY_DIR)
+        session_id = None
+        origin_type = "memory"
+    elif cmd_type == "fix":
+        prompt = claude_bridge.FIX_SYSTEM_PREAMBLE.format(issue=cmd["text"])
+        session_id = None
+        origin_type = "fix"
     else:  # resume
         prompt = f"방금 물어본 것에 대한 답: {cmd['text']}\n\n이 답을 반영해서 루프 모드로 계속 진행해."
         session_id = cmd.get("session_id")
+        origin_type = cmd.get("origin_type", "loop")
 
-    result = await claude_bridge.run_claude(prompt, claude_bridge.LOOP_ALLOWED_TOOLS, session_id, timeout=1800)
+    allowed_tools = TOOL_PROFILES.get(origin_type, claude_bridge.LOOP_ALLOWED_TOOLS)
+    result = await claude_bridge.run_claude(prompt, allowed_tools, session_id, timeout=1800)
     approval = claude_bridge.extract_approval(result["text"])
     done = claude_bridge.extract_marker(result["text"], "DONE:")
 
@@ -60,13 +80,13 @@ async def handle_command(cmd: dict, config: dict, command_channel_id: str, queue
         fields = [("선택지", "\n".join(f"{i + 1}. {opt}" for i, opt in enumerate(approval["options"])))] if approval["options"] else None
         embed = discord_bot.make_embed("승인 필요", approval["question"] + "\n\n답장으로 알려주면 이어서 진행할게.", COLOR_APPROVAL, fields)
         discord_bot.send_embed(command_channel_id, embed, config)
-        status = {"pending": True, "session_id": result["session_id"]}
+        status = {"pending": True, "session_id": result["session_id"], "origin_type": origin_type}
     else:
         title = "완료" if done else "결과"
         body = done or result["text"]
         embed = discord_bot.make_embed(title, body, COLOR_DONE if done else COLOR_INFO)
         discord_bot.send_embed(command_channel_id, embed, config)
-        status = {"pending": False, "session_id": result["session_id"]}
+        status = {"pending": False, "session_id": result["session_id"], "origin_type": origin_type}
 
     discord_bot.send_message(queue_channel_id, f"STATUS: {json.dumps(status, ensure_ascii=False)}", config)
 
