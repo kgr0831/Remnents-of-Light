@@ -1,8 +1,9 @@
 """
 Deployed component of the Discord -> Claude Code bridge (SETUP_PLAN STEP5 ext).
 Runs on a small always-on host (NOT the dev laptop). Holds the real-time Discord
-gateway connection and owns the native slash commands (/claude, /claude-loop) so
-starting a task feels like using Discord, not typing a text-prefix command.
+gateway connection and owns the native slash commands (/claude, /claude-loop,
+/claude-auto) so starting a task feels like using Discord, not typing a
+text-prefix command.
 Never touches Unity or Claude Code itself - it only routes messages between the
 owner's command channel and an internal queue channel that tools/executor.py
 (running on the laptop) polls.
@@ -155,13 +156,14 @@ def main() -> None:
     async def claude_quick(interaction: discord.Interaction, 질문: str):
         await client.start_task(interaction, "quick", 질문)
 
-    @client.tree.command(name="claude-loop", description="실제 개발 작업을 루프 모드로 원격 실행 (비워두면 기획안+현황 보고 스스로 다음 작업 결정)")
-    @app_commands.describe(할일="수행할 작업 설명 (비워두면 자동으로 다음 작업을 정해서 승인받고 진행)")
-    async def claude_loop(interaction: discord.Interaction, 할일: str | None = None):
-        if 할일:
-            await client.start_task(interaction, "loop", 할일)
-        else:
-            await client.start_task(interaction, "loop_auto", "")
+    @client.tree.command(name="claude-loop", description="실제 개발 작업을 루프 모드로 원격 실행")
+    @app_commands.describe(할일="수행할 작업 설명")
+    async def claude_loop(interaction: discord.Interaction, 할일: str):
+        await client.start_task(interaction, "loop", 할일)
+
+    @client.tree.command(name="claude-auto", description="기획안 + 현황(task.md) 보고 다음 작업을 스스로 정해서 승인받고 진행")
+    async def claude_auto(interaction: discord.Interaction):
+        await client.start_task(interaction, "loop_auto", "")
 
     client.run(config["token"])
 
