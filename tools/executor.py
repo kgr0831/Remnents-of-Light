@@ -45,6 +45,9 @@ async def handle_command(cmd: dict, config: dict, command_channel_id: str, queue
     if cmd_type == "loop":
         prompt = claude_bridge.LOOP_SYSTEM_PREAMBLE.format(task=cmd["text"])
         session_id = None
+    elif cmd_type == "loop_auto":
+        prompt = claude_bridge.AUTO_SYSTEM_PREAMBLE
+        session_id = None
     else:  # resume
         prompt = f"방금 물어본 것에 대한 답: {cmd['text']}\n\n이 답을 반영해서 루프 모드로 계속 진행해."
         session_id = cmd.get("session_id")
