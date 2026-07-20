@@ -32,3 +32,10 @@ Thumbs.db
 
 # Crashlytics
 crashlytics-build.properties
+
+# Discord async control (STEP5) - secrets & pulled data
+tools/.secrets/
+tools/inbox/
+__pycache__/
+*.pyc
+tools/.venv/
