@@ -1,16 +1,24 @@
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
+using UnityEngine.InputSystem.LowLevel;
 
 // Runtime virtual-device input injection for PlayTestRunner (STEP4).
-// Uses InputSystem.AddDevice + QueueDeltaStateEvent so existing bindings
+// Uses InputSystem.AddDevice + QueueStateEvent so existing bindings
 // (<Keyboard>/space, <Keyboard>/leftShift, <Mouse>/leftButton, <Mouse>/rightButton,
 // <Keyboard>/w,a,s,d via the "Dpad" composite on Move) pick this up as real input,
 // without OS-level SendInput.
 // Source: docs.unity3d.com/Packages/com.unity.inputsystem@1.19/api/UnityEngine.InputSystem.InputSystem.html (checked 2026-07-20)
+// Keyboard keys are bitfield-packed controls, so QueueDeltaStateEvent throws
+// InvalidOperationException ("Cannot send delta state events against bitfield controls").
+// Keys must go through a full KeyboardState + QueueStateEvent instead.
+// Source: docs.unity3d.com/Packages/com.unity.inputsystem@1.19/api/UnityEngine.InputSystem.LowLevel.KeyboardState.html (checked 2026-07-20)
 public static class InputInjector
 {
     private static Keyboard _keyboard;
     private static Mouse _mouse;
+    private static readonly HashSet<Key> _heldKeys = new HashSet<Key>();
 
     private static Keyboard Kb
     {
@@ -32,8 +40,18 @@ public static class InputInjector
         }
     }
 
-    public static void PressKey(Key key) => InputSystem.QueueDeltaStateEvent(Kb[key], 1f);
-    public static void ReleaseKey(Key key) => InputSystem.QueueDeltaStateEvent(Kb[key], 0f);
+    public static void PressKey(Key key)
+    {
+        _heldKeys.Add(key);
+        InputSystem.QueueStateEvent(Kb, new KeyboardState(_heldKeys.ToArray()));
+    }
+
+    public static void ReleaseKey(Key key)
+    {
+        _heldKeys.Remove(key);
+        InputSystem.QueueStateEvent(Kb, new KeyboardState(_heldKeys.ToArray()));
+    }
+
     public static void PressButton(ButtonControl button) => InputSystem.QueueDeltaStateEvent(button, 1f);
     public static void ReleaseButton(ButtonControl button) => InputSystem.QueueDeltaStateEvent(button, 0f);
 
@@ -61,5 +79,6 @@ public static class InputInjector
         if (_mouse != null && _mouse.added) InputSystem.RemoveDevice(_mouse);
         _keyboard = null;
         _mouse = null;
+        _heldKeys.Clear();
     }
 }

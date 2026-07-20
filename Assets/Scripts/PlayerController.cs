@@ -20,24 +20,38 @@ public class PlayerController : MonoBehaviour
     public Vector2 wallJumpForce = new Vector2(5f, 9f);
     public LayerMask groundLayer;
     public LayerMask wallLayer;
-    
+
+    [Header("Dash")]
+    public float dashSpeed = 14f;
+    public float dashDuration = 0.15f;
+    public float dashCooldown = 0.5f;
+    public string invincibleLayerName = "PlayerInvincible";
+
     Rigidbody2D rb;
     BoxCollider2D coll;
     Animator anim;
     SpriteRenderer sr;
-    
+
     Vector2 moveInput;
     bool isJumping;
     bool isJumpHeld;
     float coyoteTimeCounter;
-    
+
     bool isWallSliding;
     bool isTouchingWall;
     bool isGrounded;
     int wallDirX;
-    
+
     float wallJumpLockCounter;
     bool wasGrounded;
+
+    bool dashRequested;
+    bool isDashing;
+    float dashTimer;
+    float dashCooldownCounter;
+    int dashDirX = 1;
+    int normalLayer;
+    int invincibleLayer;
 
     void Awake()
     {
@@ -45,25 +59,37 @@ public class PlayerController : MonoBehaviour
         coll = GetComponent<BoxCollider2D>();
         anim = GetComponent<Animator>();
         sr = GetComponent<SpriteRenderer>();
-        
+
         // Rigidbody2D 기본 셋팅
         rb.freezeRotation = true;
         rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
+
+        normalLayer = gameObject.layer;
+        invincibleLayer = LayerMask.NameToLayer(invincibleLayerName);
     }
 
     void Update()
     {
         if (wallJumpLockCounter > 0f) wallJumpLockCounter -= Time.deltaTime;
+        if (dashCooldownCounter > 0f) dashCooldownCounter -= Time.deltaTime;
 
         CheckEnvironment();
         HandleJump();
         HandleWallSlide();
+        HandleDash();
         UpdateAnimations();
     }
 
     void FixedUpdate()
     {
-        HandleMovement();
+        if (isDashing)
+        {
+            rb.linearVelocity = new Vector2(dashDirX * dashSpeed, 0f);
+        }
+        else
+        {
+            HandleMovement();
+        }
         ApplyBetterJumpPhysics();
     }
 
@@ -98,6 +124,8 @@ public class PlayerController : MonoBehaviour
 
     void HandleWallSlide()
     {
+        if (isDashing) { isWallSliding = false; return; }
+
         // 벽 방향 키를 누르고 있는 동안만 벽에 붙어 슬라이드 (즉시 이동과 궁합: 접촉 유지 안정화)
         bool pushingIntoWall = isTouchingWall && wallDirX != 0
             && Mathf.Abs(moveInput.x) > 0.01f && Mathf.Sign(moveInput.x) == wallDirX;
@@ -132,9 +160,40 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    void HandleDash()
+    {
+        if (dashRequested)
+        {
+            dashRequested = false;
+            if (!isDashing && dashCooldownCounter <= 0f)
+            {
+                isDashing = true;
+                dashTimer = dashDuration;
+                dashCooldownCounter = dashCooldown;
+                dashDirX = Mathf.Abs(moveInput.x) > 0.01f
+                    ? (int)Mathf.Sign(moveInput.x)
+                    : ((sr != null && sr.flipX) ? -1 : 1);
+
+                if (invincibleLayer != -1) gameObject.layer = invincibleLayer;
+                TestLog.Event("dash_iframe", $"dash_started dir={dashDirX}");
+            }
+        }
+
+        if (isDashing)
+        {
+            dashTimer -= Time.deltaTime;
+            if (dashTimer <= 0f)
+            {
+                isDashing = false;
+                if (invincibleLayer != -1) gameObject.layer = normalLayer;
+                TestLog.Event("dash_iframe", "dash_ended");
+            }
+        }
+    }
+
     void ApplyBetterJumpPhysics()
     {
-        if (isWallSliding) return; // 벽 슬라이드 중엔 슬라이드 가속이 y를 제어
+        if (isWallSliding || isDashing) return; // 벽 슬라이드/대시 중엔 각자 y를 제어
         if (rb.linearVelocity.y < 0) {
             rb.linearVelocity += Vector2.up * Physics2D.gravity.y * (fallMultiplier - 1) * Time.fixedDeltaTime;
         } else if (rb.linearVelocity.y > 0 && !isJumpHeld) {
@@ -177,5 +236,10 @@ public class PlayerController : MonoBehaviour
         } else {
             isJumpHeld = false;
         }
+    }
+
+    public void OnDash(InputValue value)
+    {
+        if (value.isPressed) dashRequested = true;
     }
 }

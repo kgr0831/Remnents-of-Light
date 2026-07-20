@@ -1,10 +1,10 @@
 # Remnents of Light — 작업 진행 추적 (task.md)
 
-> 최종 업데이트: 2026-07-15 · 스테이지1 버티컬 슬라이스(5주 마스터플랜) 기준
+> 최종 업데이트: 2026-07-20 · 스테이지1 버티컬 슬라이스(5주 마스터플랜) 기준
 
 ## 📍 현재 위치
-- **일정표 1주차 "조작감 깎기 & 전투 아키텍처" 中 `이동 & 물리` 파트** 진행 중.
-- 다음 예정: 무적 대시(I-Frame) → 일섬 → 3타 콤보/패링 → 타격 피드백/HP·마나 UI.
+- **일정표 1주차 "조작감 깎기 & 전투 아키텍처" 中 `무적 액션` 파트** 진행 중 — 무적 대시(I-Frame) 완료.
+- 다음 예정: 일섬(RaycastAll 관통) → 3타 콤보/패링 → 타격 피드백/HP·마나 UI.
 
 ## ✅ 완료
 - 이동·물리 기본 구현 (`PlayerController.cs`): 가감속 Lerp 이동, 가변 점프, 코요테 타임(0.1s), 벽 슬라이드, 벽 점프.
@@ -68,7 +68,8 @@
 - 스폰 지점/줌 미세조정 여지.
 
 ## ▶️ 다음 예정 (일정표 1주차 잔여)
-- 무적 대시(I-Frame, Dash 입력 이미 정의됨) → 일섬(RaycastAll 관통) → 3타 콤보/가드·패링 → 타격 피드백/HP·마나 UI.
+- ✅ 무적 대시(I-Frame, Dash 입력 이미 정의됨)
+- 일섬(RaycastAll 관통) → 3타 콤보/가드·패링 → 타격 피드백/HP·마나 UI.
 
 ## ⚠️ 블로커/주의
 - `jumpForce`, `wallJumpForce` 등 튜닝값은 씬 Inspector가 코드 기본값을 덮어씀 → 크기 조정은 Inspector/MCP로.
@@ -78,6 +79,30 @@
 - 요청: `task.md` git commit (디스코드 원격 루프 모드, 승인 흐름 확인용).
 - 결과: git commit은 루프 모드에서도 파괴적 작업 → NEEDS_APPROVAL로 정지 후 질문, 사용자가 "커밋하지 마" 선택 → **커밋 미실행**.
 - 결론: 승인 게이트 정상 동작 확인. 실제 커밋 대기 파일 없음(작업 트리 변경사항은 그대로 유지).
+
+## ✅ 무적 대시(I-Frame) 구현 완료 (2026-07-20, 루프 모드)
+- 진행 순서: `.claude/skills/add-combat-move/SKILL.md` 절차 그대로 따름.
+- `PlayerController.cs`: `Dash` 헤더(dashSpeed=14/dashDuration=0.15/dashCooldown=0.5/invincibleLayerName) + `OnDash(InputValue)`
+  입력 훅 + `HandleDash()` (isDashing/dashTimer/dashCooldownCounter 상태, 기존 `isJumping`/`wallJumpLockCounter` 패턴과 동일 구조).
+  대시 중엔 `FixedUpdate`에서 `HandleMovement()` 대신 고정 수평 burst 속도(y=0)로 덮어씀, `HandleWallSlide`/`ApplyBetterJumpPhysics`
+  모두 `isDashing`일 때 조기 return 가드 추가. 무적은 "레이어 스왑 기반"(기획안 1주차 스펙) — 대시 시작 시
+  `gameObject.layer`를 `PlayerInvincible` 레이어로, 종료 시 원래 레이어로 원복.
+- **새 Unity 레이어 `PlayerInvincible`(슬롯 14) 추가** — `manage_editor(add_layer)`로 승인 받아 진행 (프로젝트 전역 설정 변경이라 별도 승인).
+  Physics2D 충돌 매트릭스(`PlayerInvincible` ↔ `EnemyAttack` 무시)는 **의도적으로 이번 범위에서 제외** — 아직 EnemyAttack을
+  쓰는 데미지/적 시스템이 없어서 지금 매트릭스를 건드리면 소비자 없는 죽은 설정이 됨. 데미지 시스템 붙일 때 같이 배선 예정.
+- `PlayTestRunner.DashIFrameTest()` TODO 구현 완료: `InputInjector.PressDash()`로 입력 주입 →
+  대시 중 레이어가 `PlayerInvincible`로 바뀌는지, `dashDuration` 경과 후 원래 레이어로 복귀하는지 검증
+  (데미지 시스템이 아직 없어 "피격 0회" 대신 레이어 스왑 자체를 검증).
+- **버그 발견 & 수정 (`InputInjector.cs`)**: `PressKey/ReleaseKey`가 `InputSystem.QueueDeltaStateEvent`를 썼는데, 키보드 키는
+  비트필드로 저장되는 컨트롤이라 델타 이벤트를 지원하지 않아 `InvalidOperationException: Cannot send delta state events
+  against bitfield controls`가 런타임에 발생(기존 코드가 만들어진 이후 `SetMoveX`/이동 방향 주입을 실제로 쓴 첫 테스트라
+  지금까지 숨어 있던 버그). `KeyboardState` 풀스테이트 + `InputSystem.QueueStateEvent`로 교체, 동시 입력을 위해
+  `_heldKeys` HashSet으로 현재 눌린 키 집합을 추적해 매번 전체 상태를 재전송하도록 수정. 마우스 버튼 경로(`PressButton`/
+  Attack·Parry)는 이번에 실사용 안 해서 미검증 상태로 남겨둠 — 나중에 콤보/패링 테스트 작성 시 동일 문제 있는지 확인 필요.
+  출처: docs.unity3d.com/Packages/com.unity.inputsystem@1.19/api/UnityEngine.InputSystem.LowLevel.KeyboardState.html (확인 2026-07-20)
+- **플레이 검증 완료**: Play 모드 진입 → `Tools/PlayTest/Dash I-Frame` 실행 → 콘솔 로그
+  `[ASSERT] dash_iframe: PASS during=True restored=True`, 에러 0. 컴파일 클린(전 파일 `validate_script` 에러/경고 0,
+  단 `TestLog` 관련 GC 경고 1건은 기존 패턴과 동일한 성격이라 무해).
 
 ## 🛰️ 디스코드 실시간 원격 개발 시스템 구축 (2026-07-20)
 - SETUP_PLAN STEP5를 웹훅 단방향 보고에서 **실시간 양방향 원격 제어**로 확장.
