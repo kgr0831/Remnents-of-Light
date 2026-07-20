@@ -29,8 +29,12 @@ import os
 from datetime import datetime, timezone
 from pathlib import Path
 
+from dotenv import load_dotenv
+
 import discord
 from discord import app_commands
+
+load_dotenv()
 
 CONFIG_PATH = Path(__file__).parent / ".secrets" / "discord_config.json"
 HEARTBEAT_STALE_SECONDS = 180
