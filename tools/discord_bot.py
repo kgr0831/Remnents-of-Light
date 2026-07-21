@@ -117,6 +117,15 @@ def send_embed(channel_id: str, embed: dict, config: dict) -> dict:
     return _request("POST", f"/channels/{channel_id}/messages", config["token"], {"embeds": [embed]})
 
 
+def edit_embed(channel_id: str, message_id: str, embed: dict, config: dict) -> dict:
+    return _request("PATCH", f"/channels/{channel_id}/messages/{message_id}", config["token"], {"embeds": [embed]})
+
+
+def trigger_typing(channel_id: str, config: dict) -> None:
+    """POSTs the native Discord 'X is typing...' indicator (lasts ~10s per call)."""
+    _request("POST", f"/channels/{channel_id}/typing", config["token"])
+
+
 def make_embed(title: str, description: str, color: int, fields: list | None = None) -> dict:
     embed = {"title": title, "description": description[:4096], "color": color}
     if fields:

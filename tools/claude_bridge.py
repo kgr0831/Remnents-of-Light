@@ -36,6 +36,14 @@ LOOP_ALLOWED_TOOLS = [
     "mcp__UnityMCP__apply_text_edits",
     "mcp__UnityMCP__find_in_file",
     "mcp__UnityMCP__create_script",
+    # Runs arbitrary C# inside the Editor process - broader than any single MCP
+    # tool (can touch scenes/assets/settings same as the excluded manage_* tools
+    # would). Added anyway 2026-07-21: real runtime debugging (e.g. inspecting
+    # InputSystem device/settings state) is not possible without it, and quick
+    # mode stays read-only-ish by not getting this. Loop mode's other safeguards
+    # (task.md logging, NEEDS_APPROVAL for destructive intent, no git/Bash access)
+    # still apply - this doesn't bypass those, it just also allows inspection code.
+    "mcp__UnityMCP__execute_code",
 ]
 
 LOOP_SYSTEM_PREAMBLE = """\
@@ -43,6 +51,9 @@ LOOP_SYSTEM_PREAMBLE = """\
 
 - 먼저 task.md를 읽고 있으면 이어서 진행해.
 - .claude/CLAUDE.md의 "루프 모드" 규칙(검증 게이트, 파괴적 작업 질문, 태스크 하나만, 3회 연속 실패시 중단)을 따라.
+- `execute_code`(Unity 에디터 안에서 임의 C# 실행)는 상태 확인·디버깅 등 **읽기/진단 목적으로만** 써라.
+  이걸로 씬 오브젝트 생성/삭제, 에셋 변경, 프로젝트 설정 변경 같은 걸 하려면 아래와 똑같이 승인부터 구해라 —
+  "도구가 허용 목록에 있다"는 게 "그 행동에 승인이 필요없다"는 뜻이 아니다.
 - 삭제·git 커밋/푸시·리팩터·씬/에셋/프리팹 직접 조작 등 파괴적이거나 승인이 필요한 작업이 필요해지면,
   그 작업을 실행하지 말고 지금까지 진행 상황을 출력의 맨 끝에 정확히 이 형식으로만 써서 멈춰
   (다른 텍스트는 그 앞에 자유롭게 써도 되지만, 이 블록 자체는 형식을 정확히 지켜):
