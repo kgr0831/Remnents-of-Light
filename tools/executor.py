@@ -78,7 +78,8 @@ async def handle_command(cmd: dict, config: dict, command_channel_id: str, queue
 
     try:
         if cmd_type == "quick":
-            result = await claude_bridge.run_claude(cmd["text"], claude_bridge.QUICK_ALLOWED_TOOLS, None, timeout=180)
+            prompt = claude_bridge.QUICK_SYSTEM_PREAMBLE.format(question=cmd["text"])
+            result = await claude_bridge.run_claude(prompt, claude_bridge.QUICK_ALLOWED_TOOLS, None, timeout=180)
             discord_bot.edit_embed(command_channel_id, progress_msg["id"], discord_bot.make_embed("✅ 처리 완료", "아래 참고", COLOR_DONE), config)
             embed = discord_bot.make_embed("응답", result["text"], COLOR_INFO)
             discord_bot.send_embed(command_channel_id, embed, config)  # new message so Discord actually notifies

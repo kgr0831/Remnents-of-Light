@@ -21,6 +21,22 @@ QUICK_ALLOWED_TOOLS = [
     "mcp__UnityMCP__execute_menu_item",
 ]
 
+# Quick mode is a fresh session every time (no --resume) and previously got just
+# the raw question with no framing, so it had no idea a loop task had, say, just
+# finished verifying something in Play mode a minute earlier - it would silently
+# re-derive an answer from static code alone instead of citing the real result.
+# task.md is the one thing every command type can cheaply check for "what's
+# actually true/current right now" - checked 2026-07-21 after this caused a
+# visibly wrong answer (see task.md 왼쪽 이동 안 됨 entry vs the quick-mode reply
+# right after it).
+QUICK_SYSTEM_PREAMBLE = """\
+너는 지금 디스코드를 통해 원격으로 트리거된 가벼운 질답 중이다. 이 세션은 방금 시작된 새 세션이라
+직전 대화 기록이 없다 - 답하기 전에 먼저 task.md를 Read로 훑어서, 방금 다른 작업(루프 모드 등)이
+이미 확인/검증/결정해둔 게 있으면 그 사실을 우선해서 답해라 (다시 추측하거나 재검증하지 말 것).
+
+질문: {question}
+"""
+
 LOOP_ALLOWED_TOOLS = [
     "Read", "Grep", "Glob", "Skill", "WebSearch", "WebFetch",
     "Edit(*.cs)", "Write(*.cs)", "Edit(*.md)", "Write(*.md)",
@@ -54,13 +70,17 @@ LOOP_SYSTEM_PREAMBLE = """\
 - `execute_code`(Unity 에디터 안에서 임의 C# 실행)는 상태 확인·디버깅 등 **읽기/진단 목적으로만** 써라.
   이걸로 씬 오브젝트 생성/삭제, 에셋 변경, 프로젝트 설정 변경 같은 걸 하려면 아래와 똑같이 승인부터 구해라 —
   "도구가 허용 목록에 있다"는 게 "그 행동에 승인이 필요없다"는 뜻이 아니다.
-- 삭제·git 커밋/푸시·리팩터·씬/에셋/프리팹 직접 조작 등 파괴적이거나 승인이 필요한 작업이 필요해지면,
-  그 작업을 실행하지 말고 지금까지 진행 상황을 출력의 맨 끝에 정확히 이 형식으로만 써서 멈춰
-  (다른 텍스트는 그 앞에 자유롭게 써도 되지만, 이 블록 자체는 형식을 정확히 지켜):
+- **다음 중 하나라도 해당하면 계속 진행하지 말고 NEEDS_APPROVAL로 멈춰서 사용자 결정을 기다려라**:
+  (a) 삭제·git 커밋/푸시·리팩터·씬/에셋/프리팹 직접 조작 등 파괴적이거나 승인이 필요한 작업이 필요해질 때
+  (b) 조사/리서치 결과 여러 방향(레퍼런스, 구현 방식 등) 중 사용자가 골라야 진행할 수 있을 때 -
+      "옵션을 제시하고 세션이 끝나버리면" 다음 세션은 이 대화를 기억 못 해서 사용자의 "2번" 같은 답을
+      영영 못 알아듣는다. 옵션을 제시하는 순간이 바로 이 형식으로 멈춰야 하는 시점이다.
+  이 블록 자체는 형식을 정확히 지켜라(다른 텍스트는 그 앞에 자유롭게 써도 된다):
   NEEDS_APPROVAL: <한 줄 질문>
   - <선택지 1>
   - <선택지 2>
-  (선택지는 몇 개든 가능, 각각 "- "로 시작하는 한 줄)
+  (선택지는 몇 개든 가능, 각각 "- "로 시작하는 한 줄 - 사용자가 "1번/2번"으로 답할 수 있도록 항상
+  숫자로 세는 목록으로 제시해라. A/B/C 같은 글자 목록은 쓰지 마라.)
 - 작업을 끝까지 완료했으면 task.md를 갱신하고, 마지막 줄에 정확히 이 형식으로 출력해:
   DONE: <한 줄 요약>
 
@@ -79,9 +99,12 @@ AUTO_SYSTEM_PREAMBLE = """\
    - 다른 작업으로 바꿔줘
 3. 승인("진행해줘" 등)을 받으면, 그 작업 자체는 이미 승인된 것으로 보고 다시 "계속 할까요?"는 묻지 마라.
    대신 아래 규칙 그대로 실제 작업을 수행해라 (.claude/CLAUDE.md 루프 모드 규칙 - 검증 게이트, 태스크 하나만,
-   3회 연속 실패시 중단). 삭제·git 커밋/푸시·리팩터·씬/에셋/프리팹 직접 조작 등 **파괴적인 개별 행동**이
-   필요해질 때만 그때그때 다시 위와 같은 NEEDS_APPROVAL 형식으로 새로 승인을 구해라
-   (이건 "작업 선정 승인"과 별개의, 매번 필요한 안전장치다).
+   3회 연속 실패시 중단). 다음 중 하나라도 해당하면 그때그때 다시 NEEDS_APPROVAL 형식으로 새로 승인/결정을
+   구해라 (이건 "작업 선정 승인"과 별개의, 매번 필요한 안전장치다):
+   (a) 삭제·git 커밋/푸시·리팩터·씬/에셋/프리팹 직접 조작 등 **파괴적인 개별 행동**이 필요해질 때
+   (b) 조사 결과 여러 방향 중 사용자가 골라야 진행할 수 있을 때 - 이 순간 세션이 끊기면 다음 세션은
+       제시한 옵션 자체를 기억 못 하니, 옵션을 숫자 목록(1/2/3 - A/B/C 금지, 사용자가 "1번/2번"으로
+       답할 수 있게)으로 제시하며 반드시 이 형식으로 멈춰라.
 4. 작업을 끝까지 완료했으면 task.md를 갱신하고, 마지막 줄에 정확히 이 형식으로 출력해:
    DONE: <한 줄 요약>
 """
