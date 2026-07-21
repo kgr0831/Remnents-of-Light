@@ -122,7 +122,14 @@ FIX_SYSTEM_PREAMBLE = """\
 """
 
 
+# Tracks the in-flight `claude -p` subprocess (if any) so a /claude-stop command
+# arriving mid-task can kill it. Single-slot: executor.py only ever runs one
+# headless task at a time.
+current_proc: asyncio.subprocess.Process | None = None
+
+
 async def run_claude(prompt: str, allowed_tools: list[str], session_id: str | None, timeout: int) -> dict:
+    global current_proc
     cmd = [
         "claude", "-p", prompt,
         "--permission-mode", "dontAsk",
@@ -136,11 +143,14 @@ async def run_claude(prompt: str, allowed_tools: list[str], session_id: str | No
         *cmd, cwd=str(PROJECT_ROOT),
         stdout=subprocess.PIPE, stderr=subprocess.PIPE,
     )
+    current_proc = proc
     try:
         stdout, stderr = await asyncio.wait_for(proc.communicate(), timeout=timeout)
     except asyncio.TimeoutError:
         proc.kill()
         return {"text": f"(timeout after {timeout}s, killed)", "session_id": session_id}
+    finally:
+        current_proc = None
 
     raw = stdout.decode("utf-8", errors="replace")
     try:

@@ -32,6 +32,11 @@ def save_state(state: dict) -> None:
 COLOR_INFO = 0x5865F2
 COLOR_APPROVAL = 0xF5A623
 COLOR_DONE = 0x57F287
+COLOR_STOPPED = 0xED4245
+
+# Set while a background task (asyncio.create_task) is running handle_command,
+# so poll_loop can detect it's busy and so /claude-stop knows what to cancel.
+active_task: asyncio.Task | None = None
 
 
 TOOL_PROFILES = {
@@ -91,7 +96,25 @@ async def handle_command(cmd: dict, config: dict, command_channel_id: str, queue
     discord_bot.send_message(queue_channel_id, f"STATUS: {json.dumps(status, ensure_ascii=False)}", config)
 
 
+async def handle_stop(config: dict, command_channel_id: str) -> None:
+    global active_task
+    was_running = active_task is not None and not active_task.done()
+
+    if claude_bridge.current_proc is not None:
+        try:
+            claude_bridge.current_proc.kill()
+        except ProcessLookupError:
+            pass
+    if was_running:
+        active_task.cancel()
+
+    body = "진행 중이던 작업을 중단했어." if was_running else "지금 실행 중인 작업이 없어."
+    embed = discord_bot.make_embed("중단됨", body, COLOR_STOPPED)
+    discord_bot.send_embed(command_channel_id, embed, config)
+
+
 async def poll_loop(config: dict) -> None:
+    global active_task
     command_channel_id = discord_bot.get_or_create_channel("personal", config.get("command_channel", "claude-reports"), config)
     queue_channel_id = discord_bot.get_or_create_channel("personal", "claude-queue", config)
     state = load_state()
@@ -113,7 +136,16 @@ async def poll_loop(config: dict) -> None:
             if new_cmds:
                 save_state(state)
             for _, cmd in new_cmds:
-                await handle_command(cmd, config, command_channel_id, queue_channel_id)
+                # Handled inline (not via create_task) so a stop always takes effect on
+                # the very next poll tick, even while a task is mid-flight.
+                if cmd.get("type") == "stop":
+                    await handle_stop(config, command_channel_id)
+                    continue
+                if active_task is not None and not active_task.done():
+                    embed = discord_bot.make_embed("바쁨", "이미 다른 작업을 처리 중이야. 끝날 때까지 기다리거나 /claude-stop으로 중단해줘.", COLOR_APPROVAL)
+                    discord_bot.send_embed(command_channel_id, embed, config)
+                    continue
+                active_task = asyncio.create_task(handle_command(cmd, config, command_channel_id, queue_channel_id))
         except Exception as e:
             print(f"[poll_loop] transient error, continuing: {e}")
 
