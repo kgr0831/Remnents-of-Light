@@ -21,8 +21,10 @@ HEARTBEAT_INTERVAL_S = 60
 
 def load_state() -> dict:
     if STATE_PATH.exists():
-        return json.loads(STATE_PATH.read_text(encoding="utf-8"))
-    return {"last_queue_msg_id": None}
+        state = json.loads(STATE_PATH.read_text(encoding="utf-8"))
+        state.setdefault("last_stop_msg_id", None)
+        return state
+    return {"last_queue_msg_id": None, "last_stop_msg_id": None}
 
 
 def save_state(state: dict) -> None:
@@ -159,34 +161,65 @@ async def poll_loop(config: dict) -> None:
     command_channel_id = discord_bot.get_or_create_channel("personal", config.get("command_channel", "claude-reports"), config)
     queue_channel_id = discord_bot.get_or_create_channel("personal", "claude-queue", config)
     state = load_state()
+    announced_queued: set[str] = set()
 
     while True:
         try:
             messages = discord_bot.get_recent_messages(queue_channel_id, config, limit=20)
-            new_cmds = []
-            for m in reversed(messages):  # oldest-first
-                if state["last_queue_msg_id"] and int(m["id"]) <= int(state["last_queue_msg_id"]):
+            ordered = list(reversed(messages))  # oldest-first
+
+            # /claude-stop jumps the FIFO entirely - own cursor, checked every cycle
+            # regardless of whether the main queue is backed up, so it can't get stuck
+            # behind other pending commands.
+            for m in ordered:
+                if not (state["last_stop_msg_id"] is None or int(m["id"]) > int(state["last_stop_msg_id"])):
                     continue
                 if m.get("content", "").startswith("CMD:"):
                     try:
-                        new_cmds.append((m["id"], json.loads(m["content"][len("CMD:"):])))
+                        cmd = json.loads(m["content"][len("CMD:"):])
                     except json.JSONDecodeError:
-                        pass
-                state["last_queue_msg_id"] = m["id"]
+                        continue
+                    if cmd.get("type") == "stop":
+                        state["last_stop_msg_id"] = m["id"]
+                        save_state(state)
+                        await handle_stop(config, command_channel_id)
 
-            if new_cmds:
-                save_state(state)
-            for _, cmd in new_cmds:
-                # Handled inline (not via create_task) so a stop always takes effect on
-                # the very next poll tick, even while a task is mid-flight.
+            # Regular commands: strict FIFO. last_queue_msg_id only advances past a
+            # message once it's actually been started (or determined not runnable,
+            # e.g. malformed/non-CMD) - never past one left waiting because we were
+            # busy - so nothing queued while busy can be silently skipped, and a
+            # restart resumes exactly where it left off instead of losing anything.
+            for m in ordered:
+                if state["last_queue_msg_id"] and int(m["id"]) <= int(state["last_queue_msg_id"]):
+                    continue
+                content = m.get("content", "")
+                if not content.startswith("CMD:"):
+                    state["last_queue_msg_id"] = m["id"]
+                    save_state(state)
+                    continue
+                try:
+                    cmd = json.loads(content[len("CMD:"):])
+                except json.JSONDecodeError:
+                    state["last_queue_msg_id"] = m["id"]
+                    save_state(state)
+                    continue
                 if cmd.get("type") == "stop":
-                    await handle_stop(config, command_channel_id)
-                    continue
+                    state["last_queue_msg_id"] = m["id"]
+                    save_state(state)
+                    continue  # already handled above
+
                 if active_task is not None and not active_task.done():
-                    embed = discord_bot.make_embed("바쁨", "이미 다른 작업을 처리 중이야. 끝날 때까지 기다리거나 /claude-stop으로 중단해줘.", COLOR_APPROVAL)
-                    discord_bot.send_embed(command_channel_id, embed, config)
-                    continue
+                    if m["id"] not in announced_queued:
+                        embed = discord_bot.make_embed("대기열에 추가됨", "이미 다른 작업 중이야 - 지금 작업 끝나면 순서대로 이어서 진행할게.", COLOR_APPROVAL)
+                        discord_bot.send_embed(command_channel_id, embed, config)
+                        announced_queued.add(m["id"])
+                    break  # stop scanning - preserve order, don't start a later one first
+
+                state["last_queue_msg_id"] = m["id"]
+                save_state(state)
+                announced_queued.discard(m["id"])
                 active_task = asyncio.create_task(handle_command(cmd, config, command_channel_id, queue_channel_id))
+                break  # one task per cycle; anything after stays queued for later cycles
         except Exception as e:
             print(f"[poll_loop] transient error, continuing: {e}")
 
