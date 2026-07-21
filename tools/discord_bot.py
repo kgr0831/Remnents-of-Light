@@ -15,6 +15,7 @@ from pathlib import Path
 
 API_BASE = "https://discord.com/api/v10"
 CONFIG_PATH = Path(__file__).parent / ".secrets" / "discord_config.json"
+REQUEST_TIMEOUT_S = 15
 
 CHANNEL_TYPE_TEXT = 0
 CHANNEL_TYPE_FORUM = 15
@@ -43,7 +44,7 @@ def _request(method: str, path: str, token: str, body: dict | None = None) -> di
 
     for attempt in range(2):
         try:
-            with urllib.request.urlopen(req) as resp:
+            with urllib.request.urlopen(req, timeout=REQUEST_TIMEOUT_S) as resp:
                 raw = resp.read()
                 return json.loads(raw) if raw else {}
         except urllib.error.HTTPError as e:
