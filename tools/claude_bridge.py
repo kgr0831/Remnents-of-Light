@@ -46,6 +46,7 @@ LOOP_ALLOWED_TOOLS = [
     "Read", "Grep", "Glob", "Skill", "WebSearch", "WebFetch",
     "Edit(*.cs)", "Write(*.cs)", "Edit(*.md)", "Write(*.md)",
     "Bash(dotnet test*)",
+    "Bash(tools/.venv/Scripts/python.exe tools/report_video.py*)",
     "mcp__UnityMCP__read_console",
     "mcp__UnityMCP__manage_editor",
     "mcp__UnityMCP__execute_menu_item",
@@ -75,6 +76,19 @@ LOOP_SYSTEM_PREAMBLE = """\
 - `execute_code`(Unity 에디터 안에서 임의 C# 실행)는 상태 확인·디버깅 등 **읽기/진단 목적으로만** 써라.
   이걸로 씬 오브젝트 생성/삭제, 에셋 변경, 프로젝트 설정 변경 같은 걸 하려면 아래와 똑같이 승인부터 구해라 —
   "도구가 허용 목록에 있다"는 게 "그 행동에 승인이 필요없다"는 뜻이 아니다.
+  단, `TestRecorder.StartRecording(파일명)`/`StopRecording()` 호출(Play 모드 검증 구간을 녹화, `Recordings/`에
+  mp4 생성)은 씬/에셋을 바꾸는 게 아니므로 이 제한의 예외다 - 진단 코드 안에서 자유롭게 써라.
+- **실제 코드 변경이 있었던 완료 작업(기능 추가/버그 수정 등, 코드 변경 없이 조사만 하고 끝난 경우는 제외)은
+  영상 보고가 필수다.** Play 모드 검증을 할 때 그 구간을 `TestRecorder.StartRecording("<기능 요약>_<날짜
+  YYYYMMDD>")`로 감싸서 녹화하고, 끝나면 `StopRecording()`이 반환한 mp4 경로로
+  `Bash(tools/.venv/Scripts/python.exe tools/report_video.py <mp4경로> "<기능 요약>_<날짜>" "<판단 기준 한
+  문장>")`을 실행해라 - stdout에 `URL: ...`과 `VERDICT: PASS/FAIL (n/m)`이 찍힌다. 이 URL을 아래 DONE: 블록에
+  반드시 포함해라.
+- 작업을 끝까지 완료했으면 task.md를 갱신하고, 마지막 줄부터 정확히 이 형식으로 출력해(코드 변경이 없어서
+  영상 보고 대상이 아니면 "- 영상:" 줄은 생략해도 된다):
+  DONE: <한 줄 요약>
+  - 영상: <report_video.py가 출력한 URL>
+  - 다음: <다음에 할 만한 작업 한 줄>
 - **NEEDS_APPROVAL을 남발하지 마라.** 노트북 앞에 아무도 없다는 건 "물어볼 사람이 없다"는 뜻이지
   "물어볼 핑계를 만들라"는 뜻이 아니다. 스스로 재현·테스트·조사해서 답을 낼 수 있는 건 **끝까지 직접
   확인하고 답을 낸 뒤에 진행해라** - "왼쪽에 벽이 있었나요?" 같은, 니가 Play 모드+execute_code로 직접
@@ -93,8 +107,6 @@ LOOP_SYSTEM_PREAMBLE = """\
   - <선택지 2>
   (선택지는 몇 개든 가능, 각각 "- "로 시작하는 한 줄 - 사용자가 "1번/2번"으로 답할 수 있도록 항상
   숫자로 세는 목록으로 제시해라. A/B/C 같은 글자 목록은 쓰지 마라.)
-- 작업을 끝까지 완료했으면 task.md를 갱신하고, 마지막 줄에 정확히 이 형식으로 출력해:
-  DONE: <한 줄 요약>
 
 작업: {task}
 """
@@ -119,8 +131,17 @@ AUTO_SYSTEM_PREAMBLE = """\
    (b) 조사 결과 여러 최종 방향 중 **테스트로는 못 고르고** 사용자의 취향/결정이 필요할 때 - 이 순간
        세션이 끊기면 다음 세션은 제시한 옵션 자체를 기억 못 하니, 옵션을 숫자 목록(1/2/3 - A/B/C 금지,
        사용자가 "1번/2번"으로 답할 수 있게)으로 제시하며 반드시 이 형식으로 멈춰라.
-4. 작업을 끝까지 완료했으면 task.md를 갱신하고, 마지막 줄에 정확히 이 형식으로 출력해:
+   `execute_code`로 `TestRecorder.StartRecording`/`StopRecording`(Play 모드 구간 녹화)을 쓰는 건 씬/에셋을
+   바꾸지 않으니 예외로 자유롭게 허용된다.
+4. **실제 코드 변경이 있었던 완료 작업(조사만 하고 끝난 경우는 제외)은 영상 보고가 필수다.** Play 모드
+   검증 구간을 `TestRecorder.StartRecording("<기능 요약>_<날짜 YYYYMMDD>")`로 감싸 녹화하고, 끝나면
+   `StopRecording()`이 반환한 mp4 경로로 `Bash(tools/.venv/Scripts/python.exe tools/report_video.py <mp4경로>
+   "<기능 요약>_<날짜>" "<판단 기준 한 문장>")`을 실행해라 - stdout의 `URL: ...`을 아래 DONE: 블록에 포함해라.
+5. 작업을 끝까지 완료했으면 task.md를 갱신하고, 마지막 줄부터 정확히 이 형식으로 출력해(영상 보고 대상이
+   아니면 "- 영상:" 줄은 생략해도 된다):
    DONE: <한 줄 요약>
+   - 영상: <report_video.py가 출력한 URL>
+   - 다음: <다음에 할 만한 작업 한 줄>
 """
 
 
@@ -231,6 +252,25 @@ def extract_marker(text: str, marker: str) -> str | None:
     for line in reversed(text.splitlines()):
         if line.startswith(marker):
             return line[len(marker):].strip()
+    return None
+
+
+def extract_done(text: str) -> dict | None:
+    """Finds 'DONE: <summary>' plus any following '- <label>: <value>' lines
+    (e.g. '- 영상: <url>', '- 다음: <task>')."""
+    lines = text.splitlines()
+    for i, line in enumerate(lines):
+        if line.startswith("DONE:"):
+            summary = line[len("DONE:"):].strip()
+            extras: dict[str, str] = {}
+            for extra_line in lines[i + 1:]:
+                stripped = extra_line.strip()
+                if not stripped.startswith("- "):
+                    break
+                key, _, value = stripped[2:].partition(":")
+                if value:
+                    extras[key.strip()] = value.strip()
+            return {"summary": summary, "extras": extras}
     return None
 
 

@@ -111,7 +111,7 @@ async def handle_command(cmd: dict, config: dict, command_channel_id: str, queue
         allowed_tools = TOOL_PROFILES.get(origin_type, claude_bridge.LOOP_ALLOWED_TOOLS)
         result = await claude_bridge.run_claude(prompt, allowed_tools, session_id, timeout=1800)
         approval = claude_bridge.extract_approval(result["text"])
-        done = claude_bridge.extract_marker(result["text"], "DONE:")
+        done = claude_bridge.extract_done(result["text"])
 
         if approval:
             discord_bot.edit_embed(command_channel_id, progress_msg["id"], discord_bot.make_embed("⚠️ 승인 대기로 전환", "아래 참고", COLOR_APPROVAL), config)
@@ -127,9 +127,10 @@ async def handle_command(cmd: dict, config: dict, command_channel_id: str, queue
             status = {"pending": True, "session_id": result["session_id"], "origin_type": origin_type}
         else:
             title = "완료" if done else "결과"
-            body = done or result["text"]
+            body = done["summary"] if done else result["text"]
+            fields = [(k, v) for k, v in done["extras"].items()] if done else None
             discord_bot.edit_embed(command_channel_id, progress_msg["id"], discord_bot.make_embed("✅ 처리 완료", "아래 참고", COLOR_DONE), config)
-            embed = discord_bot.make_embed(title, body, COLOR_DONE if done else COLOR_INFO)
+            embed = discord_bot.make_embed(title, body, COLOR_DONE if done else COLOR_INFO, fields)
             discord_bot.send_embed(command_channel_id, embed, config)  # new message so Discord actually notifies
             status = {"pending": False, "session_id": result["session_id"], "origin_type": origin_type}
 
