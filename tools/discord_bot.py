@@ -121,6 +121,19 @@ def edit_embed(channel_id: str, message_id: str, embed: dict, config: dict) -> d
     return _request("PATCH", f"/channels/{channel_id}/messages/{message_id}", config["token"], {"embeds": [embed]})
 
 
+def make_button_row(buttons: list[tuple[str, str]]) -> list[dict]:
+    """buttons: list of (label, custom_id), max 5. Returns a components array
+    (one action row) for the REST message-create/edit body's "components" field."""
+    return [{
+        "type": 1,
+        "components": [{"type": 2, "style": 1, "label": label[:80], "custom_id": custom_id[:100]} for label, custom_id in buttons[:5]],
+    }]
+
+
+def send_embed_with_components(channel_id: str, embed: dict, components: list[dict], config: dict) -> dict:
+    return _request("POST", f"/channels/{channel_id}/messages", config["token"], {"embeds": [embed], "components": components})
+
+
 def trigger_typing(channel_id: str, config: dict) -> None:
     """POSTs the native Discord 'X is typing...' indicator (lasts ~10s per call)."""
     _request("POST", f"/channels/{channel_id}/typing", config["token"])

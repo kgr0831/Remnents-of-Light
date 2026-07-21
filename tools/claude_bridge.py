@@ -175,8 +175,16 @@ FIX_SYSTEM_PREAMBLE = """\
 # headless task at a time.
 current_proc: asyncio.subprocess.Process | None = None
 
+# Anthropic-side transient failures (server overload, rate limiting) - safe to
+# just retry the same call, unlike account-level usage/spend limits which won't
+# resolve by retrying. Found 2026-07-22 after a 529 got silently reported as if
+# it were a real task result, with no retry at all.
+TRANSIENT_ERROR_PATTERNS = ["Overloaded", "overloaded_error", "rate_limit_error", " 529", " 503", "internal_server_error"]
+TRANSIENT_RETRY_DELAY_S = 15
+TRANSIENT_MAX_RETRIES = 3
 
-async def run_claude(prompt: str, allowed_tools: list[str], session_id: str | None, timeout: int) -> dict:
+
+async def _run_claude_once(prompt: str, allowed_tools: list[str], session_id: str | None, timeout: int) -> dict:
     global current_proc
     cmd = [
         "claude", "-p", prompt,
@@ -207,6 +215,16 @@ async def run_claude(prompt: str, allowed_tools: list[str], session_id: str | No
     except json.JSONDecodeError:
         err = stderr.decode("utf-8", errors="replace")
         return {"text": raw or f"(no output; stderr: {err[:500]})", "session_id": session_id}
+
+
+async def run_claude(prompt: str, allowed_tools: list[str], session_id: str | None, timeout: int) -> dict:
+    for attempt in range(TRANSIENT_MAX_RETRIES + 1):
+        result = await _run_claude_once(prompt, allowed_tools, session_id, timeout)
+        if attempt < TRANSIENT_MAX_RETRIES and any(p in result["text"] for p in TRANSIENT_ERROR_PATTERNS):
+            await asyncio.sleep(TRANSIENT_RETRY_DELAY_S)
+            continue
+        return result
+    return result
 
 
 def extract_marker(text: str, marker: str) -> str | None:

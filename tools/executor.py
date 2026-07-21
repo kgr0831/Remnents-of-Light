@@ -116,8 +116,14 @@ async def handle_command(cmd: dict, config: dict, command_channel_id: str, queue
         if approval:
             discord_bot.edit_embed(command_channel_id, progress_msg["id"], discord_bot.make_embed("⚠️ 승인 대기로 전환", "아래 참고", COLOR_APPROVAL), config)
             fields = [("선택지", "\n".join(f"{i + 1}. {opt}" for i, opt in enumerate(approval["options"])))] if approval["options"] else None
-            embed = discord_bot.make_embed("승인 필요", approval["question"] + "\n\n답장으로 알려주면 이어서 진행할게.", COLOR_APPROVAL, fields)
-            discord_bot.send_embed(command_channel_id, embed, config)  # new message so Discord actually notifies
+            embed = discord_bot.make_embed("승인 필요", approval["question"] + "\n\n버튼을 누르거나 답장해줘.", COLOR_APPROVAL, fields)
+            options = approval["options"] or []
+            if 1 <= len(options) <= 5:
+                buttons = [(str(i + 1), f"approve:{result['session_id']}:{origin_type}:{i + 1}") for i in range(len(options))]
+                components = discord_bot.make_button_row(buttons)
+                discord_bot.send_embed_with_components(command_channel_id, embed, components, config)
+            else:
+                discord_bot.send_embed(command_channel_id, embed, config)  # too many/no options for buttons - text reply only
             status = {"pending": True, "session_id": result["session_id"], "origin_type": origin_type}
         else:
             title = "완료" if done else "결과"
