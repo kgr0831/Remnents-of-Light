@@ -7,10 +7,12 @@ history / task.md for the full relay+executor design rationale.
 import asyncio
 import json
 import subprocess
+import time
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).parent.parent
 MEMORY_DIR = "C:/Users/kimga/.claude/projects/C--Users-kimga-Remnents-of-Light/memory"
+SESSIONS_DIR = Path("C:/Users/kimga/.claude/projects/C--Users-kimga-Remnents-of-Light")
 
 QUICK_ALLOWED_TOOLS = [
     "Read", "Grep", "Glob",
@@ -205,7 +207,21 @@ TRANSIENT_RETRY_DELAY_S = 15
 TRANSIENT_MAX_RETRIES = 3
 
 
-async def _run_claude_once(prompt: str, allowed_tools: list[str], session_id: str | None, timeout: int) -> dict:
+def _find_new_session_id(after: float) -> str | None:
+    """`claude -p` writes its session transcript (<session-id>.jsonl) incrementally as it
+    works, so even a killed process usually leaves one behind. On Windows st_ctime is the
+    file's creation time (not an inode-change time like on Unix), so filtering on
+    "created after this subprocess launched" reliably picks out the new session and not
+    some other session (e.g. this very interactive one) that merely got touched around
+    the same time. Found necessary 2026-07-22: a timeout used to just discard 30 minutes
+    of progress with no way to continue the same session."""
+    candidates = [p for p in SESSIONS_DIR.glob("*.jsonl") if p.stat().st_ctime > after]
+    if not candidates:
+        return None
+    return max(candidates, key=lambda p: p.stat().st_ctime).stem
+
+
+async def _run_claude_once(prompt: str, allowed_tools: list[str], session_id: str | None, timeout: int | None) -> dict:
     global current_proc
     cmd = [
         "claude", "-p", prompt,
@@ -216,6 +232,7 @@ async def _run_claude_once(prompt: str, allowed_tools: list[str], session_id: st
     if session_id:
         cmd += ["--resume", session_id]
 
+    start = time.time()
     proc = await asyncio.create_subprocess_exec(
         *cmd, cwd=str(PROJECT_ROOT),
         stdout=subprocess.PIPE, stderr=subprocess.PIPE,
@@ -225,7 +242,9 @@ async def _run_claude_once(prompt: str, allowed_tools: list[str], session_id: st
         stdout, stderr = await asyncio.wait_for(proc.communicate(), timeout=timeout)
     except asyncio.TimeoutError:
         proc.kill()
-        return {"text": f"(timeout after {timeout}s, killed)", "session_id": session_id}
+        recovered = _find_new_session_id(start) or session_id
+        note = f"이어할 수 있음 (session {recovered})" if recovered else "이어할 세션을 못 찾음"
+        return {"text": f"(timeout after {timeout}s, killed - {note})", "session_id": recovered, "timed_out": True}
     finally:
         current_proc = None
 
@@ -238,7 +257,7 @@ async def _run_claude_once(prompt: str, allowed_tools: list[str], session_id: st
         return {"text": raw or f"(no output; stderr: {err[:500]})", "session_id": session_id}
 
 
-async def run_claude(prompt: str, allowed_tools: list[str], session_id: str | None, timeout: int) -> dict:
+async def run_claude(prompt: str, allowed_tools: list[str], session_id: str | None, timeout: int | None) -> dict:
     for attempt in range(TRANSIENT_MAX_RETRIES + 1):
         result = await _run_claude_once(prompt, allowed_tools, session_id, timeout)
         if attempt < TRANSIENT_MAX_RETRIES and any(p in result["text"] for p in TRANSIENT_ERROR_PATTERNS):

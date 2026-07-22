@@ -108,12 +108,25 @@ async def handle_command(cmd: dict, config: dict, command_channel_id: str, queue
             session_id = cmd.get("session_id")
             origin_type = cmd.get("origin_type", "loop")
 
+        # No timeout here on purpose - loop-mode work is genuinely open-ended (Unity
+        # compiles, video upload, multi-round agy judging...) and an arbitrary cutoff
+        # just kills real progress with no clean way back in. /claude-stop is the
+        # actual way to cancel a run that's stuck.
         allowed_tools = TOOL_PROFILES.get(origin_type, claude_bridge.LOOP_ALLOWED_TOOLS)
-        result = await claude_bridge.run_claude(prompt, allowed_tools, session_id, timeout=1800)
+        result = await claude_bridge.run_claude(prompt, allowed_tools, session_id, timeout=None)
         approval = claude_bridge.extract_approval(result["text"])
         done = claude_bridge.extract_done(result["text"])
 
-        if approval:
+        if result.get("timed_out"):
+            resumable = bool(result["session_id"])
+            body = ("작업이 너무 오래 걸려서 강제 중단했어. 세션은 살아있으니 아무 말이나(예: '계속') 답장하면"
+                     " 하던 데서 이어서 진행할게." if resumable else
+                     "작업이 너무 오래 걸려서 강제 중단했는데, 이어갈 세션도 못 찾았어 - 새로 다시 요청해줘.")
+            discord_bot.edit_embed(command_channel_id, progress_msg["id"], discord_bot.make_embed("⏱️ 시간 초과", "아래 참고", COLOR_STOPPED), config)
+            embed = discord_bot.make_embed("⏱️ 시간 초과", body, COLOR_APPROVAL if resumable else COLOR_STOPPED)
+            discord_bot.send_embed(command_channel_id, embed, config)
+            status = {"pending": resumable, "session_id": result["session_id"], "origin_type": origin_type}
+        elif approval:
             discord_bot.edit_embed(command_channel_id, progress_msg["id"], discord_bot.make_embed("⚠️ 승인 대기로 전환", "아래 참고", COLOR_APPROVAL), config)
             fields = [("선택지", "\n".join(f"{i + 1}. {opt}" for i, opt in enumerate(approval["options"])))] if approval["options"] else None
             embed = discord_bot.make_embed("승인 필요", approval["question"] + "\n\n버튼을 누르거나 답장해줘.", COLOR_APPROVAL, fields)
@@ -163,11 +176,10 @@ async def handle_stop(config: dict, command_channel_id: str) -> None:
     discord_bot.send_embed(command_channel_id, embed, config)
 
 
-async def poll_loop(config: dict) -> None:
+async def poll_loop(config: dict, state: dict) -> None:
     global active_task
     command_channel_id = discord_bot.get_or_create_channel("personal", config.get("command_channel", "claude-reports"), config)
     queue_channel_id = discord_bot.get_or_create_channel("personal", "claude-queue", config)
-    state = load_state()
     announced_queued: set[str] = set()
 
     while True:
@@ -233,9 +245,8 @@ async def poll_loop(config: dict) -> None:
         await asyncio.sleep(POLL_INTERVAL_S)
 
 
-async def heartbeat_loop(config: dict) -> None:
+async def heartbeat_loop(config: dict, state: dict) -> None:
     heartbeat_channel_id = discord_bot.get_or_create_channel("personal", "claude-heartbeat", config)
-    state = load_state()
     msg_id = state.get("heartbeat_msg_id")
 
     while True:
@@ -258,7 +269,13 @@ async def heartbeat_loop(config: dict) -> None:
 
 async def main_async() -> None:
     config = discord_bot.load_config()
-    await asyncio.gather(poll_loop(config), heartbeat_loop(config))
+    # Both loops share this one dict (mutated in place, not reloaded from disk per-loop) -
+    # poll_loop and heartbeat_loop each save it after touching only their own key, but with
+    # two separate copies heartbeat_loop's periodic save was clobbering poll_loop's cursor
+    # progress back to whatever it was when the process started. Found 2026-07-22 after a
+    # restart replayed hours-old queue commands because of exactly this.
+    state = load_state()
+    await asyncio.gather(poll_loop(config, state), heartbeat_loop(config, state))
 
 
 if __name__ == "__main__":
