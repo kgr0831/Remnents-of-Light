@@ -228,6 +228,11 @@ async def _run_claude_once(prompt: str, allowed_tools: list[str], session_id: st
         "--permission-mode", "dontAsk",
         "--allowedTools", ",".join(allowed_tools),
         "--output-format", "json",
+        # ~/.claude/settings.json defaults to opus at xhigh effort for this machine's
+        # interactive use - fine there, but every headless remote-loop call silently
+        # inheriting that burned through the monthly spend limit in a few hours
+        # (found 2026-07-22). Pin these calls to sonnet regardless of the global default.
+        "--model", "claude-sonnet-5",
     ]
     if session_id:
         cmd += ["--resume", session_id]

@@ -139,13 +139,22 @@ async def handle_command(cmd: dict, config: dict, command_channel_id: str, queue
                 discord_bot.send_embed(command_channel_id, embed, config)  # too many/no options for buttons - text reply only
             status = {"pending": True, "session_id": result["session_id"], "origin_type": origin_type}
         else:
+            # No DONE: marker means the task didn't actually finish (spend limit, crash,
+            # any other mid-work exit) - not the same as a real completion. As long as the
+            # CLI gave back a session_id, that session is still alive and resumable, so
+            # treat it like a pending approval instead of silently discarding it: without
+            # this, every retry after e.g. a spend-limit error started a brand new session
+            # with zero memory of the work in progress (found 2026-07-22).
+            resumable = not done and bool(result["session_id"])
             title = "완료" if done else "결과"
             body = done["summary"] if done else result["text"]
+            if resumable:
+                body += "\n\n(세션은 아직 살아있어 - 아무 말이나 답장하면 하던 데서 이어서 진행할게.)"
             fields = [(k, v) for k, v in done["extras"].items()] if done else None
             discord_bot.edit_embed(command_channel_id, progress_msg["id"], discord_bot.make_embed("✅ 처리 완료", "아래 참고", COLOR_DONE), config)
             embed = discord_bot.make_embed(title, body, COLOR_DONE if done else COLOR_INFO, fields)
             discord_bot.send_embed(command_channel_id, embed, config)  # new message so Discord actually notifies
-            status = {"pending": False, "session_id": result["session_id"], "origin_type": origin_type}
+            status = {"pending": resumable, "session_id": result["session_id"], "origin_type": origin_type}
 
         discord_bot.send_message(queue_channel_id, f"STATUS: {json.dumps(status, ensure_ascii=False)}", config)
     except asyncio.CancelledError:
