@@ -15,6 +15,7 @@ from pathlib import Path
 
 API_BASE = "https://discord.com/api/v10"
 CONFIG_PATH = Path(__file__).parent / ".secrets" / "discord_config.json"
+REQUEST_TIMEOUT_S = 15
 
 CHANNEL_TYPE_TEXT = 0
 CHANNEL_TYPE_FORUM = 15
@@ -43,7 +44,7 @@ def _request(method: str, path: str, token: str, body: dict | None = None) -> di
 
     for attempt in range(2):
         try:
-            with urllib.request.urlopen(req) as resp:
+            with urllib.request.urlopen(req, timeout=REQUEST_TIMEOUT_S) as resp:
                 raw = resp.read()
                 return json.loads(raw) if raw else {}
         except urllib.error.HTTPError as e:
@@ -115,6 +116,28 @@ def send_chunked(channel_id: str, text: str, config: dict) -> None:
 
 def send_embed(channel_id: str, embed: dict, config: dict) -> dict:
     return _request("POST", f"/channels/{channel_id}/messages", config["token"], {"embeds": [embed]})
+
+
+def edit_embed(channel_id: str, message_id: str, embed: dict, config: dict) -> dict:
+    return _request("PATCH", f"/channels/{channel_id}/messages/{message_id}", config["token"], {"embeds": [embed]})
+
+
+def make_button_row(buttons: list[tuple[str, str]]) -> list[dict]:
+    """buttons: list of (label, custom_id), max 5. Returns a components array
+    (one action row) for the REST message-create/edit body's "components" field."""
+    return [{
+        "type": 1,
+        "components": [{"type": 2, "style": 1, "label": label[:80], "custom_id": custom_id[:100]} for label, custom_id in buttons[:5]],
+    }]
+
+
+def send_embed_with_components(channel_id: str, embed: dict, components: list[dict], config: dict) -> dict:
+    return _request("POST", f"/channels/{channel_id}/messages", config["token"], {"embeds": [embed], "components": components})
+
+
+def trigger_typing(channel_id: str, config: dict) -> None:
+    """POSTs the native Discord 'X is typing...' indicator (lasts ~10s per call)."""
+    _request("POST", f"/channels/{channel_id}/typing", config["token"])
 
 
 def make_embed(title: str, description: str, color: int, fields: list | None = None) -> dict:

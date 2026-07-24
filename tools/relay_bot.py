@@ -2,8 +2,8 @@
 Deployed component of the Discord -> Claude Code bridge (SETUP_PLAN STEP5 ext).
 Runs on a small always-on host (NOT the dev laptop). Holds the real-time Discord
 gateway connection and owns the native slash commands (/claude, /claude-loop,
-/claude-auto, /claude-memory, /claude-fix) so starting a task feels like using
-Discord, not typing a text-prefix command.
+/claude-auto, /claude-memory, /claude-fix, /claude-stop) so starting a task
+feels like using Discord, not typing a text-prefix command.
 Never touches Unity or Claude Code itself - it only routes messages between the
 owner's command channel and an internal queue channel that tools/executor.py
 (running on the laptop) polls.
@@ -117,7 +117,7 @@ class Relay(discord.Client):
         await self.queue_channel.send(f"CMD: {json.dumps(cmd, ensure_ascii=False)}")
         labels = {
             "loop": "루프 시작", "loop_auto": "다음 작업 스스로 결정 중", "quick": "질문 접수",
-            "memory": "영구 기억 저장 중", "fix": "루프 시스템 수정 중",
+            "memory": "영구 기억 저장 중", "fix": "루프 시스템 수정 중", "stop": "중단 요청 전달",
         }
         description = text if kind != "loop_auto" else "기획안 + 현재 상황(task.md) 보고 다음 작업을 정하는 중..."
         embed = discord.Embed(title=labels[kind], description=description, color=COLOR_INFO)
@@ -143,6 +143,34 @@ class Relay(discord.Client):
         await self.queue_channel.send(f"CMD: {json.dumps(cmd, ensure_ascii=False)}")
         embed = discord.Embed(title="답변 접수", description="이어서 진행할게...", color=COLOR_INFO)
         await message.channel.send(embed=embed)
+
+    async def on_interaction(self, interaction: discord.Interaction):
+        # Button clicks on a "승인 필요" embed (custom_id: "approve:<session_id>:<origin_type>:<option>").
+        # Registering this doesn't affect slash commands - CommandTree hooks into the
+        # client's connection state directly, not through this same on_xxx override
+        # (confirmed against discord.py's CommandTree.__init__ source, checked 2026-07-22).
+        if interaction.type != discord.InteractionType.component:
+            return
+        custom_id = (interaction.data or {}).get("custom_id", "")
+        if not custom_id.startswith("approve:"):
+            return
+        try:
+            _, session_id, origin_type, option = custom_id.split(":", 3)
+        except ValueError:
+            return
+        if not self._authorized(interaction.user.id, interaction.channel_id):
+            await interaction.response.send_message("여기서는 이 버튼을 쓸 수 없어.", ephemeral=True)
+            return
+        if not await self._heartbeat_fresh():
+            embed = discord.Embed(title="노트북 오프라인", description="하트비트가 없어. executor.py가 켜져 있는지 확인해줘.", color=COLOR_OFFLINE)
+            await interaction.response.send_message(embed=embed)
+            return
+
+        cmd = {"type": "resume", "text": f"{option}번", "session_id": session_id, "origin_type": origin_type}
+        await self.queue_channel.send(f"CMD: {json.dumps(cmd, ensure_ascii=False)}")
+        await interaction.response.edit_message(view=None)  # clear buttons so it can't be double-clicked
+        embed = discord.Embed(title="답변 접수", description=f"{option}번 선택 - 이어서 진행할게...", color=COLOR_INFO)
+        await interaction.followup.send(embed=embed)
 
 
 def main() -> None:
@@ -177,6 +205,10 @@ def main() -> None:
     @app_commands.describe(문제="고치고 싶은 문제나 원하는 동작 변경")
     async def claude_fix(interaction: discord.Interaction, 문제: str):
         await client.start_task(interaction, "fix", 문제)
+
+    @client.tree.command(name="claude-stop", description="지금 실행 중인 원격 작업을 즉시 중단")
+    async def claude_stop(interaction: discord.Interaction):
+        await client.start_task(interaction, "stop", "")
 
     client.run(config["token"])
 

@@ -21,6 +21,27 @@ QUICK_ALLOWED_TOOLS = [
     "mcp__UnityMCP__execute_menu_item",
 ]
 
+# Quick mode is a fresh session every time (no --resume) and previously got just
+# the raw question with no framing, so it had no idea a loop task had, say, just
+# finished verifying something in Play mode a minute earlier - it would silently
+# re-derive an answer from static code alone instead of citing the real result.
+# task.md is the one thing every command type can cheaply check for "what's
+# actually true/current right now" - checked 2026-07-21 after this caused a
+# visibly wrong answer (see task.md 왼쪽 이동 안 됨 entry vs the quick-mode reply
+# right after it).
+QUICK_SYSTEM_PREAMBLE = """\
+너는 지금 디스코드를 통해 원격으로 트리거된 가벼운 질답 중이다. 이 세션은 방금 시작된 새 세션이라
+직전 대화 기록이 없다 - 답하기 전에 먼저 task.md를 Read로 훑어서, 방금 다른 작업(루프 모드 등)이
+이미 확인/검증/결정해둔 게 있으면 그 사실을 우선해서 답해라 (다시 추측하거나 재검증하지 말 것).
+
+너는 이 세션에서 파일 수정이나 실행 코드(execute_code) 같은 도구가 없다 - 요청이 "고쳐줘/수정해줘"처럼
+실제 코드 변경이나 런타임 재현·디버깅을 필요로 하는 게 명백하면, 시도하다 시간 초과로 멈추지 말고
+**즉시** 이렇게 짧게 답하고 끝내라: "이건 quick 모드로는 못 해 - /claude-loop로 다시 보내줘." 그리고
+왜 그런지(어떤 도구/권한이 필요한지) 한 줄만 덧붙여라. 단순 질문/확인이면 평소처럼 바로 답해라.
+
+질문: {question}
+"""
+
 LOOP_ALLOWED_TOOLS = [
     "Read", "Grep", "Glob", "Skill", "WebSearch", "WebFetch",
     "Edit(*.cs)", "Write(*.cs)", "Edit(*.md)", "Write(*.md)",
@@ -36,6 +57,14 @@ LOOP_ALLOWED_TOOLS = [
     "mcp__UnityMCP__apply_text_edits",
     "mcp__UnityMCP__find_in_file",
     "mcp__UnityMCP__create_script",
+    # Runs arbitrary C# inside the Editor process - broader than any single MCP
+    # tool (can touch scenes/assets/settings same as the excluded manage_* tools
+    # would). Added anyway 2026-07-21: real runtime debugging (e.g. inspecting
+    # InputSystem device/settings state) is not possible without it, and quick
+    # mode stays read-only-ish by not getting this. Loop mode's other safeguards
+    # (task.md logging, NEEDS_APPROVAL for destructive intent, no git/Bash access)
+    # still apply - this doesn't bypass those, it just also allows inspection code.
+    "mcp__UnityMCP__execute_code",
 ]
 
 LOOP_SYSTEM_PREAMBLE = """\
@@ -43,13 +72,27 @@ LOOP_SYSTEM_PREAMBLE = """\
 
 - 먼저 task.md를 읽고 있으면 이어서 진행해.
 - .claude/CLAUDE.md의 "루프 모드" 규칙(검증 게이트, 파괴적 작업 질문, 태스크 하나만, 3회 연속 실패시 중단)을 따라.
-- 삭제·git 커밋/푸시·리팩터·씬/에셋/프리팹 직접 조작 등 파괴적이거나 승인이 필요한 작업이 필요해지면,
-  그 작업을 실행하지 말고 지금까지 진행 상황을 출력의 맨 끝에 정확히 이 형식으로만 써서 멈춰
-  (다른 텍스트는 그 앞에 자유롭게 써도 되지만, 이 블록 자체는 형식을 정확히 지켜):
+- `execute_code`(Unity 에디터 안에서 임의 C# 실행)는 상태 확인·디버깅 등 **읽기/진단 목적으로만** 써라.
+  이걸로 씬 오브젝트 생성/삭제, 에셋 변경, 프로젝트 설정 변경 같은 걸 하려면 아래와 똑같이 승인부터 구해라 —
+  "도구가 허용 목록에 있다"는 게 "그 행동에 승인이 필요없다"는 뜻이 아니다.
+- **NEEDS_APPROVAL을 남발하지 마라.** 노트북 앞에 아무도 없다는 건 "물어볼 사람이 없다"는 뜻이지
+  "물어볼 핑계를 만들라"는 뜻이 아니다. 스스로 재현·테스트·조사해서 답을 낼 수 있는 건 **끝까지 직접
+  확인하고 답을 낸 뒤에 진행해라** - "왼쪽에 벽이 있었나요?" 같은, 니가 Play 모드+execute_code로 직접
+  재현해서 확인 가능한 걸 사용자 기억에 물어보지 마라. 코드만으로(Edit 권한 있는 확장자, 승인 불필요한
+  범위) 되는 안전한 해결책이 있으면 **그것부터 바로 시도하고 검증**해라 - 씬/에셋 변경이 필요한 대안은
+  그게 안 통했을 때만, 혹은 코드만으로는 원천적으로 불가능할 때만 꺼내라.
+- **다음 중 하나에 진짜 해당할 때만** 계속 진행하지 말고 NEEDS_APPROVAL로 멈춰서 사용자 결정을 기다려라:
+  (a) 삭제·git 커밋/푸시·리팩터·씬/에셋/프리팹 직접 조작 등 파괴적이거나 승인이 필요한 작업이 실제로
+      필요해질 때(스스로 확인 다 해봤는데도 이 방법밖에 없을 때)
+  (b) 조사/리서치 결과 여러 최종 방향(레퍼런스, 취향, 설계) 중 **테스트로는 못 고르고 사람의 취향/결정이
+      필요할 때** - "옵션을 제시하고 세션이 끝나버리면" 다음 세션은 이 대화를 기억 못 해서 사용자의
+      "2번" 같은 답을 영영 못 알아듣는다. 옵션을 제시하는 순간이 바로 이 형식으로 멈춰야 하는 시점이다.
+  이 블록 자체는 형식을 정확히 지켜라(다른 텍스트는 그 앞에 자유롭게 써도 된다):
   NEEDS_APPROVAL: <한 줄 질문>
   - <선택지 1>
   - <선택지 2>
-  (선택지는 몇 개든 가능, 각각 "- "로 시작하는 한 줄)
+  (선택지는 몇 개든 가능, 각각 "- "로 시작하는 한 줄 - 사용자가 "1번/2번"으로 답할 수 있도록 항상
+  숫자로 세는 목록으로 제시해라. A/B/C 같은 글자 목록은 쓰지 마라.)
 - 작업을 끝까지 완료했으면 task.md를 갱신하고, 마지막 줄에 정확히 이 형식으로 출력해:
   DONE: <한 줄 요약>
 
@@ -68,9 +111,14 @@ AUTO_SYSTEM_PREAMBLE = """\
    - 다른 작업으로 바꿔줘
 3. 승인("진행해줘" 등)을 받으면, 그 작업 자체는 이미 승인된 것으로 보고 다시 "계속 할까요?"는 묻지 마라.
    대신 아래 규칙 그대로 실제 작업을 수행해라 (.claude/CLAUDE.md 루프 모드 규칙 - 검증 게이트, 태스크 하나만,
-   3회 연속 실패시 중단). 삭제·git 커밋/푸시·리팩터·씬/에셋/프리팹 직접 조작 등 **파괴적인 개별 행동**이
-   필요해질 때만 그때그때 다시 위와 같은 NEEDS_APPROVAL 형식으로 새로 승인을 구해라
-   (이건 "작업 선정 승인"과 별개의, 매번 필요한 안전장치다).
+   3회 연속 실패시 중단). **NEEDS_APPROVAL을 남발하지 마라** - 스스로 재현·테스트·조사해서 답을 낼 수 있는
+   건 끝까지 직접 확인하고 진행해라(사용자 기억에 물어보지 마라). 코드만으로 되는 안전한 방법이 있으면
+   그것부터 시도해라. 다음 중 하나에 진짜 해당할 때만 그때그때 다시 NEEDS_APPROVAL 형식으로 새로
+   승인/결정을 구해라 (이건 "작업 선정 승인"과 별개의, 매번 필요한 안전장치다):
+   (a) 삭제·git 커밋/푸시·리팩터·씬/에셋/프리팹 직접 조작 등 **파괴적인 개별 행동**이 실제로 필요해질 때
+   (b) 조사 결과 여러 최종 방향 중 **테스트로는 못 고르고** 사용자의 취향/결정이 필요할 때 - 이 순간
+       세션이 끊기면 다음 세션은 제시한 옵션 자체를 기억 못 하니, 옵션을 숫자 목록(1/2/3 - A/B/C 금지,
+       사용자가 "1번/2번"으로 답할 수 있게)으로 제시하며 반드시 이 형식으로 멈춰라.
 4. 작업을 끝까지 완료했으면 task.md를 갱신하고, 마지막 줄에 정확히 이 형식으로 출력해:
    DONE: <한 줄 요약>
 """
@@ -122,7 +170,22 @@ FIX_SYSTEM_PREAMBLE = """\
 """
 
 
-async def run_claude(prompt: str, allowed_tools: list[str], session_id: str | None, timeout: int) -> dict:
+# Tracks the in-flight `claude -p` subprocess (if any) so a /claude-stop command
+# arriving mid-task can kill it. Single-slot: executor.py only ever runs one
+# headless task at a time.
+current_proc: asyncio.subprocess.Process | None = None
+
+# Anthropic-side transient failures (server overload, rate limiting) - safe to
+# just retry the same call, unlike account-level usage/spend limits which won't
+# resolve by retrying. Found 2026-07-22 after a 529 got silently reported as if
+# it were a real task result, with no retry at all.
+TRANSIENT_ERROR_PATTERNS = ["Overloaded", "overloaded_error", "rate_limit_error", " 529", " 503", "internal_server_error"]
+TRANSIENT_RETRY_DELAY_S = 15
+TRANSIENT_MAX_RETRIES = 3
+
+
+async def _run_claude_once(prompt: str, allowed_tools: list[str], session_id: str | None, timeout: int) -> dict:
+    global current_proc
     cmd = [
         "claude", "-p", prompt,
         "--permission-mode", "dontAsk",
@@ -136,11 +199,14 @@ async def run_claude(prompt: str, allowed_tools: list[str], session_id: str | No
         *cmd, cwd=str(PROJECT_ROOT),
         stdout=subprocess.PIPE, stderr=subprocess.PIPE,
     )
+    current_proc = proc
     try:
         stdout, stderr = await asyncio.wait_for(proc.communicate(), timeout=timeout)
     except asyncio.TimeoutError:
         proc.kill()
         return {"text": f"(timeout after {timeout}s, killed)", "session_id": session_id}
+    finally:
+        current_proc = None
 
     raw = stdout.decode("utf-8", errors="replace")
     try:
@@ -149,6 +215,16 @@ async def run_claude(prompt: str, allowed_tools: list[str], session_id: str | No
     except json.JSONDecodeError:
         err = stderr.decode("utf-8", errors="replace")
         return {"text": raw or f"(no output; stderr: {err[:500]})", "session_id": session_id}
+
+
+async def run_claude(prompt: str, allowed_tools: list[str], session_id: str | None, timeout: int) -> dict:
+    for attempt in range(TRANSIENT_MAX_RETRIES + 1):
+        result = await _run_claude_once(prompt, allowed_tools, session_id, timeout)
+        if attempt < TRANSIENT_MAX_RETRIES and any(p in result["text"] for p in TRANSIENT_ERROR_PATTERNS):
+            await asyncio.sleep(TRANSIENT_RETRY_DELAY_S)
+            continue
+        return result
+    return result
 
 
 def extract_marker(text: str, marker: str) -> str | None:
