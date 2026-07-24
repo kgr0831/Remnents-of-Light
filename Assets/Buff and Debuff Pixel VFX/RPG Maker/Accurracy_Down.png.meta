@@ -1,0 +1,715 @@
+fileFormatVersion: 2
+guid: 6928b748e6d120047beb86ed669aa370
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 8254290094791167475
+    second: Accurracy_Down_0
+  - first:
+      213: 8200317361445128202
+    second: Accurracy_Down_1
+  - first:
+      213: -8845501584838009371
+    second: Accurracy_Down_2
+  - first:
+      213: 8769879877117737104
+    second: Accurracy_Down_3
+  - first:
+      213: 3876973347043300975
+    second: Accurracy_Down_4
+  - first:
+      213: 606296051125898914
+    second: Accurracy_Down_5
+  - first:
+      213: -7878679441446945954
+    second: Accurracy_Down_6
+  - first:
+      213: -5041537057957837223
+    second: Accurracy_Down_7
+  - first:
+      213: 995779869457923481
+    second: Accurracy_Down_8
+  - first:
+      213: -5128639009928797391
+    second: Accurracy_Down_9
+  - first:
+      213: 2032937744349740629
+    second: Accurracy_Down_10
+  - first:
+      213: 196046834906218473
+    second: Accurracy_Down_11
+  - first:
+      213: 6310783285312178369
+    second: Accurracy_Down_12
+  - first:
+      213: 3421054789670911534
+    second: Accurracy_Down_13
+  - first:
+      213: 6139842270761774660
+    second: Accurracy_Down_14
+  - first:
+      213: 6224652083758155338
+    second: Accurracy_Down_15
+  - first:
+      213: 3487088340286968852
+    second: Accurracy_Down_16
+  - first:
+      213: -7676197647324716293
+    second: Accurracy_Down_17
+  - first:
+      213: 5838706983415621979
+    second: Accurracy_Down_18
+  - first:
+      213: -4754091756728356358
+    second: Accurracy_Down_19
+  - first:
+      213: -5766137335038940376
+    second: Accurracy_Down_20
+  - first:
+      213: 5973995052692450922
+    second: Accurracy_Down_21
+  - first:
+      213: -8047075976509775001
+    second: Accurracy_Down_22
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 0
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Accurracy_Down_0
+      rect:
+        serializedVersion: 2
+        x: 83
+        y: 659
+        width: 26
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3fd8d0dab112d8270800000000000000
+      internalID: 8254290094791167475
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Accurracy_Down_1
+      rect:
+        serializedVersion: 2
+        x: 263
+        y: 647
+        width: 50
+        height: 50
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a08c76e61316dc170800000000000000
+      internalID: 8200317361445128202
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Accurracy_Down_2
+      rect:
+        serializedVersion: 2
+        x: 425
+        y: 647
+        width: 110
+        height: 62
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5ed539f8c277e3580800000000000000
+      internalID: -8845501584838009371
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Accurracy_Down_3
+      rect:
+        serializedVersion: 2
+        x: 617
+        y: 635
+        width: 116
+        height: 74
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 098f27e884fd4b970800000000000000
+      internalID: 8769879877117737104
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Accurracy_Down_4
+      rect:
+        serializedVersion: 2
+        x: 809
+        y: 629
+        width: 116
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f665c22d7b6cdc530800000000000000
+      internalID: 3876973347043300975
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Accurracy_Down_5
+      rect:
+        serializedVersion: 2
+        x: 1001
+        y: 623
+        width: 116
+        height: 86
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2aec414db0ff96800800000000000000
+      internalID: 606296051125898914
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Accurracy_Down_6
+      rect:
+        serializedVersion: 2
+        x: 41
+        y: 425
+        width: 116
+        height: 92
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e5bb1618ace49a290800000000000000
+      internalID: -7878679441446945954
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Accurracy_Down_7
+      rect:
+        serializedVersion: 2
+        x: 233
+        y: 419
+        width: 116
+        height: 98
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 956847ac1ccd80ab0800000000000000
+      internalID: -5041537057957837223
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Accurracy_Down_8
+      rect:
+        serializedVersion: 2
+        x: 425
+        y: 413
+        width: 116
+        height: 104
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 99d3681f388b1dd00800000000000000
+      internalID: 995779869457923481
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Accurracy_Down_9
+      rect:
+        serializedVersion: 2
+        x: 605
+        y: 419
+        width: 134
+        height: 104
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 133abff3ef963d8b0800000000000000
+      internalID: -5128639009928797391
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Accurracy_Down_10
+      rect:
+        serializedVersion: 2
+        x: 791
+        y: 455
+        width: 146
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 55e33768b12763c10800000000000000
+      internalID: 2032937744349740629
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Accurracy_Down_11
+      rect:
+        serializedVersion: 2
+        x: 971
+        y: 467
+        width: 20
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9efbce1ce8f78b200800000000000000
+      internalID: 196046834906218473
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Accurracy_Down_12
+      rect:
+        serializedVersion: 2
+        x: 995
+        y: 467
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1c8418746f7649750800000000000000
+      internalID: 6310783285312178369
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Accurracy_Down_13
+      rect:
+        serializedVersion: 2
+        x: 1007
+        y: 467
+        width: 26
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e2ebb77a4370a7f20800000000000000
+      internalID: 3421054789670911534
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Accurracy_Down_14
+      rect:
+        serializedVersion: 2
+        x: 1043
+        y: 467
+        width: 26
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 44eeea5d30a153550800000000000000
+      internalID: 6139842270761774660
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Accurracy_Down_15
+      rect:
+        serializedVersion: 2
+        x: 1079
+        y: 467
+        width: 26
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a46ccce2718626650800000000000000
+      internalID: 6224652083758155338
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Accurracy_Down_16
+      rect:
+        serializedVersion: 2
+        x: 1109
+        y: 467
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 414163fbe50a46030800000000000000
+      internalID: 3487088340286968852
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Accurracy_Down_17
+      rect:
+        serializedVersion: 2
+        x: 1121
+        y: 467
+        width: 20
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bf26585f8eaa87590800000000000000
+      internalID: -7676197647324716293
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Accurracy_Down_18
+      rect:
+        serializedVersion: 2
+        x: 5
+        y: 275
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b59a41e0111470150800000000000000
+      internalID: 5838706983415621979
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Accurracy_Down_19
+      rect:
+        serializedVersion: 2
+        x: 47
+        y: 275
+        width: 14
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: af1f79a4cb2160eb0800000000000000
+      internalID: -4754091756728356358
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Accurracy_Down_20
+      rect:
+        serializedVersion: 2
+        x: 95
+        y: 275
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 82be2e2e4a09affa0800000000000000
+      internalID: -5766137335038940376
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Accurracy_Down_21
+      rect:
+        serializedVersion: 2
+        x: 137
+        y: 275
+        width: 14
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a6eacad49d4e7e250800000000000000
+      internalID: 5973995052692450922
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Accurracy_Down_22
+      rect:
+        serializedVersion: 2
+        x: 179
+        y: 275
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7632e8bd80b035090800000000000000
+      internalID: -8047075976509775001
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Accurracy_Down_0: 8254290094791167475
+      Accurracy_Down_1: 8200317361445128202
+      Accurracy_Down_10: 2032937744349740629
+      Accurracy_Down_11: 196046834906218473
+      Accurracy_Down_12: 6310783285312178369
+      Accurracy_Down_13: 3421054789670911534
+      Accurracy_Down_14: 6139842270761774660
+      Accurracy_Down_15: 6224652083758155338
+      Accurracy_Down_16: 3487088340286968852
+      Accurracy_Down_17: -7676197647324716293
+      Accurracy_Down_18: 5838706983415621979
+      Accurracy_Down_19: -4754091756728356358
+      Accurracy_Down_2: -8845501584838009371
+      Accurracy_Down_20: -5766137335038940376
+      Accurracy_Down_21: 5973995052692450922
+      Accurracy_Down_22: -8047075976509775001
+      Accurracy_Down_3: 8769879877117737104
+      Accurracy_Down_4: 3876973347043300975
+      Accurracy_Down_5: 606296051125898914
+      Accurracy_Down_6: -7878679441446945954
+      Accurracy_Down_7: -5041537057957837223
+      Accurracy_Down_8: 995779869457923481
+      Accurracy_Down_9: -5128639009928797391
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

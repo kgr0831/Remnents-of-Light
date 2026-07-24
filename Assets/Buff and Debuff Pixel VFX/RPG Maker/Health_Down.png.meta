@@ -1,0 +1,715 @@
+fileFormatVersion: 2
+guid: ea365fc6940c9ec4bb79e73c3e1e1bee
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 4168124911897095953
+    second: Health_Down_0
+  - first:
+      213: 4259386739346661835
+    second: Health_Down_1
+  - first:
+      213: -2045866494829582714
+    second: Health_Down_2
+  - first:
+      213: 8197793812760527238
+    second: Health_Down_3
+  - first:
+      213: -3920239486115573077
+    second: Health_Down_4
+  - first:
+      213: -3412656395332132362
+    second: Health_Down_5
+  - first:
+      213: -2342410907313875835
+    second: Health_Down_6
+  - first:
+      213: 913438428402401503
+    second: Health_Down_7
+  - first:
+      213: 179364300592972378
+    second: Health_Down_8
+  - first:
+      213: -911293713913232862
+    second: Health_Down_9
+  - first:
+      213: -481236025720158180
+    second: Health_Down_10
+  - first:
+      213: 8362841108348364085
+    second: Health_Down_11
+  - first:
+      213: 9079598480531556521
+    second: Health_Down_12
+  - first:
+      213: 3050681747737023003
+    second: Health_Down_13
+  - first:
+      213: 1234845401342153183
+    second: Health_Down_14
+  - first:
+      213: 2252770247189009483
+    second: Health_Down_15
+  - first:
+      213: -1543557323050894436
+    second: Health_Down_16
+  - first:
+      213: -5213701061820154566
+    second: Health_Down_17
+  - first:
+      213: -5670023310824274418
+    second: Health_Down_18
+  - first:
+      213: 3880435712746073713
+    second: Health_Down_19
+  - first:
+      213: 2833285891003626891
+    second: Health_Down_20
+  - first:
+      213: -3223248571395974955
+    second: Health_Down_21
+  - first:
+      213: 7653816320288273527
+    second: Health_Down_22
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 0
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Health_Down_0
+      rect:
+        serializedVersion: 2
+        x: 83
+        y: 659
+        width: 26
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 11f2511168728d930800000000000000
+      internalID: 4168124911897095953
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Health_Down_1
+      rect:
+        serializedVersion: 2
+        x: 263
+        y: 647
+        width: 50
+        height: 50
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bc164c71ca16c1b30800000000000000
+      internalID: 4259386739346661835
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Health_Down_2
+      rect:
+        serializedVersion: 2
+        x: 443
+        y: 635
+        width: 74
+        height: 74
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6862fcd234f9b93e0800000000000000
+      internalID: -2045866494829582714
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Health_Down_3
+      rect:
+        serializedVersion: 2
+        x: 635
+        y: 635
+        width: 98
+        height: 74
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6818c77f90a64c170800000000000000
+      internalID: 8197793812760527238
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Health_Down_4
+      rect:
+        serializedVersion: 2
+        x: 827
+        y: 629
+        width: 98
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ba21f9b25f28899c0800000000000000
+      internalID: -3920239486115573077
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Health_Down_5
+      rect:
+        serializedVersion: 2
+        x: 1019
+        y: 623
+        width: 98
+        height: 86
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6f163c7e61fc3a0d0800000000000000
+      internalID: -3412656395332132362
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Health_Down_6
+      rect:
+        serializedVersion: 2
+        x: 59
+        y: 425
+        width: 98
+        height: 92
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5845e8fb0b51e7fd0800000000000000
+      internalID: -2342410907313875835
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Health_Down_7
+      rect:
+        serializedVersion: 2
+        x: 251
+        y: 419
+        width: 98
+        height: 98
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fd0cd19396f2dac00800000000000000
+      internalID: 913438428402401503
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Health_Down_8
+      rect:
+        serializedVersion: 2
+        x: 443
+        y: 413
+        width: 98
+        height: 104
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a520b3e81ea3d7200800000000000000
+      internalID: 179364300592972378
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Health_Down_9
+      rect:
+        serializedVersion: 2
+        x: 605
+        y: 419
+        width: 134
+        height: 104
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 222c728023f6a53f0800000000000000
+      internalID: -911293713913232862
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Health_Down_10
+      rect:
+        serializedVersion: 2
+        x: 791
+        y: 455
+        width: 146
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c1844d1626e4259f0800000000000000
+      internalID: -481236025720158180
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Health_Down_11
+      rect:
+        serializedVersion: 2
+        x: 971
+        y: 467
+        width: 20
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 53563280ea7ce0470800000000000000
+      internalID: 8362841108348364085
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Health_Down_12
+      rect:
+        serializedVersion: 2
+        x: 995
+        y: 467
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9a8824756b6310e70800000000000000
+      internalID: 9079598480531556521
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Health_Down_13
+      rect:
+        serializedVersion: 2
+        x: 1007
+        y: 467
+        width: 26
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b1212a8e2e2365a20800000000000000
+      internalID: 3050681747737023003
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Health_Down_14
+      rect:
+        serializedVersion: 2
+        x: 1043
+        y: 467
+        width: 26
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fd1168b995d032110800000000000000
+      internalID: 1234845401342153183
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Health_Down_15
+      rect:
+        serializedVersion: 2
+        x: 1079
+        y: 467
+        width: 26
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b441548aa92734f10800000000000000
+      internalID: 2252770247189009483
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Health_Down_16
+      rect:
+        serializedVersion: 2
+        x: 1109
+        y: 467
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c9b3915face249ae0800000000000000
+      internalID: -1543557323050894436
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Health_Down_17
+      rect:
+        serializedVersion: 2
+        x: 1121
+        y: 467
+        width: 20
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a3df125f18635a7b0800000000000000
+      internalID: -5213701061820154566
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Health_Down_18
+      rect:
+        serializedVersion: 2
+        x: 5
+        y: 275
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e06822207d70051b0800000000000000
+      internalID: -5670023310824274418
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Health_Down_19
+      rect:
+        serializedVersion: 2
+        x: 47
+        y: 275
+        width: 14
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 17e28f7a8b31ad530800000000000000
+      internalID: 3880435712746073713
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Health_Down_20
+      rect:
+        serializedVersion: 2
+        x: 95
+        y: 275
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b85b568a18ad15720800000000000000
+      internalID: 2833285891003626891
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Health_Down_21
+      rect:
+        serializedVersion: 2
+        x: 137
+        y: 275
+        width: 14
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5d858277088b443d0800000000000000
+      internalID: -3223248571395974955
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Health_Down_22
+      rect:
+        serializedVersion: 2
+        x: 179
+        y: 275
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 774bed24461d73a60800000000000000
+      internalID: 7653816320288273527
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Health_Down_0: 4168124911897095953
+      Health_Down_1: 4259386739346661835
+      Health_Down_10: -481236025720158180
+      Health_Down_11: 8362841108348364085
+      Health_Down_12: 9079598480531556521
+      Health_Down_13: 3050681747737023003
+      Health_Down_14: 1234845401342153183
+      Health_Down_15: 2252770247189009483
+      Health_Down_16: -1543557323050894436
+      Health_Down_17: -5213701061820154566
+      Health_Down_18: -5670023310824274418
+      Health_Down_19: 3880435712746073713
+      Health_Down_2: -2045866494829582714
+      Health_Down_20: 2833285891003626891
+      Health_Down_21: -3223248571395974955
+      Health_Down_22: 7653816320288273527
+      Health_Down_3: 8197793812760527238
+      Health_Down_4: -3920239486115573077
+      Health_Down_5: -3412656395332132362
+      Health_Down_6: -2342410907313875835
+      Health_Down_7: 913438428402401503
+      Health_Down_8: 179364300592972378
+      Health_Down_9: -911293713913232862
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

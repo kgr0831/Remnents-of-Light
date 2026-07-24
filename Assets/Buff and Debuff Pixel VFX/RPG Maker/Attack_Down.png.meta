@@ -1,0 +1,767 @@
+fileFormatVersion: 2
+guid: 8c9b9ebb60c2e7a40a2e5de3d4f7ea7e
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 7534355479976992906
+    second: Attack_Down_0
+  - first:
+      213: -778724666362883183
+    second: Attack_Down_1
+  - first:
+      213: 1439411731053923810
+    second: Attack_Down_2
+  - first:
+      213: 9219194309666649409
+    second: Attack_Down_3
+  - first:
+      213: -410723292635948846
+    second: Attack_Down_4
+  - first:
+      213: 2170492398400379117
+    second: Attack_Down_5
+  - first:
+      213: 5174972415662490816
+    second: Attack_Down_6
+  - first:
+      213: 2003839292318146818
+    second: Attack_Down_7
+  - first:
+      213: 7968794515486270004
+    second: Attack_Down_8
+  - first:
+      213: -2993918750362008517
+    second: Attack_Down_9
+  - first:
+      213: 578986978961016045
+    second: Attack_Down_10
+  - first:
+      213: -9065611025342321203
+    second: Attack_Down_11
+  - first:
+      213: 908674438561925411
+    second: Attack_Down_12
+  - first:
+      213: 8355593599999315937
+    second: Attack_Down_13
+  - first:
+      213: 6267809055165211538
+    second: Attack_Down_14
+  - first:
+      213: 4315759868862810571
+    second: Attack_Down_15
+  - first:
+      213: -782425764569005998
+    second: Attack_Down_16
+  - first:
+      213: -2031046911146893332
+    second: Attack_Down_17
+  - first:
+      213: 5548806097511508799
+    second: Attack_Down_18
+  - first:
+      213: -1663869496622796274
+    second: Attack_Down_19
+  - first:
+      213: -5309258175802051927
+    second: Attack_Down_20
+  - first:
+      213: 5441667381477206582
+    second: Attack_Down_21
+  - first:
+      213: -381115225721204478
+    second: Attack_Down_22
+  - first:
+      213: 5745007527638347641
+    second: Attack_Down_23
+  - first:
+      213: 2472267036099835395
+    second: Attack_Down_24
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 0
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Attack_Down_0
+      rect:
+        serializedVersion: 2
+        x: 83
+        y: 659
+        width: 26
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a80eb8be3686f8860800000000000000
+      internalID: 7534355479976992906
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Attack_Down_1
+      rect:
+        serializedVersion: 2
+        x: 263
+        y: 647
+        width: 50
+        height: 50
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1931b93ba0a6135f0800000000000000
+      internalID: -778724666362883183
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Attack_Down_2
+      rect:
+        serializedVersion: 2
+        x: 431
+        y: 623
+        width: 92
+        height: 92
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2edcff2d751d9f310800000000000000
+      internalID: 1439411731053923810
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Attack_Down_3
+      rect:
+        serializedVersion: 2
+        x: 623
+        y: 623
+        width: 110
+        height: 92
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 145bbf6116821ff70800000000000000
+      internalID: 9219194309666649409
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Attack_Down_4
+      rect:
+        serializedVersion: 2
+        x: 815
+        y: 623
+        width: 110
+        height: 92
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2d894796751dc4af0800000000000000
+      internalID: -410723292635948846
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Attack_Down_5
+      rect:
+        serializedVersion: 2
+        x: 1007
+        y: 623
+        width: 110
+        height: 92
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: de8175a26532f1e10800000000000000
+      internalID: 2170492398400379117
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Attack_Down_6
+      rect:
+        serializedVersion: 2
+        x: 47
+        y: 425
+        width: 110
+        height: 98
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0c4020e6ef131d740800000000000000
+      internalID: 5174972415662490816
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Attack_Down_7
+      rect:
+        serializedVersion: 2
+        x: 239
+        y: 431
+        width: 92
+        height: 92
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 201e79538311fcb10800000000000000
+      internalID: 2003839292318146818
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Attack_Down_8
+      rect:
+        serializedVersion: 2
+        x: 299
+        y: 419
+        width: 50
+        height: 50
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 432e3af2468d69e60800000000000000
+      internalID: 7968794515486270004
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Attack_Down_9
+      rect:
+        serializedVersion: 2
+        x: 431
+        y: 431
+        width: 92
+        height: 92
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b348a4e42c67376d0800000000000000
+      internalID: -2993918750362008517
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Attack_Down_10
+      rect:
+        serializedVersion: 2
+        x: 605
+        y: 419
+        width: 134
+        height: 104
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: de44c8af699f80800800000000000000
+      internalID: 578986978961016045
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Attack_Down_11
+      rect:
+        serializedVersion: 2
+        x: 791
+        y: 455
+        width: 146
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dcd2b9addca703280800000000000000
+      internalID: -9065611025342321203
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Attack_Down_12
+      rect:
+        serializedVersion: 2
+        x: 971
+        y: 467
+        width: 20
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 32906f666924c9c00800000000000000
+      internalID: 908674438561925411
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Attack_Down_13
+      rect:
+        serializedVersion: 2
+        x: 995
+        y: 467
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1ef8c7ffb1805f370800000000000000
+      internalID: 8355593599999315937
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Attack_Down_14
+      rect:
+        serializedVersion: 2
+        x: 1007
+        y: 467
+        width: 26
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 293691d902bbbf650800000000000000
+      internalID: 6267809055165211538
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Attack_Down_15
+      rect:
+        serializedVersion: 2
+        x: 1043
+        y: 467
+        width: 26
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bc9447f1cb8a4eb30800000000000000
+      internalID: 4315759868862810571
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Attack_Down_16
+      rect:
+        serializedVersion: 2
+        x: 1079
+        y: 467
+        width: 26
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 25040cf99e34425f0800000000000000
+      internalID: -782425764569005998
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Attack_Down_17
+      rect:
+        serializedVersion: 2
+        x: 1109
+        y: 467
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cef5fe2689540d3e0800000000000000
+      internalID: -2031046911146893332
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Attack_Down_18
+      rect:
+        serializedVersion: 2
+        x: 1121
+        y: 467
+        width: 20
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f3be1b13fb1510d40800000000000000
+      internalID: 5548806097511508799
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Attack_Down_19
+      rect:
+        serializedVersion: 2
+        x: 491
+        y: 413
+        width: 50
+        height: 50
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e02b035228fb8e8e0800000000000000
+      internalID: -1663869496622796274
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Attack_Down_20
+      rect:
+        serializedVersion: 2
+        x: 5
+        y: 275
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9a2fa7a91d9b156b0800000000000000
+      internalID: -5309258175802051927
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Attack_Down_21
+      rect:
+        serializedVersion: 2
+        x: 47
+        y: 275
+        width: 14
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 63a67caf6afa48b40800000000000000
+      internalID: 5441667381477206582
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Attack_Down_22
+      rect:
+        serializedVersion: 2
+        x: 95
+        y: 275
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2011560b8b106baf0800000000000000
+      internalID: -381115225721204478
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Attack_Down_23
+      rect:
+        serializedVersion: 2
+        x: 137
+        y: 275
+        width: 14
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 97f24d478ed5abf40800000000000000
+      internalID: 5745007527638347641
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Attack_Down_24
+      rect:
+        serializedVersion: 2
+        x: 179
+        y: 275
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 30673ac45c14f4220800000000000000
+      internalID: 2472267036099835395
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Attack_Down_0: 7534355479976992906
+      Attack_Down_1: -778724666362883183
+      Attack_Down_10: 578986978961016045
+      Attack_Down_11: -9065611025342321203
+      Attack_Down_12: 908674438561925411
+      Attack_Down_13: 8355593599999315937
+      Attack_Down_14: 6267809055165211538
+      Attack_Down_15: 4315759868862810571
+      Attack_Down_16: -782425764569005998
+      Attack_Down_17: -2031046911146893332
+      Attack_Down_18: 5548806097511508799
+      Attack_Down_19: -1663869496622796274
+      Attack_Down_2: 1439411731053923810
+      Attack_Down_20: -5309258175802051927
+      Attack_Down_21: 5441667381477206582
+      Attack_Down_22: -381115225721204478
+      Attack_Down_23: 5745007527638347641
+      Attack_Down_24: 2472267036099835395
+      Attack_Down_3: 9219194309666649409
+      Attack_Down_4: -410723292635948846
+      Attack_Down_5: 2170492398400379117
+      Attack_Down_6: 5174972415662490816
+      Attack_Down_7: 2003839292318146818
+      Attack_Down_8: 7968794515486270004
+      Attack_Down_9: -2993918750362008517
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

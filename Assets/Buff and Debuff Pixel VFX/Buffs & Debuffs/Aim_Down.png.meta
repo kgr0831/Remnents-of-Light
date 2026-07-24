@@ -1,0 +1,871 @@
+fileFormatVersion: 2
+guid: e1a0497c345f198488fc1f4f593ff0e1
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -1089904394133499038
+    second: Aim_Down_0
+  - first:
+      213: -1647023284127048905
+    second: Aim_Down_1
+  - first:
+      213: -4329651973703530900
+    second: Aim_Down_2
+  - first:
+      213: -8501851118555013037
+    second: Aim_Down_3
+  - first:
+      213: 931741374071664933
+    second: Aim_Down_4
+  - first:
+      213: 6710346546944682479
+    second: Aim_Down_5
+  - first:
+      213: 6331954864995902401
+    second: Aim_Down_6
+  - first:
+      213: 5821958893573473117
+    second: Aim_Down_7
+  - first:
+      213: 233362221365282707
+    second: Aim_Down_8
+  - first:
+      213: -767518429834718902
+    second: Aim_Down_9
+  - first:
+      213: -3105849000729409667
+    second: Aim_Down_10
+  - first:
+      213: 5833174537571257143
+    second: Aim_Down_11
+  - first:
+      213: 5852534913306984021
+    second: Aim_Down_12
+  - first:
+      213: 2286747429844690171
+    second: Aim_Down_13
+  - first:
+      213: -1031528827295087826
+    second: Aim_Down_14
+  - first:
+      213: 5292166444897630792
+    second: Aim_Down_15
+  - first:
+      213: -3305610871540075090
+    second: Aim_Down_16
+  - first:
+      213: 3349510660225911195
+    second: Aim_Down_17
+  - first:
+      213: 70197765072664570
+    second: Aim_Down_18
+  - first:
+      213: -995216571130136759
+    second: Aim_Down_19
+  - first:
+      213: 8630922228249763231
+    second: Aim_Down_20
+  - first:
+      213: -5178866763877600168
+    second: Aim_Down_21
+  - first:
+      213: 7454977372968642012
+    second: Aim_Down_22
+  - first:
+      213: -666936654811990062
+    second: Aim_Down_23
+  - first:
+      213: -4178003814776904762
+    second: Aim_Down_24
+  - first:
+      213: 8354023684864370181
+    second: Aim_Down_25
+  - first:
+      213: 2523482053614224687
+    second: Aim_Down_26
+  - first:
+      213: -3408905445291130267
+    second: Aim_Down_27
+  - first:
+      213: -7301106773866326322
+    second: Aim_Down_28
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 0
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Aim_Down_0
+      rect:
+        serializedVersion: 2
+        x: 12
+        y: 81
+        width: 7
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 26319846ab1efd0f0800000000000000
+      internalID: -1089904394133499038
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aim_Down_1
+      rect:
+        serializedVersion: 2
+        x: 43
+        y: 107
+        width: 36
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 73b5fc4ac099429e0800000000000000
+      internalID: -1647023284127048905
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aim_Down_2
+      rect:
+        serializedVersion: 2
+        x: 76
+        y: 113
+        width: 7
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c66055a287cf9e3c0800000000000000
+      internalID: -4329651973703530900
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aim_Down_3
+      rect:
+        serializedVersion: 2
+        x: 76
+        y: 103
+        width: 7
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3506541d37b530a80800000000000000
+      internalID: -8501851118555013037
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aim_Down_4
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 109
+        width: 9
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5217318d7d53eec00800000000000000
+      internalID: 931741374071664933
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aim_Down_5
+      rect:
+        serializedVersion: 2
+        x: 102
+        y: 109
+        width: 9
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fe9286aa1a0ff1d50800000000000000
+      internalID: 6710346546944682479
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aim_Down_6
+      rect:
+        serializedVersion: 2
+        x: 108
+        y: 113
+        width: 7
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1c323edc66f9fd750800000000000000
+      internalID: 6331954864995902401
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aim_Down_7
+      rect:
+        serializedVersion: 2
+        x: 108
+        y: 103
+        width: 7
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d538f5484c0cbc050800000000000000
+      internalID: 5821958893573473117
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aim_Down_8
+      rect:
+        serializedVersion: 2
+        x: 112
+        y: 105
+        width: 11
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 397497434b11d3300800000000000000
+      internalID: 233362221365282707
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aim_Down_9
+      rect:
+        serializedVersion: 2
+        x: 134
+        y: 109
+        width: 9
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a41d227fd0a3955f0800000000000000
+      internalID: -767518429834718902
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aim_Down_10
+      rect:
+        serializedVersion: 2
+        x: 140
+        y: 113
+        width: 7
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d7785811acec5e4d0800000000000000
+      internalID: -3105849000729409667
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aim_Down_11
+      rect:
+        serializedVersion: 2
+        x: 140
+        y: 103
+        width: 7
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 73bc9c0265993f050800000000000000
+      internalID: 5833174537571257143
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aim_Down_12
+      rect:
+        serializedVersion: 2
+        x: 144
+        y: 104
+        width: 11
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 55efb3fde71683150800000000000000
+      internalID: 5852534913306984021
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aim_Down_13
+      rect:
+        serializedVersion: 2
+        x: 161
+        y: 77
+        width: 30
+        height: 39
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bf42ee6fba82cbf10800000000000000
+      internalID: 2286747429844690171
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aim_Down_14
+      rect:
+        serializedVersion: 2
+        x: 166
+        y: 109
+        width: 9
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e2340813ff54fa1f0800000000000000
+      internalID: -1031528827295087826
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aim_Down_15
+      rect:
+        serializedVersion: 2
+        x: 172
+        y: 113
+        width: 7
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 84a7d50b75d817940800000000000000
+      internalID: 5292166444897630792
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aim_Down_16
+      rect:
+        serializedVersion: 2
+        x: 172
+        y: 103
+        width: 7
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ea53f2c1d6c1022d0800000000000000
+      internalID: -3305610871540075090
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aim_Down_17
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 45
+        width: 32
+        height: 39
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b994622f23adb7e20800000000000000
+      internalID: 3349510660225911195
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aim_Down_18
+      rect:
+        serializedVersion: 2
+        x: 6
+        y: 77
+        width: 9
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: af7be23de7469f000800000000000000
+      internalID: 70197765072664570
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aim_Down_19
+      rect:
+        serializedVersion: 2
+        x: 38
+        y: 77
+        width: 9
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 947b43b2dc74032f0800000000000000
+      internalID: -995216571130136759
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aim_Down_20
+      rect:
+        serializedVersion: 2
+        x: 44
+        y: 81
+        width: 7
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f9d99dab90237c770800000000000000
+      internalID: 8630922228249763231
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aim_Down_21
+      rect:
+        serializedVersion: 2
+        x: 44
+        y: 69
+        width: 15
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 854bff7fd18f028b0800000000000000
+      internalID: -5178866763877600168
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aim_Down_22
+      rect:
+        serializedVersion: 2
+        x: 70
+        y: 77
+        width: 9
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cd5ee5c2c66657760800000000000000
+      internalID: 7454977372968642012
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aim_Down_23
+      rect:
+        serializedVersion: 2
+        x: 76
+        y: 81
+        width: 7
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2d77e3265a09eb6f0800000000000000
+      internalID: -666936654811990062
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aim_Down_24
+      rect:
+        serializedVersion: 2
+        x: 76
+        y: 68
+        width: 15
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6c3eefd9aafb406c0800000000000000
+      internalID: -4178003814776904762
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aim_Down_25
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 77
+        width: 9
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5066a85a7447fe370800000000000000
+      internalID: 8354023684864370181
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aim_Down_26
+      rect:
+        serializedVersion: 2
+        x: 100
+        y: 69
+        width: 24
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f25cfbace85350320800000000000000
+      internalID: 2523482053614224687
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aim_Down_27
+      rect:
+        serializedVersion: 2
+        x: 131
+        y: 75
+        width: 26
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 56207840f8221b0d0800000000000000
+      internalID: -3408905445291130267
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Aim_Down_28
+      rect:
+        serializedVersion: 2
+        x: 12
+        y: 71
+        width: 7
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ec6df7472124daa90800000000000000
+      internalID: -7301106773866326322
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Aim_Down_0: -1089904394133499038
+      Aim_Down_1: -1647023284127048905
+      Aim_Down_10: -3105849000729409667
+      Aim_Down_11: 5833174537571257143
+      Aim_Down_12: 5852534913306984021
+      Aim_Down_13: 2286747429844690171
+      Aim_Down_14: -1031528827295087826
+      Aim_Down_15: 5292166444897630792
+      Aim_Down_16: -3305610871540075090
+      Aim_Down_17: 3349510660225911195
+      Aim_Down_18: 70197765072664570
+      Aim_Down_19: -995216571130136759
+      Aim_Down_2: -4329651973703530900
+      Aim_Down_20: 8630922228249763231
+      Aim_Down_21: -5178866763877600168
+      Aim_Down_22: 7454977372968642012
+      Aim_Down_23: -666936654811990062
+      Aim_Down_24: -4178003814776904762
+      Aim_Down_25: 8354023684864370181
+      Aim_Down_26: 2523482053614224687
+      Aim_Down_27: -3408905445291130267
+      Aim_Down_28: -7301106773866326322
+      Aim_Down_3: -8501851118555013037
+      Aim_Down_4: 931741374071664933
+      Aim_Down_5: 6710346546944682479
+      Aim_Down_6: 6331954864995902401
+      Aim_Down_7: 5821958893573473117
+      Aim_Down_8: 233362221365282707
+      Aim_Down_9: -767518429834718902
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

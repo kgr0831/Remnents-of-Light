@@ -1,0 +1,689 @@
+fileFormatVersion: 2
+guid: 8c4fc40703bb2184385350d404a5e50e
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 1972879264209188214
+    second: Charm_Down_0
+  - first:
+      213: 192717081086386925
+    second: Charm_Down_1
+  - first:
+      213: -7773384228931042528
+    second: Charm_Down_2
+  - first:
+      213: -8275619145942026825
+    second: Charm_Down_3
+  - first:
+      213: 6169616972434569928
+    second: Charm_Down_4
+  - first:
+      213: 6712457037147311827
+    second: Charm_Down_5
+  - first:
+      213: 166259439210357342
+    second: Charm_Down_6
+  - first:
+      213: 9067721767407477855
+    second: Charm_Down_7
+  - first:
+      213: -1117652126976606238
+    second: Charm_Down_8
+  - first:
+      213: -1374709865562804012
+    second: Charm_Down_9
+  - first:
+      213: -3853159689144257326
+    second: Charm_Down_10
+  - first:
+      213: -4270256340974274017
+    second: Charm_Down_11
+  - first:
+      213: 8996066606308414852
+    second: Charm_Down_12
+  - first:
+      213: -4930066758078262141
+    second: Charm_Down_13
+  - first:
+      213: 8453224797776314112
+    second: Charm_Down_14
+  - first:
+      213: 546546137264743198
+    second: Charm_Down_15
+  - first:
+      213: 1793188619868176173
+    second: Charm_Down_16
+  - first:
+      213: -8887678003560432034
+    second: Charm_Down_17
+  - first:
+      213: -2983460141976150477
+    second: Charm_Down_18
+  - first:
+      213: -6694922344863214185
+    second: Charm_Down_19
+  - first:
+      213: 5142068926384647114
+    second: Charm_Down_20
+  - first:
+      213: 8243356045771492630
+    second: Charm_Down_21
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 0
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Charm_Down_0
+      rect:
+        serializedVersion: 2
+        x: 29
+        y: 221
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6753cefec33116b10800000000000000
+      internalID: 1972879264209188214
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Charm_Down_1
+      rect:
+        serializedVersion: 2
+        x: 89
+        y: 219
+        width: 14
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: de2ed480a2baca200800000000000000
+      internalID: 192717081086386925
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Charm_Down_2
+      rect:
+        serializedVersion: 2
+        x: 151
+        y: 217
+        width: 18
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 02301fb9a346f1490800000000000000
+      internalID: -7773384228931042528
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Charm_Down_3
+      rect:
+        serializedVersion: 2
+        x: 211
+        y: 215
+        width: 24
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7b534bd9b38172d80800000000000000
+      internalID: -8275619145942026825
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Charm_Down_4
+      rect:
+        serializedVersion: 2
+        x: 271
+        y: 211
+        width: 32
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8cafe2ac2f1ee9550800000000000000
+      internalID: 6169616972434569928
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Charm_Down_5
+      rect:
+        serializedVersion: 2
+        x: 335
+        y: 211
+        width: 32
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3de8c357c10772d50800000000000000
+      internalID: 6712457037147311827
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Charm_Down_6
+      rect:
+        serializedVersion: 2
+        x: 11
+        y: 145
+        width: 40
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e5260be341cae4200800000000000000
+      internalID: 166259439210357342
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Charm_Down_7
+      rect:
+        serializedVersion: 2
+        x: 75
+        y: 145
+        width: 40
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f54666497e407dd70800000000000000
+      internalID: 9067721767407477855
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Charm_Down_8
+      rect:
+        serializedVersion: 2
+        x: 143
+        y: 147
+        width: 32
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2ef7915ef4d4d70f0800000000000000
+      internalID: -1117652126976606238
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Charm_Down_9
+      rect:
+        serializedVersion: 2
+        x: 207
+        y: 147
+        width: 32
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4d077e929ac0cece0800000000000000
+      internalID: -1374709865562804012
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Charm_Down_10
+      rect:
+        serializedVersion: 2
+        x: 267
+        y: 145
+        width: 40
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2d4b3b97da3d68ac0800000000000000
+      internalID: -3853159689144257326
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Charm_Down_11
+      rect:
+        serializedVersion: 2
+        x: 331
+        y: 145
+        width: 40
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f1a7e509b700db4c0800000000000000
+      internalID: -4270256340974274017
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Charm_Down_12
+      rect:
+        serializedVersion: 2
+        x: 11
+        y: 81
+        width: 40
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 48554cc4ae278dc70800000000000000
+      internalID: 8996066606308414852
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Charm_Down_13
+      rect:
+        serializedVersion: 2
+        x: 73
+        y: 81
+        width: 44
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 38498c57762e49bb0800000000000000
+      internalID: -4930066758078262141
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Charm_Down_14
+      rect:
+        serializedVersion: 2
+        x: 135
+        y: 79
+        width: 26
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 00ffafd9a23ef4570800000000000000
+      internalID: 8453224797776314112
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Charm_Down_15
+      rect:
+        serializedVersion: 2
+        x: 161
+        y: 79
+        width: 22
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e13e60de0d8b59700800000000000000
+      internalID: 546546137264743198
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Charm_Down_16
+      rect:
+        serializedVersion: 2
+        x: 197
+        y: 79
+        width: 24
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d2ff38e8c8fa2e810800000000000000
+      internalID: 1793188619868176173
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Charm_Down_17
+      rect:
+        serializedVersion: 2
+        x: 227
+        y: 79
+        width: 22
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e5e3ab7d1ff98a480800000000000000
+      internalID: -8887678003560432034
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Charm_Down_18
+      rect:
+        serializedVersion: 2
+        x: 259
+        y: 79
+        width: 20
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 33e99f3dece9896d0800000000000000
+      internalID: -2983460141976150477
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Charm_Down_19
+      rect:
+        serializedVersion: 2
+        x: 295
+        y: 79
+        width: 20
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7955a9b399bd613a0800000000000000
+      internalID: -6694922344863214185
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Charm_Down_20
+      rect:
+        serializedVersion: 2
+        x: 323
+        y: 75
+        width: 16
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: acb2bb7d17c4c5740800000000000000
+      internalID: 5142068926384647114
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Charm_Down_21
+      rect:
+        serializedVersion: 2
+        x: 365
+        y: 75
+        width: 16
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 61d474106a8466270800000000000000
+      internalID: 8243356045771492630
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Charm_Down_0: 1972879264209188214
+      Charm_Down_1: 192717081086386925
+      Charm_Down_10: -3853159689144257326
+      Charm_Down_11: -4270256340974274017
+      Charm_Down_12: 8996066606308414852
+      Charm_Down_13: -4930066758078262141
+      Charm_Down_14: 8453224797776314112
+      Charm_Down_15: 546546137264743198
+      Charm_Down_16: 1793188619868176173
+      Charm_Down_17: -8887678003560432034
+      Charm_Down_18: -2983460141976150477
+      Charm_Down_19: -6694922344863214185
+      Charm_Down_2: -7773384228931042528
+      Charm_Down_20: 5142068926384647114
+      Charm_Down_21: 8243356045771492630
+      Charm_Down_3: -8275619145942026825
+      Charm_Down_4: 6169616972434569928
+      Charm_Down_5: 6712457037147311827
+      Charm_Down_6: 166259439210357342
+      Charm_Down_7: 9067721767407477855
+      Charm_Down_8: -1117652126976606238
+      Charm_Down_9: -1374709865562804012
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

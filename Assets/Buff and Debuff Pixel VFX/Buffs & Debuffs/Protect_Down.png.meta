@@ -1,0 +1,1157 @@
+fileFormatVersion: 2
+guid: 16141e089ea0ad54a99e40b3ad8b3fec
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 5090436200189592871
+    second: Protect_Down_0
+  - first:
+      213: -3456636599453195891
+    second: Protect_Down_1
+  - first:
+      213: -382780036048867818
+    second: Protect_Down_2
+  - first:
+      213: 836875780805521897
+    second: Protect_Down_3
+  - first:
+      213: 2195704727921798971
+    second: Protect_Down_4
+  - first:
+      213: 5253986500445720126
+    second: Protect_Down_5
+  - first:
+      213: 5193138354625616474
+    second: Protect_Down_6
+  - first:
+      213: 5377559868118620801
+    second: Protect_Down_7
+  - first:
+      213: -3868950332243797231
+    second: Protect_Down_8
+  - first:
+      213: 6286582135270425195
+    second: Protect_Down_9
+  - first:
+      213: -7016421898766913340
+    second: Protect_Down_10
+  - first:
+      213: 64633841518477880
+    second: Protect_Down_11
+  - first:
+      213: -8523145125211385631
+    second: Protect_Down_12
+  - first:
+      213: -6409153945747671074
+    second: Protect_Down_13
+  - first:
+      213: 3136219016843500972
+    second: Protect_Down_14
+  - first:
+      213: 5233700976660066235
+    second: Protect_Down_15
+  - first:
+      213: 1668727901733565733
+    second: Protect_Down_16
+  - first:
+      213: -2854807586362500561
+    second: Protect_Down_17
+  - first:
+      213: -8527379284370774673
+    second: Protect_Down_18
+  - first:
+      213: -2693462101009729060
+    second: Protect_Down_19
+  - first:
+      213: -8900619951787462724
+    second: Protect_Down_20
+  - first:
+      213: -5016398750048627932
+    second: Protect_Down_21
+  - first:
+      213: 7953569379136363137
+    second: Protect_Down_22
+  - first:
+      213: 8828586551924578755
+    second: Protect_Down_23
+  - first:
+      213: -1143260525009744783
+    second: Protect_Down_24
+  - first:
+      213: 341344707790077300
+    second: Protect_Down_25
+  - first:
+      213: 227112835583665446
+    second: Protect_Down_26
+  - first:
+      213: 4353920439706008743
+    second: Protect_Down_27
+  - first:
+      213: -396808244719700668
+    second: Protect_Down_28
+  - first:
+      213: -6364729941156459653
+    second: Protect_Down_29
+  - first:
+      213: -2048919481377369059
+    second: Protect_Down_30
+  - first:
+      213: 1265355356845111204
+    second: Protect_Down_31
+  - first:
+      213: 5728417188901025111
+    second: Protect_Down_32
+  - first:
+      213: -1381780513578664690
+    second: Protect_Down_33
+  - first:
+      213: 8668348929977100987
+    second: Protect_Down_34
+  - first:
+      213: -2390001341231020387
+    second: Protect_Down_35
+  - first:
+      213: 7894595167329155544
+    second: Protect_Down_36
+  - first:
+      213: -4294436655280619573
+    second: Protect_Down_37
+  - first:
+      213: -8618034224841590576
+    second: Protect_Down_38
+  - first:
+      213: 157175607804537495
+    second: Protect_Down_39
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 0
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Protect_Down_0
+      rect:
+        serializedVersion: 2
+        x: 38
+        y: 100
+        width: 37
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7250718f0ccd4a640800000000000000
+      internalID: 5090436200189592871
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Protect_Down_1
+      rect:
+        serializedVersion: 2
+        x: 74
+        y: 114
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d816afba35f8700d0800000000000000
+      internalID: -3456636599453195891
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Protect_Down_2
+      rect:
+        serializedVersion: 2
+        x: 77
+        y: 119
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 61e2234d59710baf0800000000000000
+      internalID: -382780036048867818
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Protect_Down_3
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 114
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9e17a04b61e2d9b00800000000000000
+      internalID: 836875780805521897
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Protect_Down_4
+      rect:
+        serializedVersion: 2
+        x: 85
+        y: 114
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b3fac6311d5b87e10800000000000000
+      internalID: 2195704727921798971
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Protect_Down_5
+      rect:
+        serializedVersion: 2
+        x: 100
+        y: 97
+        width: 24
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e3ec3c5a2e8e9e840800000000000000
+      internalID: 5253986500445720126
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Protect_Down_6
+      rect:
+        serializedVersion: 2
+        x: 131
+        y: 66
+        width: 26
+        height: 61
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a5a9ae0b1dbb11840800000000000000
+      internalID: 5193138354625616474
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Protect_Down_7
+      rect:
+        serializedVersion: 2
+        x: 164
+        y: 97
+        width: 24
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 18a5b91653ee0aa40800000000000000
+      internalID: 5377559868118620801
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Protect_Down_8
+      rect:
+        serializedVersion: 2
+        x: 69
+        y: 104
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 11b9af0eb2abe4ac0800000000000000
+      internalID: -3868950332243797231
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Protect_Down_9
+      rect:
+        serializedVersion: 2
+        x: 72
+        y: 109
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b624c10f42d6e3750800000000000000
+      internalID: 6286582135270425195
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Protect_Down_10
+      rect:
+        serializedVersion: 2
+        x: 74
+        y: 104
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4c0f9b92579a0ae90800000000000000
+      internalID: -7016421898766913340
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Protect_Down_11
+      rect:
+        serializedVersion: 2
+        x: 77
+        y: 109
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8328d2ce220a5e000800000000000000
+      internalID: 64633841518477880
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Protect_Down_12
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 104
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1e05caa8aa4b7b980800000000000000
+      internalID: -8523145125211385631
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Protect_Down_13
+      rect:
+        serializedVersion: 2
+        x: 82
+        y: 109
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ed7bae8817c1e07a0800000000000000
+      internalID: -6409153945747671074
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Protect_Down_14
+      rect:
+        serializedVersion: 2
+        x: 85
+        y: 104
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cad18c45496168b20800000000000000
+      internalID: 3136219016843500972
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Protect_Down_15
+      rect:
+        serializedVersion: 2
+        x: 77
+        y: 99
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bbf20761f47d1a840800000000000000
+      internalID: 5233700976660066235
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Protect_Down_16
+      rect:
+        serializedVersion: 2
+        x: 4
+        y: 65
+        width: 24
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 525bc917f23882710800000000000000
+      internalID: 1668727901733565733
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Protect_Down_17
+      rect:
+        serializedVersion: 2
+        x: 33
+        y: 83
+        width: 8
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f2ad5c820afa168d0800000000000000
+      internalID: -2854807586362500561
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Protect_Down_18
+      rect:
+        serializedVersion: 2
+        x: 36
+        y: 63
+        width: 24
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f652e0a88b9a8a980800000000000000
+      internalID: -8527379284370774673
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Protect_Down_19
+      rect:
+        serializedVersion: 2
+        x: 55
+        y: 83
+        width: 8
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cd9765d5d76ee9ad0800000000000000
+      internalID: -2693462101009729060
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Protect_Down_20
+      rect:
+        serializedVersion: 2
+        x: 65
+        y: 83
+        width: 8
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cbf24f4bf45aa7480800000000000000
+      internalID: -8900619951787462724
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Protect_Down_21
+      rect:
+        serializedVersion: 2
+        x: 68
+        y: 63
+        width: 24
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 42353a33aeb226ab0800000000000000
+      internalID: -5016398750048627932
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Protect_Down_22
+      rect:
+        serializedVersion: 2
+        x: 87
+        y: 83
+        width: 8
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 18ad8d3e531c06e60800000000000000
+      internalID: 7953569379136363137
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Protect_Down_23
+      rect:
+        serializedVersion: 2
+        x: 98
+        y: 85
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3c9514071b0758a70800000000000000
+      internalID: 8828586551924578755
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Protect_Down_24
+      rect:
+        serializedVersion: 2
+        x: 105
+        y: 83
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 17c41191c925220f0800000000000000
+      internalID: -1143260525009744783
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Protect_Down_25
+      rect:
+        serializedVersion: 2
+        x: 109
+        y: 89
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 47d79c50433bcb400800000000000000
+      internalID: 341344707790077300
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Protect_Down_26
+      rect:
+        serializedVersion: 2
+        x: 113
+        y: 83
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 62565e0bbedd62300800000000000000
+      internalID: 227112835583665446
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Protect_Down_27
+      rect:
+        serializedVersion: 2
+        x: 120
+        y: 85
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7ac3df4629b3c6c30800000000000000
+      internalID: 4353920439706008743
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Protect_Down_28
+      rect:
+        serializedVersion: 2
+        x: 33
+        y: 67
+        width: 8
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4453989f0014e7af0800000000000000
+      internalID: -396808244719700668
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Protect_Down_29
+      rect:
+        serializedVersion: 2
+        x: 55
+        y: 67
+        width: 8
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b7b831e17dfeba7a0800000000000000
+      internalID: -6364729941156459653
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Protect_Down_30
+      rect:
+        serializedVersion: 2
+        x: 65
+        y: 67
+        width: 8
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d14df1b5696c093e0800000000000000
+      internalID: -2048919481377369059
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Protect_Down_31
+      rect:
+        serializedVersion: 2
+        x: 87
+        y: 67
+        width: 8
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4a7f36f2ef17f8110800000000000000
+      internalID: 1265355356845111204
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Protect_Down_32
+      rect:
+        serializedVersion: 2
+        x: 101
+        y: 77
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 755ffa5351d6f7f40800000000000000
+      internalID: 5728417188901025111
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Protect_Down_33
+      rect:
+        serializedVersion: 2
+        x: 105
+        y: 71
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e0d3692a1fde2dce0800000000000000
+      internalID: -1381780513578664690
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Protect_Down_34
+      rect:
+        serializedVersion: 2
+        x: 109
+        y: 77
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bba2c68cc692c4870800000000000000
+      internalID: 8668348929977100987
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Protect_Down_35
+      rect:
+        serializedVersion: 2
+        x: 113
+        y: 71
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d96c733617205ded0800000000000000
+      internalID: -2390001341231020387
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Protect_Down_36
+      rect:
+        serializedVersion: 2
+        x: 117
+        y: 77
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8d97b223a7c3f8d60800000000000000
+      internalID: 7894595167329155544
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Protect_Down_37
+      rect:
+        serializedVersion: 2
+        x: 98
+        y: 69
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bcff49b6d981764c0800000000000000
+      internalID: -4294436655280619573
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Protect_Down_38
+      rect:
+        serializedVersion: 2
+        x: 109
+        y: 65
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0d878266887966880800000000000000
+      internalID: -8618034224841590576
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Protect_Down_39
+      rect:
+        serializedVersion: 2
+        x: 120
+        y: 69
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 79aab8ee1666e2200800000000000000
+      internalID: 157175607804537495
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Protect_Down_0: 5090436200189592871
+      Protect_Down_1: -3456636599453195891
+      Protect_Down_10: -7016421898766913340
+      Protect_Down_11: 64633841518477880
+      Protect_Down_12: -8523145125211385631
+      Protect_Down_13: -6409153945747671074
+      Protect_Down_14: 3136219016843500972
+      Protect_Down_15: 5233700976660066235
+      Protect_Down_16: 1668727901733565733
+      Protect_Down_17: -2854807586362500561
+      Protect_Down_18: -8527379284370774673
+      Protect_Down_19: -2693462101009729060
+      Protect_Down_2: -382780036048867818
+      Protect_Down_20: -8900619951787462724
+      Protect_Down_21: -5016398750048627932
+      Protect_Down_22: 7953569379136363137
+      Protect_Down_23: 8828586551924578755
+      Protect_Down_24: -1143260525009744783
+      Protect_Down_25: 341344707790077300
+      Protect_Down_26: 227112835583665446
+      Protect_Down_27: 4353920439706008743
+      Protect_Down_28: -396808244719700668
+      Protect_Down_29: -6364729941156459653
+      Protect_Down_3: 836875780805521897
+      Protect_Down_30: -2048919481377369059
+      Protect_Down_31: 1265355356845111204
+      Protect_Down_32: 5728417188901025111
+      Protect_Down_33: -1381780513578664690
+      Protect_Down_34: 8668348929977100987
+      Protect_Down_35: -2390001341231020387
+      Protect_Down_36: 7894595167329155544
+      Protect_Down_37: -4294436655280619573
+      Protect_Down_38: -8618034224841590576
+      Protect_Down_39: 157175607804537495
+      Protect_Down_4: 2195704727921798971
+      Protect_Down_5: 5253986500445720126
+      Protect_Down_6: 5193138354625616474
+      Protect_Down_7: 5377559868118620801
+      Protect_Down_8: -3868950332243797231
+      Protect_Down_9: 6286582135270425195
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

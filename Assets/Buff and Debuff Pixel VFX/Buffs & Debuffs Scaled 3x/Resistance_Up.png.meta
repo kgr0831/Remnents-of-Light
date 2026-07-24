@@ -1,0 +1,871 @@
+fileFormatVersion: 2
+guid: 3179be54ae80a494d90009c4a9d818f6
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 6099321057130156223
+    second: Resistance_Up_0
+  - first:
+      213: -2982990910746007728
+    second: Resistance_Up_1
+  - first:
+      213: 8753630697906500079
+    second: Resistance_Up_2
+  - first:
+      213: 7083401184991859935
+    second: Resistance_Up_3
+  - first:
+      213: -6729452848112448647
+    second: Resistance_Up_4
+  - first:
+      213: -4305742006023455303
+    second: Resistance_Up_5
+  - first:
+      213: 3252137596667913340
+    second: Resistance_Up_6
+  - first:
+      213: 4029301796669528137
+    second: Resistance_Up_7
+  - first:
+      213: -4066779901706022740
+    second: Resistance_Up_8
+  - first:
+      213: 6251399762137678324
+    second: Resistance_Up_9
+  - first:
+      213: -2280479863248251942
+    second: Resistance_Up_10
+  - first:
+      213: -5612241980953795987
+    second: Resistance_Up_11
+  - first:
+      213: 4513390742900607660
+    second: Resistance_Up_12
+  - first:
+      213: -2132911173772505439
+    second: Resistance_Up_13
+  - first:
+      213: 3923850505888437857
+    second: Resistance_Up_14
+  - first:
+      213: -2176881574146696619
+    second: Resistance_Up_15
+  - first:
+      213: -1716738779489856530
+    second: Resistance_Up_16
+  - first:
+      213: -3899502025756212377
+    second: Resistance_Up_17
+  - first:
+      213: 4460522101538182717
+    second: Resistance_Up_18
+  - first:
+      213: 2427266591995681411
+    second: Resistance_Up_19
+  - first:
+      213: -4083649880760261389
+    second: Resistance_Up_20
+  - first:
+      213: -5466823169404867820
+    second: Resistance_Up_21
+  - first:
+      213: 9044785995590299664
+    second: Resistance_Up_22
+  - first:
+      213: -3650291094537392398
+    second: Resistance_Up_23
+  - first:
+      213: -5269509751313743943
+    second: Resistance_Up_24
+  - first:
+      213: 6051943936434985953
+    second: Resistance_Up_25
+  - first:
+      213: -2621479442388448960
+    second: Resistance_Up_26
+  - first:
+      213: -3990059157864951440
+    second: Resistance_Up_27
+  - first:
+      213: -2929760329312431104
+    second: Resistance_Up_28
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 0
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Resistance_Up_0
+      rect:
+        serializedVersion: 2
+        x: 131
+        y: 335
+        width: 8
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fb09d459f2425a450800000000000000
+      internalID: 6099321057130156223
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resistance_Up_1
+      rect:
+        serializedVersion: 2
+        x: 143
+        y: 341
+        width: 14
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 057e3cc32994a96d0800000000000000
+      internalID: -2982990910746007728
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resistance_Up_2
+      rect:
+        serializedVersion: 2
+        x: 218
+        y: 335
+        width: 20
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fe1fba3bdb42b7970800000000000000
+      internalID: 8753630697906500079
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resistance_Up_3
+      rect:
+        serializedVersion: 2
+        x: 239
+        y: 338
+        width: 23
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fd4550929db4d4260800000000000000
+      internalID: 7083401184991859935
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resistance_Up_4
+      rect:
+        serializedVersion: 2
+        x: 314
+        y: 335
+        width: 20
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 97b448fe94e2c92a0800000000000000
+      internalID: -6729452848112448647
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resistance_Up_5
+      rect:
+        serializedVersion: 2
+        x: 335
+        y: 338
+        width: 23
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9bd7e74557eee34c0800000000000000
+      internalID: -4305742006023455303
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resistance_Up_6
+      rect:
+        serializedVersion: 2
+        x: 410
+        y: 335
+        width: 20
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c746512e9e9e12d20800000000000000
+      internalID: 3252137596667913340
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resistance_Up_7
+      rect:
+        serializedVersion: 2
+        x: 431
+        y: 314
+        width: 32
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 948945bc2a4fae730800000000000000
+      internalID: 4029301796669528137
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resistance_Up_8
+      rect:
+        serializedVersion: 2
+        x: 485
+        y: 233
+        width: 86
+        height: 125
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ca05d13e935ef87c0800000000000000
+      internalID: -4066779901706022740
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resistance_Up_9
+      rect:
+        serializedVersion: 2
+        x: 506
+        y: 335
+        width: 20
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4f18d2b56fe61c650800000000000000
+      internalID: 6251399762137678324
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resistance_Up_10
+      rect:
+        serializedVersion: 2
+        x: 131
+        y: 323
+        width: 14
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ad318a995ab1a50e0800000000000000
+      internalID: -2280479863248251942
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resistance_Up_11
+      rect:
+        serializedVersion: 2
+        x: 149
+        y: 323
+        width: 8
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d62e6bb37af4d12b0800000000000000
+      internalID: -5612241980953795987
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resistance_Up_12
+      rect:
+        serializedVersion: 2
+        x: 218
+        y: 314
+        width: 23
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: caa802bb7f8c2ae30800000000000000
+      internalID: 4513390742900607660
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resistance_Up_13
+      rect:
+        serializedVersion: 2
+        x: 242
+        y: 314
+        width: 20
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1ae04dd86906662e0800000000000000
+      internalID: -2132911173772505439
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resistance_Up_14
+      rect:
+        serializedVersion: 2
+        x: 314
+        y: 314
+        width: 23
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1669733ee31547630800000000000000
+      internalID: 3923850505888437857
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resistance_Up_15
+      rect:
+        serializedVersion: 2
+        x: 338
+        y: 311
+        width: 29
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 55a94eeedb92ac1e0800000000000000
+      internalID: -2176881574146696619
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resistance_Up_16
+      rect:
+        serializedVersion: 2
+        x: 410
+        y: 314
+        width: 23
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ee39e5cfc2bec28e0800000000000000
+      internalID: -1716738779489856530
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resistance_Up_17
+      rect:
+        serializedVersion: 2
+        x: 506
+        y: 314
+        width: 23
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 76382e9619f22e9c0800000000000000
+      internalID: -3899502025756212377
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resistance_Up_18
+      rect:
+        serializedVersion: 2
+        x: 2
+        y: 137
+        width: 92
+        height: 125
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d3656fee735f6ed30800000000000000
+      internalID: 4460522101538182717
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resistance_Up_19
+      rect:
+        serializedVersion: 2
+        x: 26
+        y: 239
+        width: 20
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 38a531fea126fa120800000000000000
+      internalID: 2427266591995681411
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resistance_Up_20
+      rect:
+        serializedVersion: 2
+        x: 122
+        y: 239
+        width: 20
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3f4e73ec116f357c0800000000000000
+      internalID: -4083649880760261389
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resistance_Up_21
+      rect:
+        serializedVersion: 2
+        x: 143
+        y: 218
+        width: 32
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 41b6fb9ba41f124b0800000000000000
+      internalID: -5466823169404867820
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resistance_Up_22
+      rect:
+        serializedVersion: 2
+        x: 218
+        y: 239
+        width: 20
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 010769011f8858d70800000000000000
+      internalID: 9044785995590299664
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resistance_Up_23
+      rect:
+        serializedVersion: 2
+        x: 239
+        y: 218
+        width: 32
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2fea35fe69f875dc0800000000000000
+      internalID: -3650291094537392398
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resistance_Up_24
+      rect:
+        serializedVersion: 2
+        x: 302
+        y: 209
+        width: 68
+        height: 53
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9bfbc7cdcc0fed6b0800000000000000
+      internalID: -5269509751313743943
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resistance_Up_25
+      rect:
+        serializedVersion: 2
+        x: 395
+        y: 227
+        width: 74
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1eb59c312f2dcf350800000000000000
+      internalID: 6051943936434985953
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resistance_Up_26
+      rect:
+        serializedVersion: 2
+        x: 26
+        y: 218
+        width: 23
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 049827a1652ae9bd0800000000000000
+      internalID: -2621479442388448960
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resistance_Up_27
+      rect:
+        serializedVersion: 2
+        x: 122
+        y: 218
+        width: 23
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0715aae065670a8c0800000000000000
+      internalID: -3990059157864951440
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resistance_Up_28
+      rect:
+        serializedVersion: 2
+        x: 218
+        y: 218
+        width: 23
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0041d46c0866757d0800000000000000
+      internalID: -2929760329312431104
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Resistance_Up_0: 6099321057130156223
+      Resistance_Up_1: -2982990910746007728
+      Resistance_Up_10: -2280479863248251942
+      Resistance_Up_11: -5612241980953795987
+      Resistance_Up_12: 4513390742900607660
+      Resistance_Up_13: -2132911173772505439
+      Resistance_Up_14: 3923850505888437857
+      Resistance_Up_15: -2176881574146696619
+      Resistance_Up_16: -1716738779489856530
+      Resistance_Up_17: -3899502025756212377
+      Resistance_Up_18: 4460522101538182717
+      Resistance_Up_19: 2427266591995681411
+      Resistance_Up_2: 8753630697906500079
+      Resistance_Up_20: -4083649880760261389
+      Resistance_Up_21: -5466823169404867820
+      Resistance_Up_22: 9044785995590299664
+      Resistance_Up_23: -3650291094537392398
+      Resistance_Up_24: -5269509751313743943
+      Resistance_Up_25: 6051943936434985953
+      Resistance_Up_26: -2621479442388448960
+      Resistance_Up_27: -3990059157864951440
+      Resistance_Up_28: -2929760329312431104
+      Resistance_Up_3: 7083401184991859935
+      Resistance_Up_4: -6729452848112448647
+      Resistance_Up_5: -4305742006023455303
+      Resistance_Up_6: 3252137596667913340
+      Resistance_Up_7: 4029301796669528137
+      Resistance_Up_8: -4066779901706022740
+      Resistance_Up_9: 6251399762137678324
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

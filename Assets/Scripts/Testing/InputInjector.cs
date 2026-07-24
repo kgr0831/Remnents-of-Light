@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.Controls;
 using UnityEngine.InputSystem.LowLevel;
 
 // Runtime virtual-device input injection for PlayTestRunner (STEP4).
@@ -14,11 +13,17 @@ using UnityEngine.InputSystem.LowLevel;
 // InvalidOperationException ("Cannot send delta state events against bitfield controls").
 // Keys must go through a full KeyboardState + QueueStateEvent instead.
 // Source: docs.unity3d.com/Packages/com.unity.inputsystem@1.19/api/UnityEngine.InputSystem.LowLevel.KeyboardState.html (checked 2026-07-20)
+// Mouse buttons have the exact same bitfield problem (MouseState.buttons is a ushort bitmask) —
+// found live via execute_code while wiring up the player attack test (checked 2026-07-23):
+// QueueDeltaStateEvent(leftButton, 1f) throws ArgumentException "Size 4 of delta state of type
+// Single ... does not match size 1 of control". Fixed the same way as keyboard: build a full
+// MouseState via MouseState.WithButton(MouseButton, bool) + QueueStateEvent.
 public static class InputInjector
 {
     private static Keyboard _keyboard;
     private static Mouse _mouse;
     private static readonly HashSet<Key> _heldKeys = new HashSet<Key>();
+    private static readonly HashSet<MouseButton> _heldMouseButtons = new HashSet<MouseButton>();
 
     private static Keyboard Kb
     {
@@ -52,18 +57,34 @@ public static class InputInjector
         InputSystem.QueueStateEvent(Kb, new KeyboardState(_heldKeys.ToArray()));
     }
 
-    public static void PressButton(ButtonControl button) => InputSystem.QueueDeltaStateEvent(button, 1f);
-    public static void ReleaseButton(ButtonControl button) => InputSystem.QueueDeltaStateEvent(button, 0f);
+    public static void PressMouseButton(MouseButton button)
+    {
+        _heldMouseButtons.Add(button);
+        SendMouseState();
+    }
+
+    public static void ReleaseMouseButton(MouseButton button)
+    {
+        _heldMouseButtons.Remove(button);
+        SendMouseState();
+    }
+
+    private static void SendMouseState()
+    {
+        MouseState state = default;
+        foreach (var b in _heldMouseButtons) state = state.WithButton(b, true);
+        InputSystem.QueueStateEvent(Ms, state);
+    }
 
     // PlayerActions.inputactions (map "Player") wrappers — matches current bindings exactly.
     public static void PressJump() => PressKey(Key.Space);
     public static void ReleaseJump() => ReleaseKey(Key.Space);
     public static void PressDash() => PressKey(Key.LeftShift);
     public static void ReleaseDash() => ReleaseKey(Key.LeftShift);
-    public static void PressAttack() => PressButton(Ms.leftButton);
-    public static void ReleaseAttack() => ReleaseButton(Ms.leftButton);
-    public static void PressParry() => PressButton(Ms.rightButton);
-    public static void ReleaseParry() => ReleaseButton(Ms.rightButton);
+    public static void PressAttack() => PressMouseButton(MouseButton.Left);
+    public static void ReleaseAttack() => ReleaseMouseButton(MouseButton.Left);
+    public static void PressParry() => PressMouseButton(MouseButton.Right);
+    public static void ReleaseParry() => ReleaseMouseButton(MouseButton.Right);
 
     // Move is a "Dpad" composite bound to W/S/A/D.
     public static void SetMoveX(float x)
@@ -80,5 +101,6 @@ public static class InputInjector
         _keyboard = null;
         _mouse = null;
         _heldKeys.Clear();
+        _heldMouseButtons.Clear();
     }
 }

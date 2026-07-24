@@ -221,7 +221,7 @@ def _find_new_session_id(after: float) -> str | None:
     return max(candidates, key=lambda p: p.stat().st_ctime).stem
 
 
-async def _run_claude_once(prompt: str, allowed_tools: list[str], session_id: str | None, timeout: int | None) -> dict:
+async def _run_claude_once(prompt: str, allowed_tools: list[str], session_id: str | None, timeout: int | None, model: str = "claude-sonnet-5") -> dict:
     global current_proc
     cmd = [
         "claude", "-p", prompt,
@@ -231,8 +231,9 @@ async def _run_claude_once(prompt: str, allowed_tools: list[str], session_id: st
         # ~/.claude/settings.json defaults to opus at xhigh effort for this machine's
         # interactive use - fine there, but every headless remote-loop call silently
         # inheriting that burned through the monthly spend limit in a few hours
-        # (found 2026-07-22). Pin these calls to sonnet regardless of the global default.
-        "--model", "claude-sonnet-5",
+        # (found 2026-07-22). Pin these calls to a specific model regardless of the
+        # global default - callers doing lightweight work (voice cleanup) pass haiku.
+        "--model", model,
     ]
     if session_id:
         cmd += ["--resume", session_id]
@@ -262,9 +263,9 @@ async def _run_claude_once(prompt: str, allowed_tools: list[str], session_id: st
         return {"text": raw or f"(no output; stderr: {err[:500]})", "session_id": session_id}
 
 
-async def run_claude(prompt: str, allowed_tools: list[str], session_id: str | None, timeout: int | None) -> dict:
+async def run_claude(prompt: str, allowed_tools: list[str], session_id: str | None, timeout: int | None, model: str = "claude-sonnet-5") -> dict:
     for attempt in range(TRANSIENT_MAX_RETRIES + 1):
-        result = await _run_claude_once(prompt, allowed_tools, session_id, timeout)
+        result = await _run_claude_once(prompt, allowed_tools, session_id, timeout, model)
         if attempt < TRANSIENT_MAX_RETRIES and any(p in result["text"] for p in TRANSIENT_ERROR_PATTERNS):
             await asyncio.sleep(TRANSIENT_RETRY_DELAY_S)
             continue

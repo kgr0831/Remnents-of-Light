@@ -33,6 +33,12 @@
 | 채널 | 검증 대상 |
 |---|---|
 | `dash_iframe` | 대시 무적 프레임 동안 피격 0회 |
+| `dash_vfx` | 대시 잔상(산데비스탄 컬러 에코) VFX 녹화 showcase |
+| `dash_afterimage_shape` | 대시 잔상(에코)의 실루엣이 플레이어 스프라이트와 일치(비율 오차 ≤0.01) |
+| `respawn_fall` | 스폰보다 fallDeathDepth 아래로 낙사 시 스폰 복귀 |
+| `dummy_damage` | 더미 몬스터 TakeDamage 시 HP 감소·피격 플래시·HP 0 사망 |
+| `dummy_attack` | 더미 몬스터 추적→사거리 진입시 정지+창찌르기(windup/thrust/recover)→플레이어 피격, 공격 중 피격시 리셋 |
+| `player_attack` | 플레이어 1-2타 콤보(Slash1/Slash2) 판정+데미지+히트스톱/카메라쉐이크 트리거 |
 | `combo_window` | 3타 콤보 입력 윈도우 내 연결 |
 | `parry_timing` | 패링 유효 프레임 판정 |
 | `room_transition` | 방 전환 시 세이브 트리거 |

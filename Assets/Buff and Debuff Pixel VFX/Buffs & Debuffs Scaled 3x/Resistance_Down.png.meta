@@ -1,0 +1,949 @@
+fileFormatVersion: 2
+guid: c488fa6341916c54ca704d9a77f23b16
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 6006895535721854864
+    second: Resistance_Down_0
+  - first:
+      213: 9148041390468822495
+    second: Resistance_Down_1
+  - first:
+      213: -6791873929616751070
+    second: Resistance_Down_2
+  - first:
+      213: -3216402338409396046
+    second: Resistance_Down_3
+  - first:
+      213: -480456270919236546
+    second: Resistance_Down_4
+  - first:
+      213: 1456137307150440989
+    second: Resistance_Down_5
+  - first:
+      213: 5832054149980650399
+    second: Resistance_Down_6
+  - first:
+      213: 8662254663157915602
+    second: Resistance_Down_7
+  - first:
+      213: 7332920655965580468
+    second: Resistance_Down_8
+  - first:
+      213: 8689775299830628726
+    second: Resistance_Down_9
+  - first:
+      213: -8891155218047413769
+    second: Resistance_Down_10
+  - first:
+      213: -2721961486133060594
+    second: Resistance_Down_11
+  - first:
+      213: -2347400788246221489
+    second: Resistance_Down_12
+  - first:
+      213: 3546425705970006804
+    second: Resistance_Down_13
+  - first:
+      213: 4567468043563605431
+    second: Resistance_Down_14
+  - first:
+      213: 7096677335248479080
+    second: Resistance_Down_15
+  - first:
+      213: -4945737235483341273
+    second: Resistance_Down_16
+  - first:
+      213: -183571353805227339
+    second: Resistance_Down_17
+  - first:
+      213: 5804975736480977896
+    second: Resistance_Down_18
+  - first:
+      213: -5372078689807708672
+    second: Resistance_Down_19
+  - first:
+      213: -9098198715800818205
+    second: Resistance_Down_20
+  - first:
+      213: 1241409035498380919
+    second: Resistance_Down_21
+  - first:
+      213: -6017587823466682097
+    second: Resistance_Down_22
+  - first:
+      213: 790067249794291152
+    second: Resistance_Down_23
+  - first:
+      213: -1030692165630137784
+    second: Resistance_Down_24
+  - first:
+      213: -7881866745851050969
+    second: Resistance_Down_25
+  - first:
+      213: 6710664411860261623
+    second: Resistance_Down_26
+  - first:
+      213: -6365801957137315667
+    second: Resistance_Down_27
+  - first:
+      213: 1272409950716266441
+    second: Resistance_Down_28
+  - first:
+      213: 7321344302778200454
+    second: Resistance_Down_29
+  - first:
+      213: -476252329409468861
+    second: Resistance_Down_30
+  - first:
+      213: -4160090179057974268
+    second: Resistance_Down_31
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 0
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Resistance_Down_0
+      rect:
+        serializedVersion: 2
+        x: 131
+        y: 335
+        width: 8
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 097b491f9a7cc5350800000000000000
+      internalID: 6006895535721854864
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resistance_Down_1
+      rect:
+        serializedVersion: 2
+        x: 143
+        y: 341
+        width: 14
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fd5f67d1d2f54fe70800000000000000
+      internalID: 9148041390468822495
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resistance_Down_2
+      rect:
+        serializedVersion: 2
+        x: 218
+        y: 335
+        width: 20
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 22605f955aa6eb1a0800000000000000
+      internalID: -6791873929616751070
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resistance_Down_3
+      rect:
+        serializedVersion: 2
+        x: 239
+        y: 338
+        width: 23
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2b84f5c4d1b0d53d0800000000000000
+      internalID: -3216402338409396046
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resistance_Down_4
+      rect:
+        serializedVersion: 2
+        x: 314
+        y: 335
+        width: 20
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e3400c131931559f0800000000000000
+      internalID: -480456270919236546
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resistance_Down_5
+      rect:
+        serializedVersion: 2
+        x: 335
+        y: 314
+        width: 32
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d1a55e87a2d353410800000000000000
+      internalID: 1456137307150440989
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resistance_Down_6
+      rect:
+        serializedVersion: 2
+        x: 410
+        y: 335
+        width: 20
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f9b7070995e9fe050800000000000000
+      internalID: 5832054149980650399
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resistance_Down_7
+      rect:
+        serializedVersion: 2
+        x: 431
+        y: 314
+        width: 32
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2df9f77b8b2863870800000000000000
+      internalID: 8662254663157915602
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resistance_Down_8
+      rect:
+        serializedVersion: 2
+        x: 506
+        y: 335
+        width: 20
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4bce3f03c74c3c560800000000000000
+      internalID: 7332920655965580468
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resistance_Down_9
+      rect:
+        serializedVersion: 2
+        x: 527
+        y: 338
+        width: 23
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6714e544898489870800000000000000
+      internalID: 8689775299830628726
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resistance_Down_10
+      rect:
+        serializedVersion: 2
+        x: 131
+        y: 323
+        width: 14
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7f15c61cf654c9480800000000000000
+      internalID: -8891155218047413769
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resistance_Down_11
+      rect:
+        serializedVersion: 2
+        x: 149
+        y: 323
+        width: 8
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e0c9ebe2376a93ad0800000000000000
+      internalID: -2721961486133060594
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resistance_Down_12
+      rect:
+        serializedVersion: 2
+        x: 218
+        y: 314
+        width: 23
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f4dac1f8b6b5c6fd0800000000000000
+      internalID: -2347400788246221489
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resistance_Down_13
+      rect:
+        serializedVersion: 2
+        x: 242
+        y: 314
+        width: 20
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 41bf7aac36f673130800000000000000
+      internalID: 3546425705970006804
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resistance_Down_14
+      rect:
+        serializedVersion: 2
+        x: 314
+        y: 314
+        width: 23
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7bd9e837cf7e26f30800000000000000
+      internalID: 4567468043563605431
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resistance_Down_15
+      rect:
+        serializedVersion: 2
+        x: 410
+        y: 314
+        width: 23
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8632d05cf667c7260800000000000000
+      internalID: 7096677335248479080
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resistance_Down_16
+      rect:
+        serializedVersion: 2
+        x: 485
+        y: 233
+        width: 86
+        height: 104
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 72ec79e10363d5bb0800000000000000
+      internalID: -4945737235483341273
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resistance_Down_17
+      rect:
+        serializedVersion: 2
+        x: 506
+        y: 314
+        width: 23
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5ba708983d2d37df0800000000000000
+      internalID: -183571353805227339
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resistance_Down_18
+      rect:
+        serializedVersion: 2
+        x: 26
+        y: 239
+        width: 20
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8e3d5be1daa6f8050800000000000000
+      internalID: 5804975736480977896
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resistance_Down_19
+      rect:
+        serializedVersion: 2
+        x: 47
+        y: 242
+        width: 23
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 00ec094e4ea8275b0800000000000000
+      internalID: -5372078689807708672
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resistance_Down_20
+      rect:
+        serializedVersion: 2
+        x: 122
+        y: 239
+        width: 20
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3ede6c8e874bcb180800000000000000
+      internalID: -9098198715800818205
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resistance_Down_21
+      rect:
+        serializedVersion: 2
+        x: 143
+        y: 242
+        width: 23
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 77e57d5c0fe5a3110800000000000000
+      internalID: 1241409035498380919
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resistance_Down_22
+      rect:
+        serializedVersion: 2
+        x: 218
+        y: 239
+        width: 20
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f096d81d1cb3d7ca0800000000000000
+      internalID: -6017587823466682097
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resistance_Down_23
+      rect:
+        serializedVersion: 2
+        x: 239
+        y: 242
+        width: 23
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0d598ac4af1e6fa00800000000000000
+      internalID: 790067249794291152
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resistance_Down_24
+      rect:
+        serializedVersion: 2
+        x: 302
+        y: 209
+        width: 68
+        height: 53
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 84a66daafee32b1f0800000000000000
+      internalID: -1030692165630137784
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resistance_Down_25
+      rect:
+        serializedVersion: 2
+        x: 395
+        y: 227
+        width: 74
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 724859e54fbfd9290800000000000000
+      internalID: -7881866745851050969
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resistance_Down_26
+      rect:
+        serializedVersion: 2
+        x: 2
+        y: 137
+        width: 92
+        height: 104
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7fa59cb5ab1112d50800000000000000
+      internalID: 6710664411860261623
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resistance_Down_27
+      rect:
+        serializedVersion: 2
+        x: 26
+        y: 218
+        width: 23
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: da80852f8d028a7a0800000000000000
+      internalID: -6365801957137315667
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resistance_Down_28
+      rect:
+        serializedVersion: 2
+        x: 122
+        y: 218
+        width: 23
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9c78d11db1288a110800000000000000
+      internalID: 1272409950716266441
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resistance_Down_29
+      rect:
+        serializedVersion: 2
+        x: 146
+        y: 209
+        width: 29
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 681bc6d6ad3aa9560800000000000000
+      internalID: 7321344302778200454
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resistance_Down_30
+      rect:
+        serializedVersion: 2
+        x: 218
+        y: 218
+        width: 23
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 346a81a97030469f0800000000000000
+      internalID: -476252329409468861
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resistance_Down_31
+      rect:
+        serializedVersion: 2
+        x: 242
+        y: 206
+        width: 29
+        height: 35
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 40488a3f5046446c0800000000000000
+      internalID: -4160090179057974268
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Resistance_Down_0: 6006895535721854864
+      Resistance_Down_1: 9148041390468822495
+      Resistance_Down_10: -8891155218047413769
+      Resistance_Down_11: -2721961486133060594
+      Resistance_Down_12: -2347400788246221489
+      Resistance_Down_13: 3546425705970006804
+      Resistance_Down_14: 4567468043563605431
+      Resistance_Down_15: 7096677335248479080
+      Resistance_Down_16: -4945737235483341273
+      Resistance_Down_17: -183571353805227339
+      Resistance_Down_18: 5804975736480977896
+      Resistance_Down_19: -5372078689807708672
+      Resistance_Down_2: -6791873929616751070
+      Resistance_Down_20: -9098198715800818205
+      Resistance_Down_21: 1241409035498380919
+      Resistance_Down_22: -6017587823466682097
+      Resistance_Down_23: 790067249794291152
+      Resistance_Down_24: -1030692165630137784
+      Resistance_Down_25: -7881866745851050969
+      Resistance_Down_26: 6710664411860261623
+      Resistance_Down_27: -6365801957137315667
+      Resistance_Down_28: 1272409950716266441
+      Resistance_Down_29: 7321344302778200454
+      Resistance_Down_3: -3216402338409396046
+      Resistance_Down_30: -476252329409468861
+      Resistance_Down_31: -4160090179057974268
+      Resistance_Down_4: -480456270919236546
+      Resistance_Down_5: 1456137307150440989
+      Resistance_Down_6: 5832054149980650399
+      Resistance_Down_7: 8662254663157915602
+      Resistance_Down_8: 7332920655965580468
+      Resistance_Down_9: 8689775299830628726
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

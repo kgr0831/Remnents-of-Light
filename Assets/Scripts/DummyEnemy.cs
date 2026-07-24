@@ -1,0 +1,411 @@
+using UnityEngine;
+using System.Collections;
+
+// 테스트용 더미 몬스터: 플레이어를 추적하다 사거리 안이면 멈춰서 창 찌르기 공격.
+// 몸/창은 Unity 기본 Square 스프라이트 2개(몸=정사각형, 창=늘린 직사각형)로 구성, 애니메이션은
+// 코드로 창의 localPosition을 windup(뒤로 뺌)->thrust(앞으로 찌름)->recover(복귀)로 트윈해서 만든다.
+// 공격 판정은 thrust 구간에서만 창 끝 위치 기준 OverlapCircle로 이루어진다.
+[RequireComponent(typeof(SpriteRenderer))]
+[RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(BoxCollider2D))]
+public class DummyEnemy : MonoBehaviour
+{
+    enum AiState { Chase, Windup, Thrust, Recover, Hitstun }
+
+    [Header("Health")]
+    public int maxHp = 20;
+    public int currentHp;
+
+    [Header("Hit Flash")]
+    public Color flashColor = Color.white;
+    public float flashDuration = 0.08f;
+
+    [Header("Death")]
+    public float respawnDelay = 0f; // >0이면 이 시간 뒤 자동 부활(반복 테스트용), 0이면 죽은 채 유지(비활성)
+
+    [Header("Chase AI")]
+    public float moveSpeed = 3f;
+    public float attackRange = 1.8f; // 이 거리 이하로 플레이어가 들어오면 멈추고 공격
+    public Transform player;         // 비워두면 "Player" 태그로 자동 탐색
+    // 스폰 지점 기준 이 거리보다 더 쫓아가지 않음 — 리쉬 밖에서도 계속 쫓다가 맵 경계를 넘어가면
+    // 바닥이 없는 곳으로 떨어져(중력 gravityScale=1) 무한히 낙하해 사실상 영구 소실되는 버그가 있었음
+    // (플레이어를 아주 멀리 보낸 뒤 재현 확인: 맵 밖에 두자마자 y=-91까지 즉시 낙하, 회복 수단 없음).
+    public float leashRange = 12f;
+
+    [Header("Spear Thrust Attack")]
+    public Transform spear;
+    public Vector2 spearIdleLocalPos = new Vector2(0.9f, 0f);
+    public Vector2 spearWindupLocalPos = new Vector2(0.3f, 0f);
+    public Vector2 spearThrustLocalPos = new Vector2(1.9f, 0f);
+    public float windupDuration = 0.25f;
+    public float thrustDuration = 0.12f;
+    public float recoverDuration = 0.2f;
+    public float attackCooldown = 0.6f;
+    public int attackDamage = 8;
+    public float hitRadius = 0.5f;
+    // 공격 판정 시점 = Thrust(창을 앞으로 뻗는) 애니메이션의 이 지점(0~1). 스펙: "찌르기가 거의
+    // 마무리되는 순간". 예전엔 Thrust 진입 첫 프레임(t=0, 창이 아직 몸 근처)부터 매 프레임 판정해서
+    // 창이 뻗기도 전에 맞는 이상한 판정이 났다.
+    [Range(0f, 1f)] public float thrustHitNormalized = 0.85f;
+    // 회피(대시-카운터) 인정 창 — 위 판정 순간을 기준으로 앞뒤로 열린다(스펙: "판정 직후 및 약간 전").
+    // 피해는 창이 닫히는 순간(hitTime + dodgeWindowPost)에 확정된다 — "직후"에 들어온 회피까지
+    // 유효하게 인정하려면 그 시간만큼 피해 확정을 미루는 수밖에 없기 때문. 대신 post를 짧게(0.05s)
+    // 잡아 피해가 확정되는 시점에도 창이 아직 거의 다 뻗은 상태로 보이게 한다
+    // (thrust 0.12s 기준: 판정 0.102s, 피해 확정 0.152s = 창이 16%만 회수된 시점).
+    public float dodgeWindowPre = 0.12f;
+    public float dodgeWindowPost = 0.05f;
+    public LayerMask playerLayer; // "Player"만 포함 — 대시 무적 중엔 gameObject.layer가 PlayerInvincible로 바뀌어 자동으로 빗나감
+
+    [Header("Hit VFX (플레이어를 맞췄을 때)")]
+    public GameObject[] hitVfxPrefabs;
+    public float hitVfxOffsetTowardsPlayer = 0.3f;
+    public GameObject damageTextPrefab;
+    public Color damageTextColor = new Color(1f, 0.3f, 0.3f, 1f); // 플레이어 피격은 붉은 계열로 구분
+
+    [Header("Hitstun / 넉백 (피격 시)")]
+    public float hitstunDuration = 0.25f;
+    // 플레이어 공격에 맞으면 밀려나는 시간. 이동 거리는 때린 쪽(PlayerController)이
+    // "attackLungeDistance × enemyKnockbackMultiplier"로 계산해 넘겨준다.
+    public float knockbackDuration = 0.12f;
+
+    SpriteRenderer sr;
+    Rigidbody2D rb;
+    Color baseColor;
+    bool baseCaptured;
+    float flashTimer;
+    bool dead;
+    int playerHitMask; // Player + PlayerInvincible — 대시 무적 중(레이어 스왑)에도 찌르기가 플레이어를 감지하게
+
+    AiState state = AiState.Chase;
+    float stateTimer;
+    float attackCooldownCounter;
+    bool attackHitDone;      // 이번 찌르기의 판정이 종결됐는지(회피로 소비됐거나 피해가 확정됨)
+    float attackClock;       // Thrust 시작 기준 경과 시간 — 판정 창이 Recover까지 넘어갈 수 있어 상태와 별개로 셈
+    float knockbackRemaining; // 남은 넉백 거리(부호=방향). 0이면 넉백 중 아님
+    float knockbackSpeed;
+    bool knockbackActive;
+    float spawnX;
+    Vector3 lastPlayerPos; // 터널링 방지 스윕 체크용(빠른 대시가 한 프레임 사이에 판정원을 통과하는 것 방지)
+
+    void Awake()
+    {
+        sr = GetComponent<SpriteRenderer>();
+        rb = GetComponent<Rigidbody2D>();
+        currentHp = maxHp;
+        spawnX = transform.position.x;
+
+        if (spear == null) spear = transform.Find("Spear");
+        if (spear != null) spear.localPosition = spearIdleLocalPos;
+        if (playerLayer.value == 0) playerLayer = LayerMask.GetMask("Player");
+        int invLayer = LayerMask.NameToLayer("PlayerInvincible");
+        playerHitMask = playerLayer.value | (invLayer >= 0 ? (1 << invLayer) : 0);
+
+        if (player == null)
+        {
+            GameObject p = GameObject.FindGameObjectWithTag("Player");
+            if (p != null) player = p.transform;
+        }
+        if (player != null) lastPlayerPos = player.position; // 첫 프레임부터 유효한 값 보장
+    }
+
+    void Update()
+    {
+        if (dead) return;
+
+        if (flashTimer > 0f)
+        {
+            flashTimer -= Time.deltaTime;
+            if (flashTimer <= 0f && baseCaptured) sr.color = baseColor;
+        }
+        if (attackCooldownCounter > 0f) attackCooldownCounter -= Time.deltaTime;
+
+        if (player == null)
+        {
+            GameObject p = GameObject.FindGameObjectWithTag("Player");
+            if (p != null) player = p.transform;
+            else return;
+        }
+
+        switch (state)
+        {
+            case AiState.Hitstun:
+                // 넉백 중엔 FixedUpdate가 속도를 관리한다(거리 정확도 보장) — 여기선 건드리지 않음.
+                if (!knockbackActive) SetHorizontalVelocity(0f);
+                stateTimer -= Time.deltaTime;
+                if (stateTimer <= 0f) { state = AiState.Chase; knockbackRemaining = 0f; }
+                break;
+            case AiState.Chase:
+                ChaseLogic();
+                break;
+            default: // Windup / Thrust / Recover
+                AttackLogic();
+                break;
+        }
+
+        lastPlayerPos = player.position; // 다음 프레임 스윕 체크용(터널링 방지) — 매 프레임 끝에 갱신
+    }
+
+    // 넉백은 물리 스텝 단위로 "남은 거리"를 깎아가며 밀어낸다. Update에서 속도만 세팅하고 타이머로
+    // 끄는 방식은 프레임 길이가 들쭉날쭉하면 마지막 프레임이 통째로 초과 이동해 실제 거리가 요청값의
+    // 2~3배까지 늘어났다(실측: 0.45 요청 → 1.21 이동). 스텝마다 남은 거리를 클램프하면 프레임레이트와
+    // 무관하게 정확히 요청한 거리만큼만 이동한다.
+    void FixedUpdate()
+    {
+        if (dead) return;
+        if (knockbackRemaining == 0f)
+        {
+            if (knockbackActive) { knockbackActive = false; SetHorizontalVelocity(0f); }
+            return;
+        }
+        knockbackActive = true;
+        float maxStep = knockbackSpeed * Time.fixedDeltaTime;
+        float step = Mathf.Clamp(knockbackRemaining, -maxStep, maxStep);
+        knockbackRemaining -= step;
+        if (Mathf.Abs(knockbackRemaining) < 0.0001f) knockbackRemaining = 0f;
+        SetHorizontalVelocity(step / Time.fixedDeltaTime);
+    }
+
+    void ChaseLogic()
+    {
+        float dx = player.position.x - transform.position.x;
+        float dist = Mathf.Abs(dx);
+
+        if (dist <= attackRange)
+        {
+            SetHorizontalVelocity(0f);
+            if (attackCooldownCounter <= 0f) StartAttack(dx);
+            return;
+        }
+
+        float dir = Mathf.Sign(dx);
+
+        // 리쉬 범위 밖으로는 더 쫓아가지 않음(맵 경계 밖 낙사 방지). 이미 리쉬 경계에 있고
+        // 그 방향으로 더 가려는 중이면 정지 — 반대 방향(복귀)은 항상 허용.
+        float distFromSpawn = transform.position.x - spawnX;
+        bool wouldLeaveLeash = (distFromSpawn >= leashRange && dir > 0f) || (distFromSpawn <= -leashRange && dir < 0f);
+        if (wouldLeaveLeash)
+        {
+            SetHorizontalVelocity(0f);
+            FaceDirection(dir);
+            return;
+        }
+
+        SetHorizontalVelocity(dir * moveSpeed);
+        FaceDirection(dir);
+    }
+
+    void StartAttack(float dx)
+    {
+        state = AiState.Windup;
+        stateTimer = 0f;
+        attackHitDone = false;
+        SetHorizontalVelocity(0f);
+        FaceDirection(Mathf.Sign(dx));
+        TestLog.Event("dummy_attack", "windup_start");
+    }
+
+    void AttackLogic()
+    {
+        SetHorizontalVelocity(0f); // 공격 중엔 반드시 정지
+        stateTimer += Time.deltaTime;
+
+        if (state == AiState.Windup)
+        {
+            float t = windupDuration > 0f ? Mathf.Clamp01(stateTimer / windupDuration) : 1f;
+            SetSpearLocalPos(Vector2.Lerp(spearIdleLocalPos, spearWindupLocalPos, t));
+            // 판정은 Thrust(창을 앞으로 찌르는 순간)에서만 — Windup(예비동작) 중 체크는 되돌림(사용자
+            // 피드백: 애니메이션이 "시작되는" 순간부터 판정돼버려 너무 이름. 스펙: 찌르는 순간에만 판정).
+            if (stateTimer >= windupDuration)
+            {
+                state = AiState.Thrust;
+                stateTimer = 0f;
+                attackClock = 0f;
+                attackHitDone = false;
+                TestLog.Event("dummy_attack", "thrust_start");
+            }
+        }
+        else if (state == AiState.Thrust)
+        {
+            float t = thrustDuration > 0f ? Mathf.Clamp01(stateTimer / thrustDuration) : 1f;
+            SetSpearLocalPos(Vector2.Lerp(spearWindupLocalPos, spearThrustLocalPos, t));
+            attackClock = stateTimer;
+            if (!attackHitDone) ResolveThrustWindow();
+            if (stateTimer >= thrustDuration)
+            {
+                state = AiState.Recover;
+                stateTimer = 0f;
+                TestLog.Event("dummy_attack", "recover_start");
+            }
+        }
+        else // Recover
+        {
+            float t = recoverDuration > 0f ? Mathf.Clamp01(stateTimer / recoverDuration) : 1f;
+            SetSpearLocalPos(Vector2.Lerp(spearThrustLocalPos, spearIdleLocalPos, t));
+            // 판정 창(hitTime + dodgeWindowPost)이 Thrust 길이를 넘길 수 있어 Recover에서도 계속 이어서 본다.
+            attackClock = thrustDuration + stateTimer;
+            if (!attackHitDone) ResolveThrustWindow();
+            if (stateTimer >= recoverDuration)
+            {
+                state = AiState.Chase;
+                attackCooldownCounter = attackCooldown;
+                TestLog.Event("dummy_attack", "attack_done");
+            }
+        }
+    }
+
+    // 찌르기 판정 타임라인(attackClock = Thrust 시작 기준 경과 시간):
+    //   [hitTime - dodgeWindowPre] ── 회피(대시-카운터) 인정 시작
+    //   [hitTime = thrustDuration * thrustHitNormalized] ── 창이 거의 다 뻗은 "판정 순간"
+    //   [hitTime + dodgeWindowPost] ── 회피 인정 종료 = 이 시점에 피해가 확정된다
+    // 피해를 창이 닫히는 순간에 확정하기 때문에 "판정 직후"에 들어온 회피도 유효하다(스펙).
+    void ResolveThrustWindow()
+    {
+        float hitTime = thrustDuration * Mathf.Clamp01(thrustHitNormalized);
+        if (attackClock < hitTime - dodgeWindowPre) return; // 아직 창이 안 열림
+
+        PlayerController pc = FindPlayerAtHitPoint();
+
+        // 저스트 닷지: 창이 열려 있는 동안 대시 회피 창(dodgeCounterGraceTimer)이 겹치면 기회로 소비(피해 무효)
+        if (pc != null && pc.TryConsumeDodge(this))
+        {
+            attackHitDone = true;
+            TestLog.Event("dummy_attack", "dodged_by_player");
+            return;
+        }
+
+        if (attackClock < hitTime + dodgeWindowPost) return; // 아직 피해 확정 시점 아님(회피 기회 유지)
+
+        attackHitDone = true;
+        if (pc == null) return; // 창이 닫히는 순간 사거리 밖 → 빗나감
+
+        // 무적인데 닷지가 소비되지 않음(이미 이 대시에서 발동 등) → 여전히 무적이라 피해 없음
+        if (pc.IsInvincible)
+        {
+            TestLog.Event("dummy_attack", "blocked_iframe");
+            return;
+        }
+
+        pc.TakeDamage(attackDamage);
+        Vector2 towardPlayer = ((Vector2)pc.transform.position - HitPoint()).normalized;
+        CombatFx.SpawnHitVfx(hitVfxPrefabs, pc.transform.position, towardPlayer, hitVfxOffsetTowardsPlayer);
+        CombatFx.SpawnDamageText(damageTextPrefab, pc.transform.position, attackDamage, damageTextColor);
+        TestLog.Event("dummy_attack", $"hit_player dmg={attackDamage}");
+    }
+
+    // 판정 기준점 = 창이 최대로 뻗었을 때의 창 끝 위치(월드). 창의 "현재" 위치를 쓰면 판정 창이
+    // Recover까지 이어질 때 이미 회수된 창 위치로 검사하게 돼 빗나가므로, 뻗은 지점으로 고정한다.
+    Vector2 HitPoint()
+    {
+        return transform.TransformPoint(spearThrustLocalPos);
+    }
+
+    PlayerController FindPlayerAtHitPoint()
+    {
+        Vector2 hitPoint = HitPoint();
+        // 대시 무적 중엔 플레이어가 PlayerInvincible 레이어라 Player 마스크로는 안 잡힘 → 두 레이어 모두 감지.
+        // (쿼리는 excludeLayers 영향 없음 — 대시로 적을 통과하는 중에도 감지됨)
+        Collider2D hit = Physics2D.OverlapCircle(hitPoint, hitRadius, playerHitMask);
+        if (hit != null)
+        {
+            PlayerController found = hit.GetComponent<PlayerController>();
+            if (found != null) return found;
+        }
+
+        // 터널링 방지: 빠른 대시(연장 대시 등)는 판정원을 한 프레임 사이에 그냥 통과해버려 위 단일 시점
+        // OverlapCircle이 아예 못 잡는 경우가 있었음("F키를 눌러도 씹힘" 사용자 리포트) → 지난 프레임
+        // 위치부터 이번 프레임 위치까지 이은 선분이 판정원과 스쳤는지도 함께 확인(스윕 체크).
+        if (player == null) return null;
+        Vector2 segStart = lastPlayerPos;
+        Vector2 segEnd = player.position;
+        Vector2 segDir = segEnd - segStart;
+        float segLenSq = segDir.sqrMagnitude;
+        float tParam = segLenSq > 0.0001f ? Mathf.Clamp01(Vector2.Dot(hitPoint - segStart, segDir) / segLenSq) : 0f;
+        Vector2 closest = segStart + segDir * tParam;
+        if (Vector2.Distance(hitPoint, closest) <= hitRadius)
+            return player.GetComponent<PlayerController>();
+        return null;
+    }
+
+    void SetSpearLocalPos(Vector2 pos)
+    {
+        if (spear != null) spear.localPosition = pos;
+    }
+
+    void SetHorizontalVelocity(float vx)
+    {
+        Vector2 v = rb.linearVelocity;
+        v.x = vx;
+        rb.linearVelocity = v;
+    }
+
+    // 몸 전체를 좌우 반전 — 창은 자식이라 부모 스케일 반전에 따라 자동으로 반대쪽을 향하게 된다.
+    void FaceDirection(float dir)
+    {
+        if (Mathf.Approximately(dir, 0f)) return;
+        Vector3 s = transform.localScale;
+        float sign = Mathf.Sign(dir);
+        s.x = sign * Mathf.Abs(s.x);
+        transform.localScale = s;
+    }
+
+    public void TakeDamage(int damage) { TakeDamage(damage, 0f); }
+
+    // 데미지 적용: HP 감소 + 흰색 피격 플래시 + 잠깐 정지(Hitstun) + 공격 중이었다면 공격 리셋 + HP 0 시 사망.
+    // knockbackDistance: 부호가 방향(+오른쪽/-왼쪽), 크기가 밀려날 거리(유닛). 때린 쪽이 계산해서 넘긴다.
+    public void TakeDamage(int damage, float knockbackDistance)
+    {
+        if (dead || damage <= 0) return;
+
+        if (!baseCaptured) { baseColor = sr.color; baseCaptured = true; }
+
+        currentHp -= damage;
+        sr.color = flashColor;
+        flashTimer = flashDuration;
+        TestLog.Event("dummy_damage", $"hp={currentHp}/{maxHp} dmg={damage}");
+
+        if (currentHp <= 0) { Die(); return; }
+
+        bool wasAttacking = state == AiState.Windup || state == AiState.Thrust || state == AiState.Recover;
+        if (wasAttacking)
+        {
+            SetSpearLocalPos(spearIdleLocalPos);
+            attackCooldownCounter = attackCooldown;
+            TestLog.Event("dummy_attack", "reset_by_hit");
+        }
+
+        state = AiState.Hitstun;
+        stateTimer = hitstunDuration;
+
+        // 넉백: 요청한 거리를 knockbackDuration 동안 등속으로 소진(실제 이동은 FixedUpdate가 처리).
+        // 속도 기반이라 지형/벽 충돌은 물리가 그대로 막아준다.
+        if (!Mathf.Approximately(knockbackDistance, 0f) && knockbackDuration > 0f)
+        {
+            knockbackRemaining = knockbackDistance;
+            knockbackSpeed = Mathf.Abs(knockbackDistance) / knockbackDuration;
+        }
+        else knockbackRemaining = 0f;
+    }
+
+    void Die()
+    {
+        dead = true;
+        currentHp = 0;
+        SetHorizontalVelocity(0f);
+        TestLog.Event("dummy_damage", "died");
+        if (respawnDelay > 0f) StartCoroutine(RespawnAfter(respawnDelay));
+        else gameObject.SetActive(false);
+    }
+
+    IEnumerator RespawnAfter(float delay)
+    {
+        sr.enabled = false;
+        yield return new WaitForSeconds(delay);
+        currentHp = maxHp;
+        dead = false;
+        state = AiState.Chase;
+        SetSpearLocalPos(spearIdleLocalPos);
+        if (baseCaptured) sr.color = baseColor;
+        sr.enabled = true;
+        TestLog.Event("dummy_damage", "respawned");
+    }
+}
