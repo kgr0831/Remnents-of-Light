@@ -217,8 +217,14 @@ public class PlayerController : MonoBehaviour
             if (isWallSliding) {
                 sr.flipX = (wallDirX == 1);
             } else {
-                if (moveInput.x > 0.01f) sr.flipX = false;
-                else if (moveInput.x < -0.01f) sr.flipX = true;
+                Vector3 currentScale = transform.localScale;
+                if (moveInput.x > 0.01f){
+                    sr.flipX = false;
+                }
+                else if (moveInput.x < -0.01f)
+                {
+                    sr.flipX = true;
+                }
             }
         }
     }
