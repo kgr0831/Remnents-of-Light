@@ -39,8 +39,9 @@
 | `dummy_damage` | 더미 몬스터 TakeDamage 시 HP 감소·피격 플래시·HP 0 사망 |
 | `dummy_attack` | 더미 몬스터 추적→사거리 진입시 정지+창찌르기(windup/thrust/recover)→플레이어 피격, 공격 중 피격시 리셋 |
 | `player_attack` | 플레이어 1-2타 콤보(Slash1/Slash2) 판정+데미지+히트스톱/카메라쉐이크 트리거 |
+| `ilseom` | 일섬 — 우클릭 2초 차지(취소/완료), 발동 시 무적·경로 판정(벽 1순위)·처형 피격 4배·20초 쿨타임 |
 | `combo_window` | 3타 콤보 입력 윈도우 내 연결 |
-| `parry_timing` | 패링 유효 프레임 판정 |
+| `parry_timing` | 패링 — 우클릭 탭 판정(적 공격 범위 원 ↔ 1타 히트박스 겹침), 성공 시 해당 공격 무효화 + 구형 실드 1회 방어 |
 | `room_transition` | 방 전환 시 세이브 트리거 |
 
 새 전투 동작을 추가할 때는 이 표에 채널을 먼저 추가하고, `PlayTestRunner` 시나리오와 짝을 맞춘다.

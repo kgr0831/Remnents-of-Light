@@ -123,7 +123,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 100
+  spritePixelsToUnits: 32
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 0
   alphaUsage: 1
@@ -175,19 +175,19 @@ TextureImporter:
       name: Resistance_Up_0
       rect:
         serializedVersion: 2
-        x: 43
-        y: 107
-        width: 37
-        height: 13
+        x: 0
+        y: 96
+        width: 32
+        height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: fb09d459f2425a450800000000000000
+      spriteID: 0dad609ddaf6e484380f57ea7dd5cb65
       internalID: 6099321057130156223
       vertices: []
       indices: 
@@ -197,19 +197,19 @@ TextureImporter:
       name: Resistance_Up_1
       rect:
         serializedVersion: 2
-        x: 72
-        y: 104
-        width: 9
-        height: 8
+        x: 32
+        y: 96
+        width: 32
+        height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 057e3cc32994a96d0800000000000000
+      spriteID: 3ab1ceb42569b354586be50cff65e11d
       internalID: -2982990910746007728
       vertices: []
       indices: 
@@ -219,19 +219,19 @@ TextureImporter:
       name: Resistance_Up_2
       rect:
         serializedVersion: 2
-        x: 79
-        y: 112
-        width: 9
-        height: 8
+        x: 64
+        y: 96
+        width: 32
+        height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: fe1fba3bdb42b7970800000000000000
+      spriteID: 164993553470be048898ba7bf4360e00
       internalID: 8753630697906500079
       vertices: []
       indices: 
@@ -241,19 +241,19 @@ TextureImporter:
       name: Resistance_Up_3
       rect:
         serializedVersion: 2
-        x: 80
-        y: 104
-        width: 8
-        height: 9
+        x: 96
+        y: 96
+        width: 32
+        height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: fd4550929db4d4260800000000000000
+      spriteID: 930708495d2b9444fbc312797cd86738
       internalID: 7083401184991859935
       vertices: []
       indices: 
@@ -263,19 +263,19 @@ TextureImporter:
       name: Resistance_Up_4
       rect:
         serializedVersion: 2
-        x: 104
-        y: 111
-        width: 8
-        height: 9
+        x: 128
+        y: 96
+        width: 32
+        height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 97b448fe94e2c92a0800000000000000
+      spriteID: a712ed220e6b83849adcd5a4194df43c
       internalID: -6729452848112448647
       vertices: []
       indices: 
@@ -285,19 +285,19 @@ TextureImporter:
       name: Resistance_Up_5
       rect:
         serializedVersion: 2
-        x: 104
-        y: 104
-        width: 9
-        height: 8
+        x: 160
+        y: 96
+        width: 32
+        height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 9bd7e74557eee34c0800000000000000
+      spriteID: 29a12edc0a20b6543bc5d98aae1837c4
       internalID: -4305742006023455303
       vertices: []
       indices: 
@@ -307,19 +307,19 @@ TextureImporter:
       name: Resistance_Up_6
       rect:
         serializedVersion: 2
-        x: 111
-        y: 112
-        width: 9
-        height: 8
+        x: 0
+        y: 64
+        width: 32
+        height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: c746512e9e9e12d20800000000000000
+      spriteID: a43f0f512f1c9e04280677a564553801
       internalID: 3252137596667913340
       vertices: []
       indices: 
@@ -329,19 +329,19 @@ TextureImporter:
       name: Resistance_Up_7
       rect:
         serializedVersion: 2
-        x: 112
-        y: 103
-        width: 11
-        height: 10
+        x: 32
+        y: 64
+        width: 32
+        height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 948945bc2a4fae730800000000000000
+      spriteID: 45c2937b52cc6c84b82e4b2d9066fe1e
       internalID: 4029301796669528137
       vertices: []
       indices: 
@@ -351,19 +351,19 @@ TextureImporter:
       name: Resistance_Up_8
       rect:
         serializedVersion: 2
-        x: 136
-        y: 111
-        width: 8
-        height: 9
+        x: 64
+        y: 64
+        width: 32
+        height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: ca05d13e935ef87c0800000000000000
+      spriteID: 380d8924bc3b30f43a3823ed8e942e30
       internalID: -4066779901706022740
       vertices: []
       indices: 
@@ -373,19 +373,19 @@ TextureImporter:
       name: Resistance_Up_9
       rect:
         serializedVersion: 2
-        x: 136
-        y: 104
-        width: 9
-        height: 8
+        x: 96
+        y: 64
+        width: 32
+        height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 4f18d2b56fe61c650800000000000000
+      spriteID: 91058ed412345a647b78af233a6de254
       internalID: 6251399762137678324
       vertices: []
       indices: 
@@ -395,19 +395,19 @@ TextureImporter:
       name: Resistance_Up_10
       rect:
         serializedVersion: 2
-        x: 143
-        y: 104
-        width: 12
-        height: 16
+        x: 128
+        y: 64
+        width: 32
+        height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: ad318a995ab1a50e0800000000000000
+      spriteID: 226b2c521f869114283763858a08620a
       internalID: -2280479863248251942
       vertices: []
       indices: 
@@ -417,19 +417,19 @@ TextureImporter:
       name: Resistance_Up_11
       rect:
         serializedVersion: 2
-        x: 161
-        y: 77
-        width: 30
-        height: 43
+        x: 160
+        y: 64
+        width: 32
+        height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: d62e6bb37af4d12b0800000000000000
+      spriteID: d7959b5ebdaa16d4eb053d79049b05dd
       internalID: -5612241980953795987
       vertices: []
       indices: 
@@ -439,284 +439,20 @@ TextureImporter:
       name: Resistance_Up_12
       rect:
         serializedVersion: 2
-        x: 168
-        y: 111
-        width: 8
-        height: 9
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: caa802bb7f8c2ae30800000000000000
-      internalID: 4513390742900607660
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Resistance_Up_13
-      rect:
-        serializedVersion: 2
-        x: 168
-        y: 104
-        width: 9
-        height: 8
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 1ae04dd86906662e0800000000000000
-      internalID: -2132911173772505439
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Resistance_Up_14
-      rect:
-        serializedVersion: 2
         x: 0
-        y: 45
+        y: 32
         width: 32
-        height: 43
+        height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 1669733ee31547630800000000000000
-      internalID: 3923850505888437857
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Resistance_Up_15
-      rect:
-        serializedVersion: 2
-        x: 8
-        y: 79
-        width: 8
-        height: 9
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 55a94eeedb92ac1e0800000000000000
-      internalID: -2176881574146696619
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Resistance_Up_16
-      rect:
-        serializedVersion: 2
-        x: 8
-        y: 72
-        width: 9
-        height: 8
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: ee39e5cfc2bec28e0800000000000000
-      internalID: -1716738779489856530
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Resistance_Up_17
-      rect:
-        serializedVersion: 2
-        x: 40
-        y: 79
-        width: 8
-        height: 9
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 76382e9619f22e9c0800000000000000
-      internalID: -3899502025756212377
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Resistance_Up_18
-      rect:
-        serializedVersion: 2
-        x: 40
-        y: 72
-        width: 9
-        height: 8
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: d3656fee735f6ed30800000000000000
-      internalID: 4460522101538182717
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Resistance_Up_19
-      rect:
-        serializedVersion: 2
-        x: 47
-        y: 72
-        width: 12
-        height: 16
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 38a531fea126fa120800000000000000
-      internalID: 2427266591995681411
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Resistance_Up_20
-      rect:
-        serializedVersion: 2
-        x: 72
-        y: 79
-        width: 8
-        height: 9
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 3f4e73ec116f357c0800000000000000
-      internalID: -4083649880760261389
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Resistance_Up_21
-      rect:
-        serializedVersion: 2
-        x: 72
-        y: 72
-        width: 9
-        height: 8
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 41b6fb9ba41f124b0800000000000000
-      internalID: -5466823169404867820
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Resistance_Up_22
-      rect:
-        serializedVersion: 2
-        x: 79
-        y: 72
-        width: 12
-        height: 16
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 010769011f8858d70800000000000000
-      internalID: 9044785995590299664
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Resistance_Up_23
-      rect:
-        serializedVersion: 2
-        x: 100
-        y: 69
-        width: 24
-        height: 19
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 2fea35fe69f875dc0800000000000000
-      internalID: -3650291094537392398
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Resistance_Up_24
-      rect:
-        serializedVersion: 2
-        x: 131
-        y: 75
-        width: 26
-        height: 7
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 9bfbc7cdcc0fed6b0800000000000000
-      internalID: -5269509751313743943
+      spriteID: 72e14df8cdaae0e4fb7b8f2df1007471
+      internalID: 4513390742900607660
       vertices: []
       indices: 
       edges: []
@@ -725,7 +461,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: fa30261e2ea90e3479422f23985847c5
     internalID: 0
     vertices: []
     indices: 

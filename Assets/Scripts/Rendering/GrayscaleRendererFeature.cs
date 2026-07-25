@@ -89,6 +89,9 @@ public class GrayscaleRendererFeature : ScriptableRendererFeature
         private static readonly int _focusRadiusId   = Shader.PropertyToID("_FocusRadius");
         private static readonly int _focusSoftnessId = Shader.PropertyToID("_FocusSoftness");
         private static readonly ShaderTagId _sprite2DTag = new ShaderTagId("Universal2D");
+        // TMP 데미지 텍스트처럼 LightMode 태그가 없는 패스는 SRPDefaultUnlit으로 수집된다.
+        // (URP 2D Renderer가 수집하는 태그도 이 둘뿐 — DrawRenderer2DPass.k_ShaderTags)
+        private static readonly ShaderTagId _unlitTag = new ShaderTagId("SRPDefaultUnlit");
 
         private int _protectedLayerMask;
 
@@ -171,22 +174,34 @@ public class GrayscaleRendererFeature : ScriptableRendererFeature
                 UniversalLightData     lightData     = frameData.Get<UniversalLightData>();
 
                 var filterSettings = new FilteringSettings(RenderQueueRange.all, _protectedLayerMask);
-                var drawSettings = RenderingUtils.CreateDrawingSettings(
+
+                // 1) 스프라이트(Universal2D): 2D 라이트 텍스처 전역 바인딩 의존을 피하려 언릿으로 오버라이드.
+                var spriteDraw = RenderingUtils.CreateDrawingSettings(
                     _sprite2DTag, renderingData, cameraData, lightData, SortingCriteria.CommonTransparent);
-                drawSettings.overrideMaterial = _protectedMat;
-                drawSettings.overrideMaterialPassIndex = 0;
-                var rendererListParams = new RendererListParams(renderingData.cullResults, drawSettings, filterSettings);
-                RendererListHandle rendererListHandle = renderGraph.CreateRendererList(rendererListParams);
+                spriteDraw.overrideMaterial = _protectedMat;
+                spriteDraw.overrideMaterialPassIndex = 0;
+                RendererListHandle spriteList = renderGraph.CreateRendererList(
+                    new RendererListParams(renderingData.cullResults, spriteDraw, filterSettings));
+
+                // 2) TMP 데미지 텍스트(SRPDefaultUnlit): SDF 셰이더가 자기 머티리얼(폰트 아틀라스 · 아웃라인
+                //    파라미터)을 그대로 써야 글리프가 나오므로 여기선 오버라이드하지 않는다.
+                var textDraw = RenderingUtils.CreateDrawingSettings(
+                    _unlitTag, renderingData, cameraData, lightData, SortingCriteria.CommonTransparent);
+                RendererListHandle textList = renderGraph.CreateRendererList(
+                    new RendererListParams(renderingData.cullResults, textDraw, filterSettings));
 
                 using (var builder = renderGraph.AddRasterRenderPass<ProtectPassData>("GrayscaleProtectLayer", out var pData, profilingSampler))
                 {
-                    pData.rendererListHandle = rendererListHandle;
-                    builder.UseRendererList(rendererListHandle);
+                    pData.spriteList = spriteList;
+                    pData.textList = textList;
+                    builder.UseRendererList(spriteList);
+                    builder.UseRendererList(textList);
                     // ReadWrite: 기존 화면 내용을 유지한 채 그 위에 알파 블렌딩(Write면 이전 내용이 버려짐)
                     builder.SetRenderAttachment(src, 0, AccessFlags.ReadWrite);
                     builder.SetRenderFunc((ProtectPassData data, RasterGraphContext context) =>
                     {
-                        context.cmd.DrawRendererList(data.rendererListHandle);
+                        context.cmd.DrawRendererList(data.spriteList);
+                        context.cmd.DrawRendererList(data.textList);
                     });
                 }
             }
@@ -200,7 +215,8 @@ public class GrayscaleRendererFeature : ScriptableRendererFeature
 
         private class ProtectPassData
         {
-            public RendererListHandle rendererListHandle;
+            public RendererListHandle spriteList;
+            public RendererListHandle textList;
         }
     }
 }

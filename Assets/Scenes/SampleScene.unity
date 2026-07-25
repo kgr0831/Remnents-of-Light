@@ -307,8 +307,8 @@ MonoBehaviour:
   flashColor: {r: 1, g: 1, b: 1, a: 1}
   flashDuration: 0.08
   respawnDelay: 0
-  moveSpeed: 3
-  attackRange: 1.8
+  moveSpeed: 0
+  attackRange: 2.4
   player: {fileID: 0}
   leashRange: 12
   spear: {fileID: 0}
@@ -327,12 +327,6 @@ MonoBehaviour:
   playerLayer:
     serializedVersion: 2
     m_Bits: 0
-  hitVfxPrefabs:
-  - {fileID: 4586780444957040233, guid: d68a28af35c43334fa81441ad9655a62, type: 3}
-  - {fileID: 974570416307025816, guid: 7dcc41a6bab82c04fb7d541e24ffc54d, type: 3}
-  - {fileID: 4132879545309861579, guid: 4e583d54e3952ba47bfcf4db015a4995, type: 3}
-  - {fileID: 861423291395358024, guid: e9fd3dac69f870b4381056a8e09f97d3, type: 3}
-  hitVfxOffsetTowardsPlayer: 0.3
   damageTextPrefab: {fileID: 1862679126408685501, guid: 95d233be8196c274fa3787f1224378e8, type: 3}
   damageTextColor: {r: 1, g: 0.3, b: 0.3, a: 1}
   hitstunDuration: 0.25
@@ -674,7 +668,7 @@ MonoBehaviour:
     m_Bits: 1
   m_VolumeTrigger: {fileID: 0}
   m_VolumeFrameworkUpdateModeOption: 2
-  m_RenderPostProcessing: 0
+  m_RenderPostProcessing: 1
   m_Antialiasing: 0
   m_AntialiasingQuality: 2
   m_StopNaN: 0
@@ -2290,7 +2284,7 @@ BoxCollider2D:
   m_Offset: {x: 0, y: 0.7}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.428571, y: 0.03}
+    pivot: {x: 0.46, y: 0.03}
     oldSize: {x: 7, y: 2.3}
     newSize: {x: 4.375, y: 1.4375}
     adaptiveTilingThreshold: 0.5
@@ -2388,9 +2382,19 @@ MonoBehaviour:
   - {fileID: 974570416307025816, guid: 7dcc41a6bab82c04fb7d541e24ffc54d, type: 3}
   - {fileID: 4132879545309861579, guid: 4e583d54e3952ba47bfcf4db015a4995, type: 3}
   - {fileID: 861423291395358024, guid: e9fd3dac69f870b4381056a8e09f97d3, type: 3}
+  - {fileID: 7337765275446321282, guid: ef3ec3ac27b244aba2e59dd82ba151b4, type: 3}
   hitVfxOffsetTowardsEnemy: 0.3
   damageTextPrefab: {fileID: 1862679126408685501, guid: 95d233be8196c274fa3787f1224378e8, type: 3}
   damageTextColor: {r: 1, g: 1, b: 1, a: 1}
+  critChance: 0.3
+  critDamageMultiplierMin: 2
+  critDamageMultiplierMax: 3
+  critHitVfxPrefab: {fileID: 2419237572618388912, guid: 8c831a9780964a6c835f28396b769671, type: 3}
+  executionHitVfxPrefab: {fileID: 4431179662341614212, guid: a34220dfcbac4f3198a5551ba111b08c, type: 3}
+  critTextColor: {r: 1, g: 0.831, b: 0, a: 1}
+  executionTextColor: {r: 1, g: 0.098, b: 0.133, a: 1}
+  critShakeMultiplier: 2
+  critHitstopMultiplier: 2
   dodgeCounterEnabled: 1
   dodgeCounterGraceWindow: 0.35
   dodgeCounterInputWindow: 2
@@ -2416,6 +2420,67 @@ MonoBehaviour:
   dodgeGrayscaleRampOut: 0.2
   dodgeCamPanAmount: 1.2
   dodgeCamZoomAmount: 0.8
+  ilseomEnabled: 1
+  ilseomChargeTime: 2
+  ilseomCooldown: 20
+  ilseomDistanceMultiplier: 2
+  ilseomDamageMultiplier: 4
+  ilseomChargeDamageTakenMultiplier: 0.5
+  ilseomPastEnemyDistance: 0.8
+  ilseomWallMargin: 0.25
+  ilseomMoveDuration: 0.1
+  ilseomMoveAlpha: 0.15
+  ilseomPathHeight: 1.4
+  ilseomChargeState: Glitch Samurai-Glitch Out
+  ilseomChargeFreezeFrame: 0
+  ilseomChargeFrameCount: 5
+  ilseomGlitchOutDuration: 0.4167
+  ilseomSweepState: Glitch Samurai-Glitch Sweep
+  ilseomSweepDuration: 0.5
+  ilseomExitState: Glitch Samurai-Idle
+  ilseomChargePixelMaterial: {fileID: 2100000, guid: eb229b0619bfbdc4585868516ccf9890, type: 2}
+  ilseomChargePixelCount: 36
+  ilseomGatherOffset: {x: 0.38, y: 0.3}
+  ilseomChargeShakeStartDelay: 0.5
+  ilseomChargeShakeMultiplier: 1.5
+  ilseomCancelFxDuration: 0.25
+  ilseomFinishFxDuration: 0.18
+  ilseomBuffPopPrefab: {fileID: 652024072633086750, guid: 649f171b08bc7fe47b81c621fdfc0740, type: 3}
+  ilseomBuffPopHeight: 1.6
+  ilseomBuffPopScale: 1.5
+  ilseomStreakMaterial: {fileID: 2100000, guid: 1057ca2cc662dc64087af8b8b75a6a19, type: 2}
+  ilseomStreakHeight: 1.5
+  ilseomStreakSweep: 0.12
+  ilseomStreakFade: 0.28
+  ilseomStreakSortingOffset: -1
+  ilseomStreakLayers: 3
+  ilseomStreakLayerHeightSpread: 1.4
+  ilseomStreakLayerFadeSpread: 1.25
+  parryEnabled: 1
+  parryTapMaxHold: 0.2
+  parryMotionDuration: 0.4167
+  parryFailCooldown: 0.5
+  parrySearchRadius: 5
+  parryFxHeightOffset: 0.35
+  parryText: "\uB9C9\uC544\uB0C4!"
+  parryShieldMaterial: {fileID: 2100000, guid: 5cde408a675d83a449593652e17884b6, type: 2}
+  parryShieldOffset: {x: -0.08, y: 0.56}
+  parryShieldRadius: 1.0028
+  parryShieldBreakDuration: 0.45
+  parryShieldSortingOffset: 2
+  focusPulseRampIn: 0.06
+  focusPulseHold: 0.12
+  focusPulseRampOut: 0.26
+  parryCamPanAmount: 0.8
+  parryCamZoomAmount: 0.7
+  ilseomCamPanAmount: 1
+  ilseomCamZoomAmount: 1.1
+  playerBloomMaterial: {fileID: 2100000, guid: 0b5c56083d56a504887362901970a11e, type: 2}
+  ilseomBloomFadeOut: 0.35
+  ilseomBloomCancelFadeOut: 0.18
+  playerBloomSortingOffset: 1
+  logMovementStall: 1
+  stallLogThreshold: 0.3
 --- !u!212 &1377041975
 SpriteRenderer:
   serializedVersion: 2
@@ -3144,6 +3209,55 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 2, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2021938255
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2021938257}
+  - component: {fileID: 2021938256}
+  m_Layer: 0
+  m_Name: Global Volume
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &2021938256
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2021938255}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.RenderPipelines.Core.Runtime::UnityEngine.Rendering.Volume
+  m_IsGlobal: 1
+  priority: 0
+  blendDistance: 0
+  weight: 1
+  sharedProfile: {fileID: 11400000, guid: 25009b0fcaccb3b42b9142dfcf7de5a0, type: 2}
+--- !u!4 &2021938257
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2021938255}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4095,3 +4209,4 @@ SceneRoots:
   - {fileID: 1375790612}
   - {fileID: 236440926}
   - {fileID: 946352215}
+  - {fileID: 2021938257}

@@ -25,7 +25,14 @@ public class DummyEnemy : MonoBehaviour
 
     [Header("Chase AI")]
     public float moveSpeed = 3f;
-    public float attackRange = 1.8f; // 이 거리 이하로 플레이어가 들어오면 멈추고 공격
+    // 이 거리 이하로 플레이어가 들어오면 멈추고 공격.
+    // 창의 실제 도달거리 = spearThrustLocalPos.x(1.9) × 몸 스케일(1.2) = 2.28. 예전 값 1.8은 이보다
+    // 짧아서, 적이 멈춘 뒤 찌르면 창끝이 플레이어를 0.48만큼 "관통해" 뒤쪽에 꽂혔다. 몸통 콜라이더가
+    // 넓어(1.3) 피격 판정 자체는 났지만, 플레이어의 1타 공격 범위(앞쪽 0.2~1.8)와는 반대편이라
+    // 패링 판정(스펙 3: 적 공격 범위 ∩ 1타 히트박스)이 수학적으로 절대 성립할 수 없었다
+    // — 겹치려면 거리 ≥ 1.98이 필요한데 공격 자체가 ≤1.8에서만 시작됐다(실측 2026-07-25).
+    // 창끝이 플레이어 몸 앞쪽에 닿는 거리로 맞춰 둘 다 정상 동작하게 한다(패링 유효 거리 1.98~2.4).
+    public float attackRange = 2.4f;
     public Transform player;         // 비워두면 "Player" 태그로 자동 탐색
     // 스폰 지점 기준 이 거리보다 더 쫓아가지 않음 — 리쉬 밖에서도 계속 쫓다가 맵 경계를 넘어가면
     // 바닥이 없는 곳으로 떨어져(중력 gravityScale=1) 무한히 낙하해 사실상 영구 소실되는 버그가 있었음
@@ -56,9 +63,9 @@ public class DummyEnemy : MonoBehaviour
     public float dodgeWindowPost = 0.05f;
     public LayerMask playerLayer; // "Player"만 포함 — 대시 무적 중엔 gameObject.layer가 PlayerInvincible로 바뀌어 자동으로 빗나감
 
-    [Header("Hit VFX (플레이어를 맞췄을 때)")]
-    public GameObject[] hitVfxPrefabs;
-    public float hitVfxOffsetTowardsPlayer = 0.3f;
+    // 히트 스파크(Hit 프리팹)는 플레이어가 때릴 때만 뜨므로(사용자 스펙) 여기엔 VFX 프리팹 필드가 없다 —
+    // 적이 플레이어를 맞췄을 때는 데미지 텍스트만 띄운다.
+    [Header("Hit 표시 (플레이어를 맞췄을 때)")]
     public GameObject damageTextPrefab;
     public Color damageTextColor = new Color(1f, 0.3f, 0.3f, 1f); // 플레이어 피격은 붉은 계열로 구분
 
@@ -285,11 +292,43 @@ public class DummyEnemy : MonoBehaviour
             return;
         }
 
+        // 패링 성공으로 생긴 구형 실드가 남아 있으면 이번 공격 1회를 대신 막고 깨진다(패링 스펙 6).
+        // 무적 판정과 같은 위치에서 걸러야 데미지뿐 아니라 데미지 텍스트도 안 뜬다.
+        if (pc.TryConsumeParryShield())
+        {
+            TestLog.Event("dummy_attack", "blocked_parry_shield");
+            return;
+        }
+
         pc.TakeDamage(attackDamage);
-        Vector2 towardPlayer = ((Vector2)pc.transform.position - HitPoint()).normalized;
-        CombatFx.SpawnHitVfx(hitVfxPrefabs, pc.transform.position, towardPlayer, hitVfxOffsetTowardsPlayer);
         CombatFx.SpawnDamageText(damageTextPrefab, pc.transform.position, attackDamage, damageTextColor);
         TestLog.Event("dummy_attack", $"hit_player dmg={attackDamage}");
+    }
+
+    // ── 처형(Execution) 연동 ──────────────────────────────────────────────────────────────
+    // 체력이 maxHp의 20% 이하이면 커서 호버로 처형할 수 있다.
+    // 임계값은 PlayerController.executionHpThreshold에서 제어하지만, 이 프로퍼티는 하드코딩된
+    // 0.2f를 기본값으로 쓴다 — PlayerController가 외부에서 재검증하므로 여기서의 값은 빠른 필터링용.
+    public bool IsExecutable => !dead && currentHp > 0 && (float)currentHp / maxHp <= 0.2f;
+
+    // ── 패링(PlayerController.TryParry) 연동 ────────────────────────────────────────────────
+    // 스펙 3: 패링이 성립하려면 (공격 모션 중) + ((B) 아직 그 공격에 맞지 않았거나 | (A) 대시 회피
+    // 인정 창이 열려 있음). 두 조건을 따로 물어볼 수 있게 상태를 두 개로 쪼개 노출한다 —
+    // (A)만 만족하는 경우란 "대시 무적으로 이미 흘려낸 공격을 그 유예 중에 되받아치는" 상황이다.
+    public bool IsAttacking =>
+        !dead && (state == AiState.Windup || state == AiState.Thrust || state == AiState.Recover);
+    public bool IsAttackUnresolved => !attackHitDone;
+
+    // 적의 "공격 범위" = ResolveThrustWindow가 실제로 쓰는 판정원(창끝 중심, 반지름 hitRadius).
+    public Vector2 AttackHitPoint => HitPoint();
+    public float AttackHitRadius => hitRadius;
+
+    // 패링 성공 — 이번 찌르기를 판정 종결 처리해 피해가 확정되지 않게 한다(스펙 5).
+    // 창 모션은 그대로 마저 재생된다(넉백·히트스턴 없음 — 스펙에 없는 동작을 추가하지 않는다).
+    public void ConsumeParry()
+    {
+        attackHitDone = true;
+        TestLog.Event("dummy_attack", "parried_by_player");
     }
 
     // 판정 기준점 = 창이 최대로 뻗었을 때의 창 끝 위치(월드). 창의 "현재" 위치를 쓰면 판정 창이

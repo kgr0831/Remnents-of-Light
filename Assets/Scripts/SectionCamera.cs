@@ -19,6 +19,8 @@ public class SectionCamera : MonoBehaviour
     Vector3 targetPos;
     Vector3 basePos;   // 구간 추적 정착 위치
     Vector3 shakeOffset;
+    Vector3 sustainOffset; // SetSustainedShake가 매 프레임 새로 뽑는 오프셋(Shake와 독립적으로 합산)
+    float sustainMagnitude;
     Vector3 focusOffset;   // FocusPulse가 파고들 때 basePos에 더해지는 오프셋
     float focusZoomDelta;  // orthographicSize에 더해지는 값(음수=줌인)
     int focusToken;        // 중복 FocusPulse 호출 시 이전 코루틴을 무력화(값만 덮어씀, 안전한 종료 보장)
@@ -40,6 +42,14 @@ public class SectionCamera : MonoBehaviour
             yield return null;
         }
         shakeOffset = Vector3.zero;
+    }
+
+    // 끝나는 시점이 정해져 있지 않은(입력을 떼야 끝나는) 쉐이크. 일섬 차지처럼 세기가 시간에 따라
+    // 점점 커지는 연출용 — 매 프레임 원하는 세기를 넣고, 끝낼 때 0을 넣는다.
+    // Shake()를 매 프레임 호출하는 방식은 코루틴이 프레임마다 쌓여 서로 shakeOffset을 덮어쓰므로 못 쓴다.
+    public void SetSustainedShake(float magnitude)
+    {
+        sustainMagnitude = Mathf.Max(0f, magnitude);
     }
 
     // UniTrio JustDodgeController의 카메라 팬+줌 참고 — worldPos 쪽으로 살짝 다가가며 줌인했다가 원복.
@@ -120,7 +130,12 @@ public class SectionCamera : MonoBehaviour
         float t = 1f - Mathf.Exp(-slideSpeed * Time.deltaTime);
         basePos = Vector3.Lerp(basePos, targetPos, t);
 
-        transform.position = basePos + shakeOffset + focusOffset;
+        // 지속 쉐이크는 unscaled 기준 난수라 히트스톱(timeScale=0) 중에도 계속 떨린다.
+        sustainOffset = sustainMagnitude > 0f
+            ? (Vector3)(Random.insideUnitCircle * sustainMagnitude)
+            : Vector3.zero;
+
+        transform.position = basePos + shakeOffset + sustainOffset + focusOffset;
         cam.orthographicSize = baseOrthoSize + focusZoomDelta;
     }
 }

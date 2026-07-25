@@ -85,6 +85,10 @@ public static class InputInjector
     public static void ReleaseAttack() => ReleaseMouseButton(MouseButton.Left);
     public static void PressParry() => PressMouseButton(MouseButton.Right);
     public static void ReleaseParry() => ReleaseMouseButton(MouseButton.Right);
+    // 일섬 차지 = "Charge" 액션(<Mouse>/rightButton). Parry와 같은 버튼에 걸려 있어 물리적으로 동일한 입력이다
+    // (회피-카운터 대기 중이 아니면 Parry 쪽은 아무 일도 하지 않는다).
+    public static void PressCharge() => PressMouseButton(MouseButton.Right);
+    public static void ReleaseCharge() => ReleaseMouseButton(MouseButton.Right);
 
     // Move is a "Dpad" composite bound to W/S/A/D.
     public static void SetMoveX(float x)

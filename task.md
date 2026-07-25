@@ -1157,6 +1157,299 @@
   재발 시 원인이 한 줄로 확정되고, 스톨이 없으면 아무것도 로그하지 않아 비용이 없다.
   사용자가 확신한 뒤 제거 예정(삭제는 승인 필요, 규칙4).
 
+## ✅ 일섬(一閃) 구현 + Hit VFX 정리 (2026-07-25)
+
+### 부수 요청: Hit VFX
+- Hit 프리팹 7개(`Hit01~03`, `HitVFX1~4`) 루트 스케일 **1.25 → 1.0** (요청한 0.8배와 정확히 일치).
+- `DummyEnemy.ResolveThrustWindow`에서 `CombatFx.SpawnHitVfx` 호출 제거 — **플레이어가 때릴 때만** 스파크가
+  뜬다. 적이 플레이어를 맞출 때는 데미지 텍스트만. 고아가 된 `hitVfxPrefabs`/`hitVfxOffsetTowardsPlayer`
+  필드는 사용자 승인 후 삭제(씬에 있던 HitVFX1~4 참조 4개도 함께 사라짐, git에는 남아 있음).
+
+### 에셋 (MCP 에디터 작업)
+- **`Resistance_Up.png` 재슬라이스**: 자동 슬라이스가 25개의 제멋대로인 조각(37×13, 9×8, 30×43…)으로
+  깨져 있었음 → **32×32 그리드(6열×4행)** 로 재슬라이스, pivot Center, Point 필터, PPU 32.
+  내용이 있는 **0~12번 13칸만** 생성(13~23은 완전 투명 → Tight 메시가 깨질 수 있어 제외).
+  프레임 내용: `0` 빈칸 → `1~2` 조각 페이드인 → `3` 흰 플래시 → `4~7` 아이콘 유지 → `8` 흰 플래시 →
+  `9` 별 → `10` 가로선 → `11~12` 점으로 소멸. **"등장→유지→소멸"이 한 클립에 다 들어 있어** 스펙 2의
+  "재생 끝난 뒤 destroy"와 정확히 맞는다.
+  - ⚠️ **`TextureImporter.spritesheet`는 Unity 6에서 제거됨**(기존 `Editor/SetupAnimationsEditor.cs`가
+    아직 이 API를 쓰고 있어 CS0618 경고). 신규 경로는 `UnityEditor.U2D.Sprites.SpriteDataProviderFactories`
+    → `ISpriteEditorDataProvider.SetSpriteRects/Apply` + `UnityEditor.SpriteRect`
+    (assembly `Unity.2D.Sprite.Editor`, 리플렉션으로 존재 확인).
+- `Assets/VFX/BuffVFX/Animations/Resistance_Up.anim` — 13프레임 @12fps, 루프 OFF, 길이 **1.0833s**
+  (`AnimationClipSettings.stopTime = 13/12`로 마지막 프레임도 1/12초 표시. 기존 Hit01~03과 같은 규격).
+- `.../Controllers/Resistance_Up.controller`, `.../Prefabs/Resistance_Up.prefab`
+  (SpriteRenderer `Sprite-Lit-Default`·sortingOrder 999 + Animator `UnscaledTime` + 기존 **`HitVfxAutoReturn`**
+  재사용 → 클립 길이 뒤 자기 파괴 = 스펙 2 그대로).
+- `Assets/Shaders/IlseomChargePixels.shader` + `Assets/VFX/Ilseom/IlseomChargePixels.mat` (#7ebfc6).
+- 씬(`SampleScene`): Player의 `ilseomChargePixelMaterial`, `ilseomBuffPopPrefab` 할당 후 저장.
+
+### 픽셀 수집 연출 (스펙 4)
+- **픽셀 하나 = 메시에 미리 깔아둔 쿼드 1개**. 위치·알파·수렴·스월·버스트를 전부 **버텍스 셰이더**에서
+  계산 → CPU는 `_Progress` 하나만 갱신. 프래그먼트에서 파티클 N개를 루프 도는 방식(약 20M iter/frame 추정)
+  대신 정점 256개로 끝나 수십 배 저렴하다.
+- `IlseomChargeFx.cs`가 런타임에 메시+머티리얼을 만들어 **플레이어 자식**으로 붙인다 → 로컬 공간이
+  플레이어 기준 공간이 되고 부모 스케일(1.3)이 픽셀 크기에도 걸려 도트 크기가 스프라이트와 자동으로 맞는다.
+  정점을 원점에 몰아두므로 **바운즈를 직접 지정**해야 프러스텀 컬링에 안 잘린다.
+- 취소 시 왔던 방향으로 되튀며 페이드아웃(유리 파편), 발동 시 모인 자리에서 페이드아웃. 둘 다 unscaled 시간.
+- 셰이더 패스 태그는 **`LightMode = Universal2D`** — URP 2D Renderer는 `Universal2D`/`SRPDefaultUnlit`만
+  수집한다(`HitVfxAutoReturn.cs` 주석의 기존 실측 기록과 동일).
+
+### 🐛 발견·수정: **PlayerInput SendMessages는 Button 액션의 "뗌"을 전달하지 않는다**
+- 증상: 우클릭을 떼도 차지가 멈추지 않고 계속 쌓여 2초를 넘기면 **손을 떼지 않았는데도 저절로 발동**.
+  1차 플레이테스트에서 `charge_cancelled_early`가 아예 안 찍히고 `charge_complete`가 `charge_start`
+  정확히 2.0초 뒤에 찍힌 것으로 확정(Phase 1이 "거짓 통과"로 나와 잡아냄).
+- 원인(패키지 소스 직접 확인):
+  `Library/PackageCache/com.unity.inputsystem@21a28c3a6c83/InputSystem/Plugins/PlayerInput/PlayerInput.cs:1499`
+  ```csharp
+  // ATM we only care about `performed` and, in the case of value actions, `canceled`.
+  if (!(context.performed || (context.canceled && action.type == InputActionType.Value)))
+      return;
+  ```
+  → **Button 액션은 `performed`만 메시지로 오고 `canceled`는 절대 오지 않는다.**
+- 수정: `OnCharge(InputValue)` 메시지 방식을 버리고 `PollChargeInput()`에서
+  `chargeAction.IsPressed()`를 매 프레임 폴링(액션 조회 실패 시 `Mouse.current.rightButton` 폴백).
+  `DodgeCounterRoutine`이 이미 버튼 상태를 직접 폴링하는 것과 같은 방식으로 통일.
+- ⚠️ **같은 원인의 기존 잠재 버그**: `OnJump`의 `else { isJumpHeld = false; }` 분기도 **절대 실행되지 않는다**
+  → `lowJumpMultiplier`(짧게 누르면 낮게 뛰기)가 첫 점프 이후로 영구히 안 걸린다. 이번 범위 밖이라 미수정.
+
+### 검증 (`Tools/PlayTest/Ilseom`, 채널 `ilseom`)
+| Phase | 항목 | 실측 |
+|---|---|---|
+| 1 | 2초 전 릴리즈 → 취소 | `charge_cancelled_early` 0.70s(=2×0.35), `moved=0.00`, 레이어 정상 ✅ |
+| 2 | 발동 중 무적 | `phase2_mid invincible=True` (레이어 스왑 + `IsInvincible`) ✅ |
+| 2 | 경로 계산 | `path dist=5.80 max=7.20 wall=False enemies=1` — 적(+5.0) + `ilseomPastEnemyDistance`(0.8) 정확 ✅ |
+| 2 | 4배 피해 · 처형 VFX | `sweep_hit dmg=4 hits=1`, 더미 HP **20→16** ✅ |
+| 2 | 정지 위치 · 복원 | `traveled=5.80 expected=5.80 stopOk=True layerRestored=True hpDelta=4/4` ✅ |
+| 6 | 차지 중 피해 절반 | 더미 찌르기 `dmg=8` → `charge_damage_reduced 8->4`, `player_damage hp=96/100 dmg=4` ✅ |
+- ⚠️ **테스트 워크플로 함정**: `TestRecorder`(Unity Recorder)가 `captureDeltaTime`을 1/30로 고정하고
+  1280×720 MP4를 프레임마다 인코딩해 **실측 1.5fps**(게임 6초 = 실시간 120초)로 떨어진다. 정지가 아니라
+  진행 중이므로 성급히 중단하지 말 것. 기능 검증만 필요할 땐 녹화를 끄는 편이 낫다.
+
+### 🐛 발견·수정: 차지 시작 프레임에서 `Time.deltaTime`이 한 번 중복 가산
+- 증상: 2초 차지가 **1.67초**에 완충(라이브 실측 `charge_start` T=1.69 → `charge_complete` T=3.36).
+  자동 테스트에선 프레임이 고르기 때문에 오차가 1프레임(0.033s)뿐이어서 `2.00`으로 보이며 숨어 있었다.
+- 원인: `HandleIlseom`에서 `StartCharge()`(chargeTimer=0) 직후 같은 프레임의
+  `chargeTimer += Time.deltaTime`이 이어서 실행돼, **차지 시작 전의 프레임 간격**이 통째로 가산됨.
+  프레임이 튀면 `Time.maximumDeltaTime`(0.333s)까지 커져 최대 17% 일찍 완충된다.
+- 수정: 차지를 시작한 프레임에는 `return`으로 빠져 다음 프레임부터 누적.
+  수정 후 실측 `chargeTimer=18.149` vs 실제 경과 `18.482` → **한 프레임 뒤처짐**(절대 일찍 끝나지 않는 안전한 방향).
+
+### 🐛 발견·수정: `frac(sin(dot(...)))` 해시가 GPU에서 붕괴 → 픽셀이 링이 아니라 가로 띠
+- 증상: 픽셀이 원형으로 퍼지지 않고 **가로로 눌린 덩어리**. 스크린샷 픽셀 분포로 정량 확인:
+  x 폭 71px vs y 폭 27px. 후처리를 껐을 때도 동일해 블룸 번짐이 아님을 배제.
+- 원인: 파티클 인덱스가 정수라 `sin`의 인자가 커지고(≈632·n), GPU의 범위 축약 정밀도가 무너져
+  결과가 몇 개 값으로 뭉쳐 각도가 0·π 근처로 쏠림.
+- 수정 2가지: (a) 곱셈·`frac`만 쓰는 해시로 교체
+  (Dave Hoskins "Hash without Sine", shadertoy.com/view/4djSRW), (b) 각도를 **균등 분할 + 지터**
+  (`ang = (id + h.x*0.85) / _Count * 2π`) — 64개뿐이라 순수 난수로는 뭉치고 비는 구간이 생긴다.
+  `_Count`는 `IlseomChargeFx`가 메시 개수와 맞춰 넣는다.
+- 수정 후 실측: 시안 픽셀 분포 **종횡비 1.17**(≈원형), 개별 도트가 뚜렷.
+
+### ✅ 블룸 (스펙 추가 요청)
+- URP엔 오브젝트 단위 블룸이 없어 **"HDR로 1.0 위로 출력 + 임계값으로 골라내기"** 가 유일한 수단.
+  셰이더에 `_BloomBoost`(기본 2.0) 추가 → #7ebfc6 × 2.0 = **(0.99, 1.50, 1.55)**.
+  R만 1 아래로 남겨 시안 색조가 흰색으로 날아가지 않게 하고, G·B가 임계값 1.15를 넘어 시안 톤으로 번진다.
+  알파 블렌딩이라 페이드 인 중(알파 작을 때)엔 임계값을 못 넘어 **밝아질수록 자연히 번지기 시작**한다.
+- 씬 설정: `Global Volume`(isGlobal) + `Assets/VFX/Ilseom/IlseomBloomProfile.asset`
+  (threshold 1.15 / intensity 1.6 / scatter 0.72 / tint 시안 / HQ filtering),
+  Main Camera `renderPostProcessing` **False → True**. URP·카메라 HDR은 이미 켜져 있었음.
+- 임계값 1.15는 일반 스프라이트(LDR, 최대 1.0)가 **절대 못 넘는 값** → 일섬 픽셀만 빛난다.
+- ⚠️ **함정**: `VolumeProfile.Add<T>()`만 하면 오버라이드가 런타임 인스턴스로만 존재하고 저장 시
+  `components: - {fileID: 0}`으로 **날아간다**. `AssetDatabase.AddObjectToAsset(bloom, profile)`로
+  프로파일의 **서브에셋으로 등록**해야 직렬화된다. 처음엔 이걸 빼먹어 "블룸을 켰는데 아무 변화 없음"
+  (on/off 차이 0.99x)이었고, 에셋 텍스트를 직접 열어 `{fileID: 0}`을 보고 확정했다.
+- 검증(동일 배치에서 bloom.active만 토글): **차이 픽셀 2182개 / 최대 델타 689**,
+  흰색 스프라이트는 변화 없음 → 의도한 대상만 발광.
+
+### 사용자 추가 지시 반영
+- Hit 프리팹 0.8배 + 적 피격 시 Hit VFX 제거(위 참고).
+- **투명·이동 시간 0.5초 → 0.1초** (`ilseomMoveDuration`, 스크립트 기본값 + 씬 값 둘 다).
+  최대 사거리 7.2u 기준 이동 속도 72u/s(대시 20u/s의 3.6배). 전체 시퀀스 = 0.4167 + 0.1 + 0.5 = **1.017s**.
+
+### ✅ 후속 폴리싱 (2026-07-25, 같은 세션)
+- **일섬 종료 후 마지막 프레임 잔상 버그**: `Glitch Out`/`Glitch Sweep`은 애니메이터에서 **나가는 전이가
+  0개인 고아 상태** → 클립이 끝나도 그 상태에 머물러 마지막 프레임이 스프라이트에 남았다(대시는 전이가
+  있는 `Run`에 프리즈해서 무사했음). 수정: `RestoreAnimAfterIlseom()`이 일섬 종료(`finally`)·차지 취소
+  양쪽에서 `ilseomExitState`(기본 `Glitch Samurai-Idle`)로 `anim.Play` + `Update(0f)` → 한 프레임도 안 남음.
+  실측: 종료 후 clip=Idle·sprite=Idle_4 순환, 취소 후 clip=Idle. 차지 중엔 여전히 Glitch Out_0 고정.
+- **궤적 섬광 추가**(`IlseomSlashStreak.shader` + `IlseomSlashFx.cs`): 출발→도착을 잇는 쿼드 1개에
+  `_Progress`로 선두를 훑어 "빠르게 지나갔다"를 낸다. 코어 라인 + 레인별 파선(스피드 라인) + HDR 발광.
+  경로 확정 직후 스폰(`ilseomStreakSweep`/`Fade`/`Height`로 튜닝). 픽셀 스냅은 플레이어와 같은 1/32×스케일.
+- **홀드 이펙트 재작업**(사용자 요청 "계속 모이면서 가까워질수록 페이드 아웃"): 셰이더의 시계(`_Flow`,
+  차지 경과 초)와 세기(`_Progress`, 참여 픽셀 수)를 **분리**. 예전엔 `_Progress`로 t를 직접 만들어
+  완충 시 모든 픽셀 t=1 → "한 번 모이고 끝"이었다. 이제 픽셀마다 속도·위상이 다른 주기 흐름(`frac(_Flow*speed)`)
+  으로 링→수집점을 **계속 순환**하고, 수집점 근처(`_FadeOutFrac`)에서 흡수되듯 사라진다. 참여 픽셀 수는
+  `_Progress`가 게이팅(`activeGate`).
+- **수집점 위치·반투명**(사용자 요청): `ilseomGatherOffset` (0.55, 0.70) → **(0.38, 0.30)** (더 아래·왼쪽),
+  픽셀 색 alpha 1.0 → **0.72**(반투명).
+- **블룸 강도 상향**(사용자 요청, 2단계): intensity 1.6 → 3.6 → **5.2**, scatter 0.72 → **0.85**,
+  픽셀 `_BloomBoost` 2.0 → 3.0 → **4.5**(유효 최대 밝기 2.52, 임계값 1.15 여유). 궤적도 boost 4.5로 통일.
+
+### ✅ 2차 폴리싱 (2026-07-25, 사용자 반복 조정)
+- **정지 규칙 단순화**(사용자 변경): 예전 "벽 → 가장 먼 적 뒤 → 최대거리"에서 **"벽 → 최대거리"** 로.
+  적 위치는 이제 정지에 관여하지 않는다(경로 위 적 **피해 4배는 그대로 유지** — `ResolveIlseomPath`는
+  정지 거리만 벽/최대로 정하고, 그 구간 안 적을 여전히 `targets`로 모아 Sweep 판정에 쓴다).
+  `ilseomPastEnemyDistance` 필드는 **미사용**이 됨(주석 표기, 삭제는 승인 대기). 테스트의 `expectedTravel`도
+  항상 최대거리(7.2)로 갱신 → 실측 `path dist=7.20 wall=False enemies=1`, `traveled=7.20`, `hpDelta=4/4`.
+- **홀드 픽셀 톤/양**(사용자 요청): 색 #7ebfc6(청록) → **#5C9EF2(파랑)**, 알파 0.72 → **0.5**(반투명),
+  개수 64 → **36**, 에너지 느낌의 미세 깜빡임(`flicker = sin(_Flow*22 + 위상)`) 추가. 궤적 섬광도 같은 파란 톤.
+- **블룸 2단 상향**(사용자 요청): Volume intensity 1.6 → 3.6 → **5.2**, scatter → 0.85,
+  픽셀 `_BloomBoost` 2.0 → 3.0 → **4.5**. (반투명 0.5라 유효 최대 밝기 ≈2.14, 임계값 1.15 여유)
+- **수집점 위치**(사용자 요청 "더 아래·왼쪽"): `ilseomGatherOffset` (0.55,0.70) → **(0.38,0.30)**.
+- **Hit01/02/03 스프라이트 1.3배**(사용자 요청): 세 프리팹 루트 스케일 1.0 → **1.3**. HitVFX1~4는 1.0 유지
+  (앞서 0.8배로 줄인 7개 중 이 셋만 다시 키움). 적 피격 시 Hit VFX 미표시 규칙은 그대로.
+- **버프 팝(Resistance_Up) 위치·크기**(사용자 요청 "더 위로, 1.5배"): `ilseomBuffPopHeight` 1.0 → **1.6**,
+  신규 `ilseomBuffPopScale` = **1.5**(`SpawnBuffPop`에서 인스턴스 `localScale *= 1.5`). 2초 홀드 완료·쿨타임
+  완료 양쪽에서 같이 적용. 실측: pos.y 머리위 +1.60, scale (1.5,1.5,1.5), 아이콘 프레임 정상 표시.
+- **일섬 기능 테스트에서 녹화 제거**: `RunIlseomTest`가 `TestRecorder`를 호출하지 않게 함.
+  Recorder가 `captureDeltaTime`을 1/30로 고정해 ~1.5fps로 스로틀 → `WaitForSeconds`와 입력 주입 폴링이
+  어긋나 릴리즈가 1~2초 늦게 인식돼 **비결정적 FAIL**(mp4 파일 잠금 `0x80070020` 시 더 심함). 실시간
+  프레임으로는 매번 `[ASSERT] ilseom: PASS`(6/6). 영상이 필요하면 Dash showcase를 쓸 것.
+- **런타임 값 함정 재확인**: Play 세션이 정지 없이 남아 있으면(`frameCount`가 수만) 이전 세션 상태가
+  낡은 채 남는다. 결정적 검증 전 stop→play로 새 세션을 강제할 것.
+- 사용자 요청으로 **DummyEnemy `moveSpeed` 3 → 0**(씬 저장). 되돌리려면 3.
+
+### 스펙 해석 메모
+- **스펙 5가 자기모순**: "0.5초 이후부터 쉐이크" + "0배→1.5배까지 **2초간** 상승". 램프 곡선은 차지
+  전체(0~2초)에 두고 `ilseomChargeShakeStartDelay`(0.5s) 전에는 적용하지 않는 것으로 해석 — 두 문장을
+  동시에 만족하는 유일한 방법. 기준 세기는 피격 쉐이크와 같은 `attackShakeMagnitude`(씬 값 0.03)를 그대로
+  써서 그쪽 튜닝을 따라간다 → 최대 0.045.
+- 사용자 확정 2건: (a) 픽셀 수집 지점은 **바라보는 방향으로 미러링**(flipX=true면 왼쪽 위),
+  (b) 대시·좌클릭으로 취소하면 **그 동작도 함께 발동**(취소만 하고 입력을 먹지 않음).
+- 점프는 스펙의 취소 수단이 아니므로 차지를 깨지 않고 그냥 무시된다. 공중 차지는 허용(중력 유지).
+- 우클릭은 `Parry`(회피-카운터 확인키)와 공용이지만 `CanStartCharge()`가 `isDodgeCountering`으로
+  차지 시작을 막아 서로 간섭하지 않는다. `Charge` 액션은 **우클릭 전용**(F키는 일섬을 발동시키지 않음).
+
+---
+
+# 패링 (2026-07-25)
+
+## ✅ 완료
+- **입력 분기**: 우클릭을 `parryTapMaxHold`(0.2s) 안에 떼면 **패링**, 넘겨서 쥐고 있으면 **일섬 차지**.
+  차지 연출(애니 고정 · 픽셀 FX · 블룸)은 `BeginChargeVisuals()`로 **0.2s 뒤로 미룬다** — 탭할 때마다
+  픽셀 FX가 깜빡이고 취소 이펙트가 터지는 것을 막기 위함. `chargeVisualsStarted`가 그 상태를 들고 있고,
+  탭 취소(`charge_cancelled_tap`)는 애니메이터를 건드리지 않는다(Slash 1 앞에 Idle 한 프레임이 끼는 것 방지).
+- **모션**: 성공/실패 무관하게 `anim.SetTrigger("Attack1")`로 `Glitch Samurai-Slash 1` 재생.
+  `isAttacking`을 세우지 않으므로 클립의 `AttackHitFrame` 이벤트는 무시되어 **데미지가 나가지 않는다**.
+  실패 시 `parryFailCooldown`(0.5s) 잠금(사용자 확정).
+- **성공 판정**(`FindParryTarget`): 적이 공격 모션 중(`DummyEnemy.IsAttacking`)이면서
+  (B) 아직 그 공격에 안 맞았거나(`IsAttackUnresolved`) (A) 대시 회피 인정 창(`dodgeCounterGraceTimer`)이
+  열려 있고 — 적의 공격 원(창끝, r=0.5)이 플레이어 1타 히트박스와 **겹칠 때**(사용자 확정: 완전 포함 아님).
+- **연출**(스펙 4): 겹침 중앙(= 창끝을 1타 박스 안으로 클램프한 점) + `parryFxHeightOffset`(0.35) 위에
+  `Hit02`(크리티컬 스프라이트) + `"막아냄!"` 텍스트(`critTextColor` #FFD400, 2배 강조). 실측 확인 완료.
+- **피해 무효**(스펙 5): `DummyEnemy.ConsumeParry()`가 `attackHitDone=true`로 그 찌르기를 종결 처리.
+- **구형 실드**(스펙 6): `Custom/ParryShield` — 속이 빈 링 아웃라인, 반투명, HDR 발광.
+  적 공격 **1회**를 대신 막고(`TryConsumeParryShield`) 유리처럼 조각나 흩어진다(`_Break` 0→1,
+  조각별 강체 역변환으로 정확히 분리). 지속시간 제한 없음(사용자 확정 "막을 때까지").
+- **일섬 확장**(스펙 6 추가분) — ⚠️ **1차 구현은 스펙 오독이었다.** "플레이어에게 적용된 쉐이더"를
+  패링 실드로 읽어 일섬에 실드 링 + 경로 사본을 깔았는데, 사용자 확인 결과 그건 **기존 궤적 섬광**
+  (`IlseomSlashStreak`)을 뜻한 것이었다. 실드 관련 코드는 전부 제거하고 궤적 섬광을 강화하는 쪽으로 재작업.
+  - 제거: `ilseomShieldEnabled` / `ilseomShieldTrailCount` / `Lifetime` / `Alpha` 필드,
+    `SpawnIlseomShieldTrail()`, `ParryShieldFx.SpawnGhost()`, `Attach`의 `mirrorWithFlip` 인자
+    (전부 이 오독 때문에 생긴 코드라 같이 걷어냄).
+  - **궤적 섬광 강화**(`SpawnIlseomStreak`): 겹마다 두께·수명·시드가 다른 **3겹**(`ilseomStreakLayers`)을
+    깐다. 두꺼운 겹을 뒤에 깔아 얇은 코어가 위로 올라온다. 실측 두께 **2.20 / 3.52 / 4.84**, 길이 7.20,
+    sortingOrder 9/8/7.
+  - 수치 1차: `ilseomStreakHeight` 1.3 → 2.2, `ilseomStreakFade` 0.22 → 0.6,
+    `_TailLength` 0.45 → 0.85, `_LaneCount` 18 → **28**, `_LaneDensity` 0.55 → **0.78**.
+  - **수치 2차 되돌림** — "궤적이 너무 느리고 크다"는 피드백(2026-07-25). 겹 수(3)와 레인 밀도는 유지하고
+    두께·수명만 원래 값 근처로 내렸다:
+
+    | 항목 | 원래 | 1차(과함) | **최종** |
+    |---|---|---|---|
+    | `ilseomStreakHeight` | 1.3 | 2.2 | **1.5** |
+    | `ilseomStreakLayerHeightSpread` | — | 2.2 | **1.4** |
+    | `ilseomStreakFade` | 0.22 | 0.6 | **0.28** |
+    | `ilseomStreakLayerFadeSpread` | — | 1.8 | **1.25** |
+    | `_TailLength` | 0.45 | 0.85 | **0.55** |
+
+    실제 겹 두께 **2.20~4.84 → 1.50~2.10**, 화면 체류 시간 **0.72~1.20s → 0.40~0.47s**
+    (sweep 0.12 + fade). 꼬리를 짧게(0.55) 하는 것이 "빠르게 지나간" 느낌에 가장 크게 기여한다.
+- **전역 블룸 하향**(사용자 피드백 "전반적 블룸이 너무 강하다"): `IlseomBloomProfile.asset`의
+  Bloom `intensity` **5.2 → 2.2**, `scatter` **0.85 → 0.70** (threshold 1.15는 유지 — 그게 "이 오브젝트만
+  블룸" 규칙의 기준선이라 건드리면 LDR 스프라이트까지 빛나기 시작한다).
+  각 머티리얼의 `_BloomBoost`는 그대로 뒀다(전역 세기 하나로 조절하는 게 "전반적"에 맞음).
+  실측(궤적을 붙잡은 같은 구도, 지면 타일 제외): 헤일로 픽셀 **33,443 → 8,495(−75%)**,
+  강한 발광 **11,205 → 2,250(−80%)**, 세로 퍼짐 **204px → 89px(−56%)**.
+  실드 링은 이 세기에서도 선명하게 읽힌다(스크린샷 확인).
+  ⚠️ 이전 세션에서 사용자 요청으로 1.6 → 3.6 → 5.2까지 올렸던 값이다 — 차지 픽셀 연출도 같이 약해진다.
+- **카메라 포커스 펄스**(사용자 요청): 대시-카운터의 `SectionCamera.FocusPulse`(팬+줌인)를 패링·일섬에도
+  짧게 적용. 램프는 공유(`focusPulseRampIn/Hold/RampOut` = 0.06 / 0.12 / 0.26 — 대시-카운터의 hold는
+  확인 입력 대기 때문에 2초지만 여긴 "잠시"), 세기만 따로:
+  패링은 막아낸 지점으로 pan 0.8 / zoom 0.7, 일섬은 도착 지점으로 pan 1.0 / zoom 1.1.
+  일섬 쪽은 적이 없어도 걸리도록 `ApplyIlseomDamage`와 분리해 Sweep 진입 직후에 호출한다.
+  실측: 패링 `orthographicSize` 6.000 → **5.300**, `focusOffset` 크기 0.8 /
+  일섬 6.000 → **4.900**, `focusOffset` 크기 1.0.
+- **플레이어 블룸**(스펙 6 추가분): `Custom/PlayerBloomOverlay` — 플레이어 스프라이트를 복사한 가산
+  오버레이(`PlayerBloomFx`). 차지 진행도를 그대로 `_Intensity`에 먹여 **페이드 인**, 시퀀스 종료 시
+  `FadeOut` → **페이드 아웃**. 원본 SpriteRenderer를 건드리지 않아 복원 실패 사고가 구조적으로 없다.
+- **텍스트 1줄 고정**(사용자 요청): `DmgText` 프리팹의 RectTransform이 숫자 1~2자리 크기(**0.78×0.41**)이고
+  `textWrappingMode`가 **Normal**이라 `"막아냄!"`(렌더폭 **1.43**)이 줄바꿈됐다. `DamageText.SetupText`에서
+  `textWrappingMode = TextWrappingModes.NoWrap`으로 고정 — `overflowMode=Overflow` + `alignment=Center`라
+  줄바꿈만 끄면 가운데 기준으로 한 줄로 뻗는다. 프리팹은 건드리지 않음.
+  실측: `"막아냄!"` 줄수=1 / `"12!!!"` 줄수=1 / `"3"` 줄수=1.
+- **`[ASSERT] parry_timing: PASS`** (3단: 성공+실드 생성+무피해 / 실드가 다음 공격 1회 차단 / 탭↔홀드 분리).
+  `[ASSERT] ilseom: PASS` 회귀도 유지.
+
+## 🐞 발견·수정한 버그
+- **패링이 수학적으로 불가능했던 튜닝**(실측으로 확정): 적의 창 실제 도달거리 = `spearThrustLocalPos.x`(1.9)
+  × 적 스케일(1.2) = **2.28**인데 `attackRange`가 **1.8**이라, 적이 멈춘 뒤 찌르면 창끝이 플레이어를
+  0.48만큼 **관통해 뒤쪽에 꽂혔다**. 플레이어 1타 박스는 반대편(앞쪽 0.2~1.8)이라 교집합이 존재하지 않음
+  (겹치려면 거리 ≥ **1.98** 필요, 그런데 공격은 ≤1.8에서만 시작). → `attackRange` **1.8 → 2.4**로 수정
+  (씬 저장). 패링 유효 거리 **1.98~2.4**. 이건 패링과 무관하게도 어긋난 세팅이었다(찌르기는 창끝이
+  대상에 닿는 거리에서 멈춰야 함).
+- **`centroid`는 HLSL 예약어**(보간 한정자) — 변수명으로 쓰면 `syntax error`. `pivot`으로 개명.
+- **`TWO_PI`는 URP `Macros.hlsl`에 이미 정의됨** — 다시 `#define`하면 재정의 경고.
+- **`_MainTex_ST`를 `UnityPerMaterial` CBUFFER에 넣으면 2D SRP Batcher가 꺼진다**
+  (`_TexelSize`/`_ST` 미지원 경고). SpriteRenderer 메시의 UV는 이미 아틀라스 좌표라 `TRANSFORM_TEX` 불필요.
+- **블룸 오버레이가 거의 안 빛나던 문제**: 글로우를 스프라이트 색에 그대로 곱하면 대부분이 어두운
+  사무라이 스프라이트는 결과가 0에 가까움 → `_Flatten`(0.65)으로 원본 색을 흰색 쪽으로 끌어올려 해결.
+- **패링 테스트의 레이스**(테스트 하네스 버그, 제품 아님): 적을 `IsAttacking`만 보고 기다리면
+  **이미 판정이 끝난 공격의 Recover 구간**도 True라, 정지 없이 이어진 Play 세션에서 "막을 수 없는 공격"을
+  잡아 비결정적으로 FAIL한다(실측: 같은 코드가 clean 세션 3회 PASS → dirty 세션에서 `parry_miss`).
+  → `IsAttacking && IsAttackUnresolved`로 조건을 조여 해결. 결정적 검증 전엔 **stop→play로 새 세션을 강제**할 것.
+
+## 📐 결정 (사용자 확정)
+- 판정은 **겹침**(완전 포함 아님) — 완전 포함은 세로 오차 ±0.1이라 사실상 성공 불가.
+- 실패해도 **모션은 재생** + 쿨다운 0.5s.
+- 실드는 **시간 제한 없음** — 적 공격 1회를 막을 때까지 유지.
+- 실드 중심은 실측 실루엣 중심(`Idle` 11프레임 불투명 픽셀) = 피봇 기준 **로컬 (-0.22, +0.54)**.
+  사용자 스펙의 "약간 오른쪽"과 방향이 반대인데, 그건 *스프라이트 프레임 중심*(피봇 +0.364 오른쪽)을
+  본 것으로 보임 — 실제 캐릭터 픽셀은 x[47..72], 피봇 64.4라 **왼쪽**에 있다. `parryShieldOffset`로 조정 가능.
+
+## 🧪 검증 참고
+- 인라인 스크린샷 프리뷰(축소본)는 밝은 장면을 **워시아웃된 것처럼** 보여준다. 저장된 PNG의 배경 픽셀은
+  세 장 모두 (0.188, 0.30, 0.47)로 동일 — 블룸 판단은 반드시 **저장 파일 픽셀값**으로 할 것.
+- 링 실측: 151×155px(종횡비 0.97, 정원), 외경 2.52 월드, 두께 0.23 월드. 실루엣 1.69×1.5보다 적당히 큼.
+
+## 🎛️ 배치용 샌드박스 씬 (`Assets/Scenes/VfxSandbox.unity`)
+- 사용자가 에디터에서 직접 위치·크기를 잡기 위한 **별도 씬**. 빌드 세팅에 넣지 않아 실제 게임엔 미반영.
+- 읽어서 반영하는 규칙은 `docs/dev/VFX_SANDBOX.md` 참고.
+- **1차 반영 완료 (2026-07-25)** — 사용자가 샌드박스에서 잡은 값을 코드 기본값 + 씬 인스턴스 양쪽에 적용:
+
+  | 항목 | 이전 | 반영값 | 출처 |
+  |---|---|---|---|
+  | `parryShieldOffset` | (-0.22, 0.54) | **(-0.08, 0.56)** | `ParryShield_A`의 `localPosition` |
+  | `parryShieldRadius` | 0.9 | **1.0028** | 〃 `localScale.x` |
+  | `ilseomShieldTrailCount` | 6 | **8** | `IlseomTrail`에서 `count_8` 그룹만 활성 |
+
+  머티리얼(두께 0.1 / 알파 0.72 / 색 #6BDBFF / boost 2.6)과 `PlayerBloom_Overlay`는 변경 없음.
+  실측 검증: 런타임 실드 `localPos=(-0.08, 0.56)`, 일섬 경로 사본 **8개**가 간격 1.03으로 전체 경로(7.2)에
+  균등 배치. 반영 후 `[ASSERT] parry_timing: PASS` 유지.
+- **반영 절차 주의 — 이번 세션에 같은 함정을 3번 밟았다.** "기본값을 바꿨는데 안 먹는다"의 원인은 항상
+  **직렬화된 값이 기본값을 덮기 때문**이다. 세 층 전부 따로 고쳐야 한다:
+
+  | 층 | 덮는 대상 | 고치는 방법 |
+  |---|---|---|
+  | 씬 인스턴스 | `PlayerController.cs`의 필드 기본값 | `SerializedObject`로 씬 컴포넌트 수정 + 씬 저장 |
+  | 머티리얼 에셋(`.mat`) | `.shader`의 `Properties` 기본값 | `mat.SetFloat(...)` + `SetDirty` + `SaveAssets` |
+  | 프리팹 인스턴스 | 프리팹 원본 | 인스턴스 오버라이드 확인 |
+
+  실측 사례: `attackRange`(씬), `ilseomStreakHeight`/`Fade`(씬),
+  `_TailLength`/`_LaneCount`/`_LaneDensity`(`IlseomSlashStreak.mat`) — 코드/셰이더만 고쳤을 때
+  런타임 로그가 계속 옛 값(`height=1.3 fade=0.22`, `lanes=18 density=0.55`)을 찍어서 발견.
+
 ## ❓ 미결 항목 — 사용자 확인 대기 (2026-07-24 기준)
 > 앞선 세션 기록 곳곳에 흩어져 있던 "확인 필요" 항목을 한 곳에 모음. 처리되면 이 목록에서 지울 것.
 
@@ -1166,3 +1459,6 @@
 | 2 | 씬의 Player `wallLayer` = **1536**(Ground 512 \| Wall 1024) | `task.md` 완료 기록은 1024인데 씬 직렬화 값과 불일치. 바닥이 '벽'으로도 감지됨. 현재 평지 맵에선 실측상 오탐 없음(`rightWall/leftWall=none`) | 1024로 고칠지 여부. 벽이 있는 맵으로 가면 벽점프·대시 벽취소 판정에 영향 가능 (씬 값 변경 = 승인 필요) |
 | 3 | `[STALL]` 이동 막힘 진단 코드 | `PlayerController.CheckMovementStall` + `logMovementStall`/`stallLogThreshold` 필드. 사용자 확인 "해결된 것 같음" 단계라 유지 중 | 확신 서면 제거 지시 (삭제는 규칙4에 따라 승인 필요) |
 | 4 | 적 몸체 관통(`excludeLayers`에 Enemy 상시 포함) | 이동 막힘의 근본 수정. 이제 플레이어가 적을 **통과**함(Dead Cells/할로우나이트류 표준) | 이 감각이 의도와 맞는지. 적을 단단하게 두길 원하면 되돌릴 수 있으나 이동 감속(5→0.96u/s)은 물리적으로 불가피 |
+| 5 | `ilseomPastEnemyDistance` 필드 미사용 | 정지 규칙을 "벽/최대거리"로 단순화하며 "적 뒤로 멈춤"이 사라져 고아가 됨(주석만 표기) | 삭제할지 / 규칙 되돌릴 수 있게 남길지 (삭제는 규칙4 승인 필요, 씬 직렬화 필드도 함께 제거) |
+| 6 | `OnJump`의 `isJumpHeld=false` 분기 미실행(짧은 점프 안 먹음) | 일섬 작업 중 발견한 **기존 버그** — SendMessages가 Button 액션의 canceled를 안 보냄(`PlayerInput.cs:1499`). `lowJumpMultiplier`가 첫 점프 이후 영구 미적용 | 이번 범위 밖이라 미수정. 별건으로 고칠지 (점프도 `IsPressed()` 폴링으로 전환) |
+| 7 | DummyEnemy `moveSpeed` = 0 (사용자 요청, 씬 저장) | 테스트 편의로 정지시킴. 원래 값 3 | 테스트 끝나면 3으로 되돌릴지 |

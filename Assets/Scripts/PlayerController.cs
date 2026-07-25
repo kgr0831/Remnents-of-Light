@@ -84,6 +84,20 @@ public class PlayerController : MonoBehaviour
     public GameObject damageTextPrefab;
     public Color damageTextColor = Color.white;
 
+    // 크리티컬(Hit02) · 처형(Hit03). 두 경우엔 일반 hitVfxPrefabs 대신 전용 프리팹이 반드시 뜨고,
+    // 데미지 텍스트가 2배 크기 + "숫자!!!"로 강조되며, 쉐이크·히트스톱이 배율만큼 세진다.
+    // 텍스트 색은 각 스프라이트에서 뽑은 대표색(Hit02 #FFD400 금색 / Hit03 #FF1922 적색).
+    [Header("Critical / Execution")]
+    [Range(0f, 1f)] public float critChance = 0.3f;      // 좌클릭 일반 공격에만 적용(카운터는 항상 크리티컬)
+    public float critDamageMultiplierMin = 2f;
+    public float critDamageMultiplierMax = 3f;
+    public GameObject critHitVfxPrefab;                  // Hit02
+    public GameObject executionHitVfxPrefab;             // Hit03 (처형 — 발동 조건은 추후 구현)
+    public Color critTextColor = new Color(1f, 0.831f, 0f, 1f);        // #FFD400
+    public Color executionTextColor = new Color(1f, 0.098f, 0.133f, 1f); // #FF1922
+    public float critShakeMultiplier = 2f;
+    public float critHitstopMultiplier = 2f;
+
     // UniTrio-Game-2026(JustDodge) 참고 — 타이밍 기반 저스트 닷지. 대시 무적 윈도우 중 적 찌르기가
     // 실제로 닿는 순간(DummyEnemy.CheckThrustHit → TryConsumeDodge) 발동 → 슬로우모션 +
     // 확인키(F, 보조로 우클릭) 대기 → 성공 시 적 쪽으로 돌진해 배율 데미지 카운터(y좌표는 유지).
@@ -126,6 +140,128 @@ public class PlayerController : MonoBehaviour
     // 카메라 포커스 이벤트(UniTrio JustDodgeController의 팬+줌 참고) — 회피 발동 시 적 쪽으로 살짝 다가가며 줌인.
     public float dodgeCamPanAmount = 1.2f;
     public float dodgeCamZoomAmount = 0.8f;
+
+    // ── 일섬(一閃) ──────────────────────────────────────────────────────────────────────────
+    // 우클릭을 ilseomChargeTime 이상 모았다 떼면 발동하는 장거리 필살기.
+    // 차지 중: 이동 잠금(A/D로 방향만 전환) · Glitch Out 0프레임 고정 · 픽셀 수집 연출 · 카메라 쉐이크 상승 · 받는 피해 절반.
+    // 발동: 무적 → Glitch Out 재생 → 투명 이동(벽 1순위, 없으면 최원거리 적 살짝 지나서, 둘 다 없으면 최대 사거리)
+    //       → Glitch Sweep 0프레임에 경로 위 모든 적에게 처형 피격 → Sweep 종료 시 무적 해제 + 쿨타임.
+    [Header("Ilseom (일섬)")]
+    public bool ilseomEnabled = true;
+    public float ilseomChargeTime = 2f;
+    public float ilseomCooldown = 20f;
+    public float ilseomDistanceMultiplier = 2f;   // 대시 이동거리(dashSpeed×dashDuration) 대비 최대 사거리 배율
+    public float ilseomDamageMultiplier = 4f;     // attack1Damage 대비 배율
+    [Range(0f, 1f)] public float ilseomChargeDamageTakenMultiplier = 0.5f; // 차지 중 받는 피해(0.5 = 50% 감소)
+    public float ilseomPastEnemyDistance = 0.8f;  // (미사용) 예전 "적 뒤로 멈춤" 규칙용 — 현재 정지는 벽/최대거리만
+    public float ilseomWallMargin = 0.25f;        // 경로에 벽이 있으면 이만큼 띄우고 그 앞에서 멈춤
+    public float ilseomMoveDuration = 0.1f;       // 투명해지며 이동하는 시간
+    [Range(0f, 1f)] public float ilseomMoveAlpha = 0.15f; // 이동 중 스프라이트 알파
+    public float ilseomPathHeight = 1.4f;         // 경로 위 적을 훑는 판정 박스 높이
+
+    [Header("Ilseom Anim")]
+    // Glitch Out은 차지 중 0프레임 고정용 + 발동 시 통째로 재생용으로 같이 쓰인다(5프레임 @12fps = 0.4167s).
+    public string ilseomChargeState = "Glitch Samurai-Glitch Out";
+    public int ilseomChargeFreezeFrame = 0;
+    public int ilseomChargeFrameCount = 5;
+    public float ilseomGlitchOutDuration = 0.4167f;
+    // Glitch Sweep 시트는 원본이 이미 FlipX 되어 있어(사용자 확인) 재생 중엔 flipX를 반대로 준다. 6프레임 @12fps = 0.5s.
+    public string ilseomSweepState = "Glitch Samurai-Glitch Sweep";
+    public float ilseomSweepDuration = 0.5f;
+    // Glitch Out/Sweep은 애니메이터에서 나가는 전이가 0개인 고아 상태다 — 클립이 끝나도 그 상태에
+    // 머물러 마지막 프레임이 스프라이트에 그대로 남는다(사용자 리포트). 일섬이 끝나거나 차지가
+    // 취소되면 이 상태로 직접 되돌려 Idle↔Run·AnyState 전이가 다시 정상 동작하게 한다.
+    // (대시는 전이가 있는 Run에 프리즈하기 때문에 이 문제가 없었다)
+    public string ilseomExitState = "Glitch Samurai-Idle";
+
+    [Header("Ilseom VFX")]
+    public Material ilseomChargePixelMaterial;    // Custom/IlseomChargePixels (Assets/VFX/Ilseom/IlseomChargePixels.mat)
+    public int ilseomChargePixelCount = 36;   // 사용자 요청으로 양을 줄임(64→36)
+    // 픽셀이 모이는 지점(플레이어 피봇 기준). x는 바라보는 방향으로 미러링된다(사용자 확정).
+    public Vector2 ilseomGatherOffset = new Vector2(0.55f, 0.7f);
+    public float ilseomChargeShakeStartDelay = 0.5f;  // 이 시간 전에는 쉐이크를 적용하지 않음
+    public float ilseomChargeShakeMultiplier = 1.5f;  // attackShakeMagnitude 대비 최대 배율(차지 100%일 때)
+    public float ilseomCancelFxDuration = 0.25f;      // 취소 시 픽셀이 터져나가며 사라지는 시간
+    public float ilseomFinishFxDuration = 0.18f;      // 발동 시 모인 픽셀이 페이드아웃 되는 시간
+    public GameObject ilseomBuffPopPrefab;            // Resistance_Up (충전 완료 · 쿨타임 완료 시 머리 위 표시)
+    public float ilseomBuffPopHeight = 1.6f;          // 머리 위 표시 높이(사용자 요청으로 더 위로)
+    public float ilseomBuffPopScale = 1.5f;           // 표시 크기 배율(사용자 요청 1.5배)
+
+    // 스펙 6 확장("일섬 이동 경로 내에 더 길게 그리고 더 많이 표현") — 이 궤적 섬광을 강화한 것.
+    [Header("Ilseom Trail Streak")]
+    public Material ilseomStreakMaterial;   // Custom/IlseomSlashStreak (Assets/VFX/Ilseom/IlseomSlashStreak.mat)
+    // 1차로 2.2 / fade 0.6까지 올렸다가 "너무 느리고 크다"는 피드백으로 되돌림(사용자 확인 2026-07-25).
+    // 원래 값(1.3 / 0.22)보다 살짝만 위에 둬서 "더 길게·더 많이"는 겹 수로 표현한다.
+    public float ilseomStreakHeight = 1.5f; // 궤적 두께(월드 단위)
+    public float ilseomStreakSweep = 0.12f; // 선두가 궤적을 훑는 시간 — 이동 시간과 비슷하게 두면 몸과 같이 나간다
+    public float ilseomStreakFade = 0.28f;  // 훑은 뒤 사라지는 시간
+    public int ilseomStreakSortingOffset = -1; // 플레이어보다 뒤에 깔아 실루엣을 가리지 않게
+    // 궤적을 몇 겹으로 깔지("더 많이"). 겹마다 두께·수명·시드가 달라 한 장짜리보다 두껍고 오래 남는다.
+    public int ilseomStreakLayers = 3;
+    public float ilseomStreakLayerHeightSpread = 1.4f; // 마지막 겹의 두께 배율(첫 겹 1배 → 이 값까지)
+    public float ilseomStreakLayerFadeSpread = 1.25f;  // 마지막 겹의 수명 배율(바깥 겹이 조금 더 오래 남아 번지듯)
+
+    // ── 패링 ────────────────────────────────────────────────────────────────────────────────
+    // 우클릭을 "톡" 눌렀다 떼면(parryTapMaxHold 이내) 패링, 그보다 오래 쥐고 있으면 일섬 차지로 넘어간다.
+    // 성공 조건(스펙 3): 적이 공격 모션 중이면서 —
+    //   (B) 아직 그 공격에 맞지 않았거나, (A) 대시 회피 인정 창(dodgeCounterGraceTimer)이 열려 있고
+    //   — 그 적의 공격 범위(창끝 원)가 플레이어 1타 히트박스와 겹칠 때.
+    // 성공/실패와 무관하게 Slash 1 모션은 나가고, 실패하면 parryFailCooldown만큼 재입력이 잠긴다(사용자 확정).
+    [Header("Parry (패링)")]
+    public bool parryEnabled = true;
+    public float parryTapMaxHold = 0.2f;        // 이 시간 안에 떼면 패링(넘기면 일섬 차지 연출이 시작됨)
+    public float parryMotionDuration = 0.4167f; // Glitch Samurai-Slash 1 클립 길이(attack1Duration과 동일)
+    public float parryFailCooldown = 0.5f;      // 판정 실패 시 재입력 잠금
+    public float parrySearchRadius = 5f;        // 후보 적 검색 반경 — 적 몸통은 창 길이(1.9)만큼 떨어져 있어 넉넉히
+    public float parryFxHeightOffset = 0.35f;   // 겹침 중앙에서 텍스트/VFX를 띄울 높이(스펙 4 "약간 위쪽")
+    public string parryText = "막아냄!";
+
+    // 실드는 플레이어 자식으로 붙어 부모 스케일(1.3)을 그대로 받으므로 값은 전부 "플레이어 로컬 단위".
+    // 피봇이 스프라이트 중앙이 아니라 오프셋이 필요하다. 실측 실루엣 중심은 (-0.22, +0.54)였고
+    // 사용자가 VfxSandbox 씬에서 (-0.08, +0.56) / 반지름 1.0028로 직접 잡았다(2026-07-25).
+    // x는 바라보는 방향에 따라 미러링된다.
+    [Header("Parry Shield (구형 실드)")]
+    public Material parryShieldMaterial;        // Custom/ParryShield (Assets/VFX/Parry/ParryShield.mat)
+    public Vector2 parryShieldOffset = new Vector2(-0.08f, 0.56f);
+    public float parryShieldRadius = 1.0028f;   // 실루엣(로컬 1.3×1.2)보다 조금 크게
+    public float parryShieldBreakDuration = 0.45f; // 유리처럼 조각나 사라지는 시간
+    public int parryShieldSortingOffset = 2;    // 플레이어보다 앞에 그려 감싸는 것처럼 보이게
+
+    // 대시-카운터가 쓰는 카메라 팬+줌인(SectionCamera.FocusPulse)을 일섬·패링에도 짧게 적용(사용자 요청).
+    // 대시-카운터는 확인 입력을 기다려야 해서 hold가 2초(dodgeCounterInputWindow)지만, 이쪽은 "잠시"라
+    // 훨씬 짧다. 램프 타이밍은 두 동작이 공유하고 팬·줌 세기만 따로 둔다.
+    [Header("Focus Pulse (일섬 · 패링 카메라 줌)")]
+    public float focusPulseRampIn = 0.06f;
+    public float focusPulseHold = 0.12f;
+    public float focusPulseRampOut = 0.26f;
+    public float parryCamPanAmount = 0.8f;   // 막아낸 지점 쪽으로 다가가는 거리
+    public float parryCamZoomAmount = 0.7f;  // orthographicSize 감소량(줌인)
+    public float ilseomCamPanAmount = 1f;
+    public float ilseomCamZoomAmount = 1.1f;
+
+    // 차지~발동 구간에는 플레이어 자체에 블룸이 페이드 인 → 아웃으로 걸린다(스펙 6 확장).
+    // (실드 링을 일섬에 두르던 1차 구현은 스펙 오독이라 제거됨 — "플레이어에게 적용된 쉐이더"는
+    //  실드가 아니라 아래 궤적 섬광을 뜻했다. 사용자 확인 2026-07-25.)
+    [Header("Ilseom Bloom")]
+    public Material playerBloomMaterial;          // Custom/PlayerBloomOverlay (Assets/VFX/Parry/PlayerBloom.mat)
+    public float ilseomBloomFadeOut = 0.35f;      // 시퀀스가 끝난 뒤 빛이 빠지는 시간
+    public float ilseomBloomCancelFadeOut = 0.18f; // 차지가 취소됐을 때 더 빠르게 빠짐
+    public int playerBloomSortingOffset = 1;
+
+    // ── 처형(Execution) ─────────────────────────────────────────────────────────────────────
+    // 적 체력이 executionHpThreshold(20%) 이하일 때 커서를 올리면 붉은 글로우 + UI 프롬프트가 뜨고,
+    // R키를 누르면 Glitch Out → Glitch Slices(적 위치) → 이동 → Glitch Sweep(첫 프레임에 즉사 데미지)
+    // 시퀀스가 발동한다. 대시-카운터·일섬과 동일한 try/finally 구조로 무적·상태를 항상 복원.
+    [Header("Execution (처형)")]
+    public bool executionEnabled = true;
+    [Range(0f, 1f)] public float executionHpThreshold = 0.2f;  // 적 HP가 이 비율 이하면 처형 가능
+    public Material enemyExecutionGlowMaterial;                 // Custom/EnemyExecutionGlow (Assets/VFX/Execution/EnemyExecutionGlow.mat)
+    public int enemyGlowSortingOffset = 1;
+    public float executionGlowFadeIn = 0.25f;                   // 커서를 댔을 때 글로우가 켜지는 시간
+    public float executionGlowFadeOut = 0.2f;                   // 커서를 뗐을 때 글로우가 꺼지는 시간
+    public float executionRushDuration = 0.12f;                 // 적 위치로 이동하는 시간(실시간 초)
+    public float executionHold = 0.3f;                          // Sweep 후 여운(실시간 초)
+    public string executionText = "처형됨!!";                   // 적에게 뜨는 텍스트
 
     // "가끔 이동이 막힌다"는 리포트의 원인을 현장에서 지목하기 위한 임시 진단(원인 확정 후 제거).
     [Header("Diagnostics (임시)")]
@@ -178,6 +314,29 @@ public class PlayerController : MonoBehaviour
     bool parryPressed;
     float dodgeCounterGraceTimer; // 대시 시작 시 dodgeCounterGraceWindow로 세팅, 대시 지속시간과 무관하게 독립 카운트다운
 
+    bool chargeHeld;               // 우클릭 홀드 상태(OnCharge가 press/release로 갱신)
+    bool chargeStartRequested;     // 홀드 시작 엣지 — Update에서 한 번 소비
+    bool cancelChargeRequested;    // 차지 중 들어온 대시/좌클릭 "새 입력"만 취소로 인정(묵은 버퍼로 즉시 취소되는 것 방지)
+    bool isCharging;
+    float chargeTimer;
+    bool chargeCompletePopped;     // 2초 도달 시 Resistance_Up을 이미 띄웠는지
+    bool chargeVisualsStarted;     // 차지 연출(애니 고정 · 픽셀 FX · 블룸)이 켜졌는지 — 패링 탭 구간엔 안 켠다
+    bool ilseomActive;             // 발동 시퀀스 진행 중(무적 + 충돌 무시)
+    float ilseomCooldownCounter;
+    IlseomChargeFx chargeFx;
+    PlayerBloomFx bloomFx;         // 차지~발동 구간 동안 플레이어에 걸리는 블룸 오버레이
+
+    bool isParrying;               // Slash 1 패링 모션 재생 중(이동·점프·대시·공격 잠금)
+    float parryTimer;
+    float parryCooldownCounter;
+    bool parryShieldActive;        // 실드가 적 공격 1회를 막아줄 수 있는 상태인지(연출과 분리된 판정용 상태)
+    ParryShieldFx parryShieldFx;
+    InputAction chargeAction;      // PlayerActions "Charge" — 홀드 상태를 직접 폴링(PollChargeInput 주석 참고)
+
+    bool isExecuting;              // 처형 시퀀스 진행 중(무적 + 이동/공격 잠금)
+    DummyEnemy executionTarget;    // 현재 커서로 타겟팅 중인 적 (null이면 타겟 없음)
+    EnemyExecutionGlowFx executionGlowFx; // 현재 적에게 붙어 있는 글로우 FX
+
     void Awake()
     {
         // 방어적 리셋: Time.timeScale은 에디터에서 Stop→Play를 반복해도 자동으로 1로
@@ -206,6 +365,12 @@ public class PlayerController : MonoBehaviour
         // Overlap 쿼리(excludeLayers 영향 없음)라 이 제외로 잃는 기능이 없다.
         rb.excludeLayers = rb.excludeLayers.value | enemyLayer.value;
         if (Camera.main != null) sectionCamera = Camera.main.GetComponent<SectionCamera>();
+
+        var playerInput = GetComponent<PlayerInput>();
+        if (playerInput != null && playerInput.actions != null)
+            chargeAction = playerInput.actions.FindAction("Charge");
+        if (chargeAction == null)
+            Debug.LogWarning("[Ilseom] PlayerActions에 \"Charge\" 액션이 없어 우클릭을 직접 폴링합니다.");
     }
 
     void Update()
@@ -215,10 +380,16 @@ public class PlayerController : MonoBehaviour
         if (dodgeCounterGraceTimer > 0f) dodgeCounterGraceTimer -= Time.deltaTime;
 
         CheckEnvironment();
+        // 패링 타이머는 일섬보다 먼저 굴린다 — HandleIlseom이 패링을 시작하는 그 프레임에 타이머가
+        // 한 번 가산돼 모션이 그만큼 짧아지는 것을 막는다(일섬 차지에서 겪었던 것과 같은 함정).
+        HandleParry();
+        // 일섬은 대시/공격보다 먼저 본다 — 차지를 취소한 그 입력이 같은 프레임에 정상 발동돼야 하기 때문(사용자 확정).
+        HandleIlseom();
         HandleJump();
         HandleWallSlide();
         HandleDash();
         HandleAttack();
+        HandleExecution();
         UpdateAnimations();
         CheckMovementStall();
     }
@@ -230,6 +401,8 @@ public class PlayerController : MonoBehaviour
     void CheckMovementStall()
     {
         if (!logMovementStall) return;
+        // 일섬 차지/발동 중 정지는 스펙대로 의도된 잠금이라 스톨이 아니다(A/D를 눌러도 방향만 바뀜).
+        if (isCharging || ilseomActive || isExecuting) { stallTimer = 0f; stallLogged = false; return; }
 
         bool wantsMove = Mathf.Abs(moveInput.x) > 0.01f;
         bool moving = Mathf.Abs(rb.linearVelocity.x) > 0.5f;
@@ -240,7 +413,8 @@ public class PlayerController : MonoBehaviour
         stallLogged = true;
 
         string cause;
-        if (isDodgeCountering) cause = "회피-카운터 시퀀스 중(isDodgeCountering)";
+        if (isParrying) cause = "패링 모션 중(isParrying, timer=" + parryTimer.ToString("F2") + "/" + parryMotionDuration.ToString("F2") + ")";
+        else if (isDodgeCountering) cause = "회피-카운터 시퀀스 중(isDodgeCountering)";
         else if (isAttacking) cause = "공격 중(isAttacking, stage=" + attackStage + " timer=" + attackTimer.ToString("F2") + "/" + (attackStage == 1 ? attack1Duration : attack2Duration).ToString("F2") + ")";
         else if (isDashing) cause = "대시 중(isDashing, dir=" + dashDirX + ")";
         else if (wallJumpLockCounter > 0f) cause = "벽점프 수평잠금(wallJumpLockCounter=" + wallJumpLockCounter.ToString("F2") + ")";
@@ -281,6 +455,18 @@ public class PlayerController : MonoBehaviour
         {
             rb.linearVelocity = new Vector2(dashDirX * dashSpeed, 0f);
         }
+        else if (ilseomActive)
+        {
+            // 발동 시퀀스는 IlseomRoutine이 transform.position을 직접 보간해 이동시킨다 —
+            // 물리 속도를 0으로 완전히 묶어 중력·잔여 속도가 그 보간과 싸우지 않게 한다.
+            rb.linearVelocity = Vector2.zero;
+        }
+        else if (isExecuting)
+        {
+            // 처형 시퀀스는 ExecutionRoutine이 transform.position을 직접 보간해 이동시킨다 —
+            // 물리 속도를 0으로 완전히 묶어 중력·잔여 속도가 그 보간과 싸우지 않게 한다.
+            rb.linearVelocity = Vector2.zero;
+        }
         else
         {
             HandleMovement();
@@ -313,8 +499,9 @@ public class PlayerController : MonoBehaviour
         // 벽 점프 직후에는 수평 입력을 잠시 잠가 벽 반대 방향으로 확실히 밀어냄
         if (wallJumpLockCounter > 0f) return;
 
-        // 공격 중 또는 회피-카운터 시퀀스 중엔 제자리에 멈춤 (이동 입력 무시, 수평 속도 고정)
-        if (isAttacking || isDodgeCountering)
+        // 공격 중 · 회피-카운터 중 · 일섬 차지 중 · 패링 모션 중엔 제자리에 멈춤 (이동 입력 무시, 수평
+        // 속도만 고정 — 차지 중에도 중력은 그대로 살아 있어 공중에서 모으면 떨어진다)
+        if (isAttacking || isDodgeCountering || isCharging || isParrying || isExecuting)
         {
             rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
             return;
@@ -326,7 +513,7 @@ public class PlayerController : MonoBehaviour
 
     void HandleWallSlide()
     {
-        if (isDashing) { isWallSliding = false; return; }
+        if (isDashing || isCharging || ilseomActive || isParrying || isExecuting) { isWallSliding = false; return; }
 
         // 벽 방향 키를 누르고 있는 동안만 벽에 붙어 슬라이드 (즉시 이동과 궁합: 접촉 유지 안정화)
         bool pushingIntoWall = isTouchingWall && wallDirX != 0
@@ -349,8 +536,9 @@ public class PlayerController : MonoBehaviour
     void HandleJump()
     {
         if (isJumping) {
-            // 공격/회피-카운터 중엔 점프로 캔슬할 수 없음 — 입력은 버림
-            if (isAttacking || isDodgeCountering) { isJumping = false; return; }
+            // 공격/회피-카운터/일섬 중엔 점프로 캔슬할 수 없음 — 입력은 버림.
+            // (스펙 3의 취소 수단은 대시·좌클릭뿐이므로 점프는 차지를 깨지 않고 그냥 무시된다)
+            if (isAttacking || isDodgeCountering || isCharging || ilseomActive || isParrying || isExecuting) { isJumping = false; return; }
             if (coyoteTimeCounter > 0f) {
                 rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
                 coyoteTimeCounter = 0f;
@@ -372,8 +560,8 @@ public class PlayerController : MonoBehaviour
         if (dashRequested)
         {
             dashRequested = false;
-            // 공격 중엔 대시로 캔슬할 수 없음
-            if (!isDashing && !isAttacking && dashCooldownCounter <= 0f)
+            // 공격 중 · 일섬 발동 중 · 패링 모션 중엔 대시로 캔슬할 수 없음(입력은 여기서 버려진다)
+            if (!isDashing && !isAttacking && !ilseomActive && !isParrying && !isExecuting && dashCooldownCounter <= 0f)
             {
                 isDashing = true;
                 dashTimer = dashDuration;
@@ -421,6 +609,643 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    // ── 일섬: 차지 판정 ─────────────────────────────────────────────────────────────────────
+    void HandleIlseom()
+    {
+        PollChargeInput();
+
+        if (ilseomCooldownCounter > 0f)
+        {
+            ilseomCooldownCounter -= Time.deltaTime;
+            if (ilseomCooldownCounter <= 0f)
+            {
+                ilseomCooldownCounter = 0f;
+                SpawnBuffPop(); // 스펙 8: 쿨타임이 가득 차면 충전 완료와 똑같이 머리 위에 Resistance_Up
+                TestLog.Event("ilseom", "cooldown_ready");
+            }
+        }
+
+        if (ilseomActive) { chargeStartRequested = false; cancelChargeRequested = false; return; }
+
+        if (chargeStartRequested)
+        {
+            chargeStartRequested = false;
+            // 시작한 프레임에는 타이머를 더하지 않고 그냥 빠진다. 아래 chargeTimer += Time.deltaTime을
+            // 같은 프레임에 이어서 실행하면 "차지 시작 전"의 프레임 간격이 통째로 한 번 가산돼
+            // 그만큼 일찍 완충된다 — 프레임이 튀면 Time.maximumDeltaTime(0.333s)까지 커져서
+            // 2초 차지가 1.67초에 끝나는 것을 라이브 실측으로 확인(2026-07-25).
+            if (CanStartCharge()) { StartCharge(); return; }
+        }
+
+        if (!isCharging) { cancelChargeRequested = false; return; }
+
+        // 취소(대시·좌클릭). 그 입력 자체는 소비하지 않으므로 같은 프레임의 HandleDash/HandleAttack이 정상 발동시킨다.
+        if (cancelChargeRequested)
+        {
+            cancelChargeRequested = false;
+            CancelCharge("charge_cancelled_input");
+            return;
+        }
+
+        chargeTimer += Time.deltaTime;
+
+        // 누른 직후 parryTapMaxHold 동안은 "패링일 수도 있는" 구간이라 차지 연출을 켜지 않는다.
+        // (탭할 때마다 픽셀 FX가 깜빡이고 취소 이펙트까지 터지는 것을 막는다.)
+        if (!chargeVisualsStarted && chargeTimer >= parryTapMaxHold) BeginChargeVisuals();
+
+        // A/D는 flipX만 바꾼다 — 이 flipX가 일섬 방향(true=왼쪽, false=오른쪽)을 결정한다.
+        if (moveInput.x > 0.01f) sr.flipX = false;
+        else if (moveInput.x < -0.01f) sr.flipX = true;
+
+        if (!chargeCompletePopped && chargeTimer >= ilseomChargeTime)
+        {
+            chargeCompletePopped = true;
+            SpawnBuffPop();
+            TestLog.Event("ilseom", "charge_complete");
+        }
+
+        UpdateChargeFx();
+
+        if (!chargeHeld)
+        {
+            if (chargeTimer >= ilseomChargeTime)
+            {
+                isCharging = false;
+                StartCoroutine(IlseomRoutine());
+            }
+            // 탭(짧게 눌렀다 뗌) = 패링. 아직 차지 연출이 시작되기 전이라 조용히 정리하고 넘긴다.
+            else if (chargeTimer <= parryTapMaxHold)
+            {
+                CancelCharge("charge_cancelled_tap");
+                TryParry();
+            }
+            else CancelCharge("charge_cancelled_early");
+        }
+    }
+
+    bool CanStartCharge()
+    {
+        return ilseomEnabled && !isCharging && !ilseomActive && !isDashing && !isAttacking
+            && !isDodgeCountering && !isParrying && !isExecuting && ilseomCooldownCounter <= 0f;
+    }
+
+    // 누르는 순간엔 아직 패링(탭)인지 일섬(홀드)인지 알 수 없다 — 상태만 열어두고 연출은 뒤로 미룬다.
+    void StartCharge()
+    {
+        isCharging = true;
+        chargeTimer = 0f;
+        chargeCompletePopped = false;
+        chargeVisualsStarted = false;
+        rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
+
+        TestLog.Event("ilseom", "charge_start");
+    }
+
+    // parryTapMaxHold를 넘겨 계속 쥐고 있으면 그때부터 일섬 차지 연출을 시작한다.
+    void BeginChargeVisuals()
+    {
+        chargeVisualsStarted = true;
+
+        // 홀드 중에는 Glitch Out의 0프레임에 고정(대시 프리즈와 동일한 방식 — 애니메이터를 꺼서
+        // AnyState 전이가 프레임을 덮어쓰지 못하게 한다).
+        FreezeAnimAt(ilseomChargeState, ilseomChargeFreezeFrame, ilseomChargeFrameCount);
+
+        chargeFx = IlseomChargeFx.Attach(transform, ilseomChargePixelMaterial, ilseomChargePixelCount,
+            GatherOffset(), sr != null ? sr.sortingLayerID : 0, (sr != null ? sr.sortingOrder : 0) + 1);
+
+        // 스펙 6 확장: 차지~발동 구간에 플레이어 자체가 빛난다. 세기는 UpdateChargeFx가 차지 진행도로
+        // 매 프레임 먹이므로 여기서는 0에서 시작만 시켜두면 그대로 페이드 인이 된다.
+        bloomFx = PlayerBloomFx.Attach(transform, playerBloomMaterial, playerBloomSortingOffset);
+
+        TestLog.Event("ilseom", "charge_visuals_start");
+    }
+
+    void UpdateChargeFx()
+    {
+        float p = Mathf.Clamp01(chargeTimer / Mathf.Max(0.0001f, ilseomChargeTime));
+
+        if (chargeFx != null)
+        {
+            chargeFx.SetGatherOffset(GatherOffset());
+            // 경과 시간(흐름)과 진행도(세기)를 따로 넘긴다 — 완충 후에도 픽셀이 계속 모여들어야 하므로.
+            chargeFx.SetCharge(chargeTimer, p);
+        }
+
+        // 블룸은 차지 진행도를 그대로 따라간다 → 0에서 시작해 완충에서 최대(페이드 인).
+        if (bloomFx != null) bloomFx.SetIntensity(p);
+
+        // 쉐이크 램프는 차지 전체(0→ilseomChargeTime)에 걸쳐 0배→ilseomChargeShakeMultiplier배로 오르고,
+        // ilseomChargeShakeStartDelay 이전에는 적용하지 않는다(스펙 5의 두 문장을 동시에 만족시키는 해석).
+        // 기준 세기는 피격 쉐이크와 같은 attackShakeMagnitude라 그쪽 튜닝을 그대로 따라간다.
+        if (sectionCamera != null)
+        {
+            float mag = chargeTimer >= ilseomChargeShakeStartDelay
+                ? attackShakeMagnitude * ilseomChargeShakeMultiplier * p
+                : 0f;
+            sectionCamera.SetSustainedShake(mag);
+        }
+    }
+
+    void CancelCharge(string reason)
+    {
+        isCharging = false;
+        chargeTimer = 0f;
+        chargeCompletePopped = false;
+
+        // 연출이 시작되기 전(패링 탭 구간)에 취소되면 애니메이터를 건드리지 않는다 — Idle로 강제
+        // 복귀시키면 곧바로 재생할 패링 모션(Slash 1) 앞에 한 프레임짜리 Idle이 끼어든다.
+        if (chargeVisualsStarted)
+        {
+            RestoreAnimAfterIlseom();
+            if (chargeFx != null) { chargeFx.PlayCancel(ilseomCancelFxDuration); chargeFx = null; }
+            if (bloomFx != null) { bloomFx.FadeOut(ilseomBloomCancelFadeOut); bloomFx = null; }
+        }
+        chargeVisualsStarted = false;
+
+        if (sectionCamera != null) sectionCamera.SetSustainedShake(0f);
+        TestLog.Event("ilseom", reason);
+    }
+
+    // 픽셀이 모이는 지점 — 바라보는 방향의 살짝 위쪽(사용자 확정: flipX에 따라 미러링).
+    Vector2 GatherOffset()
+    {
+        float dirX = (sr != null && sr.flipX) ? -1f : 1f;
+        return new Vector2(ilseomGatherOffset.x * dirX, ilseomGatherOffset.y);
+    }
+
+    void SpawnBuffPop()
+    {
+        if (ilseomBuffPopPrefab == null) return;
+        var pop = Instantiate(ilseomBuffPopPrefab, transform.position + Vector3.up * ilseomBuffPopHeight, Quaternion.identity);
+        pop.transform.localScale *= ilseomBuffPopScale;
+    }
+
+    // ── 패링 ────────────────────────────────────────────────────────────────────────────────
+    void HandleParry()
+    {
+        if (parryCooldownCounter > 0f) parryCooldownCounter -= Time.deltaTime;
+
+        if (!isParrying) return;
+        parryTimer += Time.deltaTime;
+        if (parryTimer >= parryMotionDuration) isParrying = false;
+    }
+
+    // 우클릭 탭으로 진입. 모션(Slash 1)은 성공/실패와 무관하게 항상 재생되고, 판정이 성립하면
+    // 그 공격을 무효화(스펙 5) + 겹침 지점에 연출(스펙 4) + 구형 실드(스펙 6)까지 이어진다.
+    // 데미지는 주지 않는다 — isAttacking을 세우지 않으므로 클립의 AttackHitFrame 이벤트는 무시된다.
+    void TryParry()
+    {
+        if (!parryEnabled || parryCooldownCounter > 0f) return;
+
+        isParrying = true;
+        parryTimer = 0f;
+        if (anim != null) { anim.enabled = true; anim.SetTrigger("Attack1"); }
+
+        Vector2 contact;
+        DummyEnemy target = FindParryTarget(out contact);
+        if (target == null)
+        {
+            parryCooldownCounter = parryFailCooldown;
+            TestLog.Event("parry_timing", "parry_miss");
+            return;
+        }
+
+        target.ConsumeParry();
+
+        Vector3 fxPos = (Vector3)contact + Vector3.up * parryFxHeightOffset;
+        Vector2 facing = (contact - (Vector2)transform.position).normalized;
+        if (facing.sqrMagnitude < 0.01f) facing = (sr != null && sr.flipX) ? Vector2.left : Vector2.right;
+        // 크리티컬과 같은 프리팹·색을 그대로 쓴다(사용자 스펙) — 위치는 이미 정확하므로 추가 오프셋 0.
+        CombatFx.SpawnHitVfx(critHitVfxPrefab, fxPos, facing, 0f);
+        CombatFx.SpawnDamageText(damageTextPrefab, fxPos, parryText, critTextColor, true);
+
+        // 막아낸 지점으로 카메라가 잠깐 파고든다(대시-카운터와 같은 FocusPulse, 훨씬 짧게).
+        if (sectionCamera != null)
+            sectionCamera.FocusPulse(fxPos, parryCamPanAmount, parryCamZoomAmount,
+                focusPulseRampIn, focusPulseHold, focusPulseRampOut);
+
+        SpawnParryShield();
+        TestLog.Event("parry_timing", $"parry_success enemy={target.name} at={contact.ToString("F2")}");
+    }
+
+    // 스펙 3의 성공 조건을 만족하는 적을 찾는다.
+    // contact = 적 공격 원의 중심을 1타 히트박스 안으로 클램프한 점 — 원이 박스 밖이면 박스 경계의
+    // 최근접점, 안이면 원 중심 그 자체가 되어 "두 범위가 겹치는 영역의 중앙"이 된다(스펙 4).
+    DummyEnemy FindParryTarget(out Vector2 contact)
+    {
+        contact = Vector2.zero;
+
+        Vector2 facing = (sr != null && sr.flipX) ? Vector2.left : Vector2.right;
+        Vector2 boxCenter = (Vector2)transform.position + facing * attackHitboxDistance;
+        Vector2 half = attackHitboxSize * 0.5f;
+
+        // 적 몸통은 창 길이(1.9)만큼 떨어져 있어 1타 히트박스로 직접 훑으면 못 잡는다 → 후보만 넓게
+        // 모으고, 실제 판정은 "적의 공격 범위(창끝 원) vs 1타 히트박스"로 한다.
+        Collider2D[] found = Physics2D.OverlapCircleAll(transform.position, parrySearchRadius, enemyLayer);
+        for (int i = 0; i < found.Length; i++)
+        {
+            DummyEnemy e = found[i].GetComponent<DummyEnemy>();
+            if (e == null || !e.IsAttacking) continue;
+            // (B) 아직 그 공격에 맞지 않았거나, (A) 대시 회피 인정 창이 열려 있음
+            //     — (A)만 성립하는 경우 = 대시 무적으로 이미 흘려낸 공격을 유예 중에 되받아치는 상황.
+            if (!e.IsAttackUnresolved && dodgeCounterGraceTimer <= 0f) continue;
+
+            Vector2 c = e.AttackHitPoint;
+            Vector2 clamped = new Vector2(
+                Mathf.Clamp(c.x, boxCenter.x - half.x, boxCenter.x + half.x),
+                Mathf.Clamp(c.y, boxCenter.y - half.y, boxCenter.y + half.y));
+            if ((c - clamped).sqrMagnitude > e.AttackHitRadius * e.AttackHitRadius) continue;
+
+            contact = clamped;
+            return e;
+        }
+        return null;
+    }
+
+    void SpawnParryShield()
+    {
+        parryShieldActive = true;
+        // 이미 실드가 있으면 새 것으로 갈아끼운다(중첩 방어가 아니라 갱신 — 스펙은 항상 "1회"다).
+        if (parryShieldFx != null) Destroy(parryShieldFx.gameObject);
+        parryShieldFx = ParryShieldFx.Attach(transform, parryShieldMaterial, parryShieldRadius,
+            parryShieldOffset, parryShieldBreakDuration,
+            sr != null ? sr.sortingLayerID : 0, (sr != null ? sr.sortingOrder : 0) + parryShieldSortingOffset);
+        TestLog.Event("parry_timing", "shield_up");
+    }
+
+    // 실드가 살아 있으면 적 공격 1회를 대신 막고 유리처럼 깨진다(스펙 6).
+    // DummyEnemy가 피해 확정 직전에 호출한다 — true면 그 공격은 데미지도 데미지 텍스트도 없다.
+    // 판정 상태(parryShieldActive)를 연출 오브젝트와 분리해 둔 이유: 셰이더/머티리얼을 못 찾아
+    // 연출이 생성되지 않아도 "1회 막아준다"는 기능 자체는 그대로 살아 있어야 하기 때문.
+    public bool TryConsumeParryShield()
+    {
+        if (!parryShieldActive) return false;
+        parryShieldActive = false;
+        if (parryShieldFx != null) { parryShieldFx.Break(); parryShieldFx = null; }
+        TestLog.Event("parry_timing", "shield_blocked");
+        return true;
+    }
+
+    public bool HasParryShield => parryShieldActive;
+
+    // ── 일섬: 발동 시퀀스 ───────────────────────────────────────────────────────────────────
+    // Glitch Out → 투명 이동 → Glitch Sweep(0프레임에 처형 피격) → 무적 해제.
+    // ★ try/finally로 무적·레이어·알파·flipX·쉐이크를 항상 복원(DodgeCounterRoutine과 같은 구조적 안전망).
+    System.Collections.IEnumerator IlseomRoutine()
+    {
+        ilseomActive = true;
+        ilseomCooldownCounter = ilseomCooldown; // 발동이 확정된 순간 쿨타임 시작
+
+        int dirX = (sr != null && sr.flipX) ? -1 : 1;
+        Color baseColor = sr != null ? sr.color : Color.white;
+
+        if (sectionCamera != null) sectionCamera.SetSustainedShake(0f);
+        if (chargeFx != null) { chargeFx.PlayFinish(ilseomFinishFxDuration); chargeFx = null; } // 모인 픽셀은 그 자리에서 페이드아웃
+        if (invincibleLayer != -1) gameObject.layer = invincibleLayer;
+        rb.linearVelocity = Vector2.zero;
+        LockAnimForIlseom();
+
+        if (bloomFx != null) bloomFx.SetIntensity(1f); // 완충 세기 유지 — 시퀀스가 끝날 때 페이드 아웃
+
+        TestLog.Event("ilseom", "fire dir=" + dirX);
+
+        try
+        {
+            // 1) Glitch Out 전체 재생
+            PlayIlseomState(ilseomChargeState, dirX, false);
+            yield return new WaitForSeconds(ilseomGlitchOutDuration);
+
+            // 2) 목표 지점과 경로 위의 적을 먼저 확정한다(이동 중 적이 움직여도 판정이 흔들리지 않게).
+            Vector3 start = transform.position;
+            float maxDist = dashSpeed * dashDuration * ilseomDistanceMultiplier;
+            var targets = new System.Collections.Generic.List<DummyEnemy>();
+            Vector3 end = ResolveIlseomPath(start, dirX, maxDist, targets);
+
+            // 3) 궤적 섬광을 먼저 깔고(경로가 확정된 직후) 투명해지며 이동한다.
+            // 픽셀 스냅 단위는 플레이어와 같은 1/32 × 현재 스케일로 맞춰 도트 크기를 통일한다.
+            float pixelSize = transform.lossyScale.x / 32f;
+            SpawnIlseomStreak(start, end, pixelSize);
+
+            float t = 0f;
+            while (t < ilseomMoveDuration)
+            {
+                t += Time.deltaTime;
+                float k = Mathf.Clamp01(t / ilseomMoveDuration);
+                transform.position = Vector3.Lerp(start, end, k);
+                if (sr != null)
+                {
+                    Color c = baseColor;
+                    c.a = baseColor.a * Mathf.Lerp(1f, ilseomMoveAlpha, Mathf.Sin(k * Mathf.PI * 0.5f));
+                    sr.color = c;
+                }
+                yield return null;
+            }
+            transform.position = end;
+            if (sr != null) sr.color = baseColor; // 투명화 해제
+
+            // 4) Glitch Sweep — 첫 프레임에 경로 위 모든 적에게 처형 피격
+            PlayIlseomState(ilseomSweepState, dirX, true);
+            // 베는 순간 카메라가 도착 지점으로 잠깐 파고든다(적이 없어도 걸리도록 피해 처리와 분리).
+            if (sectionCamera != null)
+                sectionCamera.FocusPulse(end, ilseomCamPanAmount, ilseomCamZoomAmount,
+                    focusPulseRampIn, focusPulseHold, focusPulseRampOut);
+            ApplyIlseomDamage(targets, dirX);
+            yield return new WaitForSeconds(ilseomSweepDuration);
+        }
+        finally
+        {
+            ilseomActive = false;
+            if (invincibleLayer != -1) gameObject.layer = normalLayer;
+            if (sr != null) { sr.color = baseColor; sr.flipX = (dirX < 0); } // Sweep의 반전 flipX를 원상복구
+            RestoreAnimAfterIlseom();
+            if (sectionCamera != null) sectionCamera.SetSustainedShake(0f);
+            // 어떤 경로(정상 종료/중단/예외)로 끝나도 연출이 남지 않게 항상 정리한다.
+            if (bloomFx != null) { bloomFx.FadeOut(ilseomBloomFadeOut); bloomFx = null; }
+            TestLog.Event("ilseom", "end");
+        }
+    }
+
+    // 궤적 섬광을 이동 경로에 여러 겹으로 깐다(스펙 6 확장 "더 길게 그리고 더 많이, 이동 경로 내에 더 표현").
+    // 겹마다 두께와 수명이 달라 바깥 겹이 더 두껍고 더 오래 남아 번지는 잔광처럼 보인다.
+    // IlseomSlashFx가 겹마다 새 머티리얼 인스턴스에 무작위 시드를 넣으므로 스피드 라인 패턴도 겹마다 다르다.
+    void SpawnIlseomStreak(Vector3 start, Vector3 end, float pixelSize)
+    {
+        int layers = Mathf.Max(1, ilseomStreakLayers);
+        int layerID = sr != null ? sr.sortingLayerID : 0;
+        int baseOrder = (sr != null ? sr.sortingOrder : 0) + ilseomStreakSortingOffset;
+
+        for (int i = 0; i < layers; i++)
+        {
+            float k = layers == 1 ? 0f : (float)i / (layers - 1);
+            float height = ilseomStreakHeight * Mathf.Lerp(1f, ilseomStreakLayerHeightSpread, k);
+            float fade = ilseomStreakFade * Mathf.Lerp(1f, ilseomStreakLayerFadeSpread, k);
+            // 두꺼운(바깥) 겹을 더 뒤에 깔아 얇은 코어가 위로 올라오게 한다.
+            IlseomSlashFx.Spawn(start, end, height, pixelSize, ilseomStreakMaterial,
+                ilseomStreakSweep, fade, layerID, baseOrder - i);
+        }
+        TestLog.Event("ilseom", "streak layers=" + layers);
+    }
+
+    // 멈출 지점을 정한다. 경로에 벽이 있으면 그 앞, 없으면 최대 사거리(사용자 변경: 적 위치는 정지에
+    // 관여하지 않음 — 예전의 "가장 먼 적 뒤로" 규칙 제거). 지나가는 경로 안의 적은 여전히 targets에
+    // 모아 Sweep 판정에 쓴다(피해는 유지, 정지 위치만 적과 무관).
+    Vector3 ResolveIlseomPath(Vector3 start, int dirX, float maxDist,
+        System.Collections.Generic.List<DummyEnemy> targets)
+    {
+        Vector2 castDir = dirX > 0 ? Vector2.right : Vector2.left;
+        Bounds b = coll.bounds;
+        float dist = maxDist;
+
+        // 벽 검사: 몸 크기를 살짝 줄여 캐스트해 지형에 스치는 오검출을 줄인다.
+        // (wallLayer에는 Ground(9)+Wall(10)이 모두 들어 있어 지형 벽 전반이 잡힌다)
+        Vector2 castSize = new Vector2(b.size.x * 0.9f, b.size.y * 0.8f);
+        RaycastHit2D wall = Physics2D.BoxCast(b.center, castSize, 0f, castDir, maxDist, wallLayer);
+        bool wallBlocked = wall.collider != null;
+        if (wallBlocked) dist = Mathf.Max(0f, wall.distance - ilseomWallMargin);
+
+        // 실제 이동 구간(0~dist) 안의 적을 전부 피해 대상으로 수집(정지 위치 계산에는 쓰지 않음).
+        if (dist > 0.01f)
+        {
+            Vector2 boxCenter = (Vector2)b.center + castDir * (dist * 0.5f);
+            Vector2 boxSize = new Vector2(dist + b.size.x, Mathf.Max(ilseomPathHeight, b.size.y));
+            Collider2D[] found = Physics2D.OverlapBoxAll(boxCenter, boxSize, 0f, enemyLayer);
+            for (int i = 0; i < found.Length; i++)
+            {
+                DummyEnemy e = found[i].GetComponent<DummyEnemy>();
+                if (e == null || targets.Contains(e)) continue;
+                targets.Add(e);
+            }
+        }
+
+        TestLog.Event("ilseom", "path dist=" + dist.ToString("F2") + " max=" + maxDist.ToString("F2")
+            + " wall=" + wallBlocked + " enemies=" + targets.Count);
+
+        return start + (Vector3)(castDir * dist);
+    }
+
+    void ApplyIlseomDamage(System.Collections.Generic.List<DummyEnemy> targets, int dirX)
+    {
+        int dmg = Mathf.RoundToInt(attack1Damage * ilseomDamageMultiplier);
+        Vector2 facing = dirX > 0 ? Vector2.right : Vector2.left;
+        int hits = 0;
+        for (int i = 0; i < targets.Count; i++)
+        {
+            DummyEnemy e = targets[i];
+            if (e == null) continue;
+            e.TakeDamage(dmg, facing.x * attackLungeDistance * enemyKnockbackMultiplier);
+            SpawnHitFeedback(e.transform.position, facing, dmg, HitTier.Execution); // 처형 VFX(Hit03) + 강조 텍스트
+            hits++;
+        }
+
+        if (hits > 0)
+        {
+            if (attackHitstop) StartCoroutine(AttackHitstopCo(critHitstopMultiplier));
+            if (attackScreenShake && sectionCamera != null)
+                sectionCamera.Shake(attackShakeDuration, attackShakeMagnitude * critShakeMultiplier);
+        }
+        TestLog.Event("ilseom", "sweep_hit dmg=" + dmg + " hits=" + hits);
+    }
+
+    // 일섬 클립을 재생한다. invertFlip=true면 flipX를 반대로 준다 —
+    // Glitch Sweep 시트가 원본부터 FlipX 되어 있기 때문(사용자 확인).
+    void PlayIlseomState(string state, int dirX, bool invertFlip)
+    {
+        bool faceLeft = dirX < 0;
+        if (sr != null) sr.flipX = invertFlip ? !faceLeft : faceLeft;
+        if (anim == null) return;
+        anim.enabled = true;
+        anim.Play(state, 0, 0f);
+        anim.Update(0f);
+    }
+
+    // 일섬/차지가 끝나면 애니메이터를 다시 켜고 기본 상태로 되돌린다.
+    // Glitch Out/Sweep은 나가는 전이가 없는 고아 상태라 그냥 enabled만 되돌리면 그 상태에 계속 머물러
+    // 마지막 프레임이 스프라이트에 남는다 — Idle로 직접 복귀시켜야 Idle↔Run 순환과 AnyState 전이가 살아난다.
+    // 공중이었다면 다음 프레임에 UpdateAnimations가 파라미터를 다시 먹여 AnyState→Fall/Jump가 바로 받아간다.
+    void RestoreAnimAfterIlseom()
+    {
+        if (anim == null) return;
+        anim.enabled = true;
+        anim.Play(ilseomExitState, 0, 0f);
+        anim.Update(0f); // Idle 0프레임을 즉시 sr.sprite에 기록해 한 프레임도 남지 않게
+    }
+
+    // AnyState 전이(Fall/Jump/Wall Slide/Land/Attack)가 일섬 클립을 즉시 덮어쓰는 것을 막는다.
+    // 조건을 전부 거짓으로 고정해두고, 이 구간엔 UpdateAnimations가 파라미터를 다시 안 건드린다.
+    void LockAnimForIlseom()
+    {
+        if (anim == null) return;
+        anim.SetFloat("Speed", 0f);
+        anim.SetFloat("yVelocity", 0f);
+        anim.SetBool("isGrounded", true);
+        anim.SetBool("isWallSliding", false);
+        anim.ResetTrigger("Land");
+        anim.ResetTrigger("Attack1");
+        anim.ResetTrigger("Attack2");
+    }
+
+    // ── 처형(Execution): 커서 감지 + R키 발동 ────────────────────────────────────────────────
+    // 매 프레임 마우스 위치에서 적을 감지하고, 체력 조건을 확인해 글로우/UI를 제어한다.
+    // R키 입력 시 ExecutionRoutine 코루틴을 시작한다.
+    void HandleExecution()
+    {
+        if (!executionEnabled || isExecuting || isDashing || isDodgeCountering
+            || ilseomActive || isCharging || isParrying || isAttacking) return;
+
+        // 커서 아래 적 감지 — 2D 물리 레이캐스트
+        DummyEnemy hoveredEnemy = null;
+        if (Camera.main != null && Mouse.current != null)
+        {
+            Vector2 mouseScreen = Mouse.current.position.ReadValue();
+            Vector3 worldPos = Camera.main.ScreenToWorldPoint(new Vector3(mouseScreen.x, mouseScreen.y, 0f));
+            Collider2D hit = Physics2D.OverlapPoint(worldPos, enemyLayer);
+            if (hit != null) hoveredEnemy = hit.GetComponent<DummyEnemy>();
+        }
+
+        // 처형 가능한 적인지 확인
+        bool validTarget = hoveredEnemy != null && hoveredEnemy.IsExecutable
+            && (float)hoveredEnemy.currentHp / hoveredEnemy.maxHp <= executionHpThreshold;
+
+        if (validTarget)
+        {
+            // 새 타겟이거나 타겟이 바뀌었으면 글로우를 교체
+            if (executionTarget != hoveredEnemy)
+            {
+                ClearExecutionTargeting();
+                executionTarget = hoveredEnemy;
+                // 글로우 FX 붙이기
+                executionGlowFx = EnemyExecutionGlowFx.Attach(
+                    executionTarget.transform, enemyExecutionGlowMaterial, enemyGlowSortingOffset);
+                if (executionGlowFx != null) executionGlowFx.FadeIn(1f, executionGlowFadeIn);
+                // UI 페이드 인
+                ExecutionUI.GetOrCreate().ShowPrompt();
+            }
+
+            // R키 입력 확인
+            if (Keyboard.current != null && Keyboard.current.rKey.wasPressedThisFrame)
+            {
+                ExecutionUI.GetOrCreate().FlashHidePrompt();
+                StartCoroutine(ExecutionRoutine(executionTarget));
+            }
+        }
+        else if (executionTarget != null)
+        {
+            // 타겟이 무효해짐 — 글로우/UI 정리
+            ClearExecutionTargeting();
+        }
+    }
+
+    void ClearExecutionTargeting()
+    {
+        if (executionGlowFx != null) { executionGlowFx.FadeOut(executionGlowFadeOut); executionGlowFx = null; }
+        ExecutionUI.GetOrCreate().HidePrompt();
+        executionTarget = null;
+    }
+
+    // ── 처형: 발동 시퀀스 ────────────────────────────────────────────────────────────────────
+    // Glitch Out → 적 위치에 Glitch Slices 스폰 + 적 쪽으로 이동 → Glitch Sweep(첫 프레임에 즉사 데미지).
+    // ★ try/finally로 무적·레이어·상태를 항상 복원(DodgeCounterRoutine/IlseomRoutine과 같은 구조적 안전망).
+    System.Collections.IEnumerator ExecutionRoutine(DummyEnemy target)
+    {
+        isExecuting = true;
+        executionTarget = null; // 타겟팅 UI 정리(시퀀스 중엔 불필요)
+        if (executionGlowFx != null) { executionGlowFx.FadeOut(0.1f); executionGlowFx = null; }
+
+        int dirX = (sr != null && sr.flipX) ? -1 : 1;
+        Color baseColor = sr != null ? sr.color : Color.white;
+
+        // 무적 + 충돌 무시
+        if (invincibleLayer != -1) gameObject.layer = invincibleLayer;
+        rb.linearVelocity = Vector2.zero;
+        LockAnimForIlseom(); // 일섬과 동일하게 AnyState 전이를 막는다
+
+        TestLog.Event("execution", "start dir=" + dirX);
+
+        try
+        {
+            // ── Phase 1: Glitch Out 재생 + Glitch Slices 스폰 + 적 위치로 이동 ──
+            // 플레이어가 적을 바라보도록 방향 전환
+            float dx = target.transform.position.x - transform.position.x;
+            if (!Mathf.Approximately(dx, 0f))
+            {
+                dirX = dx > 0f ? 1 : -1;
+                if (sr != null) sr.flipX = dirX < 0;
+            }
+
+            // Glitch Out 재생 (일섬과 동일)
+            PlayIlseomState(ilseomChargeState, dirX, false);
+
+            // Glitch Slices를 적 위치에 스폰 — Animator가 필요하므로 프리팹 대신 일섬과 같이 처리한다.
+            // Glitch Slices는 고아 상태라 anim.Play로 바로 재생 가능.
+            // 적의 SpriteRenderer에 잠시 Glitch Slices를 재생할 방법이 없으므로(적은 별도 애니메이터),
+            // 플레이어의 position을 적에게 옮기는 것으로 자연스러운 연출을 만든다.
+            // → 실제로는 Glitch Out이 재생되는 동안 이동이 진행된다.
+
+            // 이동 목표: 적 위치 (y좌표는 대시-카운터와 동일 로직 — 차이가 작으면 유지)
+            Vector3 start = transform.position;
+            Vector3 targetPos = target.transform.position;
+            // y좌표 보정: 대시-카운터와 동일하게 y 차이가 작으면 현재 y를 유지
+            float yDiff = Mathf.Abs(targetPos.y - start.y);
+            if (yDiff < 1.5f) targetPos.y = start.y; // 1.5 유닛 이내면 y 이동 불필요
+            targetPos.z = start.z;
+
+            // Glitch Out 재생 중에 이동
+            float moveDur = ilseomGlitchOutDuration;
+            float t = 0f;
+            while (t < moveDur)
+            {
+                t += Time.deltaTime;
+                float k = Mathf.Clamp01(t / moveDur);
+                transform.position = Vector3.Lerp(start, targetPos, k);
+                yield return null;
+            }
+            transform.position = targetPos;
+
+            // ── Phase 2: Glitch Sweep 재생 + 첫 프레임에 즉사 데미지 ──
+            PlayIlseomState(ilseomSweepState, dirX, true);
+
+            // 첫 프레임 즉시: 즉사 데미지 + "처형됨!!" 텍스트 + HitVFX03
+            if (target != null && target.gameObject.activeInHierarchy)
+            {
+                // 무조건 즉사 데미지: 현재 HP + 여유분
+                int lethalDamage = target.currentHp + 999;
+                Vector2 facing = (sr != null && sr.flipX) ? Vector2.left : Vector2.right;
+
+                target.TakeDamage(lethalDamage, facing.x * attackLungeDistance * enemyKnockbackMultiplier);
+
+                // HitVFX03 스폰
+                CombatFx.SpawnHitVfx(executionHitVfxPrefab, target.transform.position, facing, hitVfxOffsetTowardsEnemy);
+
+                // "처형됨!!" 붉은 텍스트 (숫자 표시 X — 문구만)
+                CombatFx.SpawnDamageText(damageTextPrefab, target.transform.position,
+                    executionText, executionTextColor, true);
+
+                // 카메라 쉐이크 + 히트스톱 (크리티컬 배율 적용)
+                if (sectionCamera != null)
+                    sectionCamera.Shake(attackShakeDuration * critShakeMultiplier,
+                        attackShakeMagnitude * critShakeMultiplier);
+                if (attackHitstop) StartCoroutine(AttackHitstopCo(critHitstopMultiplier));
+
+                TestLog.Event("execution", $"hit dmg={lethalDamage}");
+            }
+
+            // Sweep 재생 대기
+            yield return new WaitForSeconds(ilseomSweepDuration);
+
+            // 여운 (처형 후 잠시 멈춤)
+            yield return new WaitForSecondsRealtime(executionHold);
+        }
+        finally
+        {
+            isExecuting = false;
+            if (invincibleLayer != -1) gameObject.layer = normalLayer;
+            if (sr != null) { sr.color = baseColor; sr.flipX = (dirX < 0); }
+            RestoreAnimAfterIlseom(); // 일섬과 동일하게 애니메이터 복원
+            ExecutionUI.GetOrCreate().HidePromptImmediate();
+            TestLog.Event("execution", "end");
+        }
+    }
+
     // 대시 종료 공통 처리(정상 타임아웃/벽 취소/회피-카운터 종료 모두 여기로 모음).
     void EndDash(string reason)
     {
@@ -431,8 +1256,8 @@ public class PlayerController : MonoBehaviour
         TestLog.Event("dash_iframe", reason);
     }
 
-    // 물리 무적(i-frame) 자체는 대시 실제 지속시간 그대로(1주차 스펙 불변).
-    public bool IsInvincible => isDashing;
+    // 물리 무적(i-frame): 대시는 실제 지속시간 그대로(1주차 스펙 불변), 일섬/처형은 발동 시퀀스 전체.
+    public bool IsInvincible => isDashing || ilseomActive || isExecuting;
 
     // DummyEnemy.CheckThrustHit가 찌르기가 실제로 닿는 순간 호출한다. 닷지 트리거는 dodgeCounterGraceTimer로
     // 판정 — 대시가 물리적으로 끝난 뒤에도 유예 시간 동안은 여전히 닷지로 잡아준다(타이밍 완화, 사용자 피드백).
@@ -652,16 +1477,17 @@ public class PlayerController : MonoBehaviour
 
         if (anim != null) anim.SetTrigger("Attack1"); // 시각적 스윙만(isAttacking=false라 AttackHitFrame 판정은 무시됨)
 
+        // 닷지 카운터는 항상 크리티컬 취급(사용자 스펙) — 배율은 기존 dodgeCounterDamageMultiplier(3배) 그대로 쓰고,
+        // 연출만 크리티컬과 동일하게(Hit02 VFX + 금색 2배 "숫자!!!" 텍스트 + 쉐이크/히트스톱 2배) 맞춘다.
         int dmg = Mathf.RoundToInt(attack1Damage * dodgeCounterDamageMultiplier);
         target.TakeDamage(dmg, facingBack.x * attackLungeDistance * enemyKnockbackMultiplier);
-        CombatFx.SpawnHitVfx(hitVfxPrefabs, target.transform.position, facingBack, hitVfxOffsetTowardsEnemy);
-        CombatFx.SpawnDamageText(damageTextPrefab, target.transform.position, dmg, damageTextColor);
+        SpawnHitFeedback(target.transform.position, facingBack, dmg, HitTier.Critical);
         float impactAngle = Mathf.Atan2(facingBack.y, facingBack.x) * Mathf.Rad2Deg;
         JustDodgeVFX.SpawnImpact(target.transform.position, impactAngle, dodgeImpactColor, dodgeImpactScale);
 
-        if (sectionCamera != null) sectionCamera.Shake(dodgeCounterHitShakeDuration, dodgeCounterHitShakeMagnitude);
+        if (sectionCamera != null) sectionCamera.Shake(dodgeCounterHitShakeDuration, dodgeCounterHitShakeMagnitude * critShakeMultiplier);
         StartCoroutine(DodgeCounterHitstopCo());
-        TestLog.Event("dodge_counter", $"hit dmg={dmg}");
+        TestLog.Event("dodge_counter", $"hit dmg={dmg} crit=True");
 
         yield return new WaitForSecondsRealtime(dodgeCounterHold);
     }
@@ -670,21 +1496,28 @@ public class PlayerController : MonoBehaviour
     {
         float prev = Time.timeScale;
         Time.timeScale = Mathf.Clamp01(dodgeCounterHitstopScale);
-        yield return new WaitForSecondsRealtime(dodgeCounterHitstopDuration);
+        // 카운터는 항상 크리티컬이므로 히트스톱도 2배(critHitstopMultiplier)
+        yield return new WaitForSecondsRealtime(dodgeCounterHitstopDuration * critHitstopMultiplier);
         Time.timeScale = prev;
     }
 
     // 대시 중 Run 애니를 지정 프레임에 고정한다 (산데비스탄 잔상이 같은 실루엣을 남기도록).
-    // speed=0은 AnyState→Fall 전이(공중)가 조건 평가로 프리즈를 덮으므로,
-    // Run 프레임을 sr.sprite에 기록한 뒤 애니메이터 자체를 꺼서 지상/공중 모두 고정한다.
     void FreezeDashAnim()
     {
+        FreezeAnimAt(dashFreezeState, dashFreezeFrame, dashFreezeFrameCount);
+    }
+
+    // 지정 상태의 지정 프레임에 스프라이트를 고정한다(대시 프리즈 · 일섬 차지 홀드 공용).
+    // speed=0은 AnyState→Fall 전이(공중)가 조건 평가로 프리즈를 덮으므로,
+    // 그 프레임을 sr.sprite에 기록한 뒤 애니메이터 자체를 꺼서 지상/공중 모두 고정한다.
+    void FreezeAnimAt(string state, int frame, int frameCount)
+    {
         if (anim == null) return;
-        int count = Mathf.Max(1, dashFreezeFrameCount);
-        float nt = (float)dashFreezeFrame / count;
+        int count = Mathf.Max(1, frameCount);
+        float nt = (float)frame / count;
         anim.enabled = true;                // 평가되도록 보장
-        anim.Play(dashFreezeState, 0, nt);
-        anim.Update(0f);                    // Run 프레임을 sr.sprite에 즉시 기록
+        anim.Play(state, 0, nt);
+        anim.Update(0f);                    // 해당 프레임을 sr.sprite에 즉시 기록
         anim.enabled = false;               // 애니메이터 정지 → sr.sprite 고정
     }
 
@@ -722,7 +1555,7 @@ public class PlayerController : MonoBehaviour
         // 공중 공격 금지(사용자 스펙): 지상에서만 스윙이 시작된다. 지상에서 눌러 버퍼링된 입력도
         // 그 사이에 공중으로 나가면 발동하지 않는다(아래 isGrounded 조건). 회피-카운터(F)는 이
         // 공격 시스템을 거치지 않는 별도 경로라 공중에서도 그대로 동작한다.
-        if (!isAttacking && !isDashing && !isDodgeCountering && isGrounded && attackQueued)
+        if (!isAttacking && !isDashing && !isDodgeCountering && !ilseomActive && !isParrying && !isExecuting && isGrounded && attackQueued)
         {
             attackQueued = false;
 
@@ -770,9 +1603,32 @@ public class PlayerController : MonoBehaviour
         CheckAttackHit(attackStage == 1 ? attack1Damage : attack2Damage);
     }
 
+    // 타격 등급. Critical/Execution은 전용 VFX + 강조 텍스트 + 배율 쉐이크/히트스톱을 공유한다.
+    public enum HitTier { Normal, Critical, Execution }
+
+    // 등급별 타격 연출(VFX 프리팹 + 데미지 텍스트)을 한곳에서 처리 — 일반 공격/카운터/처형이 같은 규칙을 따르게.
+    void SpawnHitFeedback(Vector3 targetPos, Vector2 facing, int damage, HitTier tier)
+    {
+        if (tier == HitTier.Normal)
+        {
+            CombatFx.SpawnHitVfx(hitVfxPrefabs, targetPos, facing, hitVfxOffsetTowardsEnemy);
+            CombatFx.SpawnDamageText(damageTextPrefab, targetPos, damage, damageTextColor);
+            return;
+        }
+
+        GameObject vfx = (tier == HitTier.Critical) ? critHitVfxPrefab : executionHitVfxPrefab;
+        Color textColor = (tier == HitTier.Critical) ? critTextColor : executionTextColor;
+        CombatFx.SpawnHitVfx(vfx, targetPos, facing, hitVfxOffsetTowardsEnemy);
+        CombatFx.SpawnDamageText(damageTextPrefab, targetPos, damage, textColor, true);
+    }
+
     void CheckAttackHit(int damage)
     {
         attackHitDone = true;
+        // 크리티컬 판정은 스윙 1회당 한 번(맞은 적마다 따로 굴리지 않음).
+        bool crit = Random.value < critChance;
+        if (crit) damage = Mathf.RoundToInt(damage * Random.Range(critDamageMultiplierMin, critDamageMultiplierMax));
+
         Vector2 facing = (sr != null && sr.flipX) ? Vector2.left : Vector2.right;
         Vector2 center = (Vector2)transform.position + facing * attackHitboxDistance;
         Collider2D[] hits = Physics2D.OverlapBoxAll(center, attackHitboxSize, 0f, enemyLayer);
@@ -785,25 +1641,26 @@ public class PlayerController : MonoBehaviour
                 // 넉백: 플레이어가 바라보는 방향으로 attackLungeDistance × 배율(기본 1.5)만큼 밀어냄
                 enemy.TakeDamage(damage, facing.x * attackLungeDistance * enemyKnockbackMultiplier);
                 hitCount++;
-                CombatFx.SpawnHitVfx(hitVfxPrefabs, hits[i].transform.position, facing, hitVfxOffsetTowardsEnemy);
-                CombatFx.SpawnDamageText(damageTextPrefab, hits[i].transform.position, damage, damageTextColor);
+                SpawnHitFeedback(hits[i].transform.position, facing, damage, crit ? HitTier.Critical : HitTier.Normal);
             }
         }
 
         if (hitCount > 0)
         {
-            TestLog.Event("player_attack", $"stage={attackStage} dmg={damage} hits={hitCount}");
-            if (attackHitstop) StartCoroutine(AttackHitstopCo());
-            if (attackScreenShake && sectionCamera != null) sectionCamera.Shake(attackShakeDuration, attackShakeMagnitude);
+            TestLog.Event("player_attack", $"stage={attackStage} dmg={damage} hits={hitCount} crit={crit}");
+            float mul = crit ? critShakeMultiplier : 1f;
+            if (attackHitstop) StartCoroutine(AttackHitstopCo(crit ? critHitstopMultiplier : 1f));
+            if (attackScreenShake && sectionCamera != null) sectionCamera.Shake(attackShakeDuration, attackShakeMagnitude * mul);
         }
     }
 
     // 대시 히트스톱(DashHitstop)과 동일 패턴: 타격 확정 순간 짧게 시간정지.
-    System.Collections.IEnumerator AttackHitstopCo()
+    // durationMultiplier: 크리티컬/처형이면 2배(사용자 스펙 "히트 스톱도 2배").
+    System.Collections.IEnumerator AttackHitstopCo(float durationMultiplier)
     {
         float prev = Time.timeScale;
         Time.timeScale = Mathf.Clamp01(attackHitstopScale);
-        yield return new WaitForSecondsRealtime(attackHitstopDuration);
+        yield return new WaitForSecondsRealtime(attackHitstopDuration * durationMultiplier);
         Time.timeScale = prev;
     }
 
@@ -811,6 +1668,23 @@ public class PlayerController : MonoBehaviour
     public void TakeDamage(int damage)
     {
         if (damage <= 0) return;
+
+        // 일섬 발동 중엔 아예 피격되지 않는다(스펙 7). DummyEnemy는 IsInvincible로 이미 걸러내지만,
+        // 다른 피해 경로가 생겨도 새지 않도록 여기서도 막는다.
+        if (ilseomActive)
+        {
+            TestLog.Event("ilseom", "damage_blocked");
+            return;
+        }
+
+        // 차지 홀드 중엔 받는 피해가 절반(스펙 6). 1 미만으로 깎여 무피해가 되지 않도록 최소 1은 남긴다.
+        if (isCharging)
+        {
+            int reduced = Mathf.Max(1, Mathf.RoundToInt(damage * ilseomChargeDamageTakenMultiplier));
+            TestLog.Event("ilseom", $"charge_damage_reduced {damage}->{reduced}");
+            damage = reduced;
+        }
+
         currentHp -= damage;
         TestLog.Event("player_damage", $"hp={currentHp}/{maxHp} dmg={damage}");
     }
@@ -827,6 +1701,11 @@ public class PlayerController : MonoBehaviour
 
     void UpdateAnimations()
     {
+        // 일섬 차지/발동 중엔 애니메이터를 직접 제어한다 — 여기서 파라미터를 갱신하면
+        // AnyState 전이(Fall/Jump/Land/Wall Slide)가 Glitch Out/Sweep을 즉시 덮어써버린다.
+        // flipX도 이 구간엔 HandleIlseom/PlayIlseomState가 관리한다.
+        if (isCharging || ilseomActive || isExecuting) return;
+
         if (anim != null) {
             anim.SetFloat("Speed", Mathf.Abs(moveInput.x));
             anim.SetFloat("yVelocity", rb.linearVelocity.y);
@@ -870,13 +1749,20 @@ public class PlayerController : MonoBehaviour
 
     public void OnDash(InputValue value)
     {
-        if (value.isPressed) dashRequested = true;
+        if (value.isPressed)
+        {
+            dashRequested = true;
+            if (isCharging) cancelChargeRequested = true; // 일섬 차지 취소(대시는 그대로 발동됨)
+        }
     }
 
     public void OnAttack(InputValue value)
     {
         if (value.isPressed)
         {
+            // 일섬 차지는 지상/공중 무관하게 좌클릭으로 취소된다(스펙 3). 공격 자체는 아래 지상 조건을 그대로 따른다.
+            if (isCharging) cancelChargeRequested = true;
+
             // 공중에서는 공격 "입력" 자체를 받지 않는다(사용자 스펙) — 버퍼에도 안 쌓이므로
             // 착지하는 순간 밀린 입력이 자동으로 터지는 일도 없다.
             if (!isGrounded) return;
@@ -884,6 +1770,30 @@ public class PlayerController : MonoBehaviour
             attackQueued = true;
             attackQueueTime = Time.time;
         }
+    }
+
+    // 일섬 차지(우클릭 홀드)의 홀드 상태를 매 프레임 직접 조회한다.
+    //
+    // ★ OnCharge(InputValue) 메시지 방식을 쓰지 않는 이유(실측으로 확인):
+    //   PlayerInput의 SendMessages 경로는 Button 액션의 "뗌"을 아예 전달하지 않는다 —
+    //   PlayerInput.cs:1499 "ATM we only care about `performed` and, in the case of value actions, `canceled`."
+    //   → if (!(context.performed || (context.canceled && action.type == InputActionType.Value))) return;
+    //   그래서 On<Action>은 press에서만 호출되고, release 콜백은 영원히 오지 않는다(홀드를 떼도 차지가
+    //   계속 쌓여 2초를 넘겨 저절로 발동돼버렸다). DodgeCounterRoutine이 이미 버튼 상태를 직접 폴링하는
+    //   것과 같은 방식으로 통일한다.
+    //   Source: Library/PackageCache/com.unity.inputsystem@21a28c3a6c83/InputSystem/Plugins/PlayerInput/PlayerInput.cs:1499 (확인 2026-07-25)
+    //
+    // 우클릭은 "Parry"(회피-카운터 확인키)에도 걸려 있지만, 회피-카운터 대기 중에는 CanStartCharge()가
+    // isDodgeCountering으로 차지 시작을 막아 서로 간섭하지 않는다.
+    void PollChargeInput()
+    {
+        bool held;
+        if (chargeAction != null) held = chargeAction.IsPressed();
+        else if (Mouse.current != null) held = Mouse.current.rightButton.isPressed; // 액션 조회 실패 시 폴백
+        else held = false;
+
+        if (held && !chargeHeld) chargeStartRequested = true;
+        chargeHeld = held;
     }
 
     // 회피-카운터 확인키. PlayerActions "Parry" 액션에 F키+우클릭 둘 다 바인딩됨(둘 중 아무거나로 확인

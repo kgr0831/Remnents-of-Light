@@ -77,6 +77,52 @@ public class PlayTestRunner : MonoBehaviour
         runner.StartCoroutine(runner.DummyEnemyCombatTest());
     }
 
+    [MenuItem("Tools/PlayTest/Ilseom")]
+    private static void RunIlseomTest()
+    {
+        if (!Application.isPlaying)
+        {
+            Debug.LogWarning("[PlayTestRunner] Enter Play mode first.");
+            return;
+        }
+
+        var runner = FindAnyObjectByType<PlayTestRunner>();
+        if (runner == null)
+        {
+            var go = new GameObject("PlayTestRunner_Temp");
+            runner = go.AddComponent<PlayTestRunner>();
+        }
+        InputInjector.Cleanup();
+        EnsureDeterministicInputSettings();
+        // 일섬은 기능 검증(ASSERT)용이라 녹화하지 않는다. Recorder는 captureDeltaTime을 1/30로 고정해
+        // 프레임을 ~1.5fps로 스로틀하는데, 그러면 WaitForSeconds와 입력 주입(Press/Release) 폴링 타이밍이
+        // 어긋나 릴리즈가 1~2초 늦게 인식돼 테스트가 비결정적으로 FAIL한다(파일 잠금 시 더 심함). 실시간
+        // 프레임에서는 모든 판정이 통과함을 실측 확인(2026-07-25). 영상이 필요하면 Dash 계열 showcase를 쓸 것.
+        runner.StartCoroutine(runner.IlseomTest());
+    }
+
+    [MenuItem("Tools/PlayTest/Parry")]
+    private static void RunParryTest()
+    {
+        if (!Application.isPlaying)
+        {
+            Debug.LogWarning("[PlayTestRunner] Enter Play mode first.");
+            return;
+        }
+
+        var runner = FindAnyObjectByType<PlayTestRunner>();
+        if (runner == null)
+        {
+            var go = new GameObject("PlayTestRunner_Temp");
+            runner = go.AddComponent<PlayTestRunner>();
+        }
+        InputInjector.Cleanup();
+        EnsureDeterministicInputSettings();
+        // 일섬 테스트와 같은 이유로 녹화하지 않는다 — Recorder가 captureDeltaTime을 1/30로 고정하면
+        // 우클릭 탭(한 프레임 press→release)이 입력 폴링과 어긋나 비결정적으로 실패한다.
+        runner.StartCoroutine(runner.ParryTest());
+    }
+
     [MenuItem("Tools/PlayTest/Dash VFX Showcase (Slowmo)")]
     private static void RunDashVfxShowcaseSlowmo() => StartShowcase(true);
 
@@ -176,6 +222,258 @@ public class PlayTestRunner : MonoBehaviour
         string recordingPath = TestRecorder.StopRecording();
         TestLog.Event(channel, $"recording_saved={recordingPath}");
 #endif
+    }
+
+    // 일섬 3단 검증.
+    //  Phase 1 — 2초 전에 떼면 취소되고 이동/무적이 전혀 없다.
+    //  Phase 2 — 2초 넘게 모아서 떼면 발동: 시퀀스 중 무적, 경로 위 적에게 4배(처형) 피해,
+    //            "가장 먼 적보다 ilseomPastEnemyDistance만큼 더" 지점에 정확히 멈춘다.
+    //  Phase 3 — 성공 직후 쿨타임 동안은 아무리 눌러도 차지가 시작되지 않는다.
+    // 적이 추적하면 발동 시점의 거리가 매번 달라져 멈출 위치를 예측할 수 없으므로,
+    // Phase 2 동안만 moveSpeed=0으로 묶고 알려진 위치에 세워둔다(런타임 전용, 끝나면 원복).
+    // 패링 3단 검증. 판정값은 전부 player/dummy의 튜닝 필드에서 읽어 온다(하드코딩 금지 — 수치가 바뀌어도
+    // 테스트가 따라가야 하므로). 적은 moveSpeed=0으로 고정해 발동 시점의 거리가 매번 같게 만든다.
+    //
+    // ★ 거짓 통과 방지: "HP가 안 줄었다"는 음성 판정이라 기능이 아예 안 걸려도 통과한다(적이 그냥 빗나가도
+    //   HP는 그대로). 그래서 로그 콜백으로 [EVENT] parry_timing이 실제로 찍혔는지도 함께 확인한다.
+    public IEnumerator ParryTest()
+    {
+        const string channel = "parry_timing";
+        TestLog.Step(channel, "spawned");
+
+        var player = FindAnyObjectByType<PlayerController>();
+        var dummy = FindAnyObjectByType<DummyEnemy>(FindObjectsInactive.Include);
+        if (player == null || dummy == null)
+        {
+            TestLog.Assert(channel, false, $"NOT_FOUND: player={player != null} dummy={dummy != null}");
+            yield break;
+        }
+
+        var events = new System.Collections.Generic.List<string>();
+        Application.LogCallback capture = (msg, stack, type) =>
+        {
+            if (msg.Contains("[EVENT] " + channel)) events.Add(msg);
+        };
+        Application.logMessageReceived += capture;
+
+        var isParryingField = typeof(PlayerController).GetField("isParrying",
+            System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+
+        bool dummyWasActive = dummy.gameObject.activeSelf;
+        float dummySpeed = dummy.moveSpeed;
+        var playerRb = player.GetComponent<Rigidbody2D>();
+        var dummyRb = dummy.GetComponent<Rigidbody2D>();
+
+        try
+        {
+            dummy.gameObject.SetActive(true);
+            dummy.moveSpeed = 0f; // 추적 금지 — 발동 시점의 거리를 고정해야 판정이 재현된다
+
+            // 적은 "사거리 안쪽 끝"에 세운다. 창끝 판정원은 적 몸에서 spearThrustLocalPos.x만큼 앞이라
+            // 적이 너무 가까우면 판정원이 플레이어를 지나쳐 1타 박스 왼쪽 밖으로 빠진다.
+            Vector3 basePos = new Vector3(1.61f, 0.05f, 0f);
+            float standoff = dummy.attackRange - 0.05f;
+            player.transform.position = basePos;
+            if (playerRb != null) playerRb.linearVelocity = Vector2.zero;
+            dummy.transform.position = new Vector3(basePos.x + standoff, 0.15f, 0f);
+            if (dummyRb != null) dummyRb.linearVelocity = Vector2.zero;
+            InputInjector.ReleaseCharge();
+            InputInjector.ReleaseAttack();
+
+            InputInjector.SetMoveX(1f); // 오른쪽(적 쪽)을 보게 만든다
+            yield return null;
+            yield return null;
+            InputInjector.SetMoveX(0f);
+            yield return null;
+            yield return null;
+            // 정렬 입력이 실제 이동으로도 이어져 플레이어가 적 쪽으로 끌려간다(실측 +0.30). 그만큼 거리가
+            // 줄면 창끝이 1타 박스 뒤로 빠져 판정 자체가 성립하지 않으므로 좌표를 원위치로 되돌린다.
+            player.transform.position = basePos;
+            if (playerRb != null) playerRb.linearVelocity = Vector2.zero;
+            yield return new WaitForSeconds(0.25f); // 착지 안정화(적도 이 사이에 지면에 안착)
+
+            // 적은 중력으로 지면에 안착하며 y가 바뀐다 → 최종 y는 그대로 두고 x만 사거리 안쪽 끝으로 재정렬.
+            dummy.transform.position = new Vector3(basePos.x + standoff, dummy.transform.position.y, 0f);
+            if (dummyRb != null) dummyRb.linearVelocity = Vector2.zero;
+            yield return null;
+
+            // 판정 기하를 미리 찍어둔다 — 실패했을 때 "겹쳤는데 안 됨"인지 "애초에 안 겹침"인지 구분용.
+            Vector2 boxCenter = (Vector2)player.transform.position + Vector2.right * player.attackHitboxDistance;
+            Vector2 boxHalf = player.attackHitboxSize * 0.5f;
+            Vector2 hp = dummy.AttackHitPoint;
+            Vector2 nearest = new Vector2(
+                Mathf.Clamp(hp.x, boxCenter.x - boxHalf.x, boxCenter.x + boxHalf.x),
+                Mathf.Clamp(hp.y, boxCenter.y - boxHalf.y, boxCenter.y + boxHalf.y));
+            float gap = Vector2.Distance(hp, nearest);
+            TestLog.Step(channel, $"geometry box=({boxCenter.x:F2},{boxCenter.y:F2}) size={player.attackHitboxSize} " +
+                $"hitPoint=({hp.x:F2},{hp.y:F2}) r={dummy.AttackHitRadius:F2} gap={gap:F2} overlaps={gap <= dummy.AttackHitRadius}");
+
+            // ── Phase 1: 적 공격 모션 중 우클릭 탭 → 패링 성공 + 실드 생성 ──────────────
+            // ★ IsAttacking만 보면 안 된다 — 이미 판정이 끝난(attackHitDone) 공격의 Recover 구간도 True라,
+            //   정지 없이 이어진 Play 세션에서는 "막을 수 없는 공격"을 잡아 비결정적으로 FAIL한다(실측).
+            //   아직 판정이 남아 있는(IsAttackUnresolved) 공격이 시작될 때까지 기다린다.
+            float wait = 0f;
+            while (wait < 4f && !(dummy.IsAttacking && dummy.IsAttackUnresolved))
+            {
+                wait += Time.deltaTime;
+                yield return null;
+            }
+            TestLog.Step(channel, $"phase1 enemy_attacking={dummy.IsAttacking} unresolved={dummy.IsAttackUnresolved} after={wait:F2}s");
+
+            int hpBefore = player.currentHp;
+            InputInjector.PressCharge();
+            yield return null;
+            InputInjector.ReleaseCharge();
+            yield return null;
+            yield return null; // 릴리즈가 폴링되고 TryParry가 도는 데 한 프레임 더
+
+            bool motionPlaying = isParryingField != null && (bool)isParryingField.GetValue(player);
+            bool shieldUp = player.HasParryShield;
+            bool successLogged = events.Exists(e => e.Contains("parry_success"));
+            TestLog.Step(channel, $"phase1 motion={motionPlaying} shield={shieldUp} success_logged={successLogged}");
+
+            // 패링한 그 공격이 실제로 무피해로 끝나는지(스펙 5) — 창이 회수될 때까지 지켜본다.
+            yield return new WaitForSeconds(dummy.windupDuration + dummy.thrustDuration + dummy.recoverDuration + 0.2f);
+            bool noDamage = player.currentHp == hpBefore;
+            bool phase1 = shieldUp && successLogged && noDamage && motionPlaying;
+            TestLog.Step(channel, $"phase1_result hp={player.currentHp}/{hpBefore} noDamage={noDamage} pass={phase1}");
+
+            // ── Phase 2: 실드가 다음 공격 1회를 막고 깨진다 ────────────────────────────
+            int hpBeforeShield = player.currentHp;
+            float t2 = 0f;
+            while (t2 < 4f && player.HasParryShield) { t2 += Time.deltaTime; yield return null; }
+            bool shieldConsumed = !player.HasParryShield;
+            bool blockLogged = events.Exists(e => e.Contains("shield_blocked"));
+            yield return null;
+            bool stillNoDamage = player.currentHp == hpBeforeShield;
+            bool phase2 = shieldConsumed && blockLogged && stillNoDamage;
+            TestLog.Step(channel, $"phase2_result consumed={shieldConsumed} block_logged={blockLogged} " +
+                $"hp={player.currentHp}/{hpBeforeShield} pass={phase2}");
+
+            // ── Phase 3: 탭보다 길게 누르면 패링이 아니라 일섬 차지로 넘어간다 ──────────
+            events.Clear();
+            InputInjector.PressCharge();
+            yield return new WaitForSeconds(player.parryTapMaxHold + 0.2f);
+            InputInjector.ReleaseCharge();
+            yield return null;
+            yield return null;
+
+            bool parriedOnHold = isParryingField != null && (bool)isParryingField.GetValue(player);
+            bool noParryEvent = !events.Exists(e => e.Contains("parry_success") || e.Contains("parry_miss"));
+            bool phase3 = !parriedOnHold && noParryEvent;
+            TestLog.Step(channel, $"phase3_result parriedOnHold={parriedOnHold} noParryEvent={noParryEvent} pass={phase3}");
+
+            TestLog.Assert(channel, phase1 && phase2 && phase3,
+                $"phase1={phase1} phase2={phase2} phase3={phase3}");
+        }
+        finally
+        {
+            Application.logMessageReceived -= capture;
+            InputInjector.ReleaseCharge();
+            dummy.moveSpeed = dummySpeed;
+            dummy.gameObject.SetActive(dummyWasActive);
+        }
+    }
+
+    public IEnumerator IlseomTest()
+    {
+        const string channel = "ilseom";
+        TestLog.Step(channel, "spawned");
+
+        var player = FindAnyObjectByType<PlayerController>();
+        if (player == null)
+        {
+            TestLog.Assert(channel, false, "NOT_FOUND: no PlayerController in scene");
+            yield break;
+        }
+
+        int invincibleLayer = LayerMask.NameToLayer(player.invincibleLayerName);
+        if (invincibleLayer == -1)
+        {
+            TestLog.Assert(channel, false, $"NOT_FOUND: layer '{player.invincibleLayerName}' missing");
+            yield break;
+        }
+        int normalLayer = player.gameObject.layer;
+        var enemy = FindAnyObjectByType<DummyEnemy>();
+
+        yield return new WaitForSeconds(0.8f);
+
+        // ── Phase 1: 조기 릴리즈 → 취소 ────────────────────────────────────────────
+        InputInjector.SetMoveX(1f);                     // 오른쪽을 보게 만든 뒤
+        yield return null;
+        InputInjector.SetMoveX(0f);
+        yield return null;
+
+        Vector3 cancelStart = player.transform.position;
+        InputInjector.PressCharge();
+        yield return new WaitForSeconds(player.ilseomChargeTime * 0.35f);
+        InputInjector.ReleaseCharge();
+        yield return new WaitForSeconds(0.35f);
+
+        float movedOnCancel = Mathf.Abs(player.transform.position.x - cancelStart.x);
+        bool cancelOk = movedOnCancel < 0.2f && player.gameObject.layer == normalLayer && !player.IsInvincible;
+        TestLog.Step(channel, $"phase1_cancel moved={movedOnCancel:F2} layer_ok={player.gameObject.layer == normalLayer} pass={cancelOk}");
+
+        // ── Phase 2: 완충 후 릴리즈 → 발동 ─────────────────────────────────────────
+        Vector3 start = player.transform.position;
+        float savedEnemySpeed = 0f;
+        float enemyOffset = 5f;                          // maxDist(7.2) 안쪽의 알려진 거리
+        int enemyHpBefore = -1;
+        if (enemy != null)
+        {
+            savedEnemySpeed = enemy.moveSpeed;
+            enemy.moveSpeed = 0f;
+            enemy.transform.position = new Vector3(start.x + enemyOffset, enemy.transform.position.y, enemy.transform.position.z);
+            enemyHpBefore = enemy.currentHp;
+        }
+        yield return null;
+
+        InputInjector.PressCharge();
+        yield return new WaitForSeconds(player.ilseomChargeTime + 0.25f);
+        InputInjector.ReleaseCharge();
+
+        // Glitch Out 재생 중간 — 이 시점엔 무적 + 무적 레이어여야 한다
+        yield return new WaitForSeconds(player.ilseomGlitchOutDuration * 0.5f);
+        bool invincibleDuring = player.gameObject.layer == invincibleLayer && player.IsInvincible;
+        TestLog.Step(channel, $"phase2_mid invincible={invincibleDuring}");
+
+        // 이동 + Sweep까지 전부 끝날 때까지 대기
+        yield return new WaitForSeconds(player.ilseomGlitchOutDuration * 0.5f
+            + player.ilseomMoveDuration + player.ilseomSweepDuration + 0.25f);
+
+        // 정지 위치는 이제 적과 무관하다 — 경로에 벽이 없으면 항상 최대 사거리까지 간다(사용자 변경).
+        // 테스트 지형엔 경로 상 활성 벽이 없으므로 최대 사거리를 기대한다.
+        float traveled = player.transform.position.x - start.x;
+        float expectedTravel = player.dashSpeed * player.dashDuration * player.ilseomDistanceMultiplier;
+        bool stopOk = Mathf.Abs(traveled - expectedTravel) < 0.6f;
+        bool layerRestored = player.gameObject.layer == normalLayer && !player.IsInvincible;
+
+        int expectedDmg = Mathf.RoundToInt(player.attack1Damage * player.ilseomDamageMultiplier);
+        int hpDelta = enemy != null ? enemyHpBefore - enemy.currentHp : expectedDmg;
+        bool damageOk = hpDelta == expectedDmg;
+
+        TestLog.Step(channel, $"phase2_done traveled={traveled:F2} expected={expectedTravel:F2} stopOk={stopOk} " +
+            $"layerRestored={layerRestored} hpDelta={hpDelta}/{expectedDmg}");
+
+        if (enemy != null) enemy.moveSpeed = savedEnemySpeed;
+
+        // ── Phase 3: 쿨타임 중엔 차지 자체가 시작되지 않음 ─────────────────────────
+        Vector3 cdStart = player.transform.position;
+        InputInjector.PressCharge();
+        yield return new WaitForSeconds(player.ilseomChargeTime + 0.3f);
+        InputInjector.ReleaseCharge();
+        yield return new WaitForSeconds(0.4f);
+
+        float movedOnCooldown = Mathf.Abs(player.transform.position.x - cdStart.x);
+        bool cooldownOk = movedOnCooldown < 0.5f;
+        TestLog.Step(channel, $"phase3_cooldown moved={movedOnCooldown:F2} blocked={cooldownOk}");
+
+        bool pass = cancelOk && invincibleDuring && stopOk && layerRestored && damageOk && cooldownOk;
+        TestLog.Assert(channel, pass, $"cancel={cancelOk} invincible={invincibleDuring} stop={stopOk} " +
+            $"restore={layerRestored} dmg={damageOk} cooldown={cooldownOk}");
+
+        yield return new WaitForSeconds(0.8f);
+        // 녹화하지 않으므로(RunIlseomTest 주석 참고) StopRecording 호출 없음.
     }
 
     // 산데비스탄 대시 VFX(컬러 에코 + 모션 스트리크 + 히트스톱)를 영상으로 보여주는 showcase.
@@ -314,7 +612,8 @@ public class PlayTestRunner : MonoBehaviour
         Vector3 basePos = new Vector3(1.61f, 0.05f, 0f);
         player.transform.position = basePos;
         if (playerRb != null) playerRb.linearVelocity = Vector2.zero;
-        dummy.transform.position = new Vector3(basePos.x + 2.8f, 0.15f, 0f);
+        // 추적 구간이 보이도록 사거리보다 확실히 멀리서 시작한다(attackRange가 바뀌어도 따라가게 유도값 사용).
+        dummy.transform.position = new Vector3(basePos.x + dummy.attackRange + 1.2f, 0.15f, 0f);
         if (dummyRb != null) dummyRb.linearVelocity = Vector2.zero;
         InputInjector.SetMoveX(0f);
         InputInjector.ReleaseAttack();
