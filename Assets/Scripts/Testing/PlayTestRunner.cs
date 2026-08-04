@@ -802,6 +802,23 @@ public class PlayTestRunner : MonoBehaviour
         TestLog.Assert(channel, sawLedgeClimb && stillClimbingNextFrame,
             $"ledge_climb_smooth re_grabbed={reGrabbed} saw={sawLedgeClimb} still_next_frame={stillClimbingNextFrame}(보간이면 True)");
 
+        // 올라선 뒤 그 자리에 서 있는가 — 예전엔 도착 지점이 모서리라 몸 절반이 허공에 걸려 바로 다시
+        // 떨어졌고, 떨어질 때마다 착지 애니메이션이 다시 재생됐다(사용자 리포트 2026-08-04).
+        if (sawLedgeClimb)
+        {
+            InputInjector.SetMoveX(0f);
+            float climbEnd = Time.realtimeSinceStartup;
+            while (player.IsLedgeClimbing && Time.realtimeSinceStartup - climbEnd < 1f) yield return null;
+            float landedY = player.transform.position.y;
+            yield return new WaitForSecondsRealtime(0.7f);
+            float dropped = landedY - player.transform.position.y;
+            bool stayedUp = player.IsGrounded && dropped < 0.3f;
+            TestLog.Step(channel, $"ledge_landing 착지 후 0.7초: 낙하={dropped:F2} grounded={player.IsGrounded} " +
+                                  $"pos={player.transform.position.ToString("F2")}");
+            TestLog.Assert(channel, stayedUp,
+                $"ledge_landing_stable 낙하={dropped:F2}(<0.3) grounded={player.IsGrounded}");
+        }
+
         yield return new WaitForSecondsRealtime(0.4f);
         for (int i = 0; i < temp.Count; i++) if (temp[i] != null) Destroy(temp[i]);
         TestLog.Step(channel, "done");

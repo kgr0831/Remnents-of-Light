@@ -34,6 +34,9 @@ public class PlayerController : MonoBehaviour
     public float ledgeWallCheckDist = 0.15f;  // 머리 위 확인 거리(원래 벽 감지 여유 0.1f과 비슷하게)
     public float ledgeProbeUpOffset = 0.5f;   // 바닥 탐색을 시작할 머리 위 높이
     public float ledgeProbeDownDist = 0.8f;   // 그 지점에서 바닥을 찾는 아래쪽 거리
+    // 꼭대기에 올라섰을 때 모서리에서 얼마나 더 안쪽에 놓을지(플레이어 반폭에 더해지는 여유).
+    // 0이면 뒤꿈치가 모서리에 딱 걸려 조금만 움직여도 다시 떨어진다.
+    public float ledgeLandingMargin = 0.15f;
     // 벽 꼭대기 자동 오르기의 이동 시간(사용자 지시 2026-08-04 "순간이동 느낌"). 0이면 예전처럼 즉시 이동.
     public float ledgeClimbDuration = 0.12f;
     public LayerMask groundLayer;
@@ -48,7 +51,9 @@ public class PlayerController : MonoBehaviour
     // (실측: 지형 표면 30.87 / 트리거 면 30.97 = 간격 0.10) 경계에 걸쳐 감지가 실패했다 — 플레이어는
     // 콜라이더 접촉 오프셋(0.01) 때문에 지형에 완전히 밀착하지도 못한다. Wall은 이제 레벨에서 명시적으로
     // 지정하는 면이라 여유를 넉넉히 줘도 오검출이 없다(지형은 애초에 이 마스크에 없다).
-    public float wallCheckDistance = 0.25f;
+    // 0.25 → 0.15(2026-08-04, "너무 붙어있습니다"). 벽 트리거를 지형 표면에 맞춰 놓으면 실측 간격이
+    // 0.10 정도라 0.15면 충분히 잡히면서, 멀찍이 스쳐도 붙어버리는 느낌은 줄어든다.
+    public float wallCheckDistance = 0.15f;
     // 벽으로 인정할 면의 "수직에 가까운 정도"(법선의 x성분 최소값). 1에 가까울수록 완전한 수직면만 인정.
     // 폴리곤 콜라이더로 벽 실루엣을 통째로 감싸면 윗면·경사면까지 같은 콜라이더에 들어가서, 벽 위에
     // 서 있어도 벽타기가 붙어버린다(사용자 리포트 2026-08-04, 스크린샷). 콜라이더를 다시 그리게 하는
@@ -949,9 +954,11 @@ public class PlayerController : MonoBehaviour
                 // 폭주·초월 버프 중엔 벽타기 속도도 같이 빨라진다(사용자 지시 2026-08-03).
                 // 목표 속도는 ×mul, 가속도(maxDelta)는 ×mul² — 속도가 mul배로 스케일된 세계에서
                 // "같은 실시간 가속"을 내려면 초당 변화량도 그만큼 더 커야 한다(중력과 같은 규칙).
+                // 즉시 이동(이 프로젝트의 조작감 컨벤션 — HandleMovement의 수평 이동과 같은 방식).
+                // 예전엔 wallClimbAccel(20)로 가속·감속했는데, 붙는 순간과 떼는 순간이 뭉개져
+                // "움직임이 어색하다"는 지적을 받았다(사용자 2026-08-04). wallClimbAccel은 이제 미사용.
                 float targetY = moveInput.y * wallClimbSpeed * MoveSpeedMultiplier * TimeAccelMul;
-                rb.linearVelocity = new Vector2(rb.linearVelocity.x,
-                    Mathf.MoveTowards(rb.linearVelocity.y, targetY, wallClimbAccel * PDelta * TimeAccelMul));
+                rb.linearVelocity = new Vector2(rb.linearVelocity.x, targetY);
             }
         }
         else
@@ -974,9 +981,11 @@ public class PlayerController : MonoBehaviour
                 // "Wall Slide 대신 벽타기": 입력 없을 때 정지가 곧 "벽에 붙어있다"는 뜻).
                 // 목표 속도는 ×mul, 가속도(maxDelta)는 ×mul² — 속도가 mul배로 스케일된 세계에서
                 // "같은 실시간 가속"을 내려면 초당 변화량도 그만큼 더 커야 한다(중력과 같은 규칙).
+                // 즉시 이동(이 프로젝트의 조작감 컨벤션 — HandleMovement의 수평 이동과 같은 방식).
+                // 예전엔 wallClimbAccel(20)로 가속·감속했는데, 붙는 순간과 떼는 순간이 뭉개져
+                // "움직임이 어색하다"는 지적을 받았다(사용자 2026-08-04). wallClimbAccel은 이제 미사용.
                 float targetY = moveInput.y * wallClimbSpeed * MoveSpeedMultiplier * TimeAccelMul;
-                rb.linearVelocity = new Vector2(rb.linearVelocity.x,
-                    Mathf.MoveTowards(rb.linearVelocity.y, targetY, wallClimbAccel * PDelta * TimeAccelMul));
+                rb.linearVelocity = new Vector2(rb.linearVelocity.x, targetY);
             }
         }
 
@@ -1035,7 +1044,20 @@ public class PlayerController : MonoBehaviour
         // transform.position.y == 발밑(피봇이 발, TryStepUpShortWall 주석 참고) — b.extents.y를 더하면
         // 중심 기준으로 착각해 반 캐릭터 키만큼 붕 뜬다(실측으로 잡은 버그).
         float feetOffset = transform.position.y - b.min.y;
-        Vector3 target = new Vector3(probeStart.x, ledgeHit.point.y + feetOffset + 0.02f, transform.position.z);
+        // ⚠️ 예전엔 probeStart.x(벽면에서 0.15만 지난 곳)를 그대로 도착 지점으로 썼는데, 그러면 플레이어
+        // **중심**이 모서리 바로 위라 몸의 절반이 허공에 걸친다 — 올라서자마자 다시 떨어지고, 떨어질
+        // 때마다 착지 애니메이션이 다시 재생됐다(사용자 리포트 2026-08-04). 몸 하나를 더 들여보내
+        // 뒤꿈치까지 확실히 모서리 안쪽에 놓는다. 그 자리에 디딜 곳이 없으면(좁은 기둥 꼭대기 등)
+        // 원래 지점으로 되돌린다.
+        Bounds pb = coll.bounds;
+        float inwardX = probeStart.x + wallDirX * (pb.extents.x + ledgeLandingMargin);
+        float landY = ledgeHit.point.y;
+        RaycastHit2D inwardHit = Physics2D.Raycast(new Vector2(inwardX, ledgeHit.point.y + ledgeProbeUpOffset),
+            Vector2.down, ledgeProbeUpOffset + 0.3f, wallLayer);
+        float targetX = probeStart.x;
+        if (inwardHit.collider != null) { targetX = inwardX; landY = inwardHit.point.y; }
+
+        Vector3 target = new Vector3(targetX, landY + feetOffset + 0.02f, transform.position.z);
         // 예전엔 여기서 바로 transform.position에 대입했는데 "순간이동 느낌"이라는 사용자 지적을 받았다
         // (2026-08-04) — 같은 목표 지점으로 ledgeClimbDuration 동안 보간해 "올라탄다"는 느낌을 준다.
         StartCoroutine(LedgeClimbRoutine(target));
@@ -3184,7 +3206,10 @@ public class PlayerController : MonoBehaviour
         // 일섬 차지/발동 중엔 애니메이터를 직접 제어한다 — 여기서 파라미터를 갱신하면
         // AnyState 전이(Fall/Jump/Land/Wall Slide)가 Glitch Out/Sweep을 즉시 덮어써버린다.
         // flipX도 이 구간엔 HandleIlseom/PlayIlseomState가 관리한다.
-        if (isCharging || ilseomActive || isExecuting || isSpendingLight) return;
+        // isLedgeClimbing 추가(2026-08-04): 꼭대기로 보간 이동하는 0.12초 동안 접지 판정이 오락가락하면
+        // Land 트리거가 계속 들어가 "착지 애니메이션이 지속적으로 재생"된다(사용자 리포트). 이 구간엔
+        // 파라미터를 아예 안 건드리고, 끝난 뒤 실제 착지에서 한 번만 Land가 나가게 한다.
+        if (isCharging || ilseomActive || isExecuting || isSpendingLight || isLedgeClimbing) return;
 
         if (anim != null) {
             // 공격속도 버프에 맞춰 공격 애니메이션도 빨라진다(사용자 지시). 대시 프리즈는 anim.enabled=false로
