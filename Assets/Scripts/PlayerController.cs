@@ -60,6 +60,12 @@ public class PlayerController : MonoBehaviour
     // 대신 코드에서 **면의 방향**을 보고 거른다 — 실루엣을 통째로 감싸도 수직면에서만 붙는다.
     // 0.7 ≈ 수직에서 45° 이내.
     [Range(0.1f, 1f)] public float wallFaceMinNormalX = 0.7f;
+    // 지형에 막혀 더 붙을 수 없을 때만 허용하는 추가 도달거리. 벽 콜라이더를 지형 표면보다 **안쪽에**
+    // 그리면(실측: Wall (4)의 y17~22 구간이 지형보다 0.32~0.47 안쪽) 플레이어가 지형에 막혀서
+    // wallCheckDistance로는 벽면에 손이 닿지 않는다 — 그렇다고 감지 거리 자체를 늘리면 지나가기만 해도
+    // 붙어버린다. 앞이 트여 있으면 기존 거리(짧게), **지형이 막고 있으면**(=이미 최대한 붙은 상태)
+    // 이 거리까지 봐준다.
+    public float wallBlockedReach = 0.7f;
 
     // ── 오르막·내리막(경사) ──────────────────────────────────────────────────────────────────
     // 지형이 타일 컴포지트라 경사면이 실제로 많다(실측: 지형 변 702개 중 259개가 5~85°).
@@ -877,9 +883,16 @@ public class PlayerController : MonoBehaviour
         for (int i = 0; i < heightRatios.Length; i++)
         {
             Vector2 from = new Vector2(b.center.x - dirX * back, b.min.y + b.size.y * heightRatios[i]);
+
             RaycastHit2D hit = Physics2D.Raycast(from, dir, dist, climbWallLayer);
-            if (hit.collider == null) continue;
-            if (Mathf.Abs(hit.normal.x) >= wallFaceMinNormalX) return true;
+            if (hit.collider != null && Mathf.Abs(hit.normal.x) >= wallFaceMinNormalX) return true;
+
+            // 2차 시도: 앞을 지형이 막고 있으면 이미 최대한 붙은 상태다 — 벽 콜라이더가 지형보다 안쪽에
+            // 그려져 있어도 인정한다(wallBlockedReach 주석 참고). 앞이 트여 있으면 그냥 멀리 있는 벽이므로
+            // 여기서 끝낸다 — 이래야 지나가기만 해도 붙는 일이 안 생긴다.
+            if (Physics2D.Raycast(from, dir, dist, groundLayer).collider == null) continue;
+            hit = Physics2D.Raycast(from, dir, back + b.extents.x + wallBlockedReach, climbWallLayer);
+            if (hit.collider != null && Mathf.Abs(hit.normal.x) >= wallFaceMinNormalX) return true;
         }
         return false;
     }

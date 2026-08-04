@@ -476,47 +476,51 @@ public class PlayTestRunner : MonoBehaviour
         var rb = player.GetComponent<Rigidbody2D>();
         int wallIdx = LayerMask.NameToLayer("Wall");
 
-        Collider2D tallest = null;
-        foreach (var c in FindObjectsByType<Collider2D>(FindObjectsSortMode.None))
-            if (c.gameObject.layer == wallIdx && (tallest == null || c.bounds.size.y > tallest.bounds.size.y)) tallest = c;
-        if (tallest == null) { TestLog.Assert(channel, false, "NOT_FOUND: 씬에 Wall 레이어 콜라이더가 없음"); yield break; }
-        Bounds wb = tallest.bounds;
-        TestLog.Step(channel, $"대상 벽=[{tallest.gameObject.name}] {tallest.GetType().Name} " +
-                              $"x=[{wb.min.x:F2},{wb.max.x:F2}] y=[{wb.min.y:F2},{wb.max.y:F2}] trigger={tallest.isTrigger}");
-
-        // 벽의 왼쪽/오른쪽 중 지형이 비어 있는 쪽에서 접근한다(벽 몸통 안에서 시작하지 않도록).
-        float approachDir = 1f, startX = wb.min.x - 0.6f;
-        if (Physics2D.OverlapPoint(new Vector2(wb.min.x - 0.6f, wb.center.y), player.groundLayer) != null)
-        { approachDir = -1f; startX = wb.max.x + 0.6f; }
-
-        string[] labels = { "지상에서 밀기", "상승 중(+15)", "낙하 중(-20)" };
-        float[] initialVy = { 0f, 15f, -20f };
+        // 사용자가 지목한 두 벽을 높이별로 훑는다 — "어느 높이에서 안 붙는가"를 특정하기 위해서다.
+        string[] targets = { "Wall (3)", "Wall (4)" };
         bool allOk = true; string detail = "";
-        for (int i = 0; i < 3; i++)
+        for (int w = 0; w < targets.Length; w++)
         {
-            float y = (i == 2) ? wb.max.y - 1f : wb.min.y + 0.6f;
-            player.transform.position = new Vector3(startX, y, 0f);
-            rb.linearVelocity = Vector2.zero;
-            InputInjector.SetMoveX(0f);
-            yield return new WaitForSecondsRealtime(0.35f);
-            rb.linearVelocity = new Vector2(0f, initialVy[i]);
-            InputInjector.SetMoveX(approachDir);
+            Collider2D wall = null;
+            foreach (var c in FindObjectsByType<Collider2D>(FindObjectsSortMode.None))
+                if (c.gameObject.layer == wallIdx && c.gameObject.name == targets[w]) { wall = c; break; }
+            if (wall == null) { TestLog.Step(channel, targets[w] + ": 없음(건너뜀)"); continue; }
+            Bounds wb = wall.bounds;
+            TestLog.Step(channel, $"=== {targets[w]} {wall.GetType().Name} x=[{wb.min.x:F2},{wb.max.x:F2}] " +
+                                  $"y=[{wb.min.y:F2},{wb.max.y:F2}] trigger={wall.isTrigger} ===");
 
-            bool grabbed = false;
-            float t0 = Time.realtimeSinceStartup;
-            while (Time.realtimeSinceStartup - t0 < 1.2f)
+            for (int h = 0; h < 6; h++)
             {
-                if (player.IsWallSliding) { grabbed = true; break; }
-                yield return null;
+                float y = Mathf.Lerp(wb.min.y + 0.5f, wb.max.y - 1.5f, h / 5f);
+                // 좌우 양쪽에서 접근해 본다(어느 쪽이 뚫려 있는지 모르므로)
+                for (int side = 0; side < 2; side++)
+                {
+                    float dir = side == 0 ? 1f : -1f;
+                    float startX = side == 0 ? wb.min.x - 0.7f : wb.max.x + 0.7f;
+                    player.transform.position = new Vector3(startX, y, 0f);
+                    rb.linearVelocity = Vector2.zero;
+                    InputInjector.SetMoveX(0f);
+                    yield return null;
+                    rb.linearVelocity = new Vector2(0f, 12f); // 점프 상승 상태로 접근
+                    InputInjector.SetMoveX(dir);
+                    bool grabbed = false;
+                    float t0 = Time.realtimeSinceStartup;
+                    while (Time.realtimeSinceStartup - t0 < 0.5f)
+                    {
+                        if (player.IsWallSliding) { grabbed = true; break; }
+                        yield return null;
+                    }
+                    InputInjector.SetMoveX(0f);
+                    if (side == 0 || !grabbed)
+                        TestLog.Step(channel, $"  y={y:F1} {(side == 0 ? "왼→오" : "오→왼")} 붙음={grabbed} " +
+                                              $"최종x={player.transform.position.x:F2}");
+                    if (grabbed) { allOk &= true; break; } // 한쪽에서라도 붙으면 그 높이는 통과
+                    if (side == 1) { allOk = false; detail += $"[{targets[w]} y={y:F1} 실패] "; }
+                    yield return null;
+                }
             }
-            InputInjector.SetMoveX(0f);
-            allOk &= grabbed;
-            detail += $"[{labels[i]}={grabbed}] ";
-            TestLog.Step(channel, $"  {labels[i]} 붙음={grabbed} pos={player.transform.position.ToString("F2")} " +
-                                  $"vel={rb.linearVelocity.ToString("F1")}");
-            yield return new WaitForSecondsRealtime(0.3f);
         }
-        TestLog.Assert(channel, allOk, $"real_map_wall_grab {detail}");
+        TestLog.Assert(channel, allOk, string.IsNullOrEmpty(detail) ? "real_map_wall_grab 모든 높이 통과" : "real_map_wall_grab " + detail);
         TestLog.Step(channel, "real_map done");
     }
 
