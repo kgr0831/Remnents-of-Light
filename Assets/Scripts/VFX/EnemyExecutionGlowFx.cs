@@ -1,35 +1,63 @@
 using UnityEngine;
 
-// 적 스프라이트 위에 같은 실루엣을 붉은 HDR로 한 겹 더 얹어 "처형 가능" 신호를 보낸다.
-// PlayerBloomFx.cs와 동일한 구조 — 원본 SpriteRenderer를 건드리지 않으므로
-// 머티리얼 복원 실패 사고가 구조적으로 없다.
-// EnemyExecutionGlow.shader(Custom/EnemyExecutionGlow)를 사용한다.
+// 적 스프라이트 테두리에 붉은 아웃라인을 씌워 "처형 가능" 신호를 보낸다(스펙 1).
+// .shader/.mat 에셋은 건드리지 않고(이번 세션 에셋 편집 승인 범위 밖) 기존
+// EnemyExecutionGlow.shader를 런타임에 _Flatten=1(단색 실루엣)로만 재사용한다.
+// 그 단색 실루엣 복사본을 8방향으로 살짝 오프셋해 적 스프라이트 "뒤"에 깔면,
+// 실제 스프라이트가 그 위를 그대로 덮어써서 원본 실루엣보다 튀어나온 테두리 링만 남는다
+// (셰이더 없이도 되는 고전적인 2D 스프라이트 아웃라인 트릭). _BloomBoost는 1로 고정해
+// HDR 오버브라이트를 끈다 — 예전엔 이 값이 커서 URP Bloom이 켜져 있어야만 제대로 보이는
+// 흐릿한 붉은 실루엣이었는데, 이제는 Bloom 설정과 무관하게 항상 같은 붉은 아웃라인으로 보인다.
 public class EnemyExecutionGlowFx : MonoBehaviour
 {
     const string ShaderName = "Custom/EnemyExecutionGlow";
+    const int RingCount = 8;
+    // 스프라이트 텍스처의 PPU(예: 256)와 화면에 실제로 찍히는 픽셀 밀도(카메라 줌에 따라 다름)는
+    // 서로 다르므로, 텍셀 단위가 아니라 월드 단위 고정값으로 둔다(안 그러면 고해상도 텍스처에서
+    // 오프셋이 서브픽셀로 사라져 버린다 — 최초 구현에서 실제로 겪은 문제).
+    // 0.15는 화면에서 너무 두꺼웠다(사용자 스크린샷 2026-08-01) → 0.06.
+    const float OutlineThicknessWorld = 0.06f;
 
     static readonly int IdIntensity = Shader.PropertyToID("_Intensity");
+    static readonly int IdFlatten = Shader.PropertyToID("_Flatten");
+    static readonly int IdBloomBoost = Shader.PropertyToID("_BloomBoost");
 
-    SpriteRenderer sr;
+    static readonly Vector2[] RingDirections =
+    {
+        new Vector2(1f, 0f), new Vector2(-1f, 0f), new Vector2(0f, 1f), new Vector2(0f, -1f),
+        new Vector2(0.7071f, 0.7071f), new Vector2(-0.7071f, 0.7071f),
+        new Vector2(0.7071f, -0.7071f), new Vector2(-0.7071f, -0.7071f),
+    };
+
     SpriteRenderer ownerSr;
-    Material mat;
+    readonly Transform[] rings = new Transform[RingCount];
+    readonly SpriteRenderer[] ringSr = new SpriteRenderer[RingCount];
+    readonly Material[] ringMat = new Material[RingCount];
 
+    // 페이드는 인/아웃 구분 없이 "현재 세기 → 목표 세기" 하나로 처리한다.
+    // (예전엔 fadeIn/fadeOut 타이머를 따로 굴렸는데, 한 번 FadeOut에 들어가면 FadeIn이 무시돼
+    //  커서를 뗐다 바로 다시 올리면 글로우가 되살아나지 않았다.)
     float intensity;
-    float fadeOutDuration = -1f;
-    float fadeOutFrom;
-    float fadeOutTimer;
+    float fadeFrom;
+    float fadeTo;
+    float fadeDuration = -1f; // <0이면 페이드 없음
+    float fadeTimer;
+    bool destroyWhenDone;
 
-    // fadeIn 지원 — 커서를 댔을 때 부드럽게 나타나도록
-    float fadeInDuration = -1f;
-    float fadeInTarget;
-    float fadeInTimer;
-
+    /// <summary>
+    /// 적에게 아웃라인을 붙인다. 이미 붙어 있으면 그것을 되살려 쓴다 —
+    /// 커서를 왔다갔다 하면 페이드아웃 중인 아웃라인 위에 새 아웃라인이 계속 쌓여
+    /// 같은 실루엣이 여러 겹 가산 합성되던(눈에 띄게 밝아지던) 문제를 막는다.
+    /// </summary>
     public static EnemyExecutionGlowFx Attach(Transform owner, Material source, int sortingOffset)
     {
+        var existing = owner.GetComponentInChildren<EnemyExecutionGlowFx>(true);
+        if (existing != null) return existing;
+
         Shader sh = source != null ? source.shader : Shader.Find(ShaderName);
         if (sh == null)
         {
-            Debug.LogWarning("[Execution] " + ShaderName + " 셰이더를 찾을 수 없어 적 글로우를 건너뜁니다.");
+            Debug.LogWarning("[Execution] " + ShaderName + " 셰이더를 찾을 수 없어 적 아웃라인을 건너뜁니다.");
             return null;
         }
 
@@ -44,42 +72,49 @@ public class EnemyExecutionGlowFx : MonoBehaviour
 
         var fx = go.AddComponent<EnemyExecutionGlowFx>();
         fx.ownerSr = ownerSr;
-        fx.mat = source != null ? new Material(source) : new Material(sh);
-        fx.mat.SetFloat(IdIntensity, 0f);
 
-        var r = go.AddComponent<SpriteRenderer>();
-        r.sharedMaterial = fx.mat;
-        r.sortingLayerID = ownerSr.sortingLayerID;
-        r.sortingOrder = ownerSr.sortingOrder + sortingOffset;
-        fx.sr = r;
+        // 링은 반드시 실제 스프라이트보다 뒤에 있어야 트릭이 성립하므로, 넘어온 부호와 무관하게
+        // 항상 owner보다 뒤(sortingOrder가 낮은 쪽)에 배치한다.
+        int behindOffset = -Mathf.Max(1, Mathf.Abs(sortingOffset));
+
+        for (int i = 0; i < RingCount; i++)
+        {
+            var ringGo = new GameObject("Ring" + i);
+            ringGo.transform.SetParent(go.transform, false);
+            if (noGrayscaleLayer >= 0) ringGo.layer = noGrayscaleLayer;
+
+            var mat = source != null ? new Material(source) : new Material(sh);
+            mat.SetFloat(IdIntensity, 0f);
+            mat.SetFloat(IdFlatten, 1f);
+            mat.SetFloat(IdBloomBoost, 1f);
+
+            var r = ringGo.AddComponent<SpriteRenderer>();
+            r.sharedMaterial = mat;
+            r.sortingLayerID = ownerSr.sortingLayerID;
+            r.sortingOrder = ownerSr.sortingOrder + behindOffset;
+
+            fx.rings[i] = ringGo.transform;
+            fx.ringSr[i] = r;
+            fx.ringMat[i] = mat;
+        }
+
         fx.SyncSprite();
         return fx;
     }
 
-    /// <summary>세기를 직접 지정한다(0~1).</summary>
-    public void SetIntensity(float k)
-    {
-        if (fadeOutDuration >= 0f) return; // 이미 꺼지는 중이면 무시
-        intensity = Mathf.Clamp01(k);
-        fadeInDuration = -1f; // 직접 세팅이면 페이드 인 취소
-    }
+    /// <summary>현재 세기에서 목표까지 부드럽게 올린다(커서를 댔을 때).</summary>
+    public void FadeIn(float target, float duration) => StartFade(target, duration, false);
 
-    /// <summary>현재 세기에서 목표까지 부드럽게 올린다.</summary>
-    public void FadeIn(float target, float duration)
-    {
-        if (fadeOutDuration >= 0f) return;
-        fadeInTarget = Mathf.Clamp01(target);
-        fadeInDuration = Mathf.Max(0.01f, duration);
-        fadeInTimer = 0f;
-    }
+    /// <summary>현재 세기에서 0까지 내린 뒤 스스로 파괴된다(커서를 뗐을 때).</summary>
+    public void FadeOut(float duration) => StartFade(0f, duration, true);
 
-    /// <summary>현재 세기에서 0까지 내린 뒤 스스로 파괴된다.</summary>
-    public void FadeOut(float duration)
+    void StartFade(float target, float duration, bool destroyAtEnd)
     {
-        if (fadeOutDuration >= 0f) return;
-        fadeOutDuration = Mathf.Max(0.01f, duration);
-        fadeOutFrom = intensity;
-        fadeOutTimer = 0f;
+        fadeFrom = intensity;
+        fadeTo = Mathf.Clamp01(target);
+        fadeDuration = Mathf.Max(0.01f, duration);
+        fadeTimer = 0f;
+        destroyWhenDone = destroyAtEnd;
     }
 
     void LateUpdate()
@@ -88,40 +123,40 @@ public class EnemyExecutionGlowFx : MonoBehaviour
 
         SyncSprite();
 
-        float k = intensity;
-
-        // 페이드 인 처리
-        if (fadeInDuration >= 0f && fadeOutDuration < 0f)
+        if (fadeDuration >= 0f)
         {
-            fadeInTimer += Time.unscaledDeltaTime;
-            float t = Mathf.Clamp01(fadeInTimer / fadeInDuration);
-            intensity = Mathf.Lerp(0f, fadeInTarget, t);
-            k = intensity;
-            if (t >= 1f) fadeInDuration = -1f;
+            fadeTimer += Time.unscaledDeltaTime;
+            float k = Mathf.Clamp01(fadeTimer / fadeDuration);
+            intensity = Mathf.Lerp(fadeFrom, fadeTo, k);
+            if (k >= 1f)
+            {
+                fadeDuration = -1f;
+                if (destroyWhenDone) { Destroy(gameObject); return; }
+            }
         }
 
-        // 페이드 아웃 처리
-        if (fadeOutDuration >= 0f)
-        {
-            fadeOutTimer += Time.unscaledDeltaTime;
-            float t = Mathf.Clamp01(fadeOutTimer / fadeOutDuration);
-            k = Mathf.Lerp(fadeOutFrom, 0f, t);
-            if (t >= 1f) { Destroy(gameObject); return; }
-        }
-
-        mat.SetFloat(IdIntensity, k * ownerSr.color.a);
+        float alpha = intensity * ownerSr.color.a;
+        for (int i = 0; i < RingCount; i++) ringMat[i].SetFloat(IdIntensity, alpha);
     }
 
     void SyncSprite()
     {
-        sr.sprite = ownerSr.sprite;
-        // 적의 localScale.x 반전에 대응
+        // 적의 localScale.x 반전에 대응(부모 트랜스폼 하나로 링 전부 같이 미러링된다)
         transform.localScale = new Vector3(ownerSr.flipX ? -1f : 1f, ownerSr.flipY ? -1f : 1f, 1f);
-        sr.enabled = ownerSr.enabled;
+
+        for (int i = 0; i < RingCount; i++)
+        {
+            ringSr[i].sprite = ownerSr.sprite;
+            ringSr[i].enabled = ownerSr.enabled;
+            rings[i].localPosition = (Vector3)(RingDirections[i] * OutlineThicknessWorld);
+        }
     }
 
     void OnDestroy()
     {
-        if (mat != null) Destroy(mat);
+        for (int i = 0; i < RingCount; i++)
+        {
+            if (ringMat[i] != null) Destroy(ringMat[i]);
+        }
     }
 }

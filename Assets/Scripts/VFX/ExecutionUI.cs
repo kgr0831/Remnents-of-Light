@@ -3,44 +3,52 @@ using UnityEngine;
 using UnityEngine.UI;
 
 /// <summary>
-/// 처형 프롬프트 UI — 커서 호버로 페이드 인/아웃.
-/// DodgeUI.cs(대시-카운터 F키 프롬프트)와 동일한 자가완결 패턴:
-/// 씬에 Overlay Canvas가 없으면 런타임에 자가생성.
-/// 프리팹: Resources/Prefabs/ExecutionUI ("R" + "처형").
+/// 처형 프롬프트 UI(스펙 1) — 커서를 대면 페이드 인, 뗄 때까지 계속 떠 있다가 페이드 아웃.
+/// 프리팹: Resources/Prefabs/ExecutionUI ("R" + "처형"). 대시-카운터의 DodgeUI(DashUI 프리팹, "F" +
+/// "카운터 공격")와 같은 자가완결 패턴 — 씬에 Overlay Canvas가 없으면 런타임에 만든다.
+/// 알파는 CanvasGroup 하나로만 만진다(Graphic 색을 일일이 저장·복원하지 않아도 된다).
 /// </summary>
 public class ExecutionUI : MonoBehaviour
 {
-    [Tooltip("ExecutionUI 프롬프트를 화면 중앙에서 얼마나 오른쪽/위로 옮길지(px)")]
+    [Tooltip("프롬프트를 화면 중앙에서 얼마나 오른쪽/위로 옮길지(px)")]
     public Vector2 PromptOffset = new Vector2(320f, 0f);
 
     public float fadeDuration = 0.2f;
 
-    private Canvas     _canvas;
-    private GameObject _prompt;
-    private CanvasGroup _canvasGroup;
-    private Color[]    _promptOrigColors;
-    private Coroutine  _fadeCo;
-    private Coroutine  _hideCo;
-    private bool       _hiding;
-    private bool       _visible;
+    const float FlashDuration = 0.28f; // R키 증발 연출 길이(DodgeUI와 동일)
 
-    public bool IsVisible => _visible;
+    // GetOrCreate가 매 프레임 호출될 수 있어(타겟이 없어도 HidePrompt가 불린다) 인스턴스를 캐시한다.
+    static ExecutionUI _instance;
+
+    GameObject  _prompt;
+    CanvasGroup _group;
+    Graphic[]   _graphics;
+    Color[]     _baseColors;
+    Coroutine   _fadeCo;
+    bool        _shown;   // 목표 상태 — 페이드가 진행 중이어도 "보이려는 중"인지 알 수 있다
+
+    public bool IsVisible => _shown && _group != null && _group.alpha > 0.99f;
 
     public static ExecutionUI GetOrCreate()
     {
-        var inst = FindFirstObjectByType<ExecutionUI>();
-        if (inst != null) return inst;
-
-        var go = new GameObject("ExecutionUI");
-        inst = go.AddComponent<ExecutionUI>();
-        inst.Init();
-        return inst;
+        // 파괴된 오브젝트는 Unity의 == null이 true를 돌려주므로 씬 전환 후에도 안전하다.
+        if (_instance != null) return _instance;
+        return new GameObject("ExecutionUI").AddComponent<ExecutionUI>(); // Awake가 _instance를 세운다
     }
 
-    private void Init()
+    void Awake()
     {
-        _canvas = FindOverlayCanvas();
-        if (_canvas == null) _canvas = CreateOverlayCanvas();
+        // 씬에 직접 얹어둔 경우에도 초기화가 되게 Awake에서 Init한다
+        // (예전엔 GetOrCreate가 새로 만들 때만 Init을 불러, 씬에 컴포넌트가 있으면 조용히 아무것도 안 했다).
+        if (_instance != null && _instance != this) { Destroy(gameObject); return; }
+        _instance = this;
+        Init();
+    }
+
+    void Init()
+    {
+        Canvas canvas = FindOverlayCanvas();
+        if (canvas == null) canvas = CreateOverlayCanvas();
 
         var prefab = Resources.Load<GameObject>("Prefabs/ExecutionUI");
         if (prefab == null)
@@ -49,23 +57,24 @@ public class ExecutionUI : MonoBehaviour
             return;
         }
 
-        _prompt = Instantiate(prefab, _canvas.transform);
+        _prompt = Instantiate(prefab, canvas.transform);
         _prompt.transform.localScale    = Vector3.one;
         _prompt.transform.localPosition = new Vector3(PromptOffset.x, PromptOffset.y, 0f);
 
-        // CanvasGroup으로 페이드 제어
-        _canvasGroup = _prompt.GetComponent<CanvasGroup>();
-        if (_canvasGroup == null) _canvasGroup = _prompt.AddComponent<CanvasGroup>();
-        _canvasGroup.alpha = 0f;
+        _group = _prompt.GetComponent<CanvasGroup>();
+        if (_group == null) _group = _prompt.AddComponent<CanvasGroup>();
+        _group.alpha = 0f;
 
-        var graphics = _prompt.GetComponentsInChildren<Graphic>(true);
-        _promptOrigColors = new Color[graphics.Length];
-        for (int i = 0; i < graphics.Length; i++) _promptOrigColors[i] = graphics[i].color;
+        _graphics = _prompt.GetComponentsInChildren<Graphic>(true);
+        _baseColors = new Color[_graphics.Length];
+        for (int i = 0; i < _graphics.Length; i++) _baseColors[i] = _graphics[i].color;
 
         _prompt.SetActive(false);
     }
 
-    private Canvas FindOverlayCanvas()
+    // 비활성 캔버스는 재사용하지 않는다(그 밑에 프롬프트를 달면 같이 숨어 렌더되지 않음) —
+    // 활성 상태인 것만 후보로 삼고, 없으면 새로 만든다.
+    Canvas FindOverlayCanvas()
     {
         Canvas best = null;
         foreach (var cv in FindObjectsByType<Canvas>(FindObjectsInactive.Exclude, FindObjectsSortMode.None))
@@ -76,7 +85,7 @@ public class ExecutionUI : MonoBehaviour
         return best;
     }
 
-    private Canvas CreateOverlayCanvas()
+    Canvas CreateOverlayCanvas()
     {
         var go = new GameObject("ExecutionUICanvas");
         var canvas = go.AddComponent<Canvas>();
@@ -90,119 +99,79 @@ public class ExecutionUI : MonoBehaviour
 
     // ── 프롬프트 ──────────────────────────────────────────────────
 
-    /// <summary>페이드 인으로 프롬프트를 보여준다. 이미 보이는 중이면 무시.</summary>
+    /// <summary>페이드 인. 커서를 떼기 전까지 계속 떠 있는다.</summary>
     public void ShowPrompt()
     {
-        if (_prompt == null) return;
-        if (_visible && !_hiding) return; // 이미 보이고 있으면 중복 호출 무시
-        if (_hideCo != null) { StopCoroutine(_hideCo); _hideCo = null; }
-        if (_fadeCo != null) { StopCoroutine(_fadeCo); _fadeCo = null; }
-        _hiding = false;
-
+        if (_prompt == null || _shown) return;
+        _shown = true;
+        RestoreColors();
         _prompt.transform.localScale    = Vector3.one;
         _prompt.transform.localPosition = new Vector3(PromptOffset.x, PromptOffset.y, 0f);
-        RestorePromptColors();
         _prompt.SetActive(true);
-        _fadeCo = StartCoroutine(FadeInRoutine());
+        StartFade(1f, fadeDuration, false);
     }
 
-    /// <summary>페이드 아웃으로 프롬프트를 숨긴다.</summary>
+    /// <summary>페이드 아웃(커서를 뗐을 때).</summary>
     public void HidePrompt()
     {
-        if (_prompt == null || !_prompt.activeSelf || _hiding) return;
-        if (_fadeCo != null) { StopCoroutine(_fadeCo); _fadeCo = null; }
-        _fadeCo = StartCoroutine(FadeOutRoutine());
+        if (_prompt == null || !_shown) return;
+        _shown = false;
+        StartFade(0f, fadeDuration, false);
     }
 
-    /// <summary>R키 입력 시: 흰색으로 점멸하며 커지고 사라짐(DodgeUI.FlashHidePrompt과 동일).</summary>
+    /// <summary>R키 입력 시: 흰색으로 점멸하며 커지고 사라짐(DodgeUI와 같은 증발 연출).</summary>
     public void FlashHidePrompt()
     {
-        if (_prompt == null || !_prompt.activeSelf) return;
-        if (_fadeCo != null) { StopCoroutine(_fadeCo); _fadeCo = null; }
-        if (_hideCo != null) StopCoroutine(_hideCo);
-        _hideCo = StartCoroutine(FlashHideRoutine());
+        if (_prompt == null || !_shown) return;
+        _shown = false;
+        if (_graphics != null) foreach (var g in _graphics) g.color = Color.white;
+        if (_group != null) _group.alpha = 1f;
+        StartFade(0f, FlashDuration, true);
     }
 
-    /// <summary>애니메이션 없이 즉시 숨김.</summary>
+    /// <summary>연출 없이 즉시 숨김.</summary>
     public void HidePromptImmediate()
     {
-        if (_prompt == null || _hiding) return;
+        if (_prompt == null) return;
+        _shown = false;
         if (_fadeCo != null) { StopCoroutine(_fadeCo); _fadeCo = null; }
-        if (_hideCo != null) { StopCoroutine(_hideCo); _hideCo = null; }
-        if (_canvasGroup != null) _canvasGroup.alpha = 0f;
-        _prompt.SetActive(false);
-        _visible = false;
-    }
-
-    private IEnumerator FadeInRoutine()
-    {
-        float from = _canvasGroup != null ? _canvasGroup.alpha : 0f;
-        float t = 0f;
-        while (t < fadeDuration)
-        {
-            t += Time.unscaledDeltaTime;
-            float k = Mathf.Clamp01(t / fadeDuration);
-            if (_canvasGroup != null) _canvasGroup.alpha = Mathf.Lerp(from, 1f, k);
-            yield return null;
-        }
-        if (_canvasGroup != null) _canvasGroup.alpha = 1f;
-        _visible = true;
-        _fadeCo = null;
-    }
-
-    private IEnumerator FadeOutRoutine()
-    {
-        _hiding = true;
-        float from = _canvasGroup != null ? _canvasGroup.alpha : 1f;
-        float t = 0f;
-        while (t < fadeDuration)
-        {
-            t += Time.unscaledDeltaTime;
-            float k = Mathf.Clamp01(t / fadeDuration);
-            if (_canvasGroup != null) _canvasGroup.alpha = Mathf.Lerp(from, 0f, k);
-            yield return null;
-        }
-        if (_canvasGroup != null) _canvasGroup.alpha = 0f;
-        _prompt.SetActive(false);
-        _visible = false;
-        _hiding = false;
-        _fadeCo = null;
-    }
-
-    private IEnumerator FlashHideRoutine()
-    {
-        _hiding = true;
-        var graphics = _prompt.GetComponentsInChildren<Graphic>(true);
-
-        foreach (var g in graphics) g.color = Color.white;
-        if (_canvasGroup != null) _canvasGroup.alpha = 1f;
-
-        const float dur = 0.28f;
-        float t = 0f;
-        while (t < dur)
-        {
-            t += Time.unscaledDeltaTime;
-            float k = Mathf.Clamp01(t / dur);
-            _prompt.transform.localScale = Vector3.one * (1f + 0.45f * k);
-            float a = 1f - k;
-            if (_canvasGroup != null) _canvasGroup.alpha = a;
-            yield return null;
-        }
-
-        _prompt.SetActive(false);
+        if (_group != null) _group.alpha = 0f;
         _prompt.transform.localScale = Vector3.one;
-        if (_canvasGroup != null) _canvasGroup.alpha = 0f;
-        RestorePromptColors();
-        _visible = false;
-        _hiding = false;
-        _hideCo = null;
+        _prompt.SetActive(false);
+        RestoreColors();
     }
 
-    private void RestorePromptColors()
+    void StartFade(float target, float duration, bool grow)
     {
-        if (_prompt == null || _promptOrigColors == null) return;
-        var graphics = _prompt.GetComponentsInChildren<Graphic>(true);
-        for (int i = 0; i < graphics.Length && i < _promptOrigColors.Length; i++)
-            graphics[i].color = _promptOrigColors[i];
+        if (_fadeCo != null) StopCoroutine(_fadeCo);
+        _fadeCo = StartCoroutine(FadeRoutine(target, duration, grow));
+    }
+
+    // 인·아웃·증발을 알파 페이드 하나로 처리한다(grow=true면 커지면서 사라지는 R키 연출).
+    // 시간은 항상 unscaled — 히트스톱/슬로우모션 중에도 같은 속도로 진행돼야 한다.
+    IEnumerator FadeRoutine(float target, float duration, bool grow)
+    {
+        float from = _group != null ? _group.alpha : 0f;
+        float t = 0f;
+        while (t < duration)
+        {
+            t += Time.unscaledDeltaTime;
+            float k = Mathf.Clamp01(t / duration);
+            if (_group != null) _group.alpha = Mathf.Lerp(from, target, k);
+            if (grow) _prompt.transform.localScale = Vector3.one * (1f + 0.45f * k);
+            yield return null;
+        }
+
+        if (_group != null) _group.alpha = target;
+        if (grow) _prompt.transform.localScale = Vector3.one;
+        if (target <= 0f) { _prompt.SetActive(false); RestoreColors(); }
+        _fadeCo = null;
+    }
+
+    void RestoreColors()
+    {
+        if (_graphics == null || _baseColors == null) return;
+        for (int i = 0; i < _graphics.Length && i < _baseColors.Length; i++)
+            _graphics[i].color = _baseColors[i];
     }
 }

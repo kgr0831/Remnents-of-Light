@@ -45,10 +45,17 @@ public class DummyEnemy : MonoBehaviour
     public Vector2 spearWindupLocalPos = new Vector2(0.3f, 0f);
     public Vector2 spearThrustLocalPos = new Vector2(1.9f, 0f);
     public float windupDuration = 0.25f;
+    // 초월 중엔 Windup을 늘려 "공격 방향·범위를 더 일찍 확정짓고 보여준다"(사용자 지시 2026-08-02).
+    // Windup 시작 시 이미 위치·방향이 고정되므로(AttackLogic의 정지 + StartAttack의 FaceDirection 1회
+    // 호출, 그 뒤로는 안 바뀜) 늘어난 시간만큼 그대로 "더 일찍 확정된 진짜 판정원"이 보이는 시간이 된다 —
+    // 새 예비 단계를 만들 필요 없이 기존 Windup 길이만 늘리면 된다.
+    public float transcendWindupMultiplier = 2.5f;
     public float thrustDuration = 0.12f;
     public float recoverDuration = 0.2f;
     public float attackCooldown = 0.6f;
-    public int attackDamage = 8;
+    // 플레이어 체력이 수치가 아니라 "갯수"(칸)로 바뀌면서 단위가 달라졌다 — 이 값은 한 번 찔렀을 때
+    // 깎이는 칸 수다(옛 이름 attackDamage=8은 100 스케일 기준이라 이름과 함께 폐기).
+    public int playerDamageCount = 1;
     public float hitRadius = 0.5f;
     // 공격 판정 시점 = Thrust(창을 앞으로 뻗는) 애니메이션의 이 지점(0~1). 스펙: "찌르기가 거의
     // 마무리되는 순간". 예전엔 Thrust 진입 첫 프레임(t=0, 창이 아직 몸 근처)부터 매 프레임 판정해서
@@ -88,6 +95,13 @@ public class DummyEnemy : MonoBehaviour
     float attackCooldownCounter;
     bool attackHitDone;      // 이번 찌르기의 판정이 종결됐는지(회피로 소비됐거나 피해가 확정됨)
     float attackClock;       // Thrust 시작 기준 경과 시간 — 판정 창이 Recover까지 넘어갈 수 있어 상태와 별개로 셈
+    // 초월 공격 예고(T-3)용 — 이번 공격이 플레이어에 의해 무효화됐는가(패링·회피·피격 리셋).
+    // 피해 확정·빗나감은 false로 남는다(터짐과 흐지부지를 구분하는 유일한 신호, PLAN §6 T-3a 참고).
+    bool lastAttackNeutralized;
+    PlayerController playerController; // 초월 여부 조회용(player Transform과 함께 캐싱)
+    // StartAttack() 시점에 한 번 확정되는 이번 공격의 실제 Windup 길이 — 초월 중이면 늘어난다.
+    // 도중에 초월이 풀려도 이미 시작된 공격의 길이는 바뀌지 않는다(적이 "이미 확정"했으므로).
+    float effectiveWindupDuration = 0.25f;
     float knockbackRemaining; // 남은 넉백 거리(부호=방향). 0이면 넉백 중 아님
     float knockbackSpeed;
     bool knockbackActive;
@@ -112,7 +126,11 @@ public class DummyEnemy : MonoBehaviour
             GameObject p = GameObject.FindGameObjectWithTag("Player");
             if (p != null) player = p.transform;
         }
-        if (player != null) lastPlayerPos = player.position; // 첫 프레임부터 유효한 값 보장
+        if (player != null)
+        {
+            lastPlayerPos = player.position; // 첫 프레임부터 유효한 값 보장
+            playerController = player.GetComponent<PlayerController>();
+        }
     }
 
     void Update()
@@ -129,7 +147,7 @@ public class DummyEnemy : MonoBehaviour
         if (player == null)
         {
             GameObject p = GameObject.FindGameObjectWithTag("Player");
-            if (p != null) player = p.transform;
+            if (p != null) { player = p.transform; playerController = player.GetComponent<PlayerController>(); }
             else return;
         }
 
@@ -206,6 +224,13 @@ public class DummyEnemy : MonoBehaviour
         state = AiState.Windup;
         stateTimer = 0f;
         attackHitDone = false;
+        lastAttackNeutralized = false; // 새 공격 시작 — 지난 공격의 무효화 흔적을 지운다
+        // 이번 공격의 Windup 길이를 지금 확정한다(사용자 지시 2026-08-02) — 초월 중이면 늘려서 "공격
+        // 방향·범위를 더 일찍 확정짓고 보여준다". 위치·방향도 바로 아래에서 함께 고정되므로, 이 순간부터
+        // AttackHitPoint는 Thrust가 끝날 때까지 그대로다.
+        effectiveWindupDuration = (playerController != null && playerController.IsTranscending)
+            ? windupDuration * transcendWindupMultiplier
+            : windupDuration;
         SetHorizontalVelocity(0f);
         FaceDirection(Mathf.Sign(dx));
         TestLog.Event("dummy_attack", "windup_start");
@@ -218,11 +243,13 @@ public class DummyEnemy : MonoBehaviour
 
         if (state == AiState.Windup)
         {
-            float t = windupDuration > 0f ? Mathf.Clamp01(stateTimer / windupDuration) : 1f;
+            // effectiveWindupDuration 기준(초월 중엔 StartAttack에서 늘려 확정한 값) — 창의 실제 이동
+            // 애니메이션도 같이 늘어나 늘어난 시간 내내 자연스럽게 "예비동작 중"으로 보인다.
+            float t = effectiveWindupDuration > 0f ? Mathf.Clamp01(stateTimer / effectiveWindupDuration) : 1f;
             SetSpearLocalPos(Vector2.Lerp(spearIdleLocalPos, spearWindupLocalPos, t));
             // 판정은 Thrust(창을 앞으로 찌르는 순간)에서만 — Windup(예비동작) 중 체크는 되돌림(사용자
             // 피드백: 애니메이션이 "시작되는" 순간부터 판정돼버려 너무 이름. 스펙: 찌르는 순간에만 판정).
-            if (stateTimer >= windupDuration)
+            if (stateTimer >= effectiveWindupDuration)
             {
                 state = AiState.Thrust;
                 stateTimer = 0f;
@@ -276,6 +303,7 @@ public class DummyEnemy : MonoBehaviour
         if (pc != null && pc.TryConsumeDodge(this))
         {
             attackHitDone = true;
+            lastAttackNeutralized = true; // 회피로 무효화 — 예고 원은 터지지 않고 흐지부지 사라진다
             TestLog.Event("dummy_attack", "dodged_by_player");
             return;
         }
@@ -300,16 +328,17 @@ public class DummyEnemy : MonoBehaviour
             return;
         }
 
-        pc.TakeDamage(attackDamage);
-        CombatFx.SpawnDamageText(damageTextPrefab, pc.transform.position, attackDamage, damageTextColor);
-        TestLog.Event("dummy_attack", $"hit_player dmg={attackDamage}");
+        pc.TakeDamage(playerDamageCount);
+        CombatFx.SpawnDamageText(damageTextPrefab, pc.transform.position, playerDamageCount, damageTextColor);
+        TestLog.Event("dummy_attack", $"hit_player dmg={playerDamageCount}");
     }
 
     // ── 처형(Execution) 연동 ──────────────────────────────────────────────────────────────
-    // 체력이 maxHp의 20% 이하이면 커서 호버로 처형할 수 있다.
-    // 임계값은 PlayerController.executionHpThreshold에서 제어하지만, 이 프로퍼티는 하드코딩된
-    // 0.2f를 기본값으로 쓴다 — PlayerController가 외부에서 재검증하므로 여기서의 값은 빠른 필터링용.
-    public bool IsExecutable => !dead && currentHp > 0 && (float)currentHp / maxHp <= 0.2f;
+    // "처형 가능한가"의 판정(HP 비율 임계값)은 PlayerController.executionHpThreshold 한 곳에서만 한다.
+    // 여기서 상태만 노출하고 임계값은 갖지 않는다 — 예전엔 0.2f가 여기에도 하드코딩돼 있어,
+    // 인스펙터에서 임계값을 바꿔도 이쪽 필터가 20%로 먼저 잘라내는 이중 진실 상태였다.
+    public bool IsAlive => !dead && currentHp > 0;
+    public float HpRatio => maxHp > 0 ? (float)currentHp / maxHp : 0f;
 
     // ── 패링(PlayerController.TryParry) 연동 ────────────────────────────────────────────────
     // 스펙 3: 패링이 성립하려면 (공격 모션 중) + ((B) 아직 그 공격에 맞지 않았거나 | (A) 대시 회피
@@ -319,49 +348,120 @@ public class DummyEnemy : MonoBehaviour
         !dead && (state == AiState.Windup || state == AiState.Thrust || state == AiState.Recover);
     public bool IsAttackUnresolved => !attackHitDone;
 
-    // 적의 "공격 범위" = ResolveThrustWindow가 실제로 쓰는 판정원(창끝 중심, 반지름 hitRadius).
+    // 적의 "공격 범위" = ResolveThrustWindow가 실제로 쓰는 판정 캡슐(밑동~창끝 선분, 반지름 hitRadius).
+    // 사용자 지시(2026-08-02): "창 전체가 범위" — 창끝 한 점(원)이 아니라 창을 든 위치(밑동)부터
+    // 창끝까지 훑는 캡슐로 확장. 이 파일 전체(피격·패링·회피 판정)가 이 두 값을 기준으로 삼는다.
     public Vector2 AttackHitPoint => HitPoint();
+    public Vector2 AttackHitPointBase => BasePoint();
     public float AttackHitRadius => hitRadius;
+
+    // 초월 공격 예고(T-3a) — 진행률 0(예비동작 시작)~1(피해가 확정되는 순간). 예고 중이 아니면 -1.
+    // ⚠️ Recover는 -1이 아니다 — 피해가 거기서 확정되기 때문(hitTime + dodgeWindowPost가 thrustDuration을
+    // 넘는다, PLAN §6 "정정된 타임라인" 참고). 동작 변경 0 — 기존 필드(state·stateTimer·attackClock)를
+    // 읽어 계산만 한다.
+    public float AttackTelegraphProgress
+    {
+        get
+        {
+            if (dead || attackHitDone) return -1f;
+            if (state == AiState.Chase || state == AiState.Hitstun) return -1f;
+
+            float hitTime = thrustDuration * Mathf.Clamp01(thrustHitNormalized);
+            // effectiveWindupDuration(초월 중이면 늘어난 실제 값)을 쓴다 — windupDuration 원본을 쓰면
+            // 초월 중 늘어난 실제 Windup 길이와 진행률이 어긋난다.
+            float total = effectiveWindupDuration + hitTime + dodgeWindowPost;
+            if (total <= 0f) return -1f;
+
+            // Windup 중엔 attackClock이 아직 갱신 전(0 또는 지난 공격의 잔여값)이라 stateTimer를 직접 쓴다.
+            // Thrust/Recover에선 attackClock이 Thrust 시작 기준 경과 시간이라 effectiveWindupDuration만
+            // 더하면 된다.
+            float elapsed = state == AiState.Windup ? stateTimer : effectiveWindupDuration + attackClock;
+            return Mathf.Clamp01(elapsed / total);
+        }
+    }
+
+    // 이번 공격이 플레이어에 의해 무효화됐는가(패링·회피·피격 리셋). 피해 확정·빗나감은 false로 남는다.
+    public bool LastAttackNeutralized => lastAttackNeutralized;
 
     // 패링 성공 — 이번 찌르기를 판정 종결 처리해 피해가 확정되지 않게 한다(스펙 5).
     // 창 모션은 그대로 마저 재생된다(넉백·히트스턴 없음 — 스펙에 없는 동작을 추가하지 않는다).
     public void ConsumeParry()
     {
         attackHitDone = true;
+        lastAttackNeutralized = true; // 패링으로 무효화 — 예고 원은 터지지 않고 흐지부지 사라진다
         TestLog.Event("dummy_attack", "parried_by_player");
     }
 
-    // 판정 기준점 = 창이 최대로 뻗었을 때의 창 끝 위치(월드). 창의 "현재" 위치를 쓰면 판정 창이
-    // Recover까지 이어질 때 이미 회수된 창 위치로 검사하게 돼 빗나가므로, 뻗은 지점으로 고정한다.
+    // 판정 기준점(캡슐의 창끝 쪽 끝) = 창이 최대로 뻗었을 때의 창 끝 위치(월드). 창의 "현재" 위치를
+    // 쓰면 판정 창이 Recover까지 이어질 때 이미 회수된 창 위치로 검사하게 돼 빗나가므로, 뻗은
+    // 지점으로 고정한다.
     Vector2 HitPoint()
     {
         return transform.TransformPoint(spearThrustLocalPos);
     }
 
+    // 판정 기준점(캡슐의 밑동 쪽 끝) = 창을 몸 쪽으로 당긴 위치(Windup 자세 — 창을 "들고 있는" 곳에
+    // 가장 가깝다). 사용자 지시(2026-08-02)로 창끝 한 점 대신 이 지점부터 창끝까지 훑는 캡슐 전체가
+    // 판정 범위가 됐다.
+    Vector2 BasePoint()
+    {
+        return transform.TransformPoint(spearWindupLocalPos);
+    }
+
+    // 선분 a-b 위에서 p에 가장 가까운 점.
+    static Vector2 ClosestPointOnSegment(Vector2 a, Vector2 b, Vector2 p)
+    {
+        Vector2 ab = b - a;
+        float lenSq = ab.sqrMagnitude;
+        if (lenSq < 0.0001f) return a;
+        float t = Mathf.Clamp01(Vector2.Dot(p - a, ab) / lenSq);
+        return a + ab * t;
+    }
+
+    // 두 선분 사이의 최단 거리 근사(양 끝점 4개를 반대 선분에 투영해 최소값을 취한다) — 수학적으로
+    // 완벽한 최소값은 아니지만, 기존의 "점 vs 선분" 스윕 체크보다 항상 같거나 더 넓게 잡아 회귀가
+    // 없다. 터널링 방지용 안전망이라 완벽한 최소값보다 "놓치지 않는" 쪽이 중요하다.
+    static float SegmentSegmentDistance(Vector2 p1, Vector2 q1, Vector2 p2, Vector2 q2)
+    {
+        float d = Vector2.Distance(p2, ClosestPointOnSegment(p1, q1, p2));
+        d = Mathf.Min(d, Vector2.Distance(q2, ClosestPointOnSegment(p1, q1, q2)));
+        d = Mathf.Min(d, Vector2.Distance(p1, ClosestPointOnSegment(p2, q2, p1)));
+        d = Mathf.Min(d, Vector2.Distance(q1, ClosestPointOnSegment(p2, q2, q1)));
+        return d;
+    }
+
+    // 사용자 지시(2026-08-02): "창 전체가 범위" — 창끝 한 점(원) 판정을 밑동~창끝 캡슐(선분 + 반지름
+    // hitRadius) 판정으로 확장했다. 브로드 페이즈(캡슐을 감싸는 원)로 후보를 좁힌 뒤, 각 후보에
+    // 대해 "세그먼트 위 최근접점 ↔ 콜라이더 표면 최근접점" 거리로 정확히 캡슐-콜라이더 겹침을 본다.
     PlayerController FindPlayerAtHitPoint()
     {
-        Vector2 hitPoint = HitPoint();
+        Vector2 basePt = BasePoint();
+        Vector2 tipPt = HitPoint();
+        Vector2 mid = (basePt + tipPt) * 0.5f;
+        float boundRadius = Vector2.Distance(basePt, tipPt) * 0.5f + hitRadius;
+
         // 대시 무적 중엔 플레이어가 PlayerInvincible 레이어라 Player 마스크로는 안 잡힘 → 두 레이어 모두 감지.
         // (쿼리는 excludeLayers 영향 없음 — 대시로 적을 통과하는 중에도 감지됨)
-        Collider2D hit = Physics2D.OverlapCircle(hitPoint, hitRadius, playerHitMask);
-        if (hit != null)
+        Collider2D[] candidates = Physics2D.OverlapCircleAll(mid, boundRadius, playerHitMask);
+        for (int i = 0; i < candidates.Length; i++)
         {
-            PlayerController found = hit.GetComponent<PlayerController>();
-            if (found != null) return found;
+            Collider2D col = candidates[i];
+            Vector2 segClosest = ClosestPointOnSegment(basePt, tipPt, col.bounds.center);
+            Vector2 colClosest = col.ClosestPoint(segClosest);
+            if (Vector2.Distance(segClosest, colClosest) <= hitRadius)
+            {
+                PlayerController found = col.GetComponent<PlayerController>();
+                if (found != null) return found;
+            }
         }
 
-        // 터널링 방지: 빠른 대시(연장 대시 등)는 판정원을 한 프레임 사이에 그냥 통과해버려 위 단일 시점
-        // OverlapCircle이 아예 못 잡는 경우가 있었음("F키를 눌러도 씹힘" 사용자 리포트) → 지난 프레임
-        // 위치부터 이번 프레임 위치까지 이은 선분이 판정원과 스쳤는지도 함께 확인(스윕 체크).
+        // 터널링 방지: 빠른 대시(연장 대시 등)는 판정 캡슐을 한 프레임 사이에 그냥 통과해버려 위
+        // 단일 시점 검사가 아예 못 잡는 경우가 있었음("F키를 눌러도 씹힘" 사용자 리포트) → 지난
+        // 프레임 위치부터 이번 프레임 위치까지 이은 선분(플레이어 이동 경로)이 창 캡슐 축과
+        // hitRadius 이내로 스쳤는지 두 선분 사이 거리로 확인.
         if (player == null) return null;
-        Vector2 segStart = lastPlayerPos;
-        Vector2 segEnd = player.position;
-        Vector2 segDir = segEnd - segStart;
-        float segLenSq = segDir.sqrMagnitude;
-        float tParam = segLenSq > 0.0001f ? Mathf.Clamp01(Vector2.Dot(hitPoint - segStart, segDir) / segLenSq) : 0f;
-        Vector2 closest = segStart + segDir * tParam;
-        if (Vector2.Distance(hitPoint, closest) <= hitRadius)
-            return player.GetComponent<PlayerController>();
+        float dist = SegmentSegmentDistance(basePt, tipPt, lastPlayerPos, player.position);
+        if (dist <= hitRadius) return player.GetComponent<PlayerController>();
         return null;
     }
 
@@ -391,9 +491,11 @@ public class DummyEnemy : MonoBehaviour
 
     // 데미지 적용: HP 감소 + 흰색 피격 플래시 + 잠깐 정지(Hitstun) + 공격 중이었다면 공격 리셋 + HP 0 시 사망.
     // knockbackDistance: 부호가 방향(+오른쪽/-왼쪽), 크기가 밀려날 거리(유닛). 때린 쪽이 계산해서 넘긴다.
-    public void TakeDamage(int damage, float knockbackDistance)
+    // 반환값(bool): 이 타격으로 적이 죽었으면 true — C-1(광원 획득)의 "적 처치" 보너스를
+    // 호출부(PlayerController.CheckAttackHit)가 Die() 별도 훅 없이 그 자리에서 바로 판단하게 해준다.
+    public bool TakeDamage(int damage, float knockbackDistance)
     {
-        if (dead || damage <= 0) return;
+        if (dead || damage <= 0) return false;
 
         if (!baseCaptured) { baseColor = sr.color; baseCaptured = true; }
 
@@ -402,13 +504,17 @@ public class DummyEnemy : MonoBehaviour
         flashTimer = flashDuration;
         TestLog.Event("dummy_damage", $"hp={currentHp}/{maxHp} dmg={damage}");
 
-        if (currentHp <= 0) { Die(); return; }
+        if (currentHp <= 0) { Die(); return true; }
 
         bool wasAttacking = state == AiState.Windup || state == AiState.Thrust || state == AiState.Recover;
         if (wasAttacking)
         {
             SetSpearLocalPos(spearIdleLocalPos);
             attackCooldownCounter = attackCooldown;
+            // ⚠️ attackHitDone은 세우지 않는다(원래 동작 그대로) — 대신 state가 곧 Hitstun으로 바뀌어
+            // AttackTelegraphProgress는 자동으로 -1이 된다. 무효화 플래그는 여기서 별도로 세워야
+            // 한다 — 안 그러면 적을 때려 끊은 공격이 "터진 것"처럼 보인다(PLAN §6 T-3a 경고).
+            lastAttackNeutralized = true;
             TestLog.Event("dummy_attack", "reset_by_hit");
         }
 
@@ -423,6 +529,8 @@ public class DummyEnemy : MonoBehaviour
             knockbackSpeed = Mathf.Abs(knockbackDistance) / knockbackDuration;
         }
         else knockbackRemaining = 0f;
+
+        return false;
     }
 
     void Die()

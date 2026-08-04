@@ -141,7 +141,7 @@ TextureImporter:
         width: 140
         height: 46
       alignment: 9
-      pivot: {x: 0.428571, y: 0.03}
+      pivot: {x: 0.49, y: 0.03}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -163,7 +163,7 @@ TextureImporter:
         width: 140
         height: 46
       alignment: 9
-      pivot: {x: 0.428571, y: 0.03}
+      pivot: {x: 0.49, y: 0.03}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -185,7 +185,7 @@ TextureImporter:
         width: 140
         height: 46
       alignment: 9
-      pivot: {x: 0.428571, y: 0.03}
+      pivot: {x: 0.49, y: 0.03}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -207,7 +207,7 @@ TextureImporter:
         width: 140
         height: 46
       alignment: 9
-      pivot: {x: 0.428571, y: 0.03}
+      pivot: {x: 0.49, y: 0.03}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -224,7 +224,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 743fefd8430420545ba3cbf7469fae5d
     internalID: 0
     vertices: []
     indices: 
@@ -232,20 +232,14 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries: []
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":4.0,"y":1.0},"gridSpriteSize":{"x":140.0,"y":46.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.49000000953674319,"y":0.029999999329447748},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":9,"pivotUnitMode":0,"slicingType":2,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
       Glitch Samurai-Wall Slide_0: 8071864315209934103
       Glitch Samurai-Wall Slide_1: -8851927754646055363
-      Glitch Samurai-Wall Slide_10: -2578838516609381612
-      Glitch Samurai-Wall Slide_11: 5114448016185217682
       Glitch Samurai-Wall Slide_2: -8564258335673060185
       Glitch Samurai-Wall Slide_3: 4128654263668983915
-      Glitch Samurai-Wall Slide_4: 9156926631470891632
-      Glitch Samurai-Wall Slide_5: -7014920665571593832
-      Glitch Samurai-Wall Slide_6: -6959524879267209544
-      Glitch Samurai-Wall Slide_7: 7466794939886368367
-      Glitch Samurai-Wall Slide_8: -7815530811859775209
-      Glitch Samurai-Wall Slide_9: -8170873238487718441
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

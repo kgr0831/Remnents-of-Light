@@ -10,6 +10,15 @@ import subprocess
 import time
 from pathlib import Path
 
+# executor.py runs under pythonw.exe (no console, so its own window can't be closed -
+# see LOOP_ENGINEERING bug #11). But a console-less parent spawning a console app makes
+# Windows allocate a BRAND NEW console window for the child, so every `claude -p` popped
+# an unexplained window titled "claude" - and closing one kills the child, which comes
+# back as an empty stdout+stderr and reads as "(no output; stderr: )". That is exactly
+# what killed the 22:28 loop task on 2026-07-26. CREATE_NO_WINDOW stops the console from
+# being created at all; output still flows through the pipes.
+NO_WINDOW = getattr(subprocess, "CREATE_NO_WINDOW", 0)
+
 PROJECT_ROOT = Path(__file__).parent.parent
 MEMORY_DIR = "C:/Users/kimga/.claude/projects/C--Users-kimga-Remnents-of-Light/memory"
 SESSIONS_DIR = Path("C:/Users/kimga/.claude/projects/C--Users-kimga-Remnents-of-Light")
@@ -206,6 +215,18 @@ TRANSIENT_ERROR_PATTERNS = ["Overloaded", "overloaded_error", "rate_limit_error"
 TRANSIENT_RETRY_DELAY_S = 15
 TRANSIENT_MAX_RETRIES = 3
 
+# The API stream can also just drop mid-answer ("API Error: Connection closed mid-response.").
+# Also transient, but NOT safe to handle like the ones above: those fail before any work
+# happens, while a dropped stream usually hits after files were already edited / Play mode
+# already run, so re-running the original prompt from scratch redoes all of it. Resume the
+# interrupted session instead. Found 2026-07-28 - the raw API error string was being posted
+# to Discord as if it were the task result.
+CONNECTION_ERROR_PATTERNS = ["Connection closed mid-response", "Connection error", "ECONNRESET", "socket hang up"]
+CONNECTION_RESUME_PROMPT = """\
+직전 응답이 네트워크 문제로 중간에 끊겼다. 처음부터 다시 하지 말고, 하던 작업을 그대로 이어서 계속 진행해라.
+(먼저 방금 어디까지 했는지 확인하고 - 파일이 반쯤 수정됐을 수 있다 - 그 지점부터 이어라.)
+완료하거나 승인이 필요하면 원래 지시대로 DONE: / NEEDS_APPROVAL: 블록 형식을 지켜서 출력해라."""
+
 
 def _find_new_session_id(after: float) -> str | None:
     """`claude -p` writes its session transcript (<session-id>.jsonl) incrementally as it
@@ -221,7 +242,7 @@ def _find_new_session_id(after: float) -> str | None:
     return max(candidates, key=lambda p: p.stat().st_ctime).stem
 
 
-async def _run_claude_once(prompt: str, allowed_tools: list[str], session_id: str | None, timeout: int | None, model: str = "claude-sonnet-5") -> dict:
+async def _run_claude_once(prompt: str, allowed_tools: list[str], session_id: str | None, timeout: int | None, model: str = "claude-opus-5") -> dict:
     global current_proc
     cmd = [
         "claude", "-p", prompt,
@@ -233,6 +254,10 @@ async def _run_claude_once(prompt: str, allowed_tools: list[str], session_id: st
         # inheriting that burned through the monthly spend limit in a few hours
         # (found 2026-07-22). Pin these calls to a specific model regardless of the
         # global default - callers doing lightweight work (voice cleanup) pass haiku.
+        # 2026-07-26: default raised sonnet-5 -> opus-5 by user decision (spend risk
+        # accepted knowingly). What still protects us is the pinning itself: the global
+        # xhigh reasoning effort is NOT inherited here, and that was the other half of
+        # the 07-22 burn. If the limit gets hit again, drop this back to sonnet first.
         "--model", model,
     ]
     if session_id:
@@ -242,6 +267,7 @@ async def _run_claude_once(prompt: str, allowed_tools: list[str], session_id: st
     proc = await asyncio.create_subprocess_exec(
         *cmd, cwd=str(PROJECT_ROOT),
         stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+        creationflags=NO_WINDOW,
     )
     current_proc = proc
     try:
@@ -263,10 +289,23 @@ async def _run_claude_once(prompt: str, allowed_tools: list[str], session_id: st
         return {"text": raw or f"(no output; stderr: {err[:500]})", "session_id": session_id}
 
 
-async def run_claude(prompt: str, allowed_tools: list[str], session_id: str | None, timeout: int | None, model: str = "claude-sonnet-5") -> dict:
+async def run_claude(prompt: str, allowed_tools: list[str], session_id: str | None, timeout: int | None, model: str = "claude-opus-5") -> dict:
     for attempt in range(TRANSIENT_MAX_RETRIES + 1):
+        start = time.time()
         result = await _run_claude_once(prompt, allowed_tools, session_id, timeout, model)
-        if attempt < TRANSIENT_MAX_RETRIES and any(p in result["text"] for p in TRANSIENT_ERROR_PATTERNS):
+        if attempt >= TRANSIENT_MAX_RETRIES:
+            return result
+        if any(p in result["text"] for p in TRANSIENT_ERROR_PATTERNS):
+            await asyncio.sleep(TRANSIENT_RETRY_DELAY_S)
+            continue
+        if any(p in result["text"] for p in CONNECTION_ERROR_PATTERNS):
+            # A dropped stream often means stdout wasn't valid JSON either, so result's
+            # session_id can be the (possibly None) one we passed in - fall back to the
+            # transcript the killed run left behind, same as the timeout path does.
+            resumed = result["session_id"] or _find_new_session_id(start)
+            if not resumed:
+                return result  # nothing to resume into; report the error as-is
+            session_id, prompt = resumed, CONNECTION_RESUME_PROMPT
             await asyncio.sleep(TRANSIENT_RETRY_DELAY_S)
             continue
         return result

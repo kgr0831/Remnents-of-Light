@@ -9,12 +9,14 @@ Usage: tools/.venv/Scripts/python.exe tools/executor.py
 """
 import asyncio
 import json
+import sys
 from pathlib import Path
 
 import claude_bridge
 import discord_bot
 
 STATE_PATH = Path(__file__).parent / ".secrets" / "executor_state.json"
+LOG_PATH = Path(__file__).parent / ".secrets" / "executor.log"
 POLL_INTERVAL_S = 3
 HEARTBEAT_INTERVAL_S = 60
 
@@ -146,13 +148,26 @@ async def handle_command(cmd: dict, config: dict, command_channel_id: str, queue
             # this, every retry after e.g. a spend-limit error started a brand new session
             # with zero memory of the work in progress (found 2026-07-22).
             resumable = not done and bool(result["session_id"])
-            title = "완료" if done else "결과"
-            body = done["summary"] if done else result["text"]
+            # run_claude already resumed and retried a dropped API stream up to
+            # TRANSIENT_MAX_RETRIES times, so text still carrying one means every attempt
+            # failed. Posting that raw "API Error: Connection closed mid-response." reads
+            # like the task itself crashed - say what actually happened (2026-07-28).
+            dropped = not done and any(p in result["text"] for p in claude_bridge.CONNECTION_ERROR_PATTERNS)
+            title = "완료" if done else ("🔌 연결 끊김" if dropped else "결과")
+            if done:
+                body = done["summary"]
+            elif dropped:
+                body = "네트워크가 불안정해서 API 응답이 계속 중간에 끊겼어 (재시도도 전부 실패)."
+            else:
+                body = result["text"]
             if resumable:
                 body += "\n\n(세션은 아직 살아있어 - 아무 말이나 답장하면 하던 데서 이어서 진행할게.)"
+            elif dropped:
+                body += "\n이어갈 세션도 못 찾았어 - 네트워크 확인하고 새로 다시 요청해줘."
             fields = [(k, v) for k, v in done["extras"].items()] if done else None
-            discord_bot.edit_embed(command_channel_id, progress_msg["id"], discord_bot.make_embed("✅ 처리 완료", "아래 참고", COLOR_DONE), config)
-            embed = discord_bot.make_embed(title, body, COLOR_DONE if done else COLOR_INFO, fields)
+            progress_title = "🔌 연결 끊김" if dropped else "✅ 처리 완료"
+            discord_bot.edit_embed(command_channel_id, progress_msg["id"], discord_bot.make_embed(progress_title, "아래 참고", COLOR_STOPPED if dropped else COLOR_DONE), config)
+            embed = discord_bot.make_embed(title, body, (COLOR_APPROVAL if resumable else COLOR_STOPPED) if dropped else (COLOR_DONE if done else COLOR_INFO), fields)
             discord_bot.send_embed(command_channel_id, embed, config)  # new message so Discord actually notifies
             status = {"pending": resumable, "session_id": result["session_id"], "origin_type": origin_type}
 
@@ -288,4 +303,13 @@ async def main_async() -> None:
 
 
 if __name__ == "__main__":
+    # Run under pythonw.exe (no console). A console is a window the user can close, and
+    # closing one delivers CTRL_CLOSE_EVENT -> the interpreter exits with 0xC000013A,
+    # killing the bridge. That is exactly what happened 2026-07-26: the scheduled task
+    # launched cmd.exe in the interactive session, an empty black window appeared with
+    # no explanation (this script prints nothing unless something breaks), and it got
+    # closed 4 minutes later. Task Scheduler's "Hidden" setting does NOT hide the window
+    # (it hides the task in the library listing), and its Exec action cannot redirect
+    # output - so own the log file here rather than wrapping the command in a shell.
+    sys.stdout = sys.stderr = open(LOG_PATH, "a", buffering=1, encoding="utf-8")
     asyncio.run(main_async())
