@@ -50,6 +50,18 @@ public class PlayerController : MonoBehaviour
     // 지정하는 면이라 여유를 넉넉히 줘도 오검출이 없다(지형은 애초에 이 마스크에 없다).
     public float wallCheckDistance = 0.25f;
 
+    // ── 오르막·내리막(경사) ──────────────────────────────────────────────────────────────────
+    // 지형이 타일 컴포지트라 경사면이 실제로 많다(실측: 지형 변 702개 중 259개가 5~85°).
+    // 수평 속도만 주면 오르막에선 벽처럼 걸리고 내리막에선 붕 떠서 통통 튄다 — 접지 중엔 표면
+    // 접선 방향으로 움직여 자연스럽게 오르내리게 한다(사용자 지시 2026-08-04).
+    [Header("Slope (오르막·내리막)")]
+    public float maxSlopeAngle = 50f;  // 이보다 가파르면 "오를 수 있는 경사"로 보지 않는다(기존 이동 그대로)
+    public float slopeMinAngle = 5f;   // 이보다 완만하면 평지로 취급(타일 이음매의 미세한 각도 무시)
+    // 지면 스냅 — 경사가 꺾이는 지점(평지→경사, 경사→평지)에서 살짝 떠버리는 프레임에, 바로 아래
+    // 이 거리 안에 지면이 있으면 도로 붙여준다. 없으면 안 붙이므로 절벽에서 걸어 나갈 땐 정상 낙하한다.
+    // 실측(30° 경사 왕복): 스냅 전 공중 프레임 오르막 15% · 내리막 34% → "통통 튀는" 체감의 원인이었다.
+    public float slopeSnapDistance = 0.35f;
+
     [Header("Dash")]
     public float dashSpeed = 20f;
     public float dashDuration = 0.18f;
@@ -470,6 +482,10 @@ public class PlayerController : MonoBehaviour
     bool isWallSliding;
     float defaultGravityScale; // 벽타기 중 중력을 0으로 껐다가 뗄 때 되돌릴 원래 값(Awake에서 캐시)
     bool isTouchingWall;
+    bool wasGroundedLastFrame;         // 지면 스냅 판정용(직전 프레임에 땅에 있었는가)
+    float jumpSuppressTimer;           // 점프 직후 이 시간 동안은 "슬로프 런치 억제"를 끈다
+    Vector2 groundNormal = Vector2.up; // 접지 중인 표면의 법선(경사 이동용)
+    float groundAngle;                 // 그 표면의 기울기(도)
     bool isGrounded;
     int wallDirX;
 
@@ -641,6 +657,7 @@ public class PlayerController : MonoBehaviour
         // 실측: 평상시 0.35>0.25 통과 / 가속 중 0.35<0.625 실패 / 수정 후 0.875>0.625 통과).
         if (dodgeCounterGraceTimer > 0f) dodgeCounterGraceTimer -= Time.deltaTime;
         if (dashBufferTimer > 0f) dashBufferTimer -= PDelta;
+        if (jumpSuppressTimer > 0f) jumpSuppressTimer -= PDelta;
 
         CheckEnvironment();
         // 패링 타이머는 일섬보다 먼저 굴린다 — HandleIlseom이 패링을 시작하는 그 프레임에 타이머가
@@ -732,6 +749,16 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
+        // ── 슬로프 런치 억제 ──
+        // 경사면에서는 콜라이더가 살짝 파고든 것을 물리 엔진이 밀어내면서 플레이어가 위로 튀어오른다
+        // (실측: 내리막 진입 순간 속도 (-4.00, +6.92) — 점프도 안 했는데 6.92로 솟았다). 그러면 접지가
+        // 끊겨 붕 떴다가 떨어지는 "통통 튀는" 움직임이 된다. 점프한 직후가 아니라면 이 상승분을 깎는다.
+        if (isGrounded && rb.linearVelocity.y > 0.1f && jumpSuppressTimer <= 0f
+            && !isWallSliding && !isLedgeClimbing && !ilseomActive && !isExecuting && !isDodgeCountering)
+        {
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f);
+        }
+
         if (isDodgeCountering)
         {
             // 회피 성공 직후엔 연장된 대시가 계속 진행 중이어야 함(끊기지 않고 슬로우모션과 함께
@@ -776,7 +803,30 @@ public class PlayerController : MonoBehaviour
     void CheckEnvironment()
     {
         Bounds bounds = coll.bounds;
-        isGrounded = Physics2D.BoxCast(bounds.center, bounds.size, 0f, Vector2.down, 0.1f, groundLayer);
+        // 접지 판정과 함께 표면 법선까지 같은 캐스트에서 받아둔다(경사 이동이 이 값을 쓴다).
+        RaycastHit2D groundHit = Physics2D.BoxCast(bounds.center, bounds.size, 0f, Vector2.down, 0.1f, groundLayer);
+        isGrounded = groundHit.collider != null;
+        // 캐스트 시작 지점이 이미 겹쳐 있으면 normal이 0으로 돌아올 수 있어 방어적으로 위쪽으로 폴백한다.
+        groundNormal = (isGrounded && groundHit.normal.y > 0.1f) ? groundHit.normal : Vector2.up;
+
+        // 지면 스냅(경사 전환부에서 붕 뜨는 것 방지, slopeSnapDistance 주석 참고).
+        // 조건: 직전 프레임에 땅에 있었고 · 위로 솟는 중이 아니고(점프 아님) · 바로 아래에 걸을 수 있는
+        // 지면이 있을 때만. 벽타기·대시·연출 구간처럼 위치를 직접 모는 상태에서는 건드리지 않는다.
+        if (!isGrounded && wasGroundedLastFrame && rb.linearVelocity.y <= 0.1f
+            && !isWallSliding && !isDashing && !ilseomActive && !isExecuting && !isLedgeClimbing)
+        {
+            RaycastHit2D snap = Physics2D.BoxCast(bounds.center, bounds.size, 0f, Vector2.down,
+                slopeSnapDistance, groundLayer);
+            if (snap.collider != null && snap.normal.y > 0.5f)
+            {
+                transform.position += Vector3.down * snap.distance;
+                isGrounded = true;
+                groundNormal = snap.normal;
+            }
+        }
+        wasGroundedLastFrame = isGrounded;
+
+        groundAngle = Vector2.Angle(groundNormal, Vector2.up);
         
         // 벽 감지는 climbWallLayer(Wall 전용)만 본다 — 바닥·플랫폼은 아무리 가까이 붙어도 벽이 아니다.
         bool rightWall = Physics2D.BoxCast(bounds.center, bounds.size, 0f, Vector2.right, wallCheckDistance, climbWallLayer);
@@ -813,6 +863,29 @@ public class PlayerController : MonoBehaviour
         // 시간 가속 중엔 세계가 timeScale로 느려진 만큼 속도를 되돌려 곱해야(TimeAccelMul) 실시간
         // 이동속도가 평소와 같아진다 — 비활성 시엔 정확히 1이라 평상시 계산은 전혀 바뀌지 않는다.
         float speed = moveSpeed * MoveSpeedMultiplier * TimeAccelMul;
+
+        // ── 경사면 처리 ──
+        // 점프로 올라가는 중(y속도 +)이면 손대지 않는다 — 접선 속도가 y를 덮어써 점프가 그 자리에서 죽는다.
+        bool rising = rb.linearVelocity.y > 0.1f;
+        if (isGrounded && !rising && groundAngle > slopeMinAngle && groundAngle <= maxSlopeAngle)
+        {
+            if (Mathf.Abs(moveInput.x) > 0.01f)
+            {
+                // 표면 접선 방향으로 이동한다. 오르막은 위로, 내리막은 아래로 같이 나아가므로
+                // 벽처럼 걸리지도, 붕 떠서 통통 튀지도 않는다(속도 크기는 평지와 동일).
+                Vector2 tangent = new Vector2(groundNormal.y, -groundNormal.x);
+                if (moveInput.x < 0f) tangent = -tangent;
+                rb.linearVelocity = tangent * speed;
+            }
+            else
+            {
+                // 이 프로젝트의 PlayerPhysicsMaterial은 friction=0이라(지형과의 실효 마찰도 0)
+                // 가만히 두면 경사를 따라 계속 미끄러진다 — 입력이 없으면 그 자리에 고정한다.
+                rb.linearVelocity = Vector2.zero;
+            }
+            return;
+        }
+
         rb.linearVelocity = new Vector2(moveInput.x * speed, rb.linearVelocity.y);
     }
 
@@ -991,6 +1064,8 @@ public class PlayerController : MonoBehaviour
             // isGrounded/yVelocity로 매 프레임 "Glitch Samurai-Jump"를 다시 끌어올 수 있는 Fall과 달리
             // Jump는 발동 순간 한 번만 재생되는 클립이라 여기서 한 번 Play하면 그대로 끝까지 간다.
             if (anim != null && (isRampaging || isTranscending)) anim.Play("Glitch Samurai-Jump Glitch", 0, 0f);
+            // 점프한 상승은 슬로프 런치 억제(FixedUpdate 상단)가 깎으면 안 되므로 잠깐 면제해 준다.
+            jumpSuppressTimer = 0.2f;
             isJumping = false;
         }
     }
@@ -1793,6 +1868,8 @@ public class PlayerController : MonoBehaviour
     public bool IsDodgeCountering => isDodgeCountering; // 회피-카운터 시퀀스 진행 중(테스트가 읽는다)
     public bool IsWallSliding => isWallSliding;         // 벽타기 부착 중(테스트가 읽는다)
     public bool IsLedgeClimbing => isLedgeClimbing;     // 벽 꼭대기 올라타는 보간 중(테스트가 읽는다)
+    public bool IsGrounded => isGrounded;               // 접지 상태(테스트가 읽는다)
+    public float GroundAngle => groundAngle;            // 발밑 경사 각도(도, 테스트가 읽는다)
 
     void HandleTimeAccel()
     {

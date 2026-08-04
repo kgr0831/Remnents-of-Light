@@ -55,6 +55,25 @@ public class PlayTestRunner : MonoBehaviour
         runner.StartCoroutine(runner.DashAfterimageShapeTest());
     }
 
+    [MenuItem("Tools/PlayTest/Slope Walk")]
+    private static void RunSlopeWalkTest()
+    {
+        if (!Application.isPlaying)
+        {
+            Debug.LogWarning("[PlayTestRunner] Enter Play mode first.");
+            return;
+        }
+        var runner = FindAnyObjectByType<PlayTestRunner>();
+        if (runner == null)
+        {
+            var go = new GameObject("PlayTestRunner_Temp");
+            runner = go.AddComponent<PlayTestRunner>();
+        }
+        InputInjector.Cleanup();
+        EnsureDeterministicInputSettings();
+        runner.StartCoroutine(runner.SlopeWalkTest());
+    }
+
     [MenuItem("Tools/PlayTest/Wall Climb Gate")]
     private static void RunWallClimbGateTest()
     {
@@ -405,6 +424,137 @@ public class PlayTestRunner : MonoBehaviour
         settings.backgroundBehavior = InputSettings.BackgroundBehavior.IgnoreFocus;
     }
 #endif
+
+    // 오르막·내리막(2026-08-04) — 새 맵 지형에 경사면이 많은데(실측: 지형 변 702개 중 259개가 5~85°)
+    // 수평 속도만 주면 오르막에선 벽처럼 걸리고 내리막에선 붕 떠서 통통 튄다. 접선 이동이 실제로
+    // 그 둘을 해결하는지 런타임 전용 경사 지형(30°)을 세워 확인한다(씬 파일 무변경).
+    public IEnumerator SlopeWalkTest()
+    {
+        const string channel = "slope_walk";
+        TestLog.Step(channel, "spawned");
+
+        var player = FindAnyObjectByType<PlayerController>();
+        if (player == null) { TestLog.Assert(channel, false, "NOT_FOUND: no PlayerController"); yield break; }
+        var rb = player.GetComponent<Rigidbody2D>();
+        int groundLayer = LayerMask.NameToLayer("Ground");
+
+        Vector3 origin = player.transform.position + new Vector3(0f, 500f, 0f);
+        var temp = new System.Collections.Generic.List<GameObject>();
+        temp.Add(MakeBox("SWT_Floor", origin + new Vector3(0f, -0.5f, 0f), new Vector2(14f, 1f), groundLayer, false));
+        // 30° 경사면 — 긴 박스를 회전시켜 만든다(x=6 부근에서 시작해 위로)
+        var slope = MakeBox("SWT_Slope", origin + new Vector3(11.5f, 2.35f, 0f), new Vector2(12f, 1f), groundLayer, false);
+        slope.transform.rotation = Quaternion.Euler(0f, 0f, 30f);
+        temp.Add(slope);
+        temp.Add(MakeBox("SWT_Top", origin + new Vector3(21.5f, 5.5f, 0f), new Vector2(8f, 1f), groundLayer, false));
+
+        player.transform.position = origin + new Vector3(2f, 0.3f, 0f);
+        rb.linearVelocity = Vector2.zero;
+        InputInjector.SetMoveX(0f);
+        yield return new WaitForSecondsRealtime(0.5f);
+
+        // ── 오르막: 오른쪽으로 걸어 올라간다 ──────────────────────────────────────────────
+        float startY = player.transform.position.y - origin.y;
+        float startX = player.transform.position.x - origin.x;
+        InputInjector.SetMoveX(1f);
+        int airFrames = 0, frames = 0;
+        float t0 = Time.realtimeSinceStartup;
+        while (Time.realtimeSinceStartup - t0 < 3.5f)
+        {
+            frames++;
+            if (!player.IsGrounded) airFrames++;
+            yield return null;
+        }
+        float upY = player.transform.position.y - origin.y;
+        float upX = player.transform.position.x - origin.x;
+        InputInjector.SetMoveX(0f);
+        yield return new WaitForSecondsRealtime(0.3f);
+        // 경사를 실제로 올라갔는가 + 올라가는 내내 지면에 붙어 있었는가
+        bool climbed = upY > startY + 2f;
+        bool stuckToGround = frames > 0 && (float)airFrames / frames < 0.15f;
+        TestLog.Step(channel, $"uphill y {startY:F2}->{upY:F2} x {startX:F2}->{upX:F2} " +
+                              $"공중프레임={airFrames}/{frames}");
+        TestLog.Assert(channel, climbed && stuckToGround,
+            $"uphill 올라감={climbed}(Δy={upY - startY:F2}) 접지유지={stuckToGround}({airFrames}/{frames})");
+
+        // ── 경사면에서 정지: 미끄러지지 않아야 한다 ────────────────────────────────────────
+        float holdX = player.transform.position.x;
+        float holdY = player.transform.position.y;
+        yield return new WaitForSecondsRealtime(0.8f);
+        float drift = Vector2.Distance(new Vector2(holdX, holdY),
+                                       new Vector2(player.transform.position.x, player.transform.position.y));
+        bool noSlide = drift < 0.15f;
+        TestLog.Step(channel, $"idle_on_slope drift={drift:F3}");
+        TestLog.Assert(channel, noSlide, $"idle_no_slide drift={drift:F3}(<0.15)");
+
+        // ── 내리막: 왼쪽으로 걸어 내려온다 ────────────────────────────────────────────────
+        float downStartY = player.transform.position.y - origin.y;
+        InputInjector.SetMoveX(-1f);
+        airFrames = 0; frames = 0;
+        int logged = 0;
+        int groundMask = 1 << LayerMask.NameToLayer("Ground");
+        var pcoll = player.GetComponent<Collider2D>();
+        t0 = Time.realtimeSinceStartup;
+        while (Time.realtimeSinceStartup - t0 < 2.5f)
+        {
+            frames++;
+            if (!player.IsGrounded)
+            {
+                airFrames++;
+                // 공중에 뜬 순간의 실제 값을 몇 개만 남긴다 — 추측 대신 원인을 지목하기 위해.
+                if (logged < 6)
+                {
+                    var b = pcoll.bounds;
+                    var below = Physics2D.BoxCast(b.center, b.size, 0f, Vector2.down, 3f, groundMask);
+                    TestLog.Step(channel, $"  air#{logged} y={player.transform.position.y - origin.y:F2} " +
+                        $"vel={rb.linearVelocity.ToString("F2")} 아래지면거리=" +
+                        (below.collider != null ? below.distance.ToString("F3") : "없음") +
+                        $" angle={player.GroundAngle:F1}");
+                    logged++;
+                }
+            }
+            yield return null;
+        }
+        float downY = player.transform.position.y - origin.y;
+        InputInjector.SetMoveX(0f);
+        bool descended = downY < downStartY - 1f;
+        // 내리막에서 붕 뜨면 공중 프레임이 확 늘어난다 — 그게 "통통 튀는" 증상의 지표다.
+        bool smoothDown = frames > 0 && (float)airFrames / frames < 0.15f;
+        TestLog.Step(channel, $"downhill y {downStartY:F2}->{downY:F2} 공중프레임={airFrames}/{frames}");
+        TestLog.Assert(channel, descended && smoothDown,
+            $"downhill 내려옴={descended}(Δy={downY - downStartY:F2}) 접지유지={smoothDown}({airFrames}/{frames})");
+
+        // ── 점프 회귀 확인 ────────────────────────────────────────────────────────────────
+        // 슬로프 런치 억제는 "접지 중 위로 솟는 속도"를 깎기 때문에, 점프까지 같이 죽이면 안 된다.
+        // 평지와 경사면 두 곳에서 실제로 떠오르는지 본다(jumpSuppressTimer 면제가 동작하는지).
+        for (int phase = 0; phase < 2; phase++)
+        {
+            bool onSlope = phase == 1;
+            player.transform.position = origin + new Vector3(onSlope ? 11.5f : 2f, onSlope ? 3.2f : 0.3f, 0f);
+            rb.linearVelocity = Vector2.zero;
+            InputInjector.SetMoveX(0f);
+            yield return new WaitForSecondsRealtime(0.5f);
+            float jy0 = player.transform.position.y;
+            InputInjector.PressJump();
+            yield return null;
+            InputInjector.ReleaseJump();
+            float peak = jy0;
+            float jt = Time.realtimeSinceStartup;
+            while (Time.realtimeSinceStartup - jt < 0.6f)
+            {
+                peak = Mathf.Max(peak, player.transform.position.y);
+                yield return null;
+            }
+            float rise = peak - jy0;
+            bool jumped = rise > 1.5f;
+            TestLog.Step(channel, (onSlope ? "jump_on_slope" : "jump_on_flat") + " 상승=" + rise.ToString("F2"));
+            TestLog.Assert(channel, jumped,
+                (onSlope ? "jump_on_slope" : "jump_on_flat") + " 상승=" + rise.ToString("F2") + "(>1.5여야 함)");
+            yield return new WaitForSecondsRealtime(0.4f);
+        }
+
+        for (int i = 0; i < temp.Count; i++) if (temp[i] != null) Destroy(temp[i]);
+        TestLog.Step(channel, "done");
+    }
 
     // 벽타기·자동 오르기 규칙(2026-08-04 최종) — 사용자 지시로 "추정"을 전부 걷어내고 명시적 지정으로 바꿨다.
     //   · 벽타기는 **Wall 레이어 콜라이더(climbWallLayer)** 에만 붙는다. 지형(Ground)은 아무리 높아도 벽이 아니다.
