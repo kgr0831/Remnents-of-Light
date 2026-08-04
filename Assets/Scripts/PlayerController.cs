@@ -49,6 +49,12 @@ public class PlayerController : MonoBehaviour
     // 콜라이더 접촉 오프셋(0.01) 때문에 지형에 완전히 밀착하지도 못한다. Wall은 이제 레벨에서 명시적으로
     // 지정하는 면이라 여유를 넉넉히 줘도 오검출이 없다(지형은 애초에 이 마스크에 없다).
     public float wallCheckDistance = 0.25f;
+    // 벽으로 인정할 면의 "수직에 가까운 정도"(법선의 x성분 최소값). 1에 가까울수록 완전한 수직면만 인정.
+    // 폴리곤 콜라이더로 벽 실루엣을 통째로 감싸면 윗면·경사면까지 같은 콜라이더에 들어가서, 벽 위에
+    // 서 있어도 벽타기가 붙어버린다(사용자 리포트 2026-08-04, 스크린샷). 콜라이더를 다시 그리게 하는
+    // 대신 코드에서 **면의 방향**을 보고 거른다 — 실루엣을 통째로 감싸도 수직면에서만 붙는다.
+    // 0.7 ≈ 수직에서 45° 이내.
+    [Range(0.1f, 1f)] public float wallFaceMinNormalX = 0.7f;
 
     // ── 오르막·내리막(경사) ──────────────────────────────────────────────────────────────────
     // 지형이 타일 컴포지트라 경사면이 실제로 많다(실측: 지형 변 702개 중 259개가 5~85°).
@@ -829,8 +835,8 @@ public class PlayerController : MonoBehaviour
         groundAngle = Vector2.Angle(groundNormal, Vector2.up);
         
         // 벽 감지는 climbWallLayer(Wall 전용)만 본다 — 바닥·플랫폼은 아무리 가까이 붙어도 벽이 아니다.
-        bool rightWall = Physics2D.BoxCast(bounds.center, bounds.size, 0f, Vector2.right, wallCheckDistance, climbWallLayer);
-        bool leftWall = Physics2D.BoxCast(bounds.center, bounds.size, 0f, Vector2.left, wallCheckDistance, climbWallLayer);
+        bool rightWall = DetectWallFace(1, bounds);
+        bool leftWall = DetectWallFace(-1, bounds);
         isTouchingWall = rightWall || leftWall;
         wallDirX = rightWall ? 1 : (leftWall ? -1 : 0);
 
@@ -844,8 +850,33 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    /// <summary>그 방향에 "붙을 수 있는 벽면"이 있는지. 단순히 Wall 콜라이더에 닿았는지가 아니라
+    /// **맞은 면이 수직에 가까운지**(법선 x성분)까지 본다 — 폴리곤으로 벽 실루엣을 통째로 감싸면
+    /// 윗면·경사면도 같은 콜라이더라, 그것만으로는 벽 위에 서 있을 때도 벽타기가 붙는다.
+    ///
+    /// 박스캐스트 대신 허리·어깨 두 높이의 레이를 쓴다: 박스캐스트는 이미 겹쳐 있으면 법선이 0으로
+    /// 나와 방향을 알 수 없고, 발끝 높이는 바닥 모서리를 긁어 오탐이 난다.</summary>
+    bool DetectWallFace(int dirX, Bounds b)
+    {
+        Vector2 dir = new Vector2(dirX, 0f);
+        float dist = b.extents.x + wallCheckDistance;
+        float[] heightRatios = { 0.35f, 0.7f };
+        for (int i = 0; i < heightRatios.Length; i++)
+        {
+            Vector2 from = new Vector2(b.center.x, b.min.y + b.size.y * heightRatios[i]);
+            RaycastHit2D hit = Physics2D.Raycast(from, dir, dist, climbWallLayer);
+            if (hit.collider == null) continue;
+            if (Mathf.Abs(hit.normal.x) >= wallFaceMinNormalX) return true;
+        }
+        return false;
+    }
+
     void HandleMovement()
     {
+        // 아래 경사 분기에서 중력을 끄므로, 그 상태에서 빠져나오는 모든 경로에서 반드시 되살려야 한다.
+        // (ApplyGravityScale은 벽타기 중이면 0을 유지하고, 시간 가속 보정도 함께 반영한다)
+        ApplyGravityScale();
+
         // 벽 점프 직후에는 수평 입력을 잠시 잠가 벽 반대 방향으로 확실히 밀어냄
         if (wallJumpLockCounter > 0f) return;
 
@@ -869,6 +900,12 @@ public class PlayerController : MonoBehaviour
         bool rising = rb.linearVelocity.y > 0.1f;
         if (isGrounded && !rising && groundAngle > slopeMinAngle && groundAngle <= maxSlopeAngle)
         {
+            // ⚠️ 속도를 0으로 만드는 것만으로는 안 멈춘다 — 매 물리 스텝마다 중력이 다시 실리고, 그게
+            // 경사면 충돌 해소를 거쳐 아래로 미끄러지는 이동으로 바뀐다(실측: 45° 경사에서 등속
+            // -0.78/-0.78로 계속 밀려남, 마찰이 0이라 멈추지도 않는다). 경사에 붙어 있는 동안엔
+            // 벽타기와 같은 방식으로 중력 자체를 끈다 — 이동은 아래 접선 속도가 전부 담당한다.
+            rb.gravityScale = 0f;
+
             if (Mathf.Abs(moveInput.x) > 0.01f)
             {
                 // 표면 접선 방향으로 이동한다. 오르막은 위로, 내리막은 아래로 같이 나아가므로

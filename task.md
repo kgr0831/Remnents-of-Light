@@ -3945,3 +3945,28 @@ executor 재시작 PowerShell(진행 중 작업 확인 → Stop/Start → heartb
 원인이 잡혔다(SKILL 6번: 수치를 먼저 실측하라).
 회귀 확인: `Wall Climb Gate` 3개, `Dash I-Frame` 1개 전부 PASS.
 - **남은 것**: 없음. `maxSlopeAngle`(50°)·`slopeSnapDistance`(0.35)는 인스펙터에서 조정 가능.
+
+#### 후속 2건 (2026-08-04)
+
+**① 벽 위쪽에서도 벽타기가 되는 문제** — 사용자가 벽을 PolygonCollider2D로 **실루엣 통째로** 감싸서
+윗면·경사면까지 같은 Wall 콜라이더가 됐다(스크린샷). 콜라이더를 다시 그리게 하는 대신 코드에서
+**면의 방향**으로 거른다: 신규 `DetectWallFace()`가 허리(0.35)·어깨(0.7) 두 높이에서 레이를 쏴
+**법선의 x성분이 `wallFaceMinNormalX`(0.7, 수직에서 45° 이내) 이상일 때만** 벽으로 인정한다.
+BoxCast 대신 레이인 이유: BoxCast는 이미 겹쳐 있으면 법선이 0으로 나와 면 방향을 알 수 없고,
+발끝 높이는 바닥 모서리를 긁어 오탐이 난다. 검증: 신규 케이스 `no_climb_on_wall_top` PASS
+(Ground 기둥 + 완전히 같은 범위의 Wall 트리거를 덮고 그 꼭대기에서 밀어도 안 붙음).
+
+**② 오르막에서 점점 미끄러지는 문제** — 합성 테스트(30° 단일 박스)에선 안 나던 게 실제 맵에서 났다.
+신규 `Tools/PlayTest/Slope Real Map`(지형에서 가장 긴 경사변을 자동으로 찾아 그 위에 세운다)으로
+재현: 45° 경사에서 **등속 (-0.78, -0.78)로 계속 밀려남**, 이때 grounded=True·angle=45.0·접촉법선
+(-0.71,0.71)로 **감지는 전부 정상**이었다. 원인은 감지가 아니라 **속도를 0으로 만들어도 매 물리
+스텝마다 중력이 다시 실리고, 그게 경사면 충돌 해소를 거쳐 아래로 미끄러지는 이동으로 바뀌는 것**
+(마찰 0이라 멈추지도 않음). → 경사에 접지해 있는 동안엔 **중력 자체를 끈다**(벽타기와 같은 방식).
+빠져나오는 모든 경로에서 되살아나도록 `HandleMovement` 최상단에서 `ApplyGravityScale()`을 부른다.
+
+검증: `Slope Real Map` 이동 1.820 → **0.000** PASS. 회귀로 `Slope Walk` 5개(오르막 0/105·내리막 0/76·
+정지 0.001·점프 평지 4.72/경사 4.72), `Wall Climb Gate` 4개 전부 PASS. 중력 복구도 실측 확인
+(평지 대기 중 `gravityScale`=8 = Awake 캐시값과 일치).
+⚠️ 테스트가 계속 멈춰 원인을 못 찾던 구간이 있었는데, 콘솔의 **Error Pause가 켜져 있고 타일 팔레트가
+`Screen position out of view frustum` 에러를 매 프레임 뿜어** 플레이가 일시정지되던 것이었다
+(리플렉션으로 `ConsoleWindow.SetFlag(ErrorPause, false)` 해제).

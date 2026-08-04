@@ -55,6 +55,25 @@ public class PlayTestRunner : MonoBehaviour
         runner.StartCoroutine(runner.DashAfterimageShapeTest());
     }
 
+    [MenuItem("Tools/PlayTest/Slope Real Map")]
+    private static void RunSlopeRealMapTest()
+    {
+        if (!Application.isPlaying)
+        {
+            Debug.LogWarning("[PlayTestRunner] Enter Play mode first.");
+            return;
+        }
+        var runner = FindAnyObjectByType<PlayTestRunner>();
+        if (runner == null)
+        {
+            var go = new GameObject("PlayTestRunner_Temp");
+            runner = go.AddComponent<PlayTestRunner>();
+        }
+        InputInjector.Cleanup();
+        EnsureDeterministicInputSettings();
+        runner.StartCoroutine(runner.SlopeRealMapTest());
+    }
+
     [MenuItem("Tools/PlayTest/Slope Walk")]
     private static void RunSlopeWalkTest()
     {
@@ -425,6 +444,67 @@ public class PlayTestRunner : MonoBehaviour
     }
 #endif
 
+    // 실제 맵(Map1) 지형의 경사에서 미끄러지는지 확인한다(사용자 리포트 "오르막길에서 점점 미끄러집니다").
+    // 합성 테스트 지형(30° 단일 박스)에서는 안 미끄러졌으므로, 타일 컴포지트 특유의 형상이 원인인지
+    // 그 자리에서 직접 재현해 법선·각도·접촉점을 같이 찍는다.
+    public IEnumerator SlopeRealMapTest()
+    {
+        const string channel = "slope_walk";
+        TestLog.Step(channel, "real_map 시작");
+
+        var player = FindAnyObjectByType<PlayerController>();
+        if (player == null) { TestLog.Assert(channel, false, "NOT_FOUND: player"); yield break; }
+        var rb = player.GetComponent<Rigidbody2D>();
+        var col = player.GetComponent<Collider2D>();
+
+        // 지형에서 가장 긴 경사변을 찾아 그 중앙 위에 세운다(맵이 바뀌어도 따라간다).
+        Vector2 bestA = Vector2.zero, bestB = Vector2.zero; float bestLen = 0f;
+        foreach (var cc in FindObjectsByType<CompositeCollider2D>(FindObjectsSortMode.None))
+        {
+            if (((1 << cc.gameObject.layer) & player.groundLayer.value) == 0) continue;
+            for (int p = 0; p < cc.pathCount; p++)
+            {
+                var pts = new Vector2[cc.GetPathPointCount(p)];
+                cc.GetPath(p, pts);
+                for (int i = 0; i < pts.Length; i++)
+                {
+                    Vector2 a = pts[i], b = pts[(i + 1) % pts.Length];
+                    Vector2 d = b - a;
+                    float len = d.magnitude;
+                    if (len < 0.05f) continue;
+                    float ang = Mathf.Atan2(Mathf.Abs(d.y), Mathf.Abs(d.x)) * Mathf.Rad2Deg;
+                    if (ang > 15f && ang < player.maxSlopeAngle && len > bestLen) { bestLen = len; bestA = a; bestB = b; }
+                }
+            }
+        }
+        if (bestLen <= 0f) { TestLog.Assert(channel, false, "NOT_FOUND: 걸을 수 있는 경사변이 없음"); yield break; }
+        Vector2 mid = (bestA + bestB) * 0.5f;
+        float slopeAng = Mathf.Atan2(Mathf.Abs(bestB.y - bestA.y), Mathf.Abs(bestB.x - bestA.x)) * Mathf.Rad2Deg;
+        TestLog.Step(channel, $"대상 경사변 a={bestA.ToString("F1")} b={bestB.ToString("F1")} 길이={bestLen:F1} 각도={slopeAng:F1}");
+
+        player.transform.position = new Vector3(mid.x, mid.y + 1.2f, 0f);
+        rb.linearVelocity = Vector2.zero;
+        InputInjector.SetMoveX(0f);
+        yield return new WaitForSecondsRealtime(0.8f); // 착지 대기
+
+        Vector3 settled = player.transform.position;
+        var contacts = new ContactPoint2D[16];
+        for (int i = 0; i < 5; i++)
+        {
+            yield return new WaitForSecondsRealtime(0.3f);
+            int n = rb.GetContacts(contacts);
+            string ns = "";
+            for (int c = 0; c < n && c < 3; c++) ns += contacts[c].normal.ToString("F2") + " ";
+            TestLog.Step(channel, $"  t={i * 0.3f + 0.3f:F1}s pos={player.transform.position.ToString("F3")} " +
+                $"이동={Vector2.Distance(settled, player.transform.position):F3} vel={rb.linearVelocity.ToString("F2")} " +
+                $"grounded={player.IsGrounded} angle={player.GroundAngle:F1} 접촉={n}개 {ns}");
+        }
+        float slide = Vector2.Distance(settled, player.transform.position);
+        bool ok = slide < 0.2f;
+        TestLog.Assert(channel, ok, $"real_map_no_slide 1.5초 동안 이동={slide:F3}(<0.2여야 함) 경사={slopeAng:F1}도");
+        TestLog.Step(channel, "real_map done");
+    }
+
     // 오르막·내리막(2026-08-04) — 새 맵 지형에 경사면이 많은데(실측: 지형 변 702개 중 259개가 5~85°)
     // 수평 속도만 주면 오르막에선 벽처럼 걸리고 내리막에선 붕 떠서 통통 튄다. 접선 이동이 실제로
     // 그 둘을 해결하는지 런타임 전용 경사 지형(30°)을 세워 확인한다(씬 파일 무변경).
@@ -634,6 +714,32 @@ public class PlayTestRunner : MonoBehaviour
             TestLog.Step(channel, $"{labels[i]} climbed={climbed} expect={expectClimb[i]} max_y={maxY:F2}{extra}");
         }
         TestLog.Assert(channel, allOk, $"wall_only_climb {detail}");
+
+        // ── 벽 "윗면"에서는 붙지 않아야 한다 ───────────────────────────────────────────────
+        // 사용자가 폴리곤으로 벽 실루엣을 통째로 감싸면 윗면도 같은 Wall 콜라이더다. 그 위에 서서
+        // 벽 쪽으로 밀어도 벽타기가 붙으면 안 된다(맞은 면의 법선이 위를 향하므로 벽면이 아니다).
+        // 재현: Ground 기둥과 **완전히 같은 범위**를 Wall 트리거로 덮고, 그 꼭대기에 서서 밀어본다.
+        temp.Add(MakeBox("WCT_TopWallFace", origin + new Vector3(34f, wallH * 0.5f, 0f),
+                         new Vector2(6f, wallH), wallLayerIdx, true));
+        temp.Add(MakeBox("WCT_TopGround", origin + new Vector3(34f, wallH * 0.5f, 0f),
+                         new Vector2(6f, wallH), groundLayer, false));
+        player.transform.position = origin + new Vector3(33f, wallH + 0.3f, 0f);
+        rb.linearVelocity = Vector2.zero;
+        InputInjector.SetMoveX(0f);
+        yield return new WaitForSecondsRealtime(0.5f);
+        InputInjector.SetMoveX(1f);
+        bool climbedOnTop = false;
+        float topT = Time.realtimeSinceStartup;
+        while (Time.realtimeSinceStartup - topT < 0.8f)
+        {
+            if (player.IsWallSliding) { climbedOnTop = true; break; }
+            yield return null;
+        }
+        InputInjector.SetMoveX(0f);
+        TestLog.Step(channel, $"wall_top 위에 서서 밀기 → 벽타기={climbedOnTop} (False여야 함) " +
+                              $"grounded={player.IsGrounded}");
+        TestLog.Assert(channel, !climbedOnTop, $"no_climb_on_wall_top climbed={climbedOnTop}");
+        yield return new WaitForSecondsRealtime(0.2f);
 
         // ── 낙하 중 벽 잡기: 붙는 순간 하강이 멎어야 한다 ──────────────────────────────────
         // ⚠️ 먼저 앞 케이스에서 벽에 붙어 있던 상태를 확실히 털어낸다 — 붙어 있으면 중력이 0이라
