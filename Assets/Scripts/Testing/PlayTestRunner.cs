@@ -55,6 +55,25 @@ public class PlayTestRunner : MonoBehaviour
         runner.StartCoroutine(runner.DashAfterimageShapeTest());
     }
 
+    [MenuItem("Tools/PlayTest/Wall Real Map")]
+    private static void RunWallRealMapTest()
+    {
+        if (!Application.isPlaying)
+        {
+            Debug.LogWarning("[PlayTestRunner] Enter Play mode first.");
+            return;
+        }
+        var runner = FindAnyObjectByType<PlayTestRunner>();
+        if (runner == null)
+        {
+            var go = new GameObject("PlayTestRunner_Temp");
+            runner = go.AddComponent<PlayTestRunner>();
+        }
+        InputInjector.Cleanup();
+        EnsureDeterministicInputSettings();
+        runner.StartCoroutine(runner.WallRealMapTest());
+    }
+
     [MenuItem("Tools/PlayTest/Slope Real Map")]
     private static void RunSlopeRealMapTest()
     {
@@ -444,6 +463,63 @@ public class PlayTestRunner : MonoBehaviour
     }
 #endif
 
+    // 실제 맵에 배치된 Wall 콜라이더에서 벽타기가 붙는지 — 지상·상승 중·낙하 중 세 가지로 확인한다
+    // (사용자 리포트 2026-08-05 "점프중/공중에 떠있을 때 벽타기가 안 발동"). 합성 지형이 아니라
+    // 사용자가 실제로 배치한 콜라이더를 그대로 쓴다.
+    public IEnumerator WallRealMapTest()
+    {
+        const string channel = "wall_climb";
+        TestLog.Step(channel, "real_map 시작");
+
+        var player = FindAnyObjectByType<PlayerController>();
+        if (player == null) { TestLog.Assert(channel, false, "NOT_FOUND: player"); yield break; }
+        var rb = player.GetComponent<Rigidbody2D>();
+        int wallIdx = LayerMask.NameToLayer("Wall");
+
+        Collider2D tallest = null;
+        foreach (var c in FindObjectsByType<Collider2D>(FindObjectsSortMode.None))
+            if (c.gameObject.layer == wallIdx && (tallest == null || c.bounds.size.y > tallest.bounds.size.y)) tallest = c;
+        if (tallest == null) { TestLog.Assert(channel, false, "NOT_FOUND: 씬에 Wall 레이어 콜라이더가 없음"); yield break; }
+        Bounds wb = tallest.bounds;
+        TestLog.Step(channel, $"대상 벽=[{tallest.gameObject.name}] {tallest.GetType().Name} " +
+                              $"x=[{wb.min.x:F2},{wb.max.x:F2}] y=[{wb.min.y:F2},{wb.max.y:F2}] trigger={tallest.isTrigger}");
+
+        // 벽의 왼쪽/오른쪽 중 지형이 비어 있는 쪽에서 접근한다(벽 몸통 안에서 시작하지 않도록).
+        float approachDir = 1f, startX = wb.min.x - 0.6f;
+        if (Physics2D.OverlapPoint(new Vector2(wb.min.x - 0.6f, wb.center.y), player.groundLayer) != null)
+        { approachDir = -1f; startX = wb.max.x + 0.6f; }
+
+        string[] labels = { "지상에서 밀기", "상승 중(+15)", "낙하 중(-20)" };
+        float[] initialVy = { 0f, 15f, -20f };
+        bool allOk = true; string detail = "";
+        for (int i = 0; i < 3; i++)
+        {
+            float y = (i == 2) ? wb.max.y - 1f : wb.min.y + 0.6f;
+            player.transform.position = new Vector3(startX, y, 0f);
+            rb.linearVelocity = Vector2.zero;
+            InputInjector.SetMoveX(0f);
+            yield return new WaitForSecondsRealtime(0.35f);
+            rb.linearVelocity = new Vector2(0f, initialVy[i]);
+            InputInjector.SetMoveX(approachDir);
+
+            bool grabbed = false;
+            float t0 = Time.realtimeSinceStartup;
+            while (Time.realtimeSinceStartup - t0 < 1.2f)
+            {
+                if (player.IsWallSliding) { grabbed = true; break; }
+                yield return null;
+            }
+            InputInjector.SetMoveX(0f);
+            allOk &= grabbed;
+            detail += $"[{labels[i]}={grabbed}] ";
+            TestLog.Step(channel, $"  {labels[i]} 붙음={grabbed} pos={player.transform.position.ToString("F2")} " +
+                                  $"vel={rb.linearVelocity.ToString("F1")}");
+            yield return new WaitForSecondsRealtime(0.3f);
+        }
+        TestLog.Assert(channel, allOk, $"real_map_wall_grab {detail}");
+        TestLog.Step(channel, "real_map done");
+    }
+
     // 실제 맵(Map1) 지형의 경사에서 미끄러지는지 확인한다(사용자 리포트 "오르막길에서 점점 미끄러집니다").
     // 합성 테스트 지형(30° 단일 박스)에서는 안 미끄러졌으므로, 타일 컴포지트 특유의 형상이 원인인지
     // 그 자리에서 직접 재현해 법선·각도·접촉점을 같이 찍는다.
@@ -769,6 +845,34 @@ public class PlayTestRunner : MonoBehaviour
         TestLog.Step(channel, $"fall_grab fall_vel={fallVel:F1} grabbed={grabbed} vel_after={velAfterGrab:F2}");
         TestLog.Assert(channel, fallStopped,
             $"fall_grab_stops 낙하 {fallVel:F1} -> 붙은 뒤 {velAfterGrab:F2} (|v|<1, grabbed={grabbed})");
+
+        // ── 상승 중(점프 중) 벽 잡기 ──────────────────────────────────────────────────────
+        // 사용자 리포트 2026-08-05: "점프중 / 공중에 떠있을 때 벽타기가 안 발동한다".
+        // 낙하 중(-20)은 위 케이스에서 붙는 것이 확인됐으므로, 위로 솟는 중을 따로 재현한다.
+        player.transform.position = origin + new Vector3(approachX[2] - 0.45f, 0.3f, 0f);
+        rb.linearVelocity = Vector2.zero;
+        InputInjector.SetMoveX(0f);
+        yield return new WaitForSecondsRealtime(0.4f);
+        rb.linearVelocity = new Vector2(0f, 15f);   // 점프 상승과 같은 상태
+        InputInjector.SetMoveX(1f);                 // 벽 쪽으로
+        bool grabbedRising = false;
+        float riseVelAtGrab = 0f, riseY = 0f;
+        float riseT = Time.realtimeSinceStartup;
+        while (Time.realtimeSinceStartup - riseT < 1.2f)
+        {
+            if (player.IsWallSliding)
+            {
+                grabbedRising = true;
+                riseVelAtGrab = rb.linearVelocity.y;
+                riseY = player.transform.position.y - origin.y;
+                break;
+            }
+            yield return null;
+        }
+        InputInjector.SetMoveX(0f);
+        TestLog.Step(channel, $"rising_grab 붙음={grabbedRising} y={riseY:F2} vel_y={riseVelAtGrab:F2}");
+        TestLog.Assert(channel, grabbedRising, $"rising_grab 상승 중 벽 잡기={grabbedRising}");
+        yield return new WaitForSecondsRealtime(0.3f);
 
         // ── 벽 꼭대기 자동 오르기: 1프레임 순간이동이 아니라 보간이어야 한다 ────────────────
         // ⚠️ 벽 **아래쪽**에서 다시 붙는다 — 위에서 잡으면 머리가 이미 꼭대기보다 높아, 꼭대기 판정은

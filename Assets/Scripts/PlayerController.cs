@@ -864,11 +864,19 @@ public class PlayerController : MonoBehaviour
     bool DetectWallFace(int dirX, Bounds b)
     {
         Vector2 dir = new Vector2(dirX, 0f);
-        float dist = b.extents.x + wallCheckDistance;
-        float[] heightRatios = { 0.35f, 0.7f };
+        // ⚠️ 레이는 플레이어 **반대쪽 바깥**에서 출발한다. 몸 중심에서 쏘면, 벽 트리거와 몸이 조금이라도
+        // 겹친 순간 "콜라이더 안에서 시작한 레이"가 되어 거리 0·법선 (0,0)으로 돌아오고, 법선 검사에서
+        // 탈락해 벽이 아닌 것으로 판정된다(공중에서 벽에 파고들 때 실제로 이 상태가 된다 —
+        // 사용자 리포트 2026-08-05 "점프중/공중에 떠있을 때 벽타기가 안 발동"). 몸 뒤에서 쏘면 출발점이
+        // 항상 벽 바깥이라 법선이 제대로 나온다.
+        float back = b.extents.x + 0.05f;
+        float dist = back + b.extents.x + wallCheckDistance;
+        // 발목~머리까지 네 높이를 훑는다 — 낮은 벽(자동 생성분은 높이 1.7~2.4)이나 공중에서 몸의 일부만
+        // 벽 옆에 걸치는 상황에서도 잡히게. Wall 레이어에만 쏘므로 발목 높이도 지형 모서리에 안 걸린다.
+        float[] heightRatios = { 0.15f, 0.4f, 0.65f, 0.9f };
         for (int i = 0; i < heightRatios.Length; i++)
         {
-            Vector2 from = new Vector2(b.center.x, b.min.y + b.size.y * heightRatios[i]);
+            Vector2 from = new Vector2(b.center.x - dirX * back, b.min.y + b.size.y * heightRatios[i]);
             RaycastHit2D hit = Physics2D.Raycast(from, dir, dist, climbWallLayer);
             if (hit.collider == null) continue;
             if (Mathf.Abs(hit.normal.x) >= wallFaceMinNormalX) return true;
