@@ -433401,7 +433401,7 @@ MonoBehaviour:
   maxSlopeAngle: 50
   slopeMinAngle: 5
   slopeSnapDistance: 0.35
-  dashSpeed: 14
+  dashSpeed: 28
   dashDuration: 0.15
   dashCooldown: 0.5
   dashInputBuffer: 0.12

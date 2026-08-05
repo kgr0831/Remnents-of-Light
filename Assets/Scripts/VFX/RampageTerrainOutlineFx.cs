@@ -261,9 +261,28 @@ public class RampageTerrainOutlineFx : MonoBehaviour
             Vector2 p0 = Vector2.Lerp(a, b, i / (float)pieces);
             Vector2 p1 = Vector2.Lerp(a, b, (i + 1) / (float)pieces);
             if (Vector2.Distance((p0 + p1) * 0.5f, c) > r) continue; // 긴 변은 이 단계에서 잘려 나간다
+            if (IsDuplicateSegment(p0, p1)) continue; // 같은 자리 중복선 방지(아래 주석 참고)
             segments.Add(new Segment { a = p0, b = p1, source = src });
             if (segments.Count >= MaxSegments) return;
         }
+    }
+
+    // Ground(바닥)와 Wall(벽) 콜라이더가 같은 경계에서 만나면(벽이 바닥 가장자리에 딱 붙어 서 있는
+    // 흔한 배치) terrainMask가 둘 다 훑기 때문에 같은 물리적 선을 두 콜라이더가 각자 따로 그려서
+    // "시간이 지나도 안 없어지는 이중선"이 생겼다(사용자 스크린샷·확인, 2026-08-06 — 글리치로 인한
+    // 일시적 밴드 어긋남과는 다름). 부동소수 오차만 흡수할 정도로 좁은 허용치로 이미 그려진 선분과
+    // 겹치면 건너뛴다 — 방향(a→b vs b→a)은 상관없이 같은 자리로 본다.
+    const float DupEps = 0.02f;
+    bool IsDuplicateSegment(Vector2 p0, Vector2 p1)
+    {
+        for (int i = 0; i < segments.Count; i++)
+        {
+            var s = segments[i];
+            if ((Vector2.Distance(s.a, p0) < DupEps && Vector2.Distance(s.b, p1) < DupEps) ||
+                (Vector2.Distance(s.a, p1) < DupEps && Vector2.Distance(s.b, p0) < DupEps))
+                return true;
+        }
+        return false;
     }
 
     // ── 글리치 스텝(12Hz) ──────────────────────────────────────────────────

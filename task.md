@@ -3,6 +3,99 @@
 > 최종 업데이트: 2026-08-03(이동·벽타기 애니메이션 속도 연동까지) · 스테이지1 버티컬 슬라이스(5주 마스터플랜) 기준
 
 ## 📍 현재 위치
+- **2026-08-05: 점프 공격 판정프레임 프리즈로 축소 + 히트 시 보너스 점프 + 초월 예고 페이드 버그 수정
+  (게헨나 포식견 MCP 실측 포함).** 사용자 리포트 3건 처리.
+  ① 점프 공격이 `isAttacking` 전체 구간(윈드업~회수) 동안 y를 고정해서 "애니메이션이 끊기거나
+  공격 후에도 잠시 떠있는" 문제가 났다 — `AttackHitFrame()`이 세팅하는 `jumpAttackHangTimer`
+  (기본 0.08s)가 0보다 큰 동안만 고정하는 `AttackFreezesY` 헬퍼로 축소(ApplyGravityScale·
+  HandleMovement·ApplyBetterJumpPhysics 3곳 적용). 지상 콤보(Slash 1/2)는 기존대로 스윙 내내 고정
+  (원래 스펙, 변경 없음). 부수 효과 2건도 같이 처리하지 않으면 점프 공격이 다시 끊긴다는 걸 확인해
+  같이 고침 — (a) UpdateAnimations의 `yVelocity` 애니메이터 파라미터가 `isAttacking` 중 항상 0으로
+  묶이던 것을, 물리는 실제로 풀렸으니 이제도 애니메이터 표시값만은 계속 0으로 분리(안 그러면 실제
+  낙하 속도가 AnyState→Fall을 걸어 스윙이 끊김) (b) `Land` 트리거에 `!isAttacking` 가드 추가(점프
+  공격 중 실제로 착지할 수 있게 되면서 Land가 끼어들 수 있게 됨).
+  ② 점프 공격으로 적/LightObject를 맞히면(`CheckAttackHit`의 `hitCount>0`) `hasJumpAttackBonusJump`가
+  서서 공중 점프 1회 재충전(HandleJump에 코요테 타임 다음 우선순위로 추가, 착지 시
+  CheckEnvironment에서 리셋) — `jumpAttackBonusJumpEnabled` 토글로 인스펙터에서 끌 수 있음.
+  ③ 초월(Transcendence) 관련 리포트 2건은 MCP로 게헨나 포식견을 씬에 스폰해 리플렉션으로 상태를
+  찍어가며 실측: "여러 번 타격"은 재현 안 됨(`player_damage`/`hit_player` 로그가 스윙당 정확히 1회
+  1:1 대응 확인, 일반 상태·초월 상태 둘 다) — 원인 특정을 위해 사용자에게 재현 상황 재질문함.
+  "공격 범위 예고 타이밍이 이상함"은 진짜 버그를 찾음 — `TranscendVisionFx.Apply()`가 초월이
+  꺼지는 순간(`ending=true`) 이미 진행 중인 공격의 예고 알파까지 `k`(0.25s 페이드아웃)로 깎아서,
+  "경고는 사라졌는데 공격은 그대로 날아와 맞는" 상황이 났다(실측: 진행률 0.17에서 강제 종료 →
+  alpha 1 확인, 수정 전이면 0.35s 후 0에 가까워야 함). 그 공격의 `AttackTelegraphProgress>=0`인
+  동안엔 `k` 대신 강제로 alpha=1 유지하도록 수정 — 공격 자체가 끝나면(진행률<0) 늘 하던 대로 자기
+  burst/fizzle. 별개로, 초월 진입 **전에** 이미 시작된 공격은 `effectiveWindupDuration`이 그 순간
+  확정돼(2026-08-02 사용자 지시, 그대로 둠) 초월 중이어도 안 늘어난다는 것도 확인 — "타이밍이
+  이상함"의 또 다른 원인일 수 있어 사용자에게 변경 여부 확인 필요(별도 승인 전까지 미변경).
+- **2026-08-05: 플레이어가 항상 공중에 뜬 채 낙하하지 않는 버그 수정 (MCP 실측으로 원인 확정).**
+  증상: Map-test.unity Play 시 플레이어가 스폰 위치에서 전혀 낙하하지 않음(`gravityScale=8`·
+  `Physics2D.gravity` 정상인데 속도를 직접 주입해도 매 물리 스텝마다 (0,0)으로 복귀). 원인은
+  코드가 아니라 **씬 오브젝트 상태** — `Player` 자식 히트박스 마커 `Jump_R`/`Jump_L`(신규 Jump
+  Attack 기능용, 코드에서는 아직 미참조)이 `1_R`/`1_L`과 함께 **활성 + Is Trigger 꺼짐** 상태로
+  남아 있어, 4.68×0.82 크기의 솔리드(비-트리거) 콜라이더가 Player Rigidbody2D에 붙은 채 지형
+  콜라이더("Base")에 파고들어 물리적으로 고정시키고 있었음(`rb.GetContacts()`로 지형 접촉면 y
+  좌표와 히트박스 하단 y좌표가 정확히 일치함을 확인). 원래 의도(코드 주석 — 이 마커들은 offset/size만
+  데이터로 읽히고 물리에 참여하지 않아야 함, `2_R`/`2_L`은 정상적으로 비활성)와 실제 씬 상태가
+  어긋난 "상태 꼬임" 케이스. 수정: `1_R`/`1_L`/`Jump_R`/`Jump_L` 전부 `SetActive(false)` +
+  `BoxCollider2D.isTrigger=true`로 되돌림(Map-test.unity 저장). Play 모드 재검증: 낙하 정상화
+  확인(스폰 y=36.44 → 접지 y=36.01, `IsGrounded=True`, 접촉점이 실제 플레이어 콜라이더 폭과
+  일치). Map1-test.unity는 `Jump_R`/`Jump_L` 자체가 없고 `1_R`/`1_L`/`2_R`/`2_L` 전부 정상
+  비활성 상태로 문제 없음 확인.
+- **2026-08-05: 벽타기 폭주/초월 애니메이션 깜빡임 버그 수정 (스크린샷 확인).** 바로 아래 절에서
+  Idle/Run Gltich와 같은 패턴(코드에서 `anim.Play()`로 직접 갈아타기)으로 구현했던 게 실제로는
+  격렬하게 깜빡였다 — Idle/Run과 달리 Wall Slide는 `AnyState(isWallSliding==true)`가 매 프레임
+  계속 참이라 그 상태를 계속 다시 잡아당겨서, 코드가 Glitch Climb Glitch로 밀어넣어도 바로 다음
+  프레임에 Animator가 도로 Wall Slide로 되돌리는 경합이 있었다(마스크 없는 Wall Slide 상태가 잠깐
+  섞여 보일 때마다 흰색 폴백 마스크로 실루엣 전체가 확 빛나 보였음 — 스크린샷의 거대한 시안색
+  덩어리). 코드 기반 전환을 없애고 새 파라미터 `isWallClimbGlitch`(UpdateAnimations에서 세팅)로
+  AnyState 전이 자체를 배타적으로 나눔: 기존 AnyState→Wall Slide에 `isWallClimbGlitch==false`
+  조건 추가, AnyState→Glitch Climb Glitch를 새로 만들어 `isWallSliding && isWallClimbGlitch`로
+  잡음(Animator Controller 직접 편집, `AnimatorController.AddParameter`/`AddCondition`/
+  `AddAnyStateTransition`). 컴파일 에러 0, 그래프 조건 재조회로 확인.
+- **2026-08-05: 벽타기 전용 애니메이션(Glitch Climb / Glitch Climb Glitch) 등록 완료.** 그동안 전용
+  스프라이트가 없어 Wall Slide 클립을 재사용하던 것을, 새로 받은 스프라이트 시트 2장
+  (`Glitch Samurai-Glitch Climb`·평시, `...Glitch Climb Glitch`·폭주/초월용)으로 교체. 두 시트 다
+  이미 5프레임으로 슬라이스는 돼 있었으나 피벗이 기본값(0,0)이라 Player 컨벤션(Wall Slide와 동일한
+  alignment 9, pivot 0.44/0.03)으로 재설정. 애니메이터의 기존 "Wall Slide" 상태는 이름 그대로 두고
+  Motion만 신규 클립으로 교체(전이 그래프 무변경 — AnyState 조건이 그대로 유효), Glitch 변형은
+  Idle Gltich/Run Gltich와 같은 패턴(자체 전이 없는 별도 상태, 코드에서 `anim.Play`로 직접 전환)으로
+  신규 추가. **발광 마스크**는 `PlayerBloomFx.FindMask`가 텍스처 이름으로 자동 매칭하는 기존 규칙을
+  따라 `Assets/Sprites/Player/Mask/Glitch Samurai-Glitch Climb Glitch.png`를 새로 생성 — 셰이더
+  자체의 "밝은 부위 자동 발광" 공식(`lum=max(r,g,b)`, threshold 0.82, smoothstep 폭 0.08, 기존
+  `_BrightThreshold` 기본값과 동일)을 그대로 구워서 만들었다(수동 페인팅 대신 알고리즘 일치로 근거
+  확보). 생성 후 잘라서 확대해 시각 검증 — 원본의 시안색 글리치 스트릭 부위만 정확히 밝게 나옴 확인.
+  컴파일 에러 0, 상태/모션/마스크 텍스처명 매칭 전부 재조회로 확인.
+- **2026-08-05: 게헨나 포식견 3차 후속 — 실측 버그 대량 수정 완료 (충돌·정지애니·방향·진짜 흰색 플래시·배회).**
+  사용자가 씬에 배치해 직접 테스트하며 리포트한 버그들을 수정:
+  ① 플레이어-적 물리 충돌 제거(Hitbox_R/L을 Trigger+EnemyAttack 레이어로) ② 벽에 막혀도 Run
+  애니메이션이 영원히 재생되던 문제 수정(실제 프레임간 변위 기반 판정으로 교체) ③ **바로 아래 절의
+  flipX 기반 좌우 히트박스 설계를 되돌림** — `PlayerController.CounterRush`가 `target.transform.
+  localScale.x`로 적 방향을 읽는다는 걸 놓쳐서, 대시 카운터가 엉뚱한 방향으로 나가고 왼쪽을 볼 때
+  공격이 아예 안 되는 버그를 냈었음(실측으로 발견) — FaceDirection 오버라이드를 제거해 DummyEnemy
+  기본(localScale 부호)으로 복귀, 히트박스는 Hitbox_R 하나만 놓고 호신 위치 기준 절대거리로 far/near를
+  계산해 자동 미러링되게 재설계 ④ **SpriteRenderer.color 기반 흰색 플래시는 텍스처 스프라이트에
+  전혀 안 먹힌다는 걸 확인**(곱연산이라 흰색=항등원) — `Custom/SpriteHitFlash` 셰이더(URP
+  Sprite-Lit-Default + `_FlashAmount` lerp) 신규 제작, MaterialPropertyBlock으로 구동 ⑤ Sleep→Patrol
+  (배회, Walk Sniff 전용)→Wake→Aggro FSM 추가, Aggro 중 정지 시 Stand로 전환(공격 애니메이션도
+  피격 시 Stand로 강제 전환) ⑥ attackRange 2.4→1.3(실제 물기 사거리에 맞춤) ⑦ PlayerController의
+  대시-카운터 중 A/D로 방향이 바뀌던 버그 수정(`UpdateAnimations` 가드에 `isDodgeCountering` 추가).
+  맨 아래 "🩸 게헨나 포식견 3차 후속" 절 참조 — 대시 성공 시 잔상이 위아래로 늘어나 보이는 버그는
+  원인 미발견(재현 정보 필요).
+- **2026-08-05: 게헨나 포식견 후속 — 피격 플래시·좌우 물기 히트박스·프레임 판정 완료.** ⚠️ 이 절의
+  flipX 기반 좌우 히트박스 설계는 위 "3차 후속"에서 되돌려졌다(대시 카운터 등 localScale.x 컨벤션과
+  충돌 발견) — 아래는 기록用으로 남김. ①
+  Sleep/Waking 중 피격 흰색 점멸이 안 꺼지던 버그 수정(`TickTimers()` 분리) ② 물기 판정을 창 캡슐
+  근사 대신 씬에 배치한 `Hitbox_R`/`Hitbox_L`(flipX로 선택)의 실제 콜라이더 범위로 대체 ③
+  Bite 애니메이션의 Animation Event(t=0.5s, 프레임 6/10)와 판정 확정 시점이 일치하도록
+  windup/thrust/recover 타이밍 재튜닝. DummyEnemy.cs 2곳 추가 변경(`TickTimers` 분리,
+  `FaceDirection` virtual화 — 동작 불변). 맨 아래 "🩸 게헨나 포식견 후속" 절 참조.
+- **2026-08-05: 게헨나 포식견(Dog) 스프라이트 피벗 수정 + 몬스터 1차 제작 완료.** Assets/Sprites/Dog
+  21개 시트 피벗을 Player 컨벤션(발밑 고정 커스텀 피벗)으로 통일, AnimationClip 9개·
+  GehennaHoundAnimator.controller·GehennaHound.cs(DummyEnemy 상속)·GehennaHound.prefab 신규 제작.
+  DummyEnemy.cs는 7곳 `private→protected virtual`만 변경(동작 불변, 사용자 승인). 맨 아래
+  "🩸 게헨나 포식견(Dog) 스프라이트 피벗 + 몬스터 1차 제작" 절 참조 — 알려진 단순화(발소리 은신,
+  협곡 점프 AI 미구현) 및 플레이 모드 실측 필요 항목 포함.
 - **2026-08-04: 진행 현황 노션 기록 — 원고 6페이지 + 권한 적용 문서까지 완료, 발행만 남음.**
   원격 루프 모드의 `LOOP_ALLOWED_TOOLS`에 Notion MCP 도구가 없어 이 세션에선 노션에 쓸 수 없다
   (읽기 전용 도구까지 거부, 서버 재연결 후에도 동일 — 허용 목록은 프로세스 시작 시 고정). 사용자가
@@ -4043,3 +4136,312 @@ y 13.9~23.7)에서 **3가지 모두 PASS**. 합성 `Wall Climb Gate`도 6개 전
 (SKILL 9번 함정, 세 번째) — `SerializedObject`로 0.15로 맞춤. ② 앞서 자동 생성한 벽 7개가 **저장 전에
 플레이 모드를 오가면서 전부 사라졌다** — 이번엔 생성 직후 씬을 저장했다(6개 생성, 3개는 기존과 겹쳐 스킵).
 저장 후 타일 무결성도 재확인(43,749칸 null 0).
+
+#### 게헨나 포식견(Dog) 스프라이트 피벗 + 몬스터 1차 제작 (2026-08-05)
+
+사용자 리포트: "게헨나 포식견 스프라이트가 제대로 짤리지 않은 상태로 존재". 확인 결과 21개 개별
+애니메이션 시트(Doggo-Idle 등)는 이미 Unity Automatic 슬라이싱으로 프레임 수·경계가 정확했다
+(예: Doggo-Walk.png 450px÷45=10프레임, meta에 10개 정확히 대응). 진짜 문제는 **피벗**이었다 —
+Player(Glitch Samurai-*.png)는 전 프레임 공통 커스텀 피벗(발밑 고정, alignment 9)을 쓰는데 Dog는
+기본 중앙 피벗(0.5,0.5)이라, 프레임마다 트리밍된 바운딩 박스 높이가 달라(Doggo-Bite 12~20px 편차)
+재생 시 발이 들썩였다.
+
+**출처**: `TextureImporter.spritesheet`는 Unity 6에서 제거된 API — 대신
+`UnityEditor.U2D.Sprites.ISpriteEditorDataProvider`를 써야 함 확인
+(https://docs.unity3d.com/ScriptReference/TextureImporter-spritesheet.html, 조회 후 실제 코드에 반영).
+
+**피벗 수정**: `SpriteDataProviderFactories` → `GetSpriteRects()`/`SetSpriteRects()`로 21개 시트 전
+프레임에 `alignment=Custom, pivot=(0.5, 0.05)` 일괄 적용(`Doggo 45x34.png` 통합 원본은 미사용 자산이라
+제외 — Player의 `Glitch Samurai 140x46.png`와 같은 패턴).
+
+**몬스터 제작 범위**: 사용자가 "전투 AI까지 포함(DummyEnemy 수준)"을 선택.
+- AnimationClip 9개(`Assets/Animations/GehennaHound/`): Sleep/WakeUp/Run/Bite/WalkSniff/Jump/Fall/Land/Dead
+  — 기획안 FSM에 필요한 것만(Sit/Eat/Bark/Ledge 등 미사용 애니메이션 제외), 12fps.
+- `GehennaHoundAnimator.controller`: 9 state, **전이 없음** — Player처럼(`anim.Play()`로 코드가 직접
+  구동, PlayerController 주석 "Animator Controller에 자체 전이가 하나도 없다"와 동일 패턴).
+- **아키텍처 결정**: `PlayerController`의 공격 판정·패링·닷지 카운터·처형이 전부 `DummyEnemy` 타입에
+  하드코딩(공용 인터페이스 없음) — 새 클래스를 독립적으로 만들면 플레이어가 때릴 수 없었다. 사용자
+  승인 하에 `GehennaHound : DummyEnemy` 상속으로 해결, `DummyEnemy.cs`는 7곳만
+  `private→protected virtual`(AiState enum·state 필드·Awake·Update·HitPoint·BasePoint·Die) — **동작
+  변경 0**, 기존 DummyEnemy 인스턴스는 그대로 동작.
+- `GehennaHound.cs`: Sleep/Waking 단계는 `base.Update()`를 호출하지 않고(전투 로직 비활성) 자체
+  거리 감지(`detectRange=8`)만 돈다. Aggro 진입 후엔 매 프레임 `base.Update()`로 DummyEnemy의
+  Chase/Windup/Thrust/Recover/Hitstun을 그대로 실행시키고 `state`만 읽어 애니메이터를 동기화
+  (Bite=Windup/Thrust/Recover, Run/WalkSniff=거리 기준 `sniffRange=4` 블렌드, Fall/Land=중력 기반
+  지면 체크). `HitPoint()/BasePoint()`를 오버라이드해 창 대신 입(주둥이) 위치 기준으로 물기 판정.
+  자다가 맞으면(`state==Hitstun`) 즉시 기상. `Die()`를 오버라이드해 Dead 포즈를 `deadPoseDuration`
+  (1.2초) 보여준 뒤 `base.Die()` 호출(원래는 즉시 비활성화라 사망 연출이 안 보였음).
+- `GehennaHound.prefab`(`Assets/Prefabs/`): SpriteRenderer+BoxCollider2D+Rigidbody2D+Animator+
+  GehennaHound, layer=Enemy(11, `PlayerController.enemyLayer` OverlapBox가 이 레이어만 봄),
+  DummyEnemy(3) 프리팹의 물리값(gravityScale 1, constraints=FreezeRotationZ, collisionDetection=
+  Continuous) 그대로 참고. BoxCollider2D가 스프라이트 자동 맞춤 중 (0.0001,0.0001)로 붕괴되는 버그를
+  발견해 `PrefabUtility.LoadPrefabContents`로 직접 (0.3,0.22)/offset(0,0.11)로 수정.
+
+**검증**: 컴파일 에러 0(`refresh_unity` 3회 + `read_console` 매번 확인), `System.Type.GetType
+("GehennaHound, Assembly-CSharp").BaseType`이 `DummyEnemy` 확인, 애니메이터 9개 state의 motion.name이
+전부 기대한 클립명과 일치 확인.
+
+⚠️ **알려진 단순화/미구현(범위 밖으로 명시)**:
+- 기획 문구 "발소리를 내지 않고(걷기) 지나가면 전투를 피할 수 있다"는 거리 기반 감지로만 근사—
+  플레이어의 걷기/달리기 구분 신호가 없어 반영 안 함.
+- Jump 클립은 만들었지만 실제 협곡 점프 AI(지형 갭 탐지·점프 타이밍)는 미구현 — Fall/Land는 순수
+  중력 기반 시각 동기화만. DummyEnemy에 애초에 지면 체크 인프라가 없었음.
+- `detectRange`(8)/`sniffRange`(4)/콜라이더 크기(0.3×0.22)/스케일(2.5)/데미지·쿨다운(DummyEnemy
+  기본값 그대로) 전부 눈대중 기본값 — 실제 플레이 느낌 보고 인스펙터에서 조정 필요.
+- **플레이 모드 실측은 사용자가 직접 수행**(이 프로젝트 컨벤션 — 자동화된 플레이 모드 진입은
+  씬 저장 실패·입력 간섭 이력이 있어 하지 않음). 씬에 프리팹을 배치해 Sleep→발각→추적→물기→
+  사망까지 한 사이클 확인 권장.
+
+#### 게헨나 포식견 후속 — 피격 플래시·좌우 물기 히트박스·프레임 판정 (2026-08-05)
+
+사용자 리포트 3건: ① 피격 시 흰색 점멸이 안 됨 ② 기본적으로 멈춰서 공격하는지 확인 필요 ③ 씬에
+직접 배치한 `Hitbox_R`(flipX=false)/`Hitbox_L`(flipX=true) 자식 오브젝트로 좌우 물기 판정을 바꾸고,
+Bite 애니메이션에 표시해 둔 프레임에서만 공격이 처리되게.
+
+**① 피격 플래시 원인**: `GehennaHound.Update()`가 Sleep/Waking 단계에서는 `base.Update()`를 아예
+호출하지 않아, 그 안에 있던 흰색 플래시 타이머 감산 로직도 같이 멈춰 있었다(Aggro 진입 전까지
+색이 안 꺼짐/타이밍이 어긋남). `DummyEnemy.Update()`에서 타이머 처리만 `TickTimers()`로 분리해
+Sleep/Waking 중에도 매 프레임 돌게 했다(동작 변경 없음, 호출 위치만 그대로 유지).
+
+**② 정지 후 공격**: 기존 `DummyEnemy.ChaseLogic()`이 이미 `attackRange` 진입 시
+`SetHorizontalVelocity(0f)` 후 공격하도록 되어 있어 추가 수정 없음(확인만, 코드 변경 0).
+
+**③ 좌우 히트박스 + 프레임 판정**:
+- DummyEnemy는 `transform.localScale.x` 부호로 좌우를 뒤집는데, 새로 배치한 `Hitbox_R`/`Hitbox_L`은
+  고정 로컬 위치의 자식이라 스케일을 뒤집으면 둘 다 같이 미러링돼 좌우가 꼬인다. `FaceDirection`을
+  `protected virtual`로 바꾸고 `GehennaHound`에서 `SpriteRenderer.flipX`만 쓰도록 완전히 교체
+  (Player가 이미 flipX 컨벤션 — `PlayerController.CheckAttackHit`의 `sr.flipX` 참고).
+- `HitPoint()/BasePoint()`(이미 virtual)를 오버라이드해 활성 히트박스(`flipX`로 선택)의 실제
+  월드 바운드(왼쪽 끝~오른쪽 끝, 세로 중앙)를 캡슐 양 끝점으로 대입 — 회피·무적·패링 실드·데미지
+  확정(`ResolveThrustWindow`)은 DummyEnemy 원본 그대로 재사용, 판정 도형만 스프라이트가 아니라
+  사용자가 배치한 콜라이더를 따르게 됨.
+- Bite 클립(10프레임, 12fps, 0.833초)에 사용자가 이미 찍어 둔 Animation Event(t=0.5s=프레임 6,
+  functionName 비어 있었음)를 그대로 판정 기준점으로 삼기 위해, 별도 이벤트 훅 시스템을 새로
+  만드는 대신 **기존 시간 기반 판정 타이밍을 그 프레임과 일치하도록 역산**했다:
+  `windupDuration=0.4 + thrustDuration=0.1 → 0.5초 지점에서 확정(thrustHitNormalized=1)`,
+  `recoverDuration=0.333`(0.4+0.1+0.333=0.833=클립 전체 길이와 일치, 클립이 도중에 끊기지 않음),
+  `dodgeWindowPre/Post=0.05`(좁은 판정창). 이벤트의 `functionName`은 새로 만든 진단용 메서드
+  `GehennaHound.BiteHitFrameMarker()`로 채워 콘솔에서 "이 프레임에 실제로 판정이 끝나 있는지"
+  바로 확인 가능하게 했다(`TestLog.Event("hound_attack", "bite_frame_reached resolved=...")`).
+- DummyEnemy.cs 추가 변경 2곳(전부 `private→protected` 접근성/virtual화만, 동작 불변):
+  `TickTimers()` 분리, `FaceDirection` virtual화.
+
+**적용**: `manage_components`로 씬 인스턴스(`Map-test.unity`의 `GehennaHound`)에 `hitboxRight=
+Hitbox_R`, `hitboxLeft=Hitbox_L`, 타이밍 6개 필드 설정. `AnimationUtility.GetAnimationEvents/
+SetAnimationEvents`로 Bite 클립 이벤트의 functionName 채움. Unity MCP가 중간에 한 번 끊겨(사용자가
+`/mcp`로 재연결) 씬/에셋 배선은 재연결 후에 진행 — 사용자 선택("재연결 대기")에 따름.
+
+**검증**: `refresh_unity(force)` + `read_console` 컴파일 에러 0(사전 3건 기존 경고만 유지).
+`SerializedObject`로 씬 인스턴스의 6개 필드값 재조회해 의도한 값(Hitbox_R/Hitbox_L 참조,
+0.4/0.1/0.333/1/0.05/0.05) 그대로 반영됨을 확인.
+
+⚠️ **플레이 모드 실측은 사용자가 직접**: 좌우 반전 시 히트박스가 올바른 쪽에서 판정되는지, 물기
+애니메이션 재생 중 정확히 그 프레임 근처에서만 데미지가 들어가는지(콘솔의 `bite_frame_reached
+resolved=` 로그로 확인), 자다가 맞았을 때 흰색 점멸이 바로 꺼지는지 세 가지를 확인 권장.
+
+**⚠️ 이후 전부 되돌려짐 — 아래 "게헨나 포식견 3차 후속" 절 참조.** 사용자가 실제로 씬에 배치해
+플레이해 보고서야 위 flipX 설계가 `PlayerController.CounterRush`(대시 카운터)와 충돌한다는 게
+드러났다 — "정적 분석으로 다 맞다고 확인했다"는 착각을 코드 리뷰만으로는 못 잡는 실사용 버그의
+좋은 사례.
+
+#### 게헨나 포식견 3차 후속 — 실측 버그 대량 수정 (2026-08-05)
+
+사용자가 씬에 `GehennaHound` 인스턴스를 배치하고(`Map-test.unity`, `Hitbox_R`/`Hitbox_L` 자식
+포함) 직접 플레이하며 순차로 리포트한 버그들. Unity MCP가 중간에 두 번 끊겼다 재연결됐다
+(`/mcp`) — 코드/신규 에셋 작업은 끊긴 동안에도 계속 진행하고, 씬 인스턴스 배선만 재연결 후 처리.
+
+**리포트 1 (피격 플래시 재확인)**: "여전히 안 됩니다. 절대 흰색이어야 합니다, 스프라이트 렌더러
+컬러 아닙니다." — 직전 절의 `sr.color = flashColor` 수정으로는 해결이 안 됐던 진짜 원인을 찾음:
+`SpriteRenderer.color`는 텍스처에 **곱연산**된다. `flashColor`가 흰색(1,1,1,1)이면 곱셈의
+항등원이라 텍스처가 있는 스프라이트엔 **아무 효과가 없다** — DummyEnemy가 원래 흰 사각형
+플레이스홀더 텍스처를 쓰기 때문에 우연히 먹혔을 뿐. 진짜 "흰색으로 덮어쓰기"는 lerp(원색, 흰색,
+amount)가 필요해 셰이더로 뺐다.
+- `Assets/Shaders/SpriteHitFlash.shader`(`Custom/SpriteHitFlash`): URP
+  `Sprite-Lit-Default.shader`(프로젝트가 실제 쓰는 머티리얼, `Sprite-Unlit`이 아님 — 2D 라이트
+  반응 유지 필요해서 확인 후 선택) 3-pass 구조를 그대로 복사하고 `_FlashColor`/`_FlashAmount`만
+  추가, Lit/Unlit 프래그먼트 최종 색에 `lerp(c.rgb, _FlashColor.rgb, _FlashAmount)` 적용.
+- `SpriteHitFlash.mat` 생성 후 `GehennaHound.prefab`의 SpriteRenderer에 배정(기존
+  `Sprite-Lit-Default.mat` 대체).
+- `GehennaHound.cs`: `MaterialPropertyBlock`으로 `_FlashAmount`를 구동(공유 머티리얼 오염 방지).
+  `state==Hitstun` 상승 엣지를 감지해 `flashDuration`(DummyEnemy 기존 public 필드 재사용) 동안
+  켠다 — Sleep/Patrol 중에도 매 프레임 도는 `UpdateHitFlash()`로 호출.
+
+**리포트 2 (배회·정지·충돌·연속 문제 5건)**: "플레이어와 충돌하지 않게, Walk Sniff는 배회할 때만
+(없으면 만드세요), 공격 후 잠시 멈추고 재추격/재공격, 걷는 중 아니면 walk 애니메이션 금지, 피격
+시 공격 애니메이션 끊고 넉백+히트스톱+흰색 점멸."
+- **충돌**: `Hitbox_R`/`Hitbox_L`이 `m_Layer: 0`(Default) + `m_IsTrigger: 0`(솔리드)로 배치돼
+  있어 플레이어와 물리적으로 부딪혔다 — `EnemyAttack`(13) 레이어 + `isTrigger=true`로 전환(같은
+  용도의 기존 레이어를 재사용, 새로 안 만듦).
+- **배회(Patrol) 신설**: `HoundPhase`에 `Sleep→Patrol→Waking→Aggro` 추가. Sleep에서
+  `sleepDurationMin~Max`(4~8초) 랜덤 대기 후 Patrol 진입, 스폰 지점 반경(`patrolRadius`) 안에서
+  좌우로 오가다(`patrolSpeed`) `patrolDuration` 후 다시 Sleep. Walk Sniff는 이제 Patrol
+  전용이고, Aggro 중 추적은 항상 Run(거리 기반 블렌드 제거) — 사용자 스펙 그대로.
+- **정지 시 애니메이션**: `GehennaHound-Stand`를 `Doggo-Stand.png`(6프레임)로 신규 제작해
+  Animator Controller에 10번째 state로 추가. Aggro 중 `attackRange` 안에서 쿨다운 대기로
+  멈춰 있거나(기존 `attackCooldown` 메커니즘이 이미 "멈췄다 재공격/재추격"을 구현하고 있었음 —
+  코드 변경 없이 애니메이션만 맞춤) 히트스턴 중이면 Run/Bite 대신 Stand 재생.
+- **속도 기반 판정의 함정**: 처음엔 `rb2D.linearVelocity.x`로 "이동 중"을 판단했는데, 사용자가
+  "12.05298, 24.01499, 0 지점에서 이동 애니메이션은 재생되는데 실제 이동은 멈춤"을 리포트 — 벽에
+  막히면 ChaseLogic이 매 프레임 속도값 자체는 계속 밀어넣지만(물리가 막을 뿐 값은 안 지워짐) Run이
+  영원히 재생됐다. 프레임 간 **실제 위치 변화**(`IsActuallyMoving()`)로 바꿔 해결.
+- **피격 시 애니메이션 중단**: `AiState.Hitstun`일 때 무조건 `Stand`로 전환(이전엔 아무것도 안 해
+  Bite가 끊기지 않고 계속 재생됐음). 넉백·히트스톱(플레이어 쪽 `AttackHitstopCo`, 전역
+  `Time.timeScale`이라 이미 자동 적용됨)·흰색 플래시는 전부 별도 확인 완료.
+
+**리포트 3 (거리 판정·초월 방향·예고 표시)**: "실제 공격 범위보다 먼 곳에서 판정, 초월 상태에서
+바라보는 방향과 반대로 공격, 초월 예고 표시가 더미 몹 기준이라 이상함."
+- `AttackTelegraphFx`를 다시 읽어 완전히 제너릭함을 확인(`owner.AttackHitPoint/Base/HitRadius`를
+  그대로 그릴 뿐, 더미 전용 하드코딩 없음) — 즉 "이상하게 보인다"는 셰이더/이펙트 버그가 아니라
+  **HitPoint/BasePoint가 실제로 잘못된 값을 반환**하고 있다는 뜻이었다.
+- `attackRange`가 DummyEnemy 기본값 2.4(창+1.2 스케일 기준)를 그대로 물려받고 있었는데, 실제
+  물기 히트박스 사거리는 ~1.2 — 몸집(2.5 스케일)보다 훨씬 먼 곳에서 Windup이 걸려 있었다.
+  1.3으로 재조정(prefab + 씬 인스턴스 둘 다).
+
+**리포트 4 (근본 원인 — 대시 카운터 방향 붕괴)**: "대시 카운터가 flipX로 적 방향을 판단해 적
+뒤로 이동해야 하는데 이상한 방향으로 카운터하고, 적이 왼쪽을 볼 때 공격이 아예 작동을 안 함."
+이 리포트로 리포트 3의 진짜 원인이 드러났다: `PlayerController.CounterRush`가
+`Mathf.Sign(target.transform.localScale.x)`로 적 방향을 읽는데, 직전 절에서 `GehennaHound.
+FaceDirection`을 `SpriteRenderer.flipX`로 완전히 갈아타면서 `transform.localScale.x`를 항상
+양수로 고정해 버렸다 — 그 결과 `enemyFacing`이 항상 "오른쪽"으로만 읽혀 카운터가 엉뚱한 방향으로
+나갔고, 왼쪽을 볼 때의 판정도 같이 어긋났다(초월 중 특히 눈에 띈 건 windup이 2.5배 길어져 어긋난
+채로 노출되는 시간이 길었기 때문으로 추정).
+- **수정**: `FaceDirection` 오버라이드를 완전히 제거 — DummyEnemy 기본(`localScale.x` 부호)
+  그대로 사용해 `PlayerController`의 기존 컨벤션과 다시 맞춤.
+- `HitPoint()/BasePoint()`도 flipX 기반 좌우 선택 대신, **호신 위치 기준 절대거리로 far/near를
+  계산**하도록 재설계 — `Hitbox_R` 하나만 남기고(`Hitbox_L`은 씬에 남아있지만 코드에서 더 이상
+  참조 안 함), localScale 미러링으로 좌우가 뒤집혀도 항상 옳게 far/near가 나온다(DummyEnemy의
+  창이 `transform.TransformPoint`로 자동 미러링되는 것과 동일한 원리로 복귀).
+- `PlayerController.UpdateAnimations()`의 가드(`isCharging || ilseomActive || ...`)에
+  `isDodgeCountering` 추가 — 대시 카운터 확인 대기창(슬로우모션) 중엔 `HandleMovement()`가 이미
+  속도를 0으로 묶고 있었지만, flipX 갱신은 별개 경로라 안 막혀 있어 A/D로 제자리에서 방향만
+  바뀌는 버그가 있었다(사용자 리포트 5번째 항목, 같은 메시지에서 발견).
+
+**적용**: 씬(`Map-test.unity`)이 **플레이 모드 중**이라 `manage_gameobject`/`manage_components`가
+"This cannot be used during play mode" 에러 반환 — 사용자가 플레이를 멈춘 뒤(`EditorApplication.
+isPlaying=False` 확인) `Hitbox_R`/`Hitbox_L` 레이어·트리거, `attackRange`를 씬 인스턴스에 반영.
+
+**검증**: `refresh_unity(force)` + `read_console` 컴파일 에러 0(반복 확인). `SerializedObject`
+재조회로 material=SpriteHitFlash/shader=Custom/SpriteHitFlash, attackRange=1.3, hitboxRight=
+Hitbox_R, HitboxR/L layer=EnemyAttack+isTrigger=True 전부 의도한 값으로 확인.
+
+⚠️ **미해결**: 대시 카운터 성공 시 "위아래로 늘어난 플레이어 스프라이트 여러 장"이 가끔 보인다는
+리포트는 `DashAfterImage`/`CounterRush`/`FreezeAnimAt`을 다 훑어봐도 원인을 특정 못 함(스케일·
+회전을 건드리는 코드를 못 찾음) — 재현 조건이나 스크린샷이 있어야 다음에 진행 가능.
+
+**추가(같은 날): 추적 중 애니메이션이 두 개 사이를 빠르게 오가며 "리셋되는 것처럼" 보이는 버그.**
+`IsActuallyMoving()`을 프레임마다(Update, 렌더 프레임 기준) 위치 비교로 판단했는데, 렌더 프레임이
+물리 스텝(FixedUpdate, 기본 50Hz)보다 빠른 경우 물리가 아직 안 돈 프레임엔 위치가 그대로라 "안
+움직임"으로 잘못 읽혔다 — Run↔Stand가 프레임마다 깜빡였고, `PlayClip`이 `anim.Play(...,0f)`로
+매번 0프레임부터 다시 재생해 "두 애니메이션이 빠르게 전환/초기화되는" 것처럼 보였다(사용자 리포트).
+0.08초 짧은 시간 창(여러 물리 스텝을 포함) 동안의 누적 변위로만 판단하도록 교체(`TickMovementCheck`)
+— 렌더/물리 프레임 어긋남에 흔들리지 않으면서, 벽에 막혔을 때(누적 변위도 0) Stand로 바뀌는 원래
+목적은 그대로 유지. 이제 안 쓰는 `lastPosX`(프레임 단위 비교용이었음)는 제거.
+
+**추가(같은 날): Stand 클립이 실제로는 "앉기→서기" 전환 애니메이션이었음.** "공격 후 잠깐 Doggo-Sit/
+Sit Idle로 바뀐다"는 리포트로 발견 — `Doggo-Stand.png` 프레임 0은 앉은 자세, 프레임 5에서야 완전히
+선 자세였다(직접 프레임을 잘라 확대해 확인). 이걸 루프시키면 서 있다가 주기적으로 다시 앉는 것처럼
+보인다. **정적 서 있기 루프**로 쓸 올바른 에셋은 `Doggo-Idle.png`(12프레임, 전 프레임 4족 직립
+확인)였다 — 같은 이름(`GehennaHound-Stand.anim`)에 스프라이트만 Idle로 교체(에셋 경로·컨트롤러
+연결·C# 코드는 전부 그대로, 클립 내용만 정정).
+
+**추가(같은 날): 죽은 뒤에도 사라지기 전까지 계속 맞을 수 있는 버그.** `GehennaHound.Die()`가
+`base.Die()`(dead=true 세팅)를 `deadPoseDuration`(1.2초) 뒤로 미루는 동안, `DummyEnemy.
+TakeDamage()`의 `if (dead || damage <= 0) return false;` 가드가 안 걸려 죽은 자세로 누워있는 동안
+계속 피격 판정이 들어갔다(맞을 때마다 `Die()`가 재호출돼 코루틴이 계속 새로 걸리는 부작용도 있었음).
+`dead`를 `protected`로 열고(DummyEnemy.cs 9번째 접근성 변경, 동작 불변) `Die()` 오버라이드
+맨 앞에서 즉시 `dead = true`로 세팅 — 이후 base.Die()가 늦게 실행돼도 무해.
+
+**추가(같은 날): 대시 카운터 방향·잔상 뭉침 (스크린샷으로 재현 확인).**
+- **방향**: 돌진 중 플레이어가 적을 관통해 지나갈 때 바라보는 방향이 안 바뀌고 끝에서만 홱
+  바뀌었다(사용자 지시: 지나치는 순간에 맞춰 점차 바뀌어야 함) — `CounterRush`에 `travelDir`
+  (진행 방향)과 `PassedEnemy(x)`(적의 x좌표를 지났는지)를 도입, 매 프레임(버스트 잔상 루프 +
+  실제 이동 루프 둘 다) 지나치기 전엔 진행 방향을, 지나친 뒤엔 반대(적을 돌아봄)로 flipX를 갱신.
+  루프 종료 후 기존의 명시적 `sr.flipX = (enemyFacing < 0f)` 확정은 안전망으로 유지(같은 값에
+  이미 도달해 있어 무해).
+- **잔상 뭉침**: 사용자가 "패링 실드가 있을 때 대시 성공 시" 스크린샷 제공 — 흰 링(패링 실드)
+  주위에 세로로 뭉친 여러 장의 잔상. 원인은 `CounterRush`의 버스트 잔상 스폰이 `start`~`behind`를
+  `burstCount`개로 균등분할해 찍는데, **두 지점이 가까우면(패링 직후처럼 이미 적과 거의 붙어 있던
+  경우) 분할 지점들이 전부 한 자리에 겹쳐 찍힌다** — 플레이어 스프라이트가 세로로 긴 프레임이면
+  겹친 무더기가 "위아래로 늘어난 여러 장"처럼 보인다. 직전 스폰 위치와 최소 간격
+  (`Mathf.Max(0.12, 경로길이/burstCount*0.5)` — 경로가 거의 0이어도 고정 최솟값 0.12로 바닥을
+  둠) 이상 벌어졌을 때만 실제로 스폰하도록 수정.
+
+**추가(같은 날): 피격 후 실제 이동 정지 보장.** DummyEnemy의 Hitstun 자체는 넉백이 끝나면
+속도를 0으로 돌리지만(`knockbackActive` 기준), GehennaHound에선 확실히 안 멈추는 것처럼 보인다는
+리포트 — `stateTimer`를 `protected`로 열어(DummyEnemy.cs 8번째 접근성 변경, 동작 불변)
+`hitstunDuration - stateTimer >= knockbackDuration`(=넉백 종료 시점, 둘 다 기존 public 필드)
+이후엔 `SyncAggroAnimation`의 Hitstun 분기에서 매 프레임 명시적으로 속도를 다시 0으로 눌러
+이중 보장했다. 넉백 자체(맞은 직후 잠깐 밀려나는 구간)는 그대로 살아있다.
+⚠️ **플레이 모드 실측은 사용자가 직접**: 이번 수정 전체(충돌 제거, 배회, 정지 애니메이션, 진짜
+흰색 플래시, 공격 사거리, 대시 카운터 방향)를 실제로 플레이하며 확인 필요.
+
+## /goal 일괄 처리 — 7건 (2026-08-05)
+
+`/goal` 커맨드로 받은 7개 요구사항을 순차로 처리. MCP(execute_code 등)로 Unity API를 통해서만
+씬/에셋/컨트롤러를 건드렸고, .unity/.controller/.prefab 파일을 텍스트로 직접 편집하지는 않았다.
+
+**1. 적 시체 타격 가능 버그** — `DummyEnemy.Die()`가 `gameObject.SetActive(false)`(respawnDelay=0
+기본값)로 즉시 꺼지는 경우엔 원래도 문제없었지만, `GehennaHound.Die()`처럼 `deadPoseDuration`
+(1.2초) 뒤로 `base.Die()`를 미루는 서브클래스는 그동안 몸 콜라이더가 계속 켜져 있어
+`PlayerController.CheckAttackHit`의 `OverlapBoxAll`이 계속 잡아 히트 VFX·에너지 흡수·크리티컬까지
+전부 났다(`TakeDamage`가 `dead` 가드로 데미지만 막을 뿐 판정 자체는 안 막았음). `DummyEnemy`에
+`DisableHitDetection()/EnableHitDetection()`(바디 `Collider2D.enabled` + `Rigidbody2D.simulated`
+토글)을 추가해 `Die()`·`RespawnAfter()`에서 호출, `GehennaHound.Die()` 오버라이드에도 동일 호출
+추가.
+
+**2. 폭주 시야 제한 밖 아웃라인 노출** — `RampageVisionFx.ScanEnemies()`가 `CullRadius`(12) 직선거리
+하나로만 아웃라인 표시를 결정해, 벽 뒤·옆방처럼 실제로 안 보여야 할 적도 반경 안이면 그대로
+빨간 아웃라인이 났다(지형 아웃라인이 화면 밖까지 걸리던 것과 같은 부류의 버그, `TerrainCullRadius`
+축소로 이미 한 번 겪음). `Ground`/`Wall` 레이어로 플레이어→적 시야선 레이캐스트(`HasLineOfSight`)를
+추가해 가로막히면 반경 안이어도 아웃라인을 만들지 않게 함.
+
+**3. 게헨나 포식견 회피/패링 완화 + 점프 공격** — `dodgeWindowPre`(0.05→0.12)/`dodgeWindowPost`
+(0.05→0.08)를 프리팹·씬 인스턴스 양쪽에서 넓혀 회피·패링(패링은 `IsAttackUnresolved`가 이 창에
+의해 더 오래 열려 있음) 판정을 완화. 점프 공격: `attackRange` 안에서 이미 멈춘 뒤라 멀리 도약할
+필요는 없다고 보고, Bite 애니메이션·판정 타이밍은 그대로 둔 채 물리 모션만 얹었다 —
+`ApplyJumpAttackMotion()`이 Windup 시작 엣지에서 위로 1회 임펄스(`jumpAttackUpSpeed=4.5`, 이후
+중력에 맡김 — `AttackLogic()`이 Y는 안 건드림), Windup~Thrust 동안 매 프레임 수평 임펄스
+(`jumpAttackForwardSpeed=2.5`, `AttackLogic()`이 매 프레임 X를 0으로 되돌리는 것을 그 뒤에 다시
+덮어씀)로 도약하며 문다.
+
+**4. 점프 공격 발광 마스크(사용자가 "컬링 마스크"로 지칭) 생성** — `PlayerBloomFx`가 시트 텍스처
+이름으로 `Assets/Sprites/Player/Mask/{이름}.png`를 자동 매칭하는 기존 규칙을 그대로 따름.
+"Glitch Samurai-Jump Attack" 마스크가 없었던 게 원인 — 기존 마스크 13장을 픽셀 단위로 대조해
+"시트에서 RGBA(126,191,198,255)(눈 발광색)인 픽셀만 흰색, 나머지 전부 불투명 검정" 규칙이 전
+클립에서 예외 없이 성립함을 확인, 같은 규칙을 `execute_code`로 Jump Attack 시트에 그대로 적용해
+새 마스크 PNG 생성 + 기존 마스크와 동일한 임포트 설정(Default/Multiple/Clamp/Point/no-mipmap)
+적용. 코드 변경 없음 — 파일이 올바른 이름으로 존재하는 순간 자동 적용됨.
+
+**5. 공격 중 캔슬 → 패링/대시/점프** — `HandleJump`/`HandleDash`의 `isAttacking` 차단 조건을
+제거하고, 새로 만든 `CancelAttack()`(isAttacking·isJumpAttacking·attackQueued 정리, HandleAttack
+정상 종료와 같은 마무리이나 attackStage는 순환시키지 않음 — 콤보를 공짜로 안 넘겨줌)을 실행
+직전에 호출. 패링은 홀드(일섬 차지)와 같은 입력을 공유해 `CanStartCharge()`를 그대로 풀면 공격
+중에도 일섬 홀드가 시작되는 부작용이 생기므로, `HandleIlseom()`의 `chargeStartRequested` 분기
+맨 앞에 "공격 중이면 탭/홀드 구분 없이 즉시 패링" 전용 분기를 추가(`TryParry()`의 실패 조건을
+미리 확인해 헛캔슬 방지) — 일섬 차지는 요청 범위 밖이라 여전히 공격 중엔 못 들어간다.
+
+**6. Glitch Climb Glitch 애니메이션 미재생 + 마스크 문제** — `PlayerAnimator.controller`의 AnyState→
+"Glitch Samurai-Glitch Climb Glitch" 전이(`isWallSliding && isWallClimbGlitch`)에 `canTransitionToSelf
+=true`가 걸려 있어, 벽 잡고 정지한 동안 조건이 계속 참이라 매 프레임 자기 자신으로 재진입 →
+항상 0프레임으로 리셋돼 애니메이션이 사실상 멈춰 보였다(같은 조건의 Wall Slide 전이는 원래도
+`canTransitionToSelf=false`로 비교 확인). `execute_code`로 `AnimatorController` API를 통해 해당
+전이의 `canTransitionToSelf`만 false로 수정. 마스크(`Assets/Sprites/Player/Mask/Glitch Samurai-
+Glitch Climb Glitch.png`)는 조사 결과 이름·크기·임포트 설정 전부 기존 마스크들과 이미 일치해
+자산 자체는 문제없었음 — 애니메이션이 실제로 진행되지 않아 "마스크가 안 먹는 것처럼" 보였을
+가능성이 높다고 보고 별도 자산 수정은 하지 않음. ⚠️ 플레이 모드 실측 권장(폭주/초월 중 벽타기).
+
+**7. 적 공격 예측범위 콜라이더/애니메이션 속도 동기화** — 코드 조사 결과 이미 구조적으로 충족:
+`AttackTelegraphFx.Update()`가 매 프레임 `owner.AttackHitPointBase/AttackHitPoint`를 다시 읽어
+캡슐 위치를 갱신하므로(3번의 점프 공격처럼 몸이 움직여도 `hitboxRight`가 자식이라 캡슐도 같이
+따라감, 길이는 로컬 오프셋이라 불변), "콜라이더와 동일 + 움직여도 됨"은 이미 성립. 애니메이션
+속도도 `AttackTelegraphProgress`의 `total`과 `GehennaHound.ApplyBiteClipSpeed`의 `damageTime`이
+완전히 같은 식(`effectiveWindupDuration + thrustDuration*thrustHitNormalized + dodgeWindowPost`)
+이라 초월 등으로 윈드업이 늘어나도 항상 같은 실시간 기준점에 맞물림. 실질 코드 변경은 이제 사실과
+다른 주석("밑동·창끝이 실질적으로 안 변한다")을 점프 공격을 반영해 갱신한 것뿐.
+
+**검증**: 매 항목마다 `refresh_unity(compile)` + `read_console(error)` 0건 확인(누적). 사전에
+있던 경고 2건(`RampageVisionFx`의 상수 분기로 인한 도달 불가 코드, `rampageDrainAccum` 미사용
+필드)은 이번 변경과 무관 — 손대지 않음.
+⚠️ **플레이 모드 실측은 사용자가 직접**: 7건 전부 코드/에셋 레벨 검증만 마쳤다. 특히 3번(점프
+공격 도약감·판정 유지 여부), 5번(캔슬 타이밍·콤보 재개 느낌), 6번(폭주/초월 벽타기 애니메이션)은
+실제 플레이 확인이 꼭 필요.

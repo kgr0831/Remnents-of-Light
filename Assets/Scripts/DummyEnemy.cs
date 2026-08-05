@@ -10,7 +10,7 @@ using System.Collections;
 [RequireComponent(typeof(BoxCollider2D))]
 public class DummyEnemy : MonoBehaviour
 {
-    enum AiState { Chase, Windup, Thrust, Recover, Hitstun }
+    protected enum AiState { Chase, Windup, Thrust, Recover, Hitstun }
 
     [Header("Health")]
     public int maxHp = 20;
@@ -84,14 +84,15 @@ public class DummyEnemy : MonoBehaviour
 
     SpriteRenderer sr;
     Rigidbody2D rb;
+    Collider2D bodyCol;
     Color baseColor;
     bool baseCaptured;
     float flashTimer;
-    bool dead;
+    protected bool dead;
     int playerHitMask; // Player + PlayerInvincible — 대시 무적 중(레이어 스왑)에도 찌르기가 플레이어를 감지하게
 
-    AiState state = AiState.Chase;
-    float stateTimer;
+    protected AiState state = AiState.Chase;
+    protected float stateTimer;
     float attackCooldownCounter;
     bool attackHitDone;      // 이번 찌르기의 판정이 종결됐는지(회피로 소비됐거나 피해가 확정됨)
     float attackClock;       // Thrust 시작 기준 경과 시간 — 판정 창이 Recover까지 넘어갈 수 있어 상태와 별개로 셈
@@ -108,10 +109,11 @@ public class DummyEnemy : MonoBehaviour
     float spawnX;
     Vector3 lastPlayerPos; // 터널링 방지 스윕 체크용(빠른 대시가 한 프레임 사이에 판정원을 통과하는 것 방지)
 
-    void Awake()
+    protected virtual void Awake()
     {
         sr = GetComponent<SpriteRenderer>();
         rb = GetComponent<Rigidbody2D>();
+        bodyCol = GetComponent<Collider2D>();
         currentHp = maxHp;
         spawnX = transform.position.x;
 
@@ -133,16 +135,11 @@ public class DummyEnemy : MonoBehaviour
         }
     }
 
-    void Update()
+    protected virtual void Update()
     {
         if (dead) return;
 
-        if (flashTimer > 0f)
-        {
-            flashTimer -= Time.deltaTime;
-            if (flashTimer <= 0f && baseCaptured) sr.color = baseColor;
-        }
-        if (attackCooldownCounter > 0f) attackCooldownCounter -= Time.deltaTime;
+        TickTimers();
 
         if (player == null)
         {
@@ -168,6 +165,19 @@ public class DummyEnemy : MonoBehaviour
         }
 
         lastPlayerPos = player.position; // 다음 프레임 스윕 체크용(터널링 방지) — 매 프레임 끝에 갱신
+    }
+
+    // 피격 플래시·공격 쿨다운 타이머 갱신. Update()에서 분리해 둔 이유: GehennaHound가 Sleep/Waking
+    // 단계(전투 로직 비활성 — base.Update() 미호출)에서도 이 부분만은 매 프레임 돌려야 흰색 피격
+    // 플래시가 그 단계 중에도 정상적으로 꺼진다.
+    protected void TickTimers()
+    {
+        if (flashTimer > 0f)
+        {
+            flashTimer -= Time.deltaTime;
+            if (flashTimer <= 0f && baseCaptured) sr.color = baseColor;
+        }
+        if (attackCooldownCounter > 0f) attackCooldownCounter -= Time.deltaTime;
     }
 
     // 넉백은 물리 스텝 단위로 "남은 거리"를 깎아가며 밀어낸다. Update에서 속도만 세팅하고 타이머로
@@ -383,6 +393,13 @@ public class DummyEnemy : MonoBehaviour
     // 이번 공격이 플레이어에 의해 무효화됐는가(패링·회피·피격 리셋). 피해 확정·빗나감은 false로 남는다.
     public bool LastAttackNeutralized => lastAttackNeutralized;
 
+    /// <summary>공격 시작(Windup 진입)부터 **피해가 확정되는 순간**까지의 시간(초).
+    /// 초월 중엔 Windup이 늘어난 만큼 이 값도 같이 늘어난다(effectiveWindupDuration은 StartAttack에서 확정).
+    /// 공격 애니메이션을 이 타임라인에 맞춰야 하는 쪽이 읽는다(GehennaHound의 Bite 재생속도) — 기존
+    /// 필드로 값만 계산하므로 동작 변경 0. ResolveThrustWindow의 피해 확정 조건과 같은 식이다.</summary>
+    public float AttackDamageTime =>
+        effectiveWindupDuration + thrustDuration * Mathf.Clamp01(thrustHitNormalized) + dodgeWindowPost;
+
     // 패링 성공 — 이번 찌르기를 판정 종결 처리해 피해가 확정되지 않게 한다(스펙 5).
     // 창 모션은 그대로 마저 재생된다(넉백·히트스턴 없음 — 스펙에 없는 동작을 추가하지 않는다).
     public void ConsumeParry()
@@ -395,7 +412,7 @@ public class DummyEnemy : MonoBehaviour
     // 판정 기준점(캡슐의 창끝 쪽 끝) = 창이 최대로 뻗었을 때의 창 끝 위치(월드). 창의 "현재" 위치를
     // 쓰면 판정 창이 Recover까지 이어질 때 이미 회수된 창 위치로 검사하게 돼 빗나가므로, 뻗은
     // 지점으로 고정한다.
-    Vector2 HitPoint()
+    protected virtual Vector2 HitPoint()
     {
         return transform.TransformPoint(spearThrustLocalPos);
     }
@@ -403,7 +420,7 @@ public class DummyEnemy : MonoBehaviour
     // 판정 기준점(캡슐의 밑동 쪽 끝) = 창을 몸 쪽으로 당긴 위치(Windup 자세 — 창을 "들고 있는" 곳에
     // 가장 가깝다). 사용자 지시(2026-08-02)로 창끝 한 점 대신 이 지점부터 창끝까지 훑는 캡슐 전체가
     // 판정 범위가 됐다.
-    Vector2 BasePoint()
+    protected virtual Vector2 BasePoint()
     {
         return transform.TransformPoint(spearWindupLocalPos);
     }
@@ -477,8 +494,24 @@ public class DummyEnemy : MonoBehaviour
         rb.linearVelocity = v;
     }
 
+    // HP가 0이 되는 즉시(사망 포즈를 유지하느라 base.Die()/SetActive(false)가 늦게 실행되는 서브클래스가
+    // 있어도) 몸 콜라이더와 리지드바디를 꺼서 시체가 계속 맞는 걸 막는다. PlayerController의 모든 타격
+    // 판정(OverlapBoxAll/OverlapCircleAll/OverlapPoint, enemyLayer 대상)이 콜라이더 기반이라
+    // enabled=false만으로 그 프레임부터 완전히 판정에서 빠진다.
+    protected void DisableHitDetection()
+    {
+        if (bodyCol != null) bodyCol.enabled = false;
+        if (rb != null) rb.simulated = false;
+    }
+
+    protected void EnableHitDetection()
+    {
+        if (bodyCol != null) bodyCol.enabled = true;
+        if (rb != null) rb.simulated = true;
+    }
+
     // 몸 전체를 좌우 반전 — 창은 자식이라 부모 스케일 반전에 따라 자동으로 반대쪽을 향하게 된다.
-    void FaceDirection(float dir)
+    protected virtual void FaceDirection(float dir)
     {
         if (Mathf.Approximately(dir, 0f)) return;
         Vector3 s = transform.localScale;
@@ -533,9 +566,10 @@ public class DummyEnemy : MonoBehaviour
         return false;
     }
 
-    void Die()
+    protected virtual void Die()
     {
         dead = true;
+        DisableHitDetection();
         currentHp = 0;
         SetHorizontalVelocity(0f);
         TestLog.Event("dummy_damage", "died");
@@ -553,6 +587,7 @@ public class DummyEnemy : MonoBehaviour
         SetSpearLocalPos(spearIdleLocalPos);
         if (baseCaptured) sr.color = baseColor;
         sr.enabled = true;
+        EnableHitDetection();
         TestLog.Event("dummy_damage", "respawned");
     }
 }

@@ -80,7 +80,7 @@ public class PlayerController : MonoBehaviour
     public float slopeSnapDistance = 0.35f;
 
     [Header("Dash")]
-    public float dashSpeed = 20f;
+    public float dashSpeed = 40f;
     public float dashDuration = 0.18f;
     public float dashCooldown = 0.5f;
     // 입력 버퍼(사용자 지시 2026-08-04 "대시가 더 잘 눌러지게") — 누른 순간 발동 조건이 안 되면
@@ -245,6 +245,25 @@ public class PlayerController : MonoBehaviour
     public float attack2Duration = 0.4167f; // Glitch Samurai-Slash 2 클립 길이(5프레임), 애니메이터 재생속도 1
     public float comboBufferDuration = 2f;                     // 마지막 공격이 끝난 뒤 이 시간 안에 다시 공격하면 콤보로 이어짐, 지나면 1타로 리셋
     public float attackInputBufferDuration = 0.3f;              // 공격 중/쿨다운 중에 눌러도 이 시간 안이면 버퍼링돼 자동 발동(UniTrio-Game-2026 PlayerWeaponController._attackQueued 참고)
+
+    [Header("Attack (공중 전용, Jump Attack)")]
+    // 공중 공격은 지상 1타/2타 콤보를 쓰지 않고 이 전용 애니메이션만 사용한다(사용자 지시 2026-08-05).
+    // 착지 전까지 횟수를 세던 이전 방식(최대 2타) 대신 쿨타임으로 스팸을 막는다.
+    public int jumpAttackDamage = 1;
+    public float jumpAttackDuration = 0.5833f; // Glitch Samurai-Jump Attack 클립 길이(7프레임 @ 12fps)
+    public float jumpAttackCooldown = 0.5f;    // 공중 공격 사이 최소 간격
+    // 공중에 뜬 채로 미는 것이 아니라 판정 프레임 순간에만 살짝 정지시킨다(사용자 지시 2026-08-05 —
+    // 예전엔 isAttacking 동안 내내 y를 묶어서 애니메이션이 끊기거나 공격이 끝난 뒤에도 잠시 떠
+    // 있는 것처럼 보였다). AttackHitFrame()에서 이 시간만큼 카운트다운을 시작하고, 그동안만
+    // ApplyGravityScale/HandleMovement/ApplyBetterJumpPhysics가 y를 고정한다 — 그 전후(윈드업·회수)엔
+    // 평소처럼 낙하한다.
+    public float jumpAttackHangDuration = 0.08f;
+    // 위 클립의 애니메이터 상태·클립 이름(dashFreezeState·ilseomChargeState와 같은 컨벤션). 실제 클립
+    // 길이를 Awake에서 이 이름으로 찾아 jumpAttackAnimLength에 캐시한다.
+    public string jumpAttackClipName = "Glitch Samurai-Jump Attack";
+    // 점프 공격으로 무언가(적·LightObject)를 맞히면 공중에서 점프를 1회 더 쓸 수 있다(사용자 지시
+    // 2026-08-05, 저글링 리셋). CheckAttackHit에서 세팅, HandleJump에서 소비, 착지 시 리셋.
+    public bool jumpAttackBonusJumpEnabled = true;
     public Vector2 attackHitboxSize = new Vector2(1.6f, 1.2f); // 아래 자식 히트박스를 못 찾았을 때만 쓰는 폴백
     public float attackHitboxDistance = 1f;                    // (동일 — 폴백 전용)
     // 1타/2타 × 좌우 히트박스(2026-08-03, 사용자가 씬에서 Player 자식 "1_R"/"1_L"/"2_R"/"2_L"로 직접
@@ -522,6 +541,14 @@ public class PlayerController : MonoBehaviour
     bool attackQueued;
     float attackQueueTime;
     bool isAttacking;
+    bool isJumpAttacking; // 지금 재생 중인 공격이 지상 콤보(Slash)가 아니라 공중 전용(Jump Attack)인지
+    float jumpAttackCooldownCounter;
+    float jumpAttackHangTimer;   // 판정 프레임 순간의 짧은 정지 — 0보다 큰 동안만 y를 고정
+    bool hasJumpAttackBonusJump; // 점프 공격이 무언가를 맞혀서 생긴 여분의 공중 점프 1회
+    // Jump Attack 클립의 실제 길이(Awake에서 애니메이터 컨트롤러에서 읽음). jumpAttackDuration(공격
+    // 잠금 시간)은 이보다 의도적으로 길게 잡혀 있어서(사용자 확인 2026-08-05), 애니메이터 파라미터를
+    // 가리는 창은 "잠금 시간"이 아니라 "클립이 실제로 재생되는 시간"이어야 한다(UpdateAnimations 참고).
+    float jumpAttackAnimLength = 0.3333f;
     int attackStage = 1; // 현재(공격 중) 또는 다음(대기 중) 발동될 콤보 타수 — 공격 종료 시 다음 타수로 순환됨
     float attackTimer;
     bool attackHitDone;
@@ -612,6 +639,14 @@ public class PlayerController : MonoBehaviour
         // mul배로 표현되므로, 가속 중엔 클램프도 같이 mul배로 올려야 "실시간 낙하 속도"가 평소와
         // 같아진다(안 올리면 종단속도가 실질 1/mul로 떨어져 플레이어가 붕 뜬 것처럼 느려진다).
         defaultMaxTranslationSpeed = Physics2D.maxTranslationSpeed;
+
+        // Jump Attack 클립의 실제 길이를 읽어 둔다 — 애니메이터 표시값을 가릴 창의 기준(위 필드 주석 참고).
+        // 못 찾으면 기본값(0.3333)을 그대로 쓴다.
+        if (anim != null && anim.runtimeAnimatorController != null)
+        {
+            foreach (var clip in anim.runtimeAnimatorController.animationClips)
+                if (clip != null && clip.name == jumpAttackClipName) { jumpAttackAnimLength = clip.length; break; }
+        }
 
         attackBox1R = transform.Find("1_R")?.GetComponent<BoxCollider2D>();
         attackBox1L = transform.Find("1_L")?.GetComponent<BoxCollider2D>();
@@ -851,11 +886,12 @@ public class PlayerController : MonoBehaviour
         isTouchingWall = rightWall || leftWall;
         wallDirX = rightWall ? 1 : (leftWall ? -1 : 0);
 
-        if (isGrounded) 
+        if (isGrounded)
         {
             coyoteTimeCounter = coyoteTime;
-        } 
-        else 
+            hasJumpAttackBonusJump = false; // 착지하면 코요테 타임으로 다시 점프할 수 있으니 여분은 정리
+        }
+        else
         {
             coyoteTimeCounter -= PDelta;
         }
@@ -908,9 +944,11 @@ public class PlayerController : MonoBehaviour
 
         // 공격 중 · 회피-카운터 중 · 일섬 차지 중 · 패링 모션 중엔 제자리에 멈춤 (이동 입력 무시, 수평
         // 속도만 고정 — 차지 중에도 중력은 그대로 살아 있어 공중에서 모으면 떨어진다)
+        // 지상 콤보는 스윙 내내 y도 고정("공격 동안은 낙하하지 않습니다"), 점프 공격은 AttackFreezesY
+        // 참고 — 판정 프레임 순간만 고정하고 그 전후엔 정상적으로 낙하/상승한다(사용자 지시 2026-08-05).
         if (isAttacking || isDodgeCountering || isCharging || isParrying || isExecuting)
         {
-            rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
+            rb.linearVelocity = new Vector2(0f, AttackFreezesY ? 0f : rb.linearVelocity.y);
             return;
         }
 
@@ -1118,9 +1156,11 @@ public class PlayerController : MonoBehaviour
     void HandleJump()
     {
         if (isJumping) {
-            // 공격/회피-카운터/일섬 중엔 점프로 캔슬할 수 없음 — 입력은 버림.
-            // (스펙 3의 취소 수단은 대시·좌클릭뿐이므로 점프는 차지를 깨지 않고 그냥 무시된다)
-            if (isAttacking || isDodgeCountering || isCharging || ilseomActive || isParrying || isExecuting || isSpendingLight || isLedgeClimbing) { isJumping = false; return; }
+            // 회피-카운터/일섬 중엔 점프로 캔슬할 수 없음 — 입력은 버림.
+            // 공격 중엔 이제 캔슬하고 점프로 넘어간다(사용자 지시 2026-08-05: "공격 도중에 애니메이션을
+            // 캔슬하고 점프 가능"). CancelAttack()이 isAttacking을 끄므로 아래로 그대로 진행된다.
+            if (isDodgeCountering || isCharging || ilseomActive || isParrying || isExecuting || isSpendingLight || isLedgeClimbing) { isJumping = false; return; }
+            CancelAttack();
             float jumpMul = isRampaging ? rampageJumpMultiplier
                 : isTranscending ? transcendJumpMultiplier
                 : 1f; // 폭주·초월 점프력 버프
@@ -1139,6 +1179,12 @@ public class PlayerController : MonoBehaviour
             else if (coyoteTimeCounter > 0f) {
                 rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce * jumpMul * TimeAccelMul);
                 coyoteTimeCounter = 0f;
+            }
+            else if (hasJumpAttackBonusJump) {
+                // 점프 공격으로 무언가를 맞혀서 생긴 여분의 공중 점프(사용자 지시 2026-08-05) — 코요테
+                // 타임이 끝난 뒤에도 이 한 번만은 쓸 수 있다. 사용하면 소모, 착지하면 CheckEnvironment가 리셋.
+                rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce * jumpMul * TimeAccelMul);
+                hasJumpAttackBonusJump = false;
             }
             // 폭주·초월 중엔 점프 순간 글리치 변형으로 덮어쓴다(사용자 지시 2026-08-02). Any State가
             // isGrounded/yVelocity로 매 프레임 "Glitch Samurai-Jump"를 다시 끌어올 수 있는 Fall과 달리
@@ -1163,10 +1209,13 @@ public class PlayerController : MonoBehaviour
         // (쿨타임 잔여·공격 모션 끝자락) 입력을 그냥 버려서 "눌렀는데 안 나감"이 났다(사용자 지시로 개선).
         if (dashBufferTimer > 0f)
         {
-            // 공격 중 · 일섬 발동 중 · 패링 모션 중엔 대시로 캔슬할 수 없음(버퍼가 살아 다음 프레임에 재시도)
-            if (!isDashing && !isAttacking && !ilseomActive && !isParrying && !isExecuting && !isSpendingLight && !isLedgeClimbing && dashCooldownCounter <= 0f)
+            // 일섬 발동 중 · 패링 모션 중엔 대시로 캔슬할 수 없음(버퍼가 살아 다음 프레임에 재시도).
+            // 공격 중엔 이제 캔슬하고 대시로 넘어간다(사용자 지시 2026-08-05: "공격 도중에 애니메이션을
+            // 캔슬하고 대시 가능").
+            if (!isDashing && !ilseomActive && !isParrying && !isExecuting && !isSpendingLight && !isLedgeClimbing && dashCooldownCounter <= 0f)
             {
                 dashBufferTimer = 0f; // 소비
+                CancelAttack();
                 isDashing = true;
                 BeginActionBloom(0.9f); // 대시 중 마스크 블룸(사용자 지시)
                 dashTimer = dashDuration;
@@ -1241,6 +1290,19 @@ public class PlayerController : MonoBehaviour
         if (chargeStartRequested)
         {
             chargeStartRequested = false;
+
+            // 공격 도중엔 홀드/탭(차지 vs 패링) 구분 없이 즉시 패링으로 처리하고 스윙을 캔슬한다
+            // (사용자 지시 2026-08-05: "공격 도중에 애니메이션을 캔슬하고 패링 가능"). 일섬 차지(홀드)는
+            // 요청 범위 밖이라 공격 중엔 여전히 시작하지 않는다 — CanStartCharge()의 !isAttacking
+            // 게이트는 그대로 둔다. TryParry()가 스스로 확인하는 조건을 미리 봐서, 패링이 어차피 실패할
+            // 상황(쿨타임 등)엔 공격을 헛되이 캔슬하지 않는다.
+            if (isAttacking && parryEnabled && !isRampaging && parryCooldownCounter <= 0f)
+            {
+                CancelAttack();
+                TryParry();
+                return;
+            }
+
             // 시작한 프레임에는 타이머를 더하지 않고 그냥 빠진다. 아래 chargeTimer += Time.deltaTime을
             // 같은 프레임에 이어서 실행하면 "차지 시작 전"의 프레임 간격이 통째로 한 번 가산돼
             // 그만큼 일찍 완충된다 — 프레임이 튀면 Time.maximumDeltaTime(0.333s)까지 커져서
@@ -2090,13 +2152,20 @@ public class PlayerController : MonoBehaviour
     float FastAfterImageLifetime(float lifetime) =>
         lifetime / Mathf.Max(0.01f, fastAfterImageFadeMultiplier);
 
+    /// <summary>공격 중 y를 고정해야 하는가. 지상 콤보(Slash 1/2)는 원래 스펙대로 스윙 내내 고정한다
+    /// (이미 접지 상태라 체감상 무해). 점프 공격은 사용자 지시(2026-08-05)로 범위를 좁혔다 — 예전엔
+    /// isAttacking 전체 구간(윈드업~회수)을 고정해서 "애니메이션이 끊기거나 공격 후에도 잠시 떠 있는"
+    /// 문제가 났다. 이제 AttackHitFrame()이 세팅하는 jumpAttackHangTimer가 0보다 큰 그 짧은 순간에만
+    /// 고정하고, 그 전후엔 평소처럼 중력을 받아 낙하/상승한다.</summary>
+    bool AttackFreezesY => isAttacking && (!isJumpAttacking || jumpAttackHangTimer > 0f);
+
     /// <summary>중력은 가속도라 보정 배율의 제곱을 곱한다 — 속도가 mul배로 표현되는 세계에서 같은
     /// 실시간 낙하를 만들려면 초당 속도 증가량도 mul배여야 하는데, 그 증가량 자체가 다시 느려진
-    /// 시간으로 적분되기 때문이다. 벽타기 중엔 기존 규칙대로 중력을 완전히 끈다.</summary>
+    /// 시간으로 적분되기 때문이다. 벽타기 중·공격으로 y가 고정된 동안엔 중력을 완전히 끈다.</summary>
     void ApplyGravityScale()
     {
         if (rb == null) return;
-        rb.gravityScale = isWallSliding ? 0f : defaultGravityScale * TimeAccelMul * TimeAccelMul;
+        rb.gravityScale = (isWallSliding || AttackFreezesY) ? 0f : defaultGravityScale * TimeAccelMul * TimeAccelMul;
     }
 
     /// <summary>폭주 중이면 공격속도 배율(애니메이터 재생속도와 공격 모션 길이가 이 값을 공유한다).</summary>
@@ -2742,6 +2811,9 @@ public class PlayerController : MonoBehaviour
             bool confirmed = false;
             bool windowOpen = true;
             float elapsed = 0f;
+            // 슬로우모션 중 잔상 뭉침 방지용 — 직전 스폰 위치(초기값은 멀리 둬서 첫 스폰은 항상 찍힘).
+            Vector3 lastAfterImageSpawnPos = transform.position - Vector3.right * 999f;
+            const float minSlowMoAfterImageGap = 0.12f; // CounterRush의 최소 간격과 동일 기준
             while (windowOpen || isDashing)
             {
                 Time.timeScale = dodgeCounterSlowScale;
@@ -2763,9 +2835,19 @@ public class PlayerController : MonoBehaviour
                         afterImageTimer -= Time.deltaTime;
                         if (afterImageTimer <= 0f)
                         {
-                            // 회피-카운터 잔상은 2배 빨리 사라진다(사용자 지시 2026-08-04)
-                            SpawnAfterImage(FastAfterImageLifetime(afterImageLifetime));
                             afterImageTimer = afterImageInterval;
+                            // ⚠️ 이 루프는 Update 프레임마다 도는데, 실제 이동은 FixedUpdate(물리)가
+                            // 담당한다 — 슬로우모션(Time.timeScale이 낮음) 중엔 FixedUpdate 빈도가
+                            // 실시간 기준으로 뚝 떨어져서, 위치가 실제로 안 바뀐 채로 이 타이머만 여러 번
+                            // 먼저 만료돼 잔상이 같은 자리에 겹겹이 쌓였다(사용자 스크린샷: "패링 실드
+                            // 켜져있을 때 대시 성공 시 캐릭터 여러 개"). CounterRush의 최소 간격 트릭과
+                            // 같은 방식으로, 직전 스폰 위치에서 실제로 벌어졌을 때만 찍는다.
+                            if (Vector3.Distance(transform.position, lastAfterImageSpawnPos) >= minSlowMoAfterImageGap)
+                            {
+                                // 회피-카운터 잔상은 2배 빨리 사라진다(사용자 지시 2026-08-04)
+                                SpawnAfterImage(FastAfterImageLifetime(afterImageLifetime));
+                                lastAfterImageSpawnPos = transform.position;
+                            }
                         }
                     }
                 }
@@ -2875,6 +2957,20 @@ public class PlayerController : MonoBehaviour
         behind.y = start.y; // y좌표 유지(수직 위치 안 바꿈) — 사용자 요청
         behind.z = start.z;
 
+        // 돌진 경로가 적의 x좌표를 지나치는 순간을 기준으로 방향을 바꾼다: 지나치기 전엔 진행
+        // 방향(=적 쪽)을 보고, 지나친 뒤엔 반대로 돌아서서 적을 본다(사용자 지시 2026-08-05 —
+        // "적을 관통해서 지나갈 때 그거에 맞춰 바라봐야 함"). start==behind.x인 초근접 케이스는
+        // enemyFacing으로 폴백.
+        float travelDir = !Mathf.Approximately(behind.x, start.x) ? Mathf.Sign(behind.x - start.x) : enemyFacing;
+        float enemyX = target.transform.position.x;
+        bool PassedEnemy(float x) => travelDir > 0f ? x >= enemyX : x <= enemyX;
+        void UpdateRushFacing(float x)
+        {
+            if (sr == null) return;
+            bool passed = PassedEnemy(x);
+            sr.flipX = passed ? (travelDir > 0f) : (travelDir < 0f);
+        }
+
         if (anim != null) anim.enabled = true; // 대시 프리즈 해제(돌진 모션이 보이도록)
         rb.linearVelocity = Vector2.zero;
 
@@ -2883,26 +2979,41 @@ public class PlayerController : MonoBehaviour
         // start→behind 사이를 균등 분할한 지점에 한 번에(같은 프레임 안, yield 없이) 깔아둔다 —
         // 프레임레이트/타임스케일과 무관하게 항상 동일한 밀도가 보장됨. 실제 이동은 텔레포트 후 즉시
         // 원위치 복구라 화면에는 순간이동이 안 보이고(같은 프레임 안이라 렌더 안 됨) 잔상만 경로에 남는다.
+        // ⚠️ start와 behind가 가까우면(예: 패링 직후처럼 이미 적과 거의 붙어 있던 경우) 균등분할
+        // 지점들이 전부 한 자리에 겹쳐 찍혀 "잔상 여러 장이 한 곳에 쌓여 세로로 뭉쳐 보이는" 버그가
+        // 있었다(사용자 스크린샷 확인). 직전 스폰 지점과 최소 간격 이상 떨어졌을 때만 실제로 찍는다.
         int burstCount = Mathf.Max(4, Mathf.RoundToInt(dodgeCounterRushDuration / Mathf.Max(0.001f, dodgeCounterAfterImageInterval)));
         burstCount = Mathf.Min(burstCount, 40); // 과도한 스폰 방지
+        // start≈behind(적과 이미 거의 붙어 있던 경우 등 경로가 짧을 때)에도 최소 간격을 보장해야
+        // 위 버그가 다시 재현되지 않는다 — 경로 길이에 비례하는 값과 고정 최솟값(0.12) 중 큰 쪽.
+        float minSpawnGap = Mathf.Max(0.12f, Mathf.Abs(behind.x - start.x) / burstCount * 0.5f);
+        float lastSpawnX = start.x - minSpawnGap - 1f; // 첫 스폰은 항상 찍히도록 충분히 멀리 초기화
         for (int i = 0; i < burstCount; i++)
         {
             float bt = (float)i / (burstCount - 1);
-            transform.position = Vector3.Lerp(start, behind, bt);
+            Vector3 pos = Vector3.Lerp(start, behind, bt);
+            transform.position = pos;
+            UpdateRushFacing(pos.x);
+            if (Mathf.Abs(pos.x - lastSpawnX) < minSpawnGap) continue;
+            lastSpawnX = pos.x;
             SpawnAfterImage(FastAfterImageLifetime(dodgeCounterAfterImageLifetime));
         }
         transform.position = start; // 실제 이동은 아래 Lerp 루프가 다시 처음부터 담당
+        UpdateRushFacing(start.x);
 
         float t = 0f;
         while (t < dodgeCounterRushDuration)
         {
             t += Time.unscaledDeltaTime;
-            transform.position = Vector3.Lerp(start, behind, Mathf.Clamp01(t / dodgeCounterRushDuration));
+            Vector3 pos = Vector3.Lerp(start, behind, Mathf.Clamp01(t / dodgeCounterRushDuration));
+            transform.position = pos;
+            UpdateRushFacing(pos.x);
             yield return null;
         }
         transform.position = behind;
 
-        // 적을 바라봄 (적이 바라보는 방향과 같은 쪽)
+        // 적을 바라봄 (적이 바라보는 방향과 같은 쪽) — 위 루프가 이미 이 값에 도달해 있지만
+        // 안전망으로 한 번 더 명시적으로 확정한다.
         if (sr != null) sr.flipX = (enemyFacing < 0f);
         Vector2 facingBack = (sr != null && sr.flipX) ? Vector2.left : Vector2.right;
 
@@ -3005,13 +3116,18 @@ public class PlayerController : MonoBehaviour
         if (attackQueued && Time.time - attackQueueTime > attackInputBufferDuration)
             attackQueued = false;
 
-        // 공중 공격 금지(사용자 스펙): 지상에서만 스윙이 시작된다. 지상에서 눌러 버퍼링된 입력도
-        // 그 사이에 공중으로 나가면 발동하지 않는다(아래 isGrounded 조건). 회피-카운터(F)는 이
-        // 공격 시스템을 거치지 않는 별도 경로라 공중에서도 그대로 동작한다.
-        // isWallSliding도 isGrounded와 같은 자리에 둔다(사용자 지시 2026-08-03) — OnAttack()에서
-        // 이미 입력 자체를 막지만(attackQueued가 안 세워짐), 벽에 붙기 직전에 버퍼링된 입력이 남아
-        // 있는 경우까지 이중으로 막는다(isGrounded가 이미 이런 이중 가드 패턴).
-        if (!isAttacking && !isDashing && !isDodgeCountering && !ilseomActive && !isParrying && !isExecuting && !isSpendingLight && isGrounded && !isWallSliding && attackQueued)
+        if (jumpAttackCooldownCounter > 0f) jumpAttackCooldownCounter -= PDelta;
+        if (jumpAttackHangTimer > 0f) jumpAttackHangTimer -= PDelta;
+
+        // 지상은 기존 1타/2타 콤보 그대로. 공중은 별도의 Jump Attack 전용 애니메이션만 쓰고(사용자
+        // 지시 2026-08-05), 착지 전까지 2타로 세던 이전 방식 대신 쿨타임(jumpAttackCooldown)으로
+        // 스팸을 막는다. 공격 중엔 낙하하지 않게 HandleMovement/ApplyGravityScale에서 isAttacking일
+        // 때 y속도·중력을 함께 묶어둔다(공중 여부 무관, 지상 공격도 원래 이렇게 동작했음).
+        // isWallSliding은 계속 막는다(사용자 지시 2026-08-03) — OnAttack()에서 이미 입력 자체를
+        // 막지만(attackQueued가 안 세워짐), 벽에 붙기 직전에 버퍼링된 입력이 남아있는 경우까지 이중으로 막는다.
+        bool canAttack = !isAttacking && !isDashing && !isDodgeCountering && !ilseomActive && !isParrying && !isExecuting && !isSpendingLight && !isWallSliding && attackQueued;
+
+        if (canAttack && isGrounded)
         {
             attackQueued = false;
 
@@ -3021,20 +3137,49 @@ public class PlayerController : MonoBehaviour
 
             StartAttackStage(attackStage);
         }
+        else if (canAttack && !isGrounded && jumpAttackCooldownCounter <= 0f)
+        {
+            attackQueued = false;
+            StartJumpAttack();
+        }
 
         if (!isAttacking) return;
 
         attackTimer += PDelta;
         // 공격속도 버프는 모션 길이를 그대로 나눈다 — 애니메이터 재생속도(UpdateAnimations)와 같은
         // 배율을 쓰므로 "빨라진 애니메이션"과 "빨라진 판정 종료"가 어긋나지 않는다.
-        float duration = (attackStage == 1 ? attack1Duration : attack2Duration) / AttackSpeedMultiplier;
+        float duration = isJumpAttacking
+            ? jumpAttackDuration / AttackSpeedMultiplier
+            : (attackStage == 1 ? attack1Duration : attack2Duration) / AttackSpeedMultiplier;
 
         if (attackTimer >= duration)
         {
             lastAttackEndTime = Time.time;
             isAttacking = false;
-            attackStage = (attackStage % 2) + 1; // 다음 공격을 위해 미리 순환(1->2, 2->1)
+            if (isJumpAttacking)
+            {
+                isJumpAttacking = false;
+                jumpAttackCooldownCounter = jumpAttackCooldown;
+            }
+            else
+            {
+                attackStage = (attackStage % 2) + 1; // 다음 공격을 위해 미리 순환(1->2, 2->1)
+            }
         }
+    }
+
+    // 공격 스윙 도중 패링/대시/점프 입력이 들어오면 스윙을 즉시 취소하고 그 동작으로 넘어간다(사용자
+    // 지시 2026-08-05: "공격 도중에 애니메이션을 캔슬하고 패링/대시/점프 가능"). 정상 종료(HandleAttack의
+    // duration 만료)와 같은 마무리를 하되, attackStage는 순환시키지 않는다 — 스윙을 끝까지 못 쳤으니
+    // 콤보를 공짜로 다음 타로 넘겨주지 않는다(다음 공격 입력은 같은 타수를 다시 시도한다).
+    void CancelAttack()
+    {
+        if (!isAttacking) return;
+        isAttacking = false;
+        isJumpAttacking = false;
+        attackQueued = false; // 캔슬한 스윙 뒤에 버퍼링돼 있던 다음 공격까지 그대로 이어 나가면 안 된다
+        lastAttackEndTime = Time.time;
+        TestLog.Event("player_attack", "cancelled_by_action");
     }
 
     void StartAttackStage(int stage)
@@ -3053,12 +3198,35 @@ public class PlayerController : MonoBehaviour
         TestLog.Event("player_attack", $"stage={stage}_start");
     }
 
-    // Slash 1/2 애니메이션 클립에 찍힌 Animation Event(사용자가 직접 표시한 판정 프레임)에서 호출됨.
-    // 정규화시간 윈도우 폴링 대신 애니메이션이 그 프레임에 도달하는 정확한 순간에 판정 — 프레임 스킵에도 안전.
+    void StartJumpAttack()
+    {
+        isAttacking = true;
+        isJumpAttacking = true;
+        attackTimer = 0f;
+        attackHitDone = false;
+        // 지난 스윙에서 남았을 수 있는 정지 잔여값을 지운다 — 판정 프레임(AttackHitFrame)에서만 세워야
+        // 하는 값이라, 스윙 시작부터 켜져 있으면 안 된다. 현재 쿨타임(0.5s)이면 실제로 남을 일이 없지만
+        // 쿨타임을 0에 가깝게 조정하면 재현 가능한 상태 누수라 여기서 명시적으로 초기화한다.
+        jumpAttackHangTimer = 0f;
+        if (anim != null) anim.SetTrigger("JumpAttack");
+
+        float lungeDirX = (sr != null && sr.flipX) ? -1f : 1f;
+        transform.position += new Vector3(lungeDirX * attackLungeDistance, 0f, 0f);
+
+        TestLog.Event("player_attack", "jump_attack_start");
+    }
+
+    // Slash 1/2, Jump Attack 애니메이션 클립에 찍힌 Animation Event(사용자가 직접 표시한 판정
+    // 프레임)에서 호출됨. 정규화시간 윈도우 폴링 대신 애니메이션이 그 프레임에 도달하는 정확한
+    // 순간에 판정 — 프레임 스킵에도 안전.
     public void AttackHitFrame()
     {
         if (!isAttacking || attackHitDone) return;
-        CheckAttackHit(attackStage == 1 ? attack1Damage : attack2Damage);
+        // 점프 공격은 이 프레임(=판정 프레임)에 도달한 순간부터 jumpAttackHangDuration만큼만 y를
+        // 고정한다(AttackFreezesY 참고) — CheckAttackHit보다 먼저 세팅해야 그 안에서 도는 히트스톱
+        // 코루틴·VFX와 같은 프레임에 이미 정지가 걸린다.
+        if (isJumpAttacking) jumpAttackHangTimer = jumpAttackHangDuration;
+        CheckAttackHit(isJumpAttacking ? jumpAttackDamage : (attackStage == 1 ? attack1Damage : attack2Damage));
     }
 
     // 타격 등급. Critical/Execution은 전용 VFX + 강조 텍스트 + 배율 쉐이크/히트스톱을 공유한다.
@@ -3109,12 +3277,23 @@ public class PlayerController : MonoBehaviour
                 // 여기서 중복 지급하지 않는다(일반 공격 경로에서만 killed를 본다). 에너지는 즉시가 아니라
                 // 포물선 픽셀이 도착할 때마다 AddEnergy가 나눠서 불린다(게이지가 또르르 차오르게).
                 LightPixelFx.SpawnAbsorb(hits[i].transform.position, transform, 3 + (killed ? 10 : 0), AddEnergy, hits[i].bounds.extents.magnitude, lightPixelPivotOffset, CurrentPixelTint);
+                continue;
+            }
+
+            LightObject lightObj = hits[i].GetComponent<LightObject>();
+            if (lightObj != null && lightObj.TryHit())
+            {
+                hitCount++;
+                int chargeAmount = Mathf.RoundToInt(maxEnergy * lightObj.energyChargePercent);
+                LightPixelFx.SpawnAbsorb(hits[i].transform.position, transform, chargeAmount, AddEnergy, hits[i].bounds.extents.magnitude, lightPixelPivotOffset, CurrentPixelTint);
             }
         }
 
         if (hitCount > 0)
         {
             RestoreEgo(); // 폭주 중 자아 회복 — 적중 1회당 1번(여러 적을 동시에 맞혀도 중첩 없음)
+            // 점프 공격이 무언가를 맞히면 공중 점프 1회 재충전(사용자 지시 2026-08-05, 저글링 리셋).
+            if (isJumpAttacking && jumpAttackBonusJumpEnabled) hasJumpAttackBonusJump = true;
             TestLog.Event("player_attack", $"stage={attackStage} dmg={damage} hits={hitCount} crit={crit} rampage={isRampaging}");
             float mul = (crit ? critShakeMultiplier : 1f) * (isRampaging ? rampageShakeMultiplier : 1f);
             float hitstopMul = (crit ? critHitstopMultiplier : 1f) * (isRampaging ? rampageHitstopMultiplier : 1f);
@@ -3212,7 +3391,10 @@ public class PlayerController : MonoBehaviour
 
     void ApplyBetterJumpPhysics()
     {
-        if (isWallSliding || isDashing) return; // 벽 슬라이드/대시 중엔 각자 y를 제어
+        // 벽 슬라이드/대시 중엔 각자 y를 제어. 공격은 AttackFreezesY 구간(지상 콤보 전체, 점프 공격은
+        // 판정 프레임 순간만)에서만 스킵 — 점프 공격의 나머지 구간은 이 함수가 평소처럼 fall/low-jump
+        // 배율을 적용해 정상적으로 낙하하게 둔다.
+        if (isWallSliding || isDashing || AttackFreezesY) return;
         // 가속도라서 ×mul²(rb.gravityScale과 같은 규칙, ApplyGravityScale 주석 참고) — 비활성 시엔 1.
         float gravityMul = TimeAccelMul * TimeAccelMul;
         if (rb.linearVelocity.y < 0) {
@@ -3230,7 +3412,11 @@ public class PlayerController : MonoBehaviour
         // isLedgeClimbing 추가(2026-08-04): 꼭대기로 보간 이동하는 0.12초 동안 접지 판정이 오락가락하면
         // Land 트리거가 계속 들어가 "착지 애니메이션이 지속적으로 재생"된다(사용자 리포트). 이 구간엔
         // 파라미터를 아예 안 건드리고, 끝난 뒤 실제 착지에서 한 번만 Land가 나가게 한다.
-        if (isCharging || ilseomActive || isExecuting || isSpendingLight || isLedgeClimbing) return;
+        // isDodgeCountering 추가(2026-08-05): HandleMovement는 이미 이 상태에서 속도를 0으로 묶지만,
+        // 이 함수의 flipX 갱신(moveInput.x 기준)은 별개 경로라 안 막혀 있었다 — 실제로는 제자리에
+        // 묶여 있는데 A/D를 누르면 스프라이트만 방향을 바꾸는 버그(사용자 리포트). CounterRush가
+        // 끝에서 enemyFacing 기준으로 flipX를 다시 확정하므로, 그 사이엔 아예 안 건드리는 게 맞다.
+        if (isCharging || ilseomActive || isExecuting || isSpendingLight || isLedgeClimbing || isDodgeCountering) return;
 
         if (anim != null) {
             // 공격속도 버프에 맞춰 공격 애니메이션도 빨라진다(사용자 지시). 대시 프리즈는 anim.enabled=false로
@@ -3247,11 +3433,47 @@ public class PlayerController : MonoBehaviour
                     ? (Mathf.Abs(moveInput.y) > 0.01f ? MoveSpeedMultiplier : 0f)
                     : MoveSpeedMultiplier) * TimeAccelMul;
             anim.SetFloat("Speed", Mathf.Abs(moveInput.x));
-            anim.SetFloat("yVelocity", rb.linearVelocity.y);
+            // AnyState 전이는 Fall="yVelocity < 0", Jump="yVelocity > 0"이라 정확히 0(또는 그 근방)인
+            // 순간은 어느 쪽도 못 잡는다(공격 종료 직후, 중력이 다시 붙기 전 몇 프레임 — 점프 정점에서도
+            // 발생) — 공중인데 마지막으로 걸려있던 전이가 그대로 유지돼 Idle에 멈춰있는 버그가 났다
+            // (사용자 리포트 2026-08-05, "공격 후 Idle로 잠시 떠있음"). 그 좁은 사각지대(±0.05)만 Fall
+            // 쪽으로 밀어준다 — 진짜 상승 중인 점프(강한 양수)는 그대로 Jump를 탄다.
+            // ⚠️ 공격 애니메이션이 재생되는 동안엔 실제 물리 속도가 아니라 0을 먹인다 — 점프 공격이
+            // 판정 프레임 순간만 y를 고정하도록 바뀌면서(AttackFreezesY, 2026-08-05) 나머지 구간은 실제로
+            // 낙하해 rb.linearVelocity.y가 진짜 음수가 된다. 그 값을 그대로 먹이면 AnyState→Fall
+            // (hasExitTime=false, 즉시 끼어듦)이 걸려 점프 공격 애니메이션이 중간에 낙하로 끊긴다
+            // (사용자 리포트 "점프 공격 애니메이션이 끊김") — 예전 전체 구간 고정 시절엔 y가 항상 정확히
+            // 0이라 우연히 안전했을 뿐이다. 실제 물리는 건드리지 않고 애니메이터 표시값만 가린다.
+            // ⚠️ 단 **isAttacking 전체**를 가리면 안 된다: jumpAttackDuration(0.5833)이 실제 클립 길이
+            // (0.3333, 키프레임 4개)보다 의도적으로 길게 잡혀 있어서(사용자 확인 2026-08-05 "일부러
+            // 그렇게 뒀다"), 클립이 끝난 뒤 남는 약 0.25초 동안 Animator는 이미 Idle로 빠져나온 상태인데
+            // yVelocity가 0으로 가려져 Fall로 못 넘어가 **공중에서 Idle 포즈로 떠 있는 것처럼** 보였다
+            // (사용자 리포트 "공격 후에도 잠시 떠있음"의 남은 절반). 클립이 실제로 재생되는 구간만 가려서,
+            // 그 뒤 회수 구간은 정상적으로 Fall이 나오게 한다. 클립 길이는 Awake에서 컨트롤러에서 읽으므로
+            // 나중에 클립을 재편집하면 자동으로 따라간다.
+            bool attackAnimPlaying = isAttacking
+                && (!isJumpAttacking || attackTimer < jumpAttackAnimLength / AttackSpeedMultiplier);
+            float animYVelocity = attackAnimPlaying ? 0f : rb.linearVelocity.y;
+            // 사각지대 보정(±0.05)은 공격 애니메이션이 끝난 뒤에만 — 재생 중엔 위에서 이미 0으로 가렸다.
+            if (!isGrounded && !isWallSliding && !attackAnimPlaying && Mathf.Abs(animYVelocity) < 0.05f) animYVelocity = -0.05f;
+            anim.SetFloat("yVelocity", animYVelocity);
             anim.SetBool("isGrounded", isGrounded);
             anim.SetBool("isWallSliding", isWallSliding);
+            // 벽타기 중 폭주/초월 여부 — Animator Controller의 AnyState 조건(아래 주석 참고)이
+            // 직접 갈아탄다. isWallSliding이 계속 true인 동안 AnyState→Wall Slide 전이가 매 프레임
+            // 재평가돼, 코드에서 anim.Play()로 강제로 다른 상태(Glitch Climb Glitch)로 밀어넣어도
+            // 바로 다음 프레임에 그 전이가 도로 Wall Slide로 되돌려 매 프레임 두 상태를 오가며
+            // 격렬하게 깜빡였다(사용자 스크린샷으로 확인 — 마스크 없는 쪽이 잠깐 보일 때마다
+            // 흰색 폴백 마스크로 실루엣 전체가 확 빛나 보임). 파라미터 하나로 그래프 자체가 배타적으로
+            // 갈아타게 해 전이끼리 서로 안 싸우게 했다.
+            anim.SetBool("isWallClimbGlitch", isRampaging || isTranscending);
 
-            if (isGrounded && !wasGrounded) anim.SetTrigger("Land");
+            // 공격 애니메이션 재생 중 가드(2026-08-05): 점프 공격이 판정 프레임 순간만 y를 고정하도록
+            // 바뀌면서(AttackFreezesY) 스윙 도중 실제로 착지하는 경우가 생겼다 — Land 트리거가 그 순간
+            // 끼어들면 JumpAttack 애니메이션이 중간에 끊긴다. 위 animYVelocity와 **같은 창**을 쓴다:
+            // 클립이 끝난 뒤 회수 구간에 착지하면 Land가 정상적으로 나가야 한다(그때 Animator는 이미
+            // Idle이라 끊을 것도 없다). wasGrounded는 어느 경우든 갱신해 뒤늦게 튀어나오지 않게 한다.
+            if (isGrounded && !wasGrounded && !attackAnimPlaying) anim.SetTrigger("Land");
             wasGrounded = isGrounded;
 
             UpdateAlteredStateAnim();
@@ -3299,6 +3521,21 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    // 벽타기 전용 애니메이션 등록(사용자 지시 2026-08-05). 기존엔 전용 스프라이트가 없어 Wall Slide
+    // 클립을 그대로 재사용했는데, "Glitch Samurai-Wall Slide" 애니메이터 상태의 Motion 자체를 신규
+    // "Glitch Samurai-Glitch Climb" 클립으로 교체해 뒀다(전이 그래프는 그대로 — AnyState→isWallSliding
+    // 조건이 이 상태를 그대로 가리키므로 코드 변경 없이 평소엔 자동으로 새 클립이 나온다).
+    // 폭주·초월 중엔 "Glitch Samurai-Glitch Climb Glitch" 상태로 바뀌어야 하는데, 처음엔 Idle/Run
+    // Gltich와 같은 코드-직접-Play() 패턴을 썼다가 실제로 미친듯이 깜빡이는 버그가 났다(사용자
+    // 스크린샷) — Idle/Run과 달리 Wall Slide는 AnyState(isWallSliding==true, 매 프레임 계속 참)가
+    // 그 상태를 계속 다시 잡아당겨서, 코드가 Glitch Climb Glitch로 밀어넣어도 바로 다음 프레임에
+    // Animator가 도로 Wall Slide로 되돌리며 서로 계속 싸웠다. 그래서 대신 파라미터
+    // (`isWallClimbGlitch`, 위 UpdateAnimations에서 세팅)로 AnyState 전이 자체를 배타적으로 나눴다
+    // — AnyState→Wall Slide는 `isWallClimbGlitch==false` 조건을 추가로 걸고, AnyState→Glitch Climb
+    // Glitch를 새로 만들어 `isWallSliding && isWallClimbGlitch`로 잡게 했다(Animator Controller 직접
+    // 편집, MCP). 발광 마스크(Assets/Sprites/Player/Mask/Glitch Samurai-Glitch Climb Glitch.png)는
+    // PlayerBloomFx가 텍스처 이름으로 자동 매칭해 붙이므로 여기서 별도로 지정할 게 없다(기존 규칙).
+
     public void OnMove(InputValue value)
     {
         moveInput = value.Get<Vector2>();
@@ -3329,13 +3566,12 @@ public class PlayerController : MonoBehaviour
     {
         if (value.isPressed)
         {
-            // 일섬 차지는 지상/공중 무관하게 좌클릭으로 취소된다(스펙 3). 공격 자체는 아래 지상 조건을 그대로 따른다.
+            // 일섬 차지는 지상/공중 무관하게 좌클릭으로 취소된다(스펙 3).
             if (isCharging) cancelChargeRequested = true;
 
-            // 공중에서는 공격 "입력" 자체를 받지 않는다(사용자 스펙) — 버퍼에도 안 쌓이므로
-            // 착지하는 순간 밀린 입력이 자동으로 터지는 일도 없다. 벽타기 중에도 마찬가지로 막는다
-            // (사용자 지시 2026-08-03: "입력자체가 안되어야해요").
-            if (!isGrounded || isWallSliding) return;
+            // 공중 공격 허용(사용자 지시 2026-08-05) — 예전엔 지상에서만 받았으나, 이제 공중에서도
+            // 입력이 버퍼에 쌓인다(HandleAttack의 낙하 정지 처리와 함께 봐야 함). 벽타기 중엔 계속 막는다.
+            if (isWallSliding) return;
 
             attackQueued = true;
             attackQueueTime = Time.time;

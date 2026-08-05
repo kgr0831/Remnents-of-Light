@@ -1,0 +1,689 @@
+fileFormatVersion: 2
+guid: 5da375ef47b8e3c4eb308238a3542483
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 6857117273693101830
+    second: Doggo-Lay Down Idle_0
+  - first:
+      213: 8028394711165564605
+    second: Doggo-Lay Down Idle_1
+  - first:
+      213: 870467761557331434
+    second: Doggo-Lay Down Idle_2
+  - first:
+      213: 1960728011941960721
+    second: Doggo-Lay Down Idle_3
+  - first:
+      213: 617603876087735275
+    second: Doggo-Lay Down Idle_4
+  - first:
+      213: 4520026772645603011
+    second: Doggo-Lay Down Idle_5
+  - first:
+      213: -9075723435256943149
+    second: Doggo-Lay Down Idle_6
+  - first:
+      213: 11049494636988851
+    second: Doggo-Lay Down Idle_7
+  - first:
+      213: 5781192782223250570
+    second: Doggo-Lay Down Idle_8
+  - first:
+      213: 6704711567001234579
+    second: Doggo-Lay Down Idle_9
+  - first:
+      213: -8156010723979472254
+    second: Doggo-Lay Down Idle_10
+  - first:
+      213: 6093589010156803729
+    second: Doggo-Lay Down Idle_11
+  - first:
+      213: -3352661813347181965
+    second: Doggo-Lay Down Idle_12
+  - first:
+      213: -388029556234645196
+    second: Doggo-Lay Down Idle_13
+  - first:
+      213: 7042397798959011042
+    second: Doggo-Lay Down Idle_14
+  - first:
+      213: -3075500465982592075
+    second: Doggo-Lay Down Idle_15
+  - first:
+      213: -782931829722945912
+    second: Doggo-Lay Down Idle_16
+  - first:
+      213: 2848551291795766377
+    second: Doggo-Lay Down Idle_17
+  - first:
+      213: -433034012698509813
+    second: Doggo-Lay Down Idle_18
+  - first:
+      213: -7324236039698174770
+    second: Doggo-Lay Down Idle_19
+  - first:
+      213: 2959352261612965013
+    second: Doggo-Lay Down Idle_20
+  - first:
+      213: -5104248042577273306
+    second: Doggo-Lay Down Idle_21
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 30
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 0
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Doggo-Lay Down Idle_0
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 0
+        width: 28
+        height: 13
+      alignment: 9
+      pivot: {x: 0.5, y: 0.05}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 60f1ca174df592f50800000000000000
+      internalID: 6857117273693101830
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Doggo-Lay Down Idle_1
+      rect:
+        serializedVersion: 2
+        x: 46
+        y: 0
+        width: 28
+        height: 13
+      alignment: 9
+      pivot: {x: 0.5, y: 0.05}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: db6f5ab14769a6f60800000000000000
+      internalID: 8028394711165564605
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Doggo-Lay Down Idle_2
+      rect:
+        serializedVersion: 2
+        x: 91
+        y: 0
+        width: 28
+        height: 13
+      alignment: 9
+      pivot: {x: 0.5, y: 0.05}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: aeddd0431d5841c00800000000000000
+      internalID: 870467761557331434
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Doggo-Lay Down Idle_3
+      rect:
+        serializedVersion: 2
+        x: 136
+        y: 0
+        width: 28
+        height: 13
+      alignment: 9
+      pivot: {x: 0.5, y: 0.05}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 11c55fc0db7e53b10800000000000000
+      internalID: 1960728011941960721
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Doggo-Lay Down Idle_4
+      rect:
+        serializedVersion: 2
+        x: 181
+        y: 0
+        width: 28
+        height: 13
+      alignment: 9
+      pivot: {x: 0.5, y: 0.05}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: be32d1ef37b229800800000000000000
+      internalID: 617603876087735275
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Doggo-Lay Down Idle_5
+      rect:
+        serializedVersion: 2
+        x: 226
+        y: 0
+        width: 28
+        height: 13
+      alignment: 9
+      pivot: {x: 0.5, y: 0.05}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3c6ebcec66c5abe30800000000000000
+      internalID: 4520026772645603011
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Doggo-Lay Down Idle_6
+      rect:
+        serializedVersion: 2
+        x: 271
+        y: 0
+        width: 28
+        height: 13
+      alignment: 9
+      pivot: {x: 0.5, y: 0.05}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3dd62d1fe9d8c0280800000000000000
+      internalID: -9075723435256943149
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Doggo-Lay Down Idle_7
+      rect:
+        serializedVersion: 2
+        x: 316
+        y: 0
+        width: 28
+        height: 13
+      alignment: 9
+      pivot: {x: 0.5, y: 0.05}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3b909c2f471472000800000000000000
+      internalID: 11049494636988851
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Doggo-Lay Down Idle_8
+      rect:
+        serializedVersion: 2
+        x: 361
+        y: 0
+        width: 28
+        height: 13
+      alignment: 9
+      pivot: {x: 0.5, y: 0.05}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a841872943cea3050800000000000000
+      internalID: 5781192782223250570
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Doggo-Lay Down Idle_9
+      rect:
+        serializedVersion: 2
+        x: 406
+        y: 0
+        width: 28
+        height: 14
+      alignment: 9
+      pivot: {x: 0.5, y: 0.05}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 39caf88a5abeb0d50800000000000000
+      internalID: 6704711567001234579
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Doggo-Lay Down Idle_10
+      rect:
+        serializedVersion: 2
+        x: 451
+        y: 0
+        width: 28
+        height: 14
+      alignment: 9
+      pivot: {x: 0.5, y: 0.05}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2825dec757700de80800000000000000
+      internalID: -8156010723979472254
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Doggo-Lay Down Idle_11
+      rect:
+        serializedVersion: 2
+        x: 496
+        y: 0
+        width: 28
+        height: 14
+      alignment: 9
+      pivot: {x: 0.5, y: 0.05}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 196de956be6c09450800000000000000
+      internalID: 6093589010156803729
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Doggo-Lay Down Idle_12
+      rect:
+        serializedVersion: 2
+        x: 541
+        y: 0
+        width: 28
+        height: 14
+      alignment: 9
+      pivot: {x: 0.5, y: 0.05}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 37a9c6b08d3f871d0800000000000000
+      internalID: -3352661813347181965
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Doggo-Lay Down Idle_13
+      rect:
+        serializedVersion: 2
+        x: 586
+        y: 0
+        width: 28
+        height: 14
+      alignment: 9
+      pivot: {x: 0.5, y: 0.05}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 431184aac217d9af0800000000000000
+      internalID: -388029556234645196
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Doggo-Lay Down Idle_14
+      rect:
+        serializedVersion: 2
+        x: 631
+        y: 0
+        width: 28
+        height: 14
+      alignment: 9
+      pivot: {x: 0.5, y: 0.05}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2e4d1f56c7f9bb160800000000000000
+      internalID: 7042397798959011042
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Doggo-Lay Down Idle_15
+      rect:
+        serializedVersion: 2
+        x: 676
+        y: 0
+        width: 28
+        height: 14
+      alignment: 9
+      pivot: {x: 0.5, y: 0.05}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5bb2f82fe90a155d0800000000000000
+      internalID: -3075500465982592075
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Doggo-Lay Down Idle_16
+      rect:
+        serializedVersion: 2
+        x: 721
+        y: 0
+        width: 28
+        height: 14
+      alignment: 9
+      pivot: {x: 0.5, y: 0.05}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 886640626a77225f0800000000000000
+      internalID: -782931829722945912
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Doggo-Lay Down Idle_17
+      rect:
+        serializedVersion: 2
+        x: 766
+        y: 0
+        width: 28
+        height: 14
+      alignment: 9
+      pivot: {x: 0.5, y: 0.05}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 96c77ffbe46188720800000000000000
+      internalID: 2848551291795766377
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Doggo-Lay Down Idle_18
+      rect:
+        serializedVersion: 2
+        x: 811
+        y: 0
+        width: 28
+        height: 14
+      alignment: 9
+      pivot: {x: 0.5, y: 0.05}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b0e71791cdd8df9f0800000000000000
+      internalID: -433034012698509813
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Doggo-Lay Down Idle_19
+      rect:
+        serializedVersion: 2
+        x: 856
+        y: 0
+        width: 28
+        height: 13
+      alignment: 9
+      pivot: {x: 0.5, y: 0.05}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ecc2daa90261b5a90800000000000000
+      internalID: -7324236039698174770
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Doggo-Lay Down Idle_20
+      rect:
+        serializedVersion: 2
+        x: 901
+        y: 0
+        width: 28
+        height: 13
+      alignment: 9
+      pivot: {x: 0.5, y: 0.05}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 59c80bed33bb11920800000000000000
+      internalID: 2959352261612965013
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Doggo-Lay Down Idle_21
+      rect:
+        serializedVersion: 2
+        x: 946
+        y: 0
+        width: 28
+        height: 13
+      alignment: 9
+      pivot: {x: 0.5, y: 0.05}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 62ed2b0e2711a29b0800000000000000
+      internalID: -5104248042577273306
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 0e37e8eb3ec049f4aa4804370fc4d4c5
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Doggo-Lay Down Idle_0: 6857117273693101830
+      Doggo-Lay Down Idle_1: 8028394711165564605
+      Doggo-Lay Down Idle_10: -8156010723979472254
+      Doggo-Lay Down Idle_11: 6093589010156803729
+      Doggo-Lay Down Idle_12: -3352661813347181965
+      Doggo-Lay Down Idle_13: -388029556234645196
+      Doggo-Lay Down Idle_14: 7042397798959011042
+      Doggo-Lay Down Idle_15: -3075500465982592075
+      Doggo-Lay Down Idle_16: -782931829722945912
+      Doggo-Lay Down Idle_17: 2848551291795766377
+      Doggo-Lay Down Idle_18: -433034012698509813
+      Doggo-Lay Down Idle_19: -7324236039698174770
+      Doggo-Lay Down Idle_2: 870467761557331434
+      Doggo-Lay Down Idle_20: 2959352261612965013
+      Doggo-Lay Down Idle_21: -5104248042577273306
+      Doggo-Lay Down Idle_3: 1960728011941960721
+      Doggo-Lay Down Idle_4: 617603876087735275
+      Doggo-Lay Down Idle_5: 4520026772645603011
+      Doggo-Lay Down Idle_6: -9075723435256943149
+      Doggo-Lay Down Idle_7: 11049494636988851
+      Doggo-Lay Down Idle_8: 5781192782223250570
+      Doggo-Lay Down Idle_9: 6704711567001234579
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

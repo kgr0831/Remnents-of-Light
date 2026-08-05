@@ -115,6 +115,23 @@ public class TranscendVisionFx : MonoBehaviour
             if (active.TryGetValue(e, out var fx))
             {
                 if (fx == null) active.Remove(e); // 스스로 파괴된 뒤 — 다음 공격이 새로 붙을 수 있게 슬롯을 비운다
+                else if (ending && e.AttackTelegraphProgress >= 0f)
+                {
+                    // 초월이 꺼지는 순간 **아직 날아오는 중인** 공격의 예고는 시야 버프와 함께 걷어내지
+                    // 않는다(사용자 리포트 2026-08-05 "타이밍이 이상함") — 예전엔 창이 절반 넘게 뻗은
+                    // 채로 경고만 0.25초에 걸쳐 사라지고 공격은 그대로 날아와 맞았다.
+                    // ⚠️ 알파를 1로 붙잡아 두는 것만으로는 부족하다: 페이드가 끝나면 이 오브젝트가 스스로
+                    // 파괴되고(Update 말미) OnDestroy가 active에 남은 예고를 전부 Detach(=파괴)하므로
+                    // 결국 공격 도중에 사라진다. 그래서 **소유권을 놓아준다** — AttackTelegraphFx는 부모
+                    // 없는 루트 오브젝트이고 owner만 보고 스스로 갱신·정리하므로(progress<0이 되면
+                    // burst/fizzle 후 자기 파괴, owner가 사라져도 자기 파괴) 목록에서 빼도 누수가 없고
+                    // 오히려 끝까지 정상적으로 산다.
+                    // ⚠️ 놓아준 뒤 페이드가 끝나기 전에 다시 초월에 진입하면 같은 적에게 예고가 하나 더
+                    // 붙을 수 있다 — 해제(70%)에서 진입(100%)까지 0.25초 안에 회복하는 건 실질적으로
+                    // 불가능해 방치한다(겹쳐도 같은 자리·같은 모양이라 링이 조금 진해지는 정도).
+                    fx.SetAlpha(1f);
+                    active.Remove(e);
+                }
                 else fx.SetAlpha(k);
             }
 

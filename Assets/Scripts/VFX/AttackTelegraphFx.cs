@@ -186,8 +186,12 @@ public class AttackTelegraphFx : MonoBehaviour
     {
         if (owner == null) { Destroy(gameObject); return; }
 
-        // 매 프레임 갱신 — 적의 flip·이동을 따라간다. 밑동·창끝 둘 다 Windup부터 고정되므로(위치·방향은
-        // StartAttack에서 확정) 실질적으로 변하지 않지만, 매 프레임 다시 읽는 편이 더 안전하다.
+        // 매 프레임 갱신 — 적의 flip·이동을 따라간다. DummyEnemy 기본형은 Windup부터 밑동·창끝이
+        // 고정돼 실질적으로 안 변하지만, GehennaHound의 점프 공격(사용자 지시 2026-08-05: "적의 공격
+        // 예측 범위가 움직여도 되니까 적 콜라이더와 동일하게")은 Windup~Thrust 동안 몸 전체가 실제로
+        // 위/앞으로 도약한다 — hitboxRight가 자식이라 판정 캡슐도 그만큼 같이 움직이므로, 예고도 매
+        // 프레임 다시 읽어야 실제 판정 위치와 계속 일치한다(캡슐 길이·반지름은 로컬 오프셋이라 불변,
+        // Attach 시 구운 스프라이트 그대로 재사용해도 안전).
         SyncTransform(owner.AttackHitPointBase, owner.AttackHitPoint);
 
         if (!resolving)

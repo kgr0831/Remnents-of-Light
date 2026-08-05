@@ -32,6 +32,8 @@ public class RampageVisionFx : MonoBehaviour
 
     Transform target;
     RampageTerrainOutlineFx terrain;
+    // 지형 아웃라인과 같은 레이어(Ground/Wall) — 시야선(라인오브사이트) 차단 체크에 쓴다.
+    LayerMask visionBlockMask;
     readonly Dictionary<DummyEnemy, RampageEnemyOutlineFx> outlines =
         new Dictionary<DummyEnemy, RampageEnemyOutlineFx>();
     readonly List<DummyEnemy> scratch = new List<DummyEnemy>();
@@ -60,6 +62,7 @@ public class RampageVisionFx : MonoBehaviour
         var go = new GameObject("RampageVisionFx");
         var fx = go.AddComponent<RampageVisionFx>();
         fx.target = player;
+        fx.visionBlockMask = LayerMask.GetMask("Ground", "Wall");
         Instance = fx;
 
         fx.terrain = RampageTerrainOutlineFx.Create(player, TerrainCullRadius);
@@ -150,7 +153,8 @@ public class RampageVisionFx : MonoBehaviour
         for (int i = 0; i < enemies.Length; i++)
         {
             var e = enemies[i];
-            bool want = e.IsAlive && Vector2.Distance(c, e.transform.position) <= CullRadius;
+            bool want = e.IsAlive && Vector2.Distance(c, e.transform.position) <= CullRadius
+                && HasLineOfSight(c, e.transform.position);
             bool has = outlines.TryGetValue(e, out var fx) && fx != null;
 
             if (want && !has)
@@ -170,6 +174,20 @@ public class RampageVisionFx : MonoBehaviour
         foreach (var kv in outlines)
             if (kv.Key == null || kv.Value == null) scratch.Add(kv.Key);
         for (int i = 0; i < scratch.Count; i++) outlines.Remove(scratch[i]);
+    }
+
+    // CullRadius는 순수 직선거리라 벽 뒤·옆방처럼 화면에 실제로 안 보여야 할 적도 반경 안이면
+    // 아웃라인이 그대로 나타났다(지형 아웃라인이 화면 밖 옆방까지 걸려 나오던 것과 같은 종류의 버그,
+    // RampageTerrainOutlineFx 주석 참고). 지형(Ground/Wall)에 가로막히면 "시야 밖"으로 취급한다.
+    // 발밑 지형과 자체 교차하지 않도록 EyeHeight만큼 띄워서 쏜다(SetDodgeGrayscale와 같은 보정값).
+    bool HasLineOfSight(Vector2 from, Vector2 to)
+    {
+        Vector2 eyeFrom = from + Vector2.up * EyeHeight;
+        Vector2 eyeTo = to + Vector2.up * EyeHeight;
+        Vector2 delta = eyeTo - eyeFrom;
+        float dist = delta.magnitude;
+        if (dist < 0.001f) return true;
+        return !Physics2D.Raycast(eyeFrom, delta / dist, dist, visionBlockMask);
     }
 
     void OnDestroy()
