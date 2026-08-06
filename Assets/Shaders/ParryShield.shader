@@ -38,7 +38,21 @@ Shader "Custom/ParryShield"
         Pass
         {
             Name "ParryShield"
-            Tags { "LightMode" = "Universal2D" }
+            // ⚠️ "Universal2D"가 아니라 "SRPDefaultUnlit" — GrayscaleRendererFeature의 보호 레이어
+            // 재그리기가 "Universal2D" 태그를 스프라이트로 간주해 머티리얼을 통째로 스프라이트용
+            // 언릿로 강제 교체한다(GrayscaleRendererFeature.cs의 spriteDraw.overrideMaterial). 이 실드는
+            // 텍스처 없는 순수 프로시저럴 쿼드라 그 교체를 거치면 링 대신 텅 빈/엉뚱한 텍스처가 나와
+            // "잔상처럼 겹친 이상한 스프라이트"로 보였다(2026-08-06, 실드 있을 때만 재현되던 버그).
+            // TMP 데미지 텍스트와 같은 이유로 SRPDefaultUnlit을 쓰면 머티리얼 교체 없이(자기 셰이더
+            // 그대로) 보호 레이어에 포함된다 — URP 2D Renderer도 이 태그를 정상 수집한다(같은 파일 주석 참고).
+            // ⚠️ "Universal2D"가 아니라 "SRPDefaultUnlit" — GrayscaleRendererFeature의 보호 레이어
+            // 재그리기가 "Universal2D" 태그를 스프라이트로 간주해 머티리얼을 통째로 스프라이트용
+            // 언릿로 강제 교체한다(GrayscaleRendererFeature.cs의 spriteDraw.overrideMaterial). 이 실드는
+            // 텍스처 없는 순수 프로시저럴 쿼드라 그 교체를 거치면 링 대신 텅 빈/엉뚱한 텍스처가 나와
+            // "잔상처럼 겹친 이상한 스프라이트"로 보였다(2026-08-06, 실드 있을 때만 재현되던 버그).
+            // TMP 데미지 텍스트와 같은 이유로 SRPDefaultUnlit을 쓰면 머티리얼 교체 없이(자기 셰이더
+            // 그대로) 보호 레이어에 포함된다 — URP 2D Renderer도 이 태그를 정상 수집한다(같은 파일 주석 참고).
+            Tags { "LightMode" = "SRPDefaultUnlit" }
 
             HLSLPROGRAM
             #pragma vertex vert
