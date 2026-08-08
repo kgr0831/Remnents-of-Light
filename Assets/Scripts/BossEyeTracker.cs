@@ -90,6 +90,14 @@ public class BossEyeTracker : MonoBehaviour
     public float exposureDamageInterval = 5f;
     public int exposureDamage = 1;
 
+    // 사용자 지시(2026-08-09): "보스로 인해 HP 깎일 때도 기존 피해 연출". 화면 쉐이크와 붉은 점멸은
+    // PlayerController.TakeDamage 안에 있어 이미 타지만, 적 공격이 추가로 띄우는 **데미지 텍스트**는
+    // 호출한 쪽(DummyEnemy.cs:342)이 직접 스폰하는 구조라 보스 빔에는 빠져 있었다. 같은 헬퍼·같은
+    // 색으로 맞춘다.
+    [Header("Damage Text (비워두면 씬의 적에게서 같은 프리팹을 빌려 쓴다)")]
+    public GameObject damageTextPrefab;
+    public Color damageTextColor = new Color(1f, 0.3f, 0.3f, 1f); // DummyEnemy.damageTextColor와 같은 값
+
     [Header("Ambient Glow (주변 타일·오브젝트를 실제로 비추는 넓은 원형 광원)")]
     public Color glowColor = new Color(1f, 0.16f, 0.1f);
     public float glowIntensity = 1.5f;
@@ -315,11 +323,29 @@ public class BossEyeTracker : MonoBehaviour
 
         exposureDamageTimer -= exposureDamageInterval;
         if (playerController == null) playerController = player.GetComponent<PlayerController>();
-        if (playerController != null)
+        if (playerController == null) return;
+
+        // 쉐이크 · 화면 붉은 점멸은 TakeDamage 안에서 처리된다. 여기선 적 공격과 같은 데미지 텍스트만 더한다.
+        playerController.TakeDamage(exposureDamage);
+        CombatFx.SpawnDamageText(ResolveDamageTextPrefab(), player.position, exposureDamage, damageTextColor);
+        TestLog.Event("boss_beam", $"exposure_damage -{exposureDamage} hp={playerController.currentHealth}/{playerController.maxHealth}");
+    }
+
+    /// <summary>데미지 텍스트 프리팹을 인스펙터에서 안 넣어도 동작하게 한다 — 씬의 아무 적에게서
+    /// 같은 프리팹을 한 번 빌려 캐시한다. 보스는 씬 오브젝트라 참조를 새로 꽂으려면 씬을 저장해야
+    /// 하는데, 그러지 않고도 적과 완전히 같은 연출이 나오게 하기 위한 선택이다.</summary>
+    GameObject ResolveDamageTextPrefab()
+    {
+        if (damageTextPrefab != null) return damageTextPrefab;
+
+        var enemies = FindObjectsByType<DummyEnemy>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        for (int i = 0; i < enemies.Length; i++)
         {
-            playerController.TakeDamage(exposureDamage);
-            TestLog.Event("boss_beam", $"exposure_damage -{exposureDamage} hp={playerController.currentHealth}/{playerController.maxHealth}");
+            if (enemies[i].damageTextPrefab == null) continue;
+            damageTextPrefab = enemies[i].damageTextPrefab;
+            break;
         }
+        return damageTextPrefab; // 끝내 못 찾으면 null — CombatFx가 조용히 무시한다
     }
 
     void ClearExposure()

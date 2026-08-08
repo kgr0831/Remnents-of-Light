@@ -123,6 +123,24 @@ public class PlayerController : MonoBehaviour
     public int maxHealth = 5;
     public int currentHealth;
 
+    // 사용자 지시(2026-08-09): 허공으로 많이 떨어지면 체력 한 칸을 잃고 마지막으로 서 있던 발판으로
+    // 돌아온다. 연출 순서도 지정됐다 — 게임 멈춤 + 암전(페이드 인) → 복귀 → 페이드 아웃 후 재개.
+    //
+    // ⚠️ "많이 떨어짐"만으로는 부족하다는 조건이 붙었다("아래에 플랫폼 or 땅바닥 없어야 함").
+    //    긴 낙하가 정상 루트인 구간(높은 곳에서 아래층으로 내려가는 설계)에서 오발동하면 안 되므로,
+    //    낙하 거리와 **발밑 탐색** 둘 다 만족해야 발동한다.
+    [Header("Fall Death (허공으로 오래 떨어지면 마지막 발판으로 복귀)")]
+    [Tooltip("마지막으로 서 있던 지점보다 이만큼 아래로 내려가면 낙사 후보")]
+    public float fallDeathDistance = 20f;
+    [Tooltip("그 시점에 발밑으로 이만큼 훑어서 아무 지형도 없어야 진짜 '허공'으로 본다")]
+    public float fallDeathGroundProbe = 30f;
+    public int fallDeathDamage = 1;
+    [Tooltip("암전(페이드 인) 시간 — 이 동안 게임은 멈춰 있다")]
+    public float fallFadeInDuration = 0.22f;
+    [Tooltip("완전 암전 상태로 머무는 시간(이 사이에 복귀·피해가 처리된다)")]
+    public float fallBlackHoldDuration = 0.18f;
+    public float fallFadeOutDuration = 0.32f;
+
     // 기능_구현_명세서: 일섬은 빛 에너지를 소모하고, 패링 성공 시 크게 충전되며, 처형 성공 시 체력/에너지를
     // 회복한다. ★ 지금은 에너지가 부족해도 일섬을 막지 않는다 — "쓰려면 얼마가 필요한가"는 밸런스 결정이라
     // 현재 플레이 감각을 바꾸지 않는 선에서 수치·게이지만 먼저 세운다(게이팅은 별도 지시 후).
@@ -525,6 +543,13 @@ public class PlayerController : MonoBehaviour
     bool isGrounded;
     int wallDirX;
 
+    Vector3 lastGroundedPosition;  // 낙사 복귀 지점 — 접지 중에는 매 프레임 갱신된다
+    bool isFallRespawning;         // 낙사 연출(멈춤+암전) 진행 중 — 입력·물리·시간 조작을 전부 막는다
+
+    // [ASSERT] 판독구
+    public Vector3 LastGroundedPosition => lastGroundedPosition;
+    public bool IsFallRespawning => isFallRespawning;
+
     float wallJumpLockCounter;
     bool wasGrounded;
 
@@ -664,6 +689,7 @@ public class PlayerController : MonoBehaviour
 
         currentHealth = maxHealth;
         currentEnergy = Mathf.Clamp(Mathf.RoundToInt(maxEnergy * startEnergyRatio), 0, maxEnergy);
+        lastGroundedPosition = transform.position; // 시작 지점 = 첫 복귀 지점(아직 착지한 적이 없을 때 대비)
         // 이 시점의 값(씬/인스펙터 기준)을 세이브 데이터의 출발점으로 심는다. 옛 세이브를 되돌리는 건
         // GameDataManager.LoadGame()을 부른 쪽만 — Play할 때마다 자동 복원되면 매 판 상태가 달라진다.
         GameDataManager.Bind(this);
@@ -689,10 +715,21 @@ public class PlayerController : MonoBehaviour
     void OnDisable()
     {
         EndTimeAccel("disabled");
+        // 낙사 연출 도중에 멈추면 화면이 검은 채로, 게임이 멈춘 채로 남는다 — 둘 다 되돌린다.
+        if (isFallRespawning)
+        {
+            isFallRespawning = false;
+            Time.timeScale = 1f;
+            ScreenFadeUI.ClearImmediate();
+        }
     }
 
     void Update()
     {
+        // 낙사 연출 중엔 아무것도 굴리지 않는다. ⚠️ 특히 HandleTimeAccel보다 먼저 빠져야 한다 —
+        // 그쪽이 Time.timeScale을 자기 값으로 덮어써서 "게임 멈춤"이 풀려 버린다.
+        if (isFallRespawning) return;
+
         // 시간 가속을 가장 먼저 굴린다 — 이 프레임의 TimeAccelMul(플레이어 보정 배율)이 아래 모든
         // 타이머·속도 계산의 전제이기 때문이다(Left Alt 토글 입력도 여기서 본다).
         HandleTimeAccel();
@@ -712,6 +749,7 @@ public class PlayerController : MonoBehaviour
         if (jumpSuppressTimer > 0f) jumpSuppressTimer -= PDelta;
 
         CheckEnvironment();
+        CheckFallDeath();
         // 패링 타이머는 일섬보다 먼저 굴린다 — HandleIlseom이 패링을 시작하는 그 프레임에 타이머가
         // 한 번 가산돼 모션이 그만큼 짧아지는 것을 막는다(일섬 차지에서 겪었던 것과 같은 함정).
         HandleParry();
@@ -890,11 +928,58 @@ public class PlayerController : MonoBehaviour
         {
             coyoteTimeCounter = coyoteTime;
             hasJumpAttackBonusJump = false; // 착지하면 코요테 타임으로 다시 점프할 수 있으니 여분은 정리
+            // 낙사 복귀 지점 — "마지막으로 있었던 플랫폼"이 곧 지금 서 있는 자리다.
+            lastGroundedPosition = transform.position;
         }
         else
         {
             coyoteTimeCounter -= PDelta;
         }
+    }
+
+    // ── 낙사(허공으로 오래 떨어짐) ────────────────────────────────────────────────────────────
+    // 조건 두 가지를 모두 만족해야 한다(사용자 지시 2026-08-09).
+    //  ① 마지막으로 서 있던 지점보다 fallDeathDistance 이상 아래로 내려왔다.
+    //  ② 그 시점에 발밑 fallDeathGroundProbe 안에 지형이 하나도 없다(= 받아 줄 바닥이 없는 허공).
+    // ②가 없으면 "높은 곳에서 아래층으로 내려가는" 정상 루트가 통째로 낙사로 처리된다.
+    void CheckFallDeath()
+    {
+        if (isFallRespawning || isGrounded) return;
+        if (rb.linearVelocity.y > 0f) return; // 아직 솟는 중이면 낙하가 아니다
+
+        if (lastGroundedPosition.y - transform.position.y < fallDeathDistance) return;
+
+        Bounds b = coll.bounds;
+        RaycastHit2D below = Physics2D.BoxCast(b.center, b.size, 0f, Vector2.down, fallDeathGroundProbe, groundLayer);
+        if (below.collider != null) return; // 아래에 발판·땅이 있다 → 그냥 긴 낙하다
+
+        StartCoroutine(FallRespawnRoutine());
+    }
+
+    // 게임 멈춤 → 암전(페이드 인) → 복귀 + 체력 한 칸 → 페이드 아웃 → 재개.
+    // 전부 unscaled로 돈다 — 멈춘(timeScale=0) 상태에서 진행되는 연출이라 스케일 시간으로 재면 영원히 안 끝난다.
+    System.Collections.IEnumerator FallRespawnRoutine()
+    {
+        isFallRespawning = true;
+        float fallen = lastGroundedPosition.y - transform.position.y;
+        TestLog.Event("fall_death", $"triggered fall={fallen:F1} from={transform.position} to={lastGroundedPosition}");
+
+        Time.timeScale = 0f; // 게임 멈춤(적·함정·VFX까지 통째로)
+        yield return ScreenFadeUI.FadeTo(1f, fallFadeInDuration);
+
+        // 완전 암전 상태에서 복귀시킨다 — 순간이동이 화면에 보이지 않게.
+        transform.position = lastGroundedPosition;
+        rb.linearVelocity = Vector2.zero;
+        TakeDamage(fallDeathDamage);
+        TestLog.Event("fall_death", $"respawned hp={currentHealth}/{maxHealth}");
+
+        yield return new WaitForSecondsRealtime(fallBlackHoldDuration);
+
+        // 화면이 아직 검을 때 세계를 먼저 되살린다 — 카메라·애니메이션이 한 박자 정리된 뒤 밝아진다.
+        Time.timeScale = BaseTimeScale;
+        isFallRespawning = false;
+
+        yield return ScreenFadeUI.FadeTo(0f, fallFadeOutDuration);
     }
 
     /// <summary>그 방향에 "붙을 수 있는 벽면"이 있는지. 단순히 Wall 콜라이더에 닿았는지가 아니라

@@ -4544,3 +4544,42 @@ Wall·Enemy)를 마스크 머티리얼로 한 번 더 그려 요소 실루엣을
 5.00초 간격. 빔 밖으로 순간이동시키면 `exposed=False t=0.00 broken=False glitchSources=0`으로 즉시
 초기화. 추격 배율을 0.15로 낮춰 옮기면 빔이 89.8° 뒤처진 채 따라오는 것을 확인(=스냅이 아니라
 유한 속도 추격). 노이즈 화면: `Assets/Screenshots/beam_exposure_glitch.png`.
+
+---
+
+## 2026-08-09 — 낙사 복귀 (허공 낙하 → 멈춤·암전 → 마지막 발판 복귀)
+
+**발동 조건은 두 가지를 모두 만족해야 한다**(사용자 지시: "많이 떨어짐 + 아래에 플랫폼 or 땅바닥
+없어야 함"). ① 마지막으로 서 있던 지점보다 `fallDeathDistance`(기본 20) 이상 아래로 내려왔고,
+② 그 시점에 발밑 `fallDeathGroundProbe`(기본 30)를 BoxCast로 훑어 지형이 하나도 안 걸릴 것.
+②가 없으면 "높은 곳에서 아래층으로 내려가는" 정상 루트가 통째로 낙사가 된다.
+
+**연출 순서**(`PlayerController.FallRespawnRoutine`, 전부 unscaled):
+`Time.timeScale=0`(게임 멈춤) → 암전 페이드 인 → 완전히 검을 때 마지막 접지 지점으로 복귀 +
+`TakeDamage(1)` → 잠깐 유지 → **timeScale 복구(=게임 재개)** → 페이드 아웃. 화면이 아직 검을 때
+세계를 먼저 되살려서, 밝아질 때는 카메라·애니메이션이 이미 정리된 상태로 시작한다.
+
+- 복귀 지점은 `CheckEnvironment`에서 접지 중 매 프레임 갱신되는 `lastGroundedPosition`.
+- `Update` 맨 앞에서 `isFallRespawning`이면 즉시 return한다. ⚠️ **HandleTimeAccel보다 먼저** 빠져야
+  한다 — 그쪽이 `Time.timeScale`을 자기 값으로 덮어써서 "게임 멈춤"이 풀린다.
+- 암전은 새 `ScreenFadeUI`(런타임 Canvas 절차 생성, `sortingOrder=5000`). HUD보다 **위**에 그려야
+  해서 기존 오버레이 캔버스에 얹지 않고 전용 캔버스를 만든다(PlayerDamageFlashUI는 반대로 HUD
+  아래에 깔려야 해서 맨 뒤로 들어간다 — 같은 패턴, 반대 요구).
+- `PlayerController.OnDisable`에 비상 복구 추가 — 연출 도중 플레이를 멈춰도 화면이 검은 채로,
+  게임이 멈춘 채로 남지 않는다(실측 확인: 정지 후 timeScale=1 / fadeAlpha=0).
+
+**검증(플레이 모드 실측, MCP)**: Editor.log
+`fall_death: triggered fall=31.8 from=(5.14,-7.75) to=(5.14,24.05)` → 같은 게임시간(T=11.36)에
+프레임만 641→733으로 92프레임 흐름(=timeScale 0으로 멈춘 구간) → `player_damage hp=2/5 dmg=1`
+→ `fall_death: respawned hp=2/5`. 정확히 한 칸만 깎이고 마지막 발판 좌표로 정확히 복귀.
+암전은 화면 전체(HUD 포함)가 완전히 덮이는 것을 스크린샷으로 확인.
+⚠️ 백그라운드 에디터는 프레임이 거의 안 돌아(원격 검증의 알려진 제약) 페이드가 실시간으로는
+아주 느리게 보인다 — 실제 플레이(포커스 상태)에서 체감 확인 필요.
+
+**보스 피해에도 기존 피해 연출**(사용자 지시 2026-08-09) — 화면 쉐이크와 붉은 점멸은
+`PlayerController.TakeDamage` 안에 있어 보스 빔도 이미 타고 있었고, 실제로 빠져 있던 건 적 공격이
+추가로 띄우는 **데미지 텍스트**였다(`DummyEnemy.cs:342`처럼 때린 쪽이 직접 스폰하는 구조라 보스만
+누락). 같은 `CombatFx.SpawnDamageText` · 같은 색(1, 0.3, 0.3)으로 맞췄다.
+프리팹은 인스펙터에서 안 꽂아도 되게 씬의 아무 적에게서 한 번 빌려 캐시한다(`ResolveDamageTextPrefab`)
+— 보스는 씬 오브젝트라 참조를 새로 꽂으려면 씬을 저장해야 하는데 그걸 피하기 위한 선택이다.
+실측: `prefabResolved=DmgText`, 피해 틱 직후 `liveDamageTexts=1` 확인.
