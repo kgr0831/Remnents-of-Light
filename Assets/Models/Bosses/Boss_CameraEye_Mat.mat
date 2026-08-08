@@ -37,7 +37,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _BodyDarkness: 1
+    - _BodyDarkness: 0.796
     - _EmissiveBoost: 2.93
     - _EnvironmentBlend: 0.194
     - _PixelDensity: 32

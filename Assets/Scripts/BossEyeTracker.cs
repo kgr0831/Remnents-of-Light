@@ -61,10 +61,57 @@ public class BossEyeTracker : MonoBehaviour
     // 보스 본체는 화면에 보이면 안 되는 동안(배경 뒤) PixelBoss 레이어를 쓰지만, 빛은 실제로
     // 플레이어·주변 오브젝트를 비춰야 한다는 지시(2026-08-08)에 따라 기본(Default) 레이어에 둔다 —
     // 그래야 메인 카메라가 이 빛의 영향을 받는 실제 화면을 그린다. 다른 레이어를 쓰고 싶으면 여기서 바꾼다.
+    // ⚠️ Light2DCullResult는 camera.cullingMask & (1 << light.gameObject.layer)로 라이트를 컬링한다 —
+    //    PixelBoss(16)에 두면 메인 카메라가 이 빛을 아예 안 그린다.
     public string beamLightLayerName = "Default";
+
+    // 사용자 지시(2026-08-09): "보스의 빛이 타일과 모든 요소를 비추게" — 눈에서 나가는 좁은 빔만으로는
+    // 부채꼴이 지나가는 자리밖에 밝아지지 않는다(씬에 Global Light 2D가 하나도 없어서 나머지는 전부
+    // 검게 남는다). 그래서 눈을 중심으로 방 전체를 덮는 넓은 원형 광원을 하나 더 둬서 타일·지형·적·
+    // 플레이어가 실제로 보스 빛을 받게 한다. 이쪽은 볼류메트릭을 끈다 — 빔의 부채꼴 연출은 그대로
+    // 두고 "조명"만 담당(안 그러면 화면 전체가 붉은 안개로 덮인다).
+    // 사용자 지시(2026-08-09): "레이저 빔이 플레이어를 추격하는 형태(플레이어보다 약간 느림)".
+    // 각속도만으로 쫓으면 멀리 있을 때는 순식간에 따라붙고 가까이 붙으면 절대 못 따라잡는 —
+    // "추격"이 아니라 "조준"이 된다. 그래서 월드 공간의 조준점(beamAimPoint)이 플레이어를
+    // 이동속도 기준으로 뒤쫓게 하고, 빔은 그 점을 겨눈다. 플레이어보다 느리니 달아나면 벗어난다.
+    [Header("Beam Chase (조준점이 플레이어를 뒤쫓는 속도)")]
+    [Tooltip("플레이어 이동속도 대비 배율 — 1보다 작아야 도망칠 수 있다")]
+    public float beamChaseSpeedFactor = 0.85f;
+    [Tooltip("플레이어(PlayerController)를 못 찾았을 때 쓸 초당 이동 속도")]
+    public float beamChaseSpeedFallback = 4.5f;
+
+    // 사용자 지시(2026-08-09): 빔에 3초 이상 계속 노출되면 자아 고갈과 같은 화면 노이즈가 걸리고
+    // 5초에 한 칸씩 체력이 깎인다. 노출이 끊기면 카운트도 노이즈도 즉시 0으로 돌아간다.
+    // ⚠️ 첫 피해 시점은 자아 붕괴(egoDepletedDamageInterval)와 같은 규칙을 따른다 — 디버프가
+    //    걸린 뒤 한 주기를 꽉 채워야 들어온다(=노출 3초 + 5초 = 8초째). 더 빡세게 하려면
+    //    exposureDamageInterval을 줄이면 된다.
+    [Header("Beam Exposure (빔에 계속 노출되면 붕괴)")]
+    public float exposureToBreakSeconds = 3f;
+    public float exposureDamageInterval = 5f;
+    public int exposureDamage = 1;
+
+    [Header("Ambient Glow (주변 타일·오브젝트를 실제로 비추는 넓은 원형 광원)")]
+    public Color glowColor = new Color(1f, 0.16f, 0.1f);
+    public float glowIntensity = 1.5f;
+    [Tooltip("이 반경 안쪽은 감쇠 없이 최대 밝기")]
+    public float glowInnerRadius = 6f;
+    [Tooltip("보스 룸(가장 큰 것이 48x27)을 덮을 만큼 넉넉히")]
+    public float glowOuterRadius = 45f;
 
     Quaternion restRotation;
     Light2D beamLight;
+    Light2D glowLight;
+
+    PlayerController playerController;
+    Vector3 beamAimPoint;      // 플레이어를 뒤쫓는 월드 조준점 — 빔은 항상 이 점을 겨눈다
+    float exposureTimer;       // 연속 노출 시간(끊기면 0)
+    float exposureDamageTimer; // 디버프가 걸린 뒤 도는 피해 주기
+    bool exposureBroken;       // 3초를 넘겨 노이즈·피해가 켜진 상태
+
+    // [ASSERT] 판독구 — 플레이 테스트에서 로그로 확인한다
+    public bool IsPlayerExposed { get; private set; }
+    public float ExposureSeconds => exposureTimer;
+    public bool ExposureBroken => exposureBroken;
 
     void Awake()
     {
@@ -89,6 +136,12 @@ public class BossEyeTracker : MonoBehaviour
         if (trackedCamera != null) lastCameraPosition = trackedCamera.position;
         desiredPosition = transform.position;
 
+        if (player != null)
+        {
+            playerController = player.GetComponent<PlayerController>();
+            beamAimPoint = player.position; // 시작할 땐 플레이어를 정확히 겨눈 상태
+        }
+
         BuildBeamLight();
     }
 
@@ -108,6 +161,32 @@ public class BossEyeTracker : MonoBehaviour
         beamLight.volumeIntensity = 1f;
         // 기본값이 false라 이게 없으면 라이트 자체가 화면에 전혀 안 보인다(볼류메트릭 시각화 스위치).
         beamLight.volumetricEnabled = true;
+        ApplyToAllSortingLayers(beamLight);
+
+        // 넓은 원형 조명 — 각도 360이면 부채꼴이 아니라 완전한 원이 된다.
+        GameObject glowGO = new GameObject("BossEyeGlowLight");
+        glowGO.layer = lightGO.layer;
+        glowLight = glowGO.AddComponent<Light2D>();
+        glowLight.lightType = Light2D.LightType.Point;
+        glowLight.color = glowColor;
+        glowLight.intensity = glowIntensity;
+        glowLight.pointLightInnerAngle = 360f;
+        glowLight.pointLightOuterAngle = 360f;
+        glowLight.pointLightInnerRadius = glowInnerRadius;
+        glowLight.pointLightOuterRadius = glowOuterRadius;
+        glowLight.volumetricEnabled = false; // 조명만 — 안개(볼류메트릭)는 빔 쪽에만 남긴다
+        ApplyToAllSortingLayers(glowLight);
+    }
+
+    // Light2D는 "타깃 소팅 레이어"에 속한 렌더러만 비춘다. AddComponent로 만들면 Awake가 전체
+    // 레이어로 기본값을 채워 주지만(URP 17.3 Light2D.Awake), 나중에 소팅 레이어가 추가돼도
+    // "모든 요소를 비춘다"는 요구가 깨지지 않도록 매번 현재 전체 레이어로 명시한다.
+    static void ApplyToAllSortingLayers(Light2D light)
+    {
+        var layers = SortingLayer.layers;
+        var ids = new int[layers.Length];
+        for (int i = 0; i < layers.Length; i++) ids[i] = layers[i].id;
+        light.targetSortingLayers = ids;
     }
 
     void LateUpdate()
@@ -157,13 +236,105 @@ public class BossEyeTracker : MonoBehaviour
         // 달라 보이는 문제가 있었다(사용자 리포트: "빛이 자꾸 크기가 바뀜").
         Vector3 eyeWorldNow = transform.TransformPoint(eyeLocalOffset);
         beamLight.transform.position = eyeWorldNow;
-        Vector3 aimDir = player.position - eyeWorldNow;
+
+        // 넓은 조명은 눈 위치만 따라가면 된다(방향 없음). 플레이 모드에서 인스펙터로 세기·반경을
+        // 바로 굴려볼 수 있도록 값도 매 프레임 반영한다.
+        if (glowLight != null)
+        {
+            glowLight.transform.position = eyeWorldNow;
+            glowLight.color = glowColor;
+            glowLight.intensity = glowIntensity;
+            glowLight.pointLightInnerRadius = glowInnerRadius;
+            glowLight.pointLightOuterRadius = glowOuterRadius;
+        }
+
+        // ── 조준점이 플레이어를 "약간 느리게" 뒤쫓는다(사용자 지시 2026-08-09) ──
+        // 빔은 플레이어가 아니라 이 점을 겨눈다. 플레이어 이동속도보다 느리므로 계속 달리면
+        // 빔이 뒤로 처지다가 부채꼴 밖으로 빠진다(=노출 카운트가 끊긴다).
+        float chaseSpeed = (playerController != null ? playerController.moveSpeed : beamChaseSpeedFallback)
+                           * Mathf.Max(0f, beamChaseSpeedFactor);
+        Vector3 playerFlat = new Vector3(player.position.x, player.position.y, eyeWorldNow.z);
+        beamAimPoint = Vector3.MoveTowards(beamAimPoint, playerFlat, chaseSpeed * Time.deltaTime);
+
+        Vector3 aimDir = beamAimPoint - eyeWorldNow;
         aimDir.z = 0f;
         if (aimDir.sqrMagnitude > 0.0001f)
         {
-            // 순간 스냅 대신 각속도 기반으로 따라가게 해서 "추적하는" 느낌을 준다.
+            // 순간 스냅 대신 각속도로도 한 번 더 눌러 준다 — 조준점이 눈 바로 옆을 스칠 때
+            // 각도가 순간적으로 튀는 것을 막는 안전장치다(평소엔 거의 걸리지 않는다).
             Quaternion targetAim = Quaternion.FromToRotation(beamAimLocalAxis.normalized, aimDir.normalized);
             beamLight.transform.rotation = Quaternion.RotateTowards(beamLight.transform.rotation, targetAim, beamTrackSpeedDegPerSec * Time.deltaTime);
         }
+
+        UpdateExposure(eyeWorldNow);
+    }
+
+    /// <summary>플레이어가 빔 부채꼴 안에 있는지 — 사거리(beamRange)와 외곽각(beamOuterAngle, 전체각)으로만
+    /// 판정한다. 지형 차폐는 보지 않는다(요구사항 밖 · 2D 부채꼴 빛 자체도 벽을 무시한다).</summary>
+    bool IsPlayerInBeam(Vector3 eyeWorld)
+    {
+        Vector3 toPlayer = player.position - eyeWorld;
+        toPlayer.z = 0f;
+        float dist = toPlayer.magnitude;
+        if (dist < 0.0001f) return true;
+        if (dist > beamRange) return false;
+
+        Vector3 beamDir = beamLight.transform.rotation * beamAimLocalAxis.normalized;
+        beamDir.z = 0f;
+        if (beamDir.sqrMagnitude < 0.0001f) return false;
+
+        // Light2D의 pointLightOuterAngle은 부채꼴 "전체" 각이라 반각과 비교한다.
+        return Vector3.Angle(beamDir, toPlayer) <= beamOuterAngle * 0.5f;
+    }
+
+    // 3초 이상 연속 노출 → 자아 고갈과 같은 화면 노이즈 + 5초마다 체력 한 칸(사용자 지시 2026-08-09).
+    // 노출이 한 프레임이라도 끊기면 카운트·노이즈·피해 주기가 전부 0으로 돌아간다.
+    void UpdateExposure(Vector3 eyeWorld)
+    {
+        IsPlayerExposed = IsPlayerInBeam(eyeWorld);
+
+        if (!IsPlayerExposed)
+        {
+            ClearExposure();
+            return;
+        }
+
+        exposureTimer += Time.deltaTime;
+
+        if (!exposureBroken)
+        {
+            if (exposureTimer < exposureToBreakSeconds) return;
+            exposureBroken = true;
+            exposureDamageTimer = 0f; // 첫 피해는 한 주기를 꽉 채운 뒤(자아 붕괴와 같은 규칙)
+            ScreenGlitchFx.Begin(ScreenGlitchFx.Source.BossBeam);
+            TestLog.Event("boss_beam", $"exposure_break after={exposureTimer:F2}s");
+        }
+
+        exposureDamageTimer += Time.deltaTime;
+        if (exposureDamageTimer < exposureDamageInterval) return;
+
+        exposureDamageTimer -= exposureDamageInterval;
+        if (playerController == null) playerController = player.GetComponent<PlayerController>();
+        if (playerController != null)
+        {
+            playerController.TakeDamage(exposureDamage);
+            TestLog.Event("boss_beam", $"exposure_damage -{exposureDamage} hp={playerController.currentHealth}/{playerController.maxHealth}");
+        }
+    }
+
+    void ClearExposure()
+    {
+        exposureTimer = 0f;
+        exposureDamageTimer = 0f;
+        if (!exposureBroken) return;
+        exposureBroken = false;
+        ScreenGlitchFx.End(ScreenGlitchFx.Source.BossBeam);
+        TestLog.Event("boss_beam", "exposure_clear");
+    }
+
+    // 보스가 사라져도 노이즈가 화면에 남지 않게 한다(씬 전환 · 오브젝트 파괴).
+    void OnDisable()
+    {
+        ClearExposure();
     }
 }

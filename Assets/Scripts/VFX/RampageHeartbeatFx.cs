@@ -103,7 +103,7 @@ public class RampageHeartbeatFx : MonoBehaviour
         // 진입 임팩트 — 충격파 링·화면 글리치는 즉시 발사(자기 수명대로 알아서 사라짐),
         // 흰 플래시는 같은 Image를 쓰는 lub/dub 펄스와 겹치지 않게 먼저 끝내고 넘어간다.
         SpawnShockwaveRing(player);
-        ScreenGlitchFx.Begin();
+        ScreenGlitchFx.Begin(ScreenGlitchFx.Source.Heartbeat);
         StartCoroutine(EndGlitchAfter(GlitchHold));
         yield return Pulse(WhiteFlashColor, WhiteFlashPeak, WhiteFlashRise, WhiteFlashFall);
 
@@ -116,7 +116,7 @@ public class RampageHeartbeatFx : MonoBehaviour
     IEnumerator EndGlitchAfter(float hold)
     {
         yield return WaitUnscaled(hold);
-        ScreenGlitchFx.End();
+        ScreenGlitchFx.End(ScreenGlitchFx.Source.Heartbeat);
     }
 
     void SpawnShockwaveRing(Transform player)
