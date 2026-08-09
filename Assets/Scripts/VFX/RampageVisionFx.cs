@@ -37,6 +37,15 @@ public class RampageVisionFx : MonoBehaviour
     readonly Dictionary<DummyEnemy, RampageEnemyOutlineFx> outlines =
         new Dictionary<DummyEnemy, RampageEnemyOutlineFx>();
     readonly List<DummyEnemy> scratch = new List<DummyEnemy>();
+    // 문/스위치 기믹(2026-08-10, 사용자 지시 "폭주 중엔 아웃라인만 보이게") — 적과 완전히 같은
+    // 빨간 테두리+어두운 속 기법(RampageEnemyOutlineFx)을 재사용. 원본 스프라이트는 어둠에 눌려
+    // 안 보이고 테두리만 보호 레이어(VFXNoGrayscale)로 살아남는다(적과 동일 원리).
+    readonly Dictionary<DoorSwitch, RampageEnemyOutlineFx> switchOutlines =
+        new Dictionary<DoorSwitch, RampageEnemyOutlineFx>();
+    readonly Dictionary<LaserDoor, RampageEnemyOutlineFx> doorOutlines =
+        new Dictionary<LaserDoor, RampageEnemyOutlineFx>();
+    readonly List<DoorSwitch> switchScratch = new List<DoorSwitch>();
+    readonly List<LaserDoor> doorScratch = new List<LaserDoor>();
 
     float k;        // 현재 세기 0~1
     bool ending;
@@ -67,6 +76,7 @@ public class RampageVisionFx : MonoBehaviour
 
         fx.terrain = RampageTerrainOutlineFx.Create(player, TerrainCullRadius);
         fx.ScanEnemies();
+        fx.ScanGimmicks();
         fx.Apply();
     }
 
@@ -91,6 +101,7 @@ public class RampageVisionFx : MonoBehaviour
             {
                 scanTimer = 0f;
                 ScanEnemies();
+                ScanGimmicks();
             }
         }
 
@@ -128,6 +139,22 @@ public class RampageVisionFx : MonoBehaviour
             kv.Value.SetAlpha(k);
         }
         for (int i = 0; i < scratch.Count; i++) outlines.Remove(scratch[i]); // 적이 파괴된 경우 정리
+
+        switchScratch.Clear();
+        foreach (var kv in switchOutlines)
+        {
+            if (kv.Value == null) { switchScratch.Add(kv.Key); continue; }
+            kv.Value.SetAlpha(k);
+        }
+        for (int i = 0; i < switchScratch.Count; i++) switchOutlines.Remove(switchScratch[i]);
+
+        doorScratch.Clear();
+        foreach (var kv in doorOutlines)
+        {
+            if (kv.Value == null) { doorScratch.Add(kv.Key); continue; }
+            kv.Value.SetAlpha(k);
+        }
+        for (int i = 0; i < doorScratch.Count; i++) doorOutlines.Remove(doorScratch[i]);
     }
 
     // 월드 반경을 스크린 UV 반경으로 환산한다. 화면 높이 = 2 * orthographicSize이므로
@@ -176,6 +203,52 @@ public class RampageVisionFx : MonoBehaviour
         for (int i = 0; i < scratch.Count; i++) outlines.Remove(scratch[i]);
     }
 
+    // 문/스위치 기믹도 적과 같은 규칙(컬링 반경 + 시야선)으로 아웃라인만 붙인다 — 고정 오브젝트라
+    // ScanEnemies처럼 IsAlive 판정은 필요 없다.
+    void ScanGimmicks()
+    {
+        if (target == null) return;
+        Vector2 c = target.position;
+
+        var switches = FindObjectsByType<DoorSwitch>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
+        for (int i = 0; i < switches.Length; i++)
+        {
+            var s = switches[i];
+            bool want = Vector2.Distance(c, s.transform.position) <= CullRadius && HasLineOfSight(c, s.transform.position);
+            bool has = switchOutlines.TryGetValue(s, out var fx) && fx != null;
+
+            if (want && !has)
+            {
+                var made = RampageEnemyOutlineFx.Attach(s.transform);
+                if (made != null) { made.SetAlpha(k); switchOutlines[s] = made; }
+            }
+            else if (!want && has)
+            {
+                fx.Detach();
+                switchOutlines.Remove(s);
+            }
+        }
+
+        var doors = FindObjectsByType<LaserDoor>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
+        for (int i = 0; i < doors.Length; i++)
+        {
+            var d = doors[i];
+            bool want = Vector2.Distance(c, d.transform.position) <= CullRadius && HasLineOfSight(c, d.transform.position);
+            bool has = doorOutlines.TryGetValue(d, out var fx) && fx != null;
+
+            if (want && !has)
+            {
+                var made = RampageEnemyOutlineFx.Attach(d.transform);
+                if (made != null) { made.SetAlpha(k); doorOutlines[d] = made; }
+            }
+            else if (!want && has)
+            {
+                fx.Detach();
+                doorOutlines.Remove(d);
+            }
+        }
+    }
+
     // CullRadius는 순수 직선거리라 벽 뒤·옆방처럼 화면에 실제로 안 보여야 할 적도 반경 안이면
     // 아웃라인이 그대로 나타났다(지형 아웃라인이 화면 밖 옆방까지 걸려 나오던 것과 같은 종류의 버그,
     // RampageTerrainOutlineFx 주석 참고). 지형(Ground/Wall)에 가로막히면 "시야 밖"으로 취급한다.
@@ -198,6 +271,14 @@ public class RampageVisionFx : MonoBehaviour
         foreach (var kv in outlines)
             if (kv.Value != null) kv.Value.Detach();
         outlines.Clear();
+
+        foreach (var kv in switchOutlines)
+            if (kv.Value != null) kv.Value.Detach();
+        switchOutlines.Clear();
+
+        foreach (var kv in doorOutlines)
+            if (kv.Value != null) kv.Value.Detach();
+        doorOutlines.Clear();
 
         if (terrain != null) Destroy(terrain.gameObject);
         if (Instance == this) Instance = null;

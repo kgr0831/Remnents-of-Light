@@ -4583,3 +4583,56 @@ Wall·Enemy)를 마스크 머티리얼로 한 번 더 그려 요소 실루엣을
 프리팹은 인스펙터에서 안 꽂아도 되게 씬의 아무 적에게서 한 번 빌려 캐시한다(`ResolveDamageTextPrefab`)
 — 보스는 씬 오브젝트라 참조를 새로 꽂으려면 씬을 저장해야 하는데 그걸 피하기 위한 선택이다.
 실측: `prefabResolved=DmgText`, 피해 틱 직후 `liveDamageTexts=1` 확인.
+
+---
+
+## 2026-08-09 — 빌드에서만 깨지던 문제 2종 (셰이더 스트립 · 레터박스 미클리어)
+
+사용자 리포트: "빌드하면 컬링마스크·쉐이더가 전부 적용 안 되고, 게임이 앞 뒤 프레임을 반복하면서 깨진다".
+
+**1. 커스텀 셰이더가 빌드에서 통째로 스트립됨** — `Shader.Find` / `CoreUtils.CreateEngineMaterial`로만
+잡는 셰이더는 씬·에셋 어디에서도 참조되지 않아 빌드에 포함되지 않는다. `m_AlwaysIncludedShaders`에는
+Unity 내장만 있고 프로젝트 커스텀은 **하나도** 없었다 → 화면 이펙트가 전부 조용히 사라진다
+(`CreateEngineMaterial`은 못 찾으면 null을 반환하고, 호출부가 전부 null 가드라 에러도 안 뜬다).
+Graphics Settings에 12개 추가: `Hidden/BossOverlap{Mask,Outline}` · `Hidden/Screen{Darkness,Glitch,Grayscale}` ·
+`Custom/{EnemyExecutionGlow,IlseomChargePixels,IlseomSlashStreak,ParryShield,PlayerBloomOverlay,RampageOutline}` ·
+`Universal Render Pipeline/2D/Sprite-Unlit-Default`.
+⚠️ 앞으로 `Shader.Find`로 셰이더를 새로 쓰면 **여기에도 같이 등록**해야 한다.
+
+**2. 레터박스 바깥이 안 지워져 이전 프레임이 남음** — `SectionCamera.ApplyLetterbox`가 `cam.rect`를
+줄여 검은 바를 만드는데, "뷰포트 밖은 아무도 안 그리니 검게 남는다"는 **에디터 게임 뷰에서만** 맞다.
+게임 뷰는 매 프레임 타깃을 지우지만 빌드 백버퍼는 아무도 안 지우면 이전 내용이 그대로 남고,
+더블/트리플 버퍼링이라 옛 프레임 두세 장이 번갈아 보이면서 "앞뒤 프레임이 반복되며 깨지는" 것처럼
+된다. 레터박스가 걸린 동안 화면 전체를 검게 지우기만 하는 카메라(cullingMask=0, depth=메인-100)를
+런타임에 하나 띄운다.
+
+**검증(실제 빌드)**: `manage_build`로 Windows64 개발 빌드(42초, errors=0) → 실행 후 화면 캡처.
+16:9 창에서는 보스 픽셀 디스플레이·붉은 조명·**플레이어 흰 아웃라인**이 전부 정상(= 스트립됐던
+셰이더가 살아났다는 직접 증거), 16:10 창에서는 위아래 레터박스 바가 **깨끗한 검정**(이전 프레임
+잔상 없음). Player.log에 셰이더·예외 에러 0건(D3D12 info queue 안내 1줄뿐).
+
+⚠️ "컬링마스크 미적용"은 재현되지 않았다 — 빌드에서 보스 레이어(PixelBoss) 분리는 정상 동작한다.
+지우지 않은 백버퍼의 잔상(2번)이 레이어가 깨진 것처럼 보였을 가능성이 높다. 재빌드 후 재확인 필요.
+
+**부수 발견(별개 버그)**: 프리팹을 `Assets/Resources/Prefabs` → `Assets/Prefabs`로 옮기면서
+`DodgeUI.cs:37` · `ExecutionUI.cs:53`의 `Resources.Load<GameObject>("Prefabs/DashUI" / "Prefabs/ExecutionUI")`가
+항상 null이 됐다(Resources.Load는 Resources 폴더 밖을 못 본다). 에디터·빌드 모두 해당 UI가 안 뜬다.
+→ 프리팹을 Resources 아래로 되돌리거나 직접 참조로 바꿔야 한다(사용자 결정 대기).
+
+**후속(같은 날, 사용자 재보고 "블룸이 마스크대로 안 되고 UI가 안 보인다")** — 빌드 전용 원인 두 개 더:
+
+**3. 발광 마스크가 빌드에 아예 없었다** — `PlayerBloomFx.FindMask`가 `AssetDatabase.LoadAssetAtPath`로
+마스크를 찾았는데 이건 **에디터 전용 API**다(코드 주석에도 "빌드에서는 항상 폴백"이라고 적혀 있었다).
+빌드에서는 항상 null → 흰색 폴백 → **눈·글리치만 빛나야 할 것이 몸 전체가 빛난다**(사용자가 말한
+"블룸이 마스크대로 적용 안 됨"). 마스크 18장을
+`Assets/Sprites/Player/Mask/Resources/PlayerMask/`로 옮기고(폴더 이름이 Resources면 어디에 있든
+런타임 로드 루트가 된다 — 기존 위치를 거의 그대로 유지) `Resources.Load<Texture2D>("PlayerMask/<시트명>")`로
+바꿔 에디터·빌드가 **같은 경로**를 쓰게 했다. `#if UNITY_EDITOR` 분기 제거.
+
+**4. 대시 카운터 UI 등이 안 뜸** — 프리팹을 `Assets/Resources/Prefabs` → `Assets/Prefabs`로 옮기면서
+`Resources.Load("Prefabs/DashUI" / "Prefabs/ExecutionUI")`가 항상 null이 됐다(에디터에서도 동일).
+코드가 경로로 로드하는 그 둘만 `Assets/Resources/Prefabs/`로 되돌렸다(GehennaHound · TiledMap_Exterior ·
+LightObjects는 씬 직접 참조라 `Assets/Prefabs`에 그대로). 로드 성공 확인.
+
+⚠️ 규칙으로 남길 것: **런타임에 경로로 불러오는 에셋은 반드시 Resources 아래**에 있어야 하고,
+`AssetDatabase`는 에디터 전용이라 런타임 코드에 쓰면 빌드에서 조용히 죽는다.

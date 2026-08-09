@@ -204,7 +204,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86cdcc9364cea4c498229544b2b20d40, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GehennaHound
-  maxHp: 20
+  maxHp: 5
   currentHp: 0
   flashColor: {r: 1, g: 1, b: 1, a: 1}
   flashDuration: 0.08

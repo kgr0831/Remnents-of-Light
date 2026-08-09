@@ -52,9 +52,21 @@ public class BossEyeTracker : MonoBehaviour
     public float beamIntensity = 3f;
     public float beamInnerAngle = 14f;
     public float beamOuterAngle = 45f;
-    public float beamRange = 25f;
+    // 2026-08-10 후속: 25는 실제 보스룸(48x27) 기준 눈~최원거리 코너 실측 약 49유닛의 절반밖에 안 돼,
+    // 플레이어가 방 반대쪽에 서 있으면(가만히 있어도) 빛이 아예 안 닿고 노출 판정(IsPlayerInBeam도
+    // 이 값을 그대로 씀)도 끊겼다 — 최원거리보다 넉넉히 큰 값으로 올림.
+    public float beamRange = 55f;
     [Tooltip("빔이 플레이어를 순간적으로 스냅하지 않고 쫓아가는 느낌을 주는 회전 속도(도/초)")]
     public float beamTrackSpeedDegPerSec = 180f;
+    // 사용자 지시(2026-08-10): "거리가 멀수록 붉은 빔이 잘 안 보인다" — Light2D Point의 반경 감쇠
+    // (pointLightOuterRadius=beamRange에 가까워질수록 자연히 어두워짐) 때문에 사거리 끝에서는
+    // "지금 빔에 비춰지고 있다"는 게 잘 안 느껴졌다. 플레이어와의 실제 거리(0=바로 옆, beamRange=사거리
+    // 끝)에 따라 세기를 보간해서, 멀어질수록 오히려 더 쨍하게 밝혀 항상 눈에 띄게 한다.
+    [Header("Beam Distance Compensation (멀수록 더 밝게 — 감쇠 보정)")]
+    [Tooltip("플레이어가 눈 바로 옆(거리 0)에 있을 때의 세기 배율 — 1이면 beamIntensity 그대로")]
+    public float beamNearIntensityMultiplier = 1f;
+    [Tooltip("플레이어가 사거리(beamRange) 끝에 있을 때의 세기 배율 — 1보다 크면 멀어질수록 더 밝아짐")]
+    public float beamFarIntensityMultiplier = 2.5f;
     // Light2D의 Point(=인스펙터상 Spot) 타입 콘이 실제로 어느 로컬 축을 향해 뻗는지 불확실해
     // 노출해둠 — 빔이 눈 방향과 90도 어긋나 보이면 이 값을 Vector3.right 등으로 바꾼다.
     public Vector3 beamAimLocalAxis = Vector3.up;
@@ -263,6 +275,16 @@ public class BossEyeTracker : MonoBehaviour
                            * Mathf.Max(0f, beamChaseSpeedFactor);
         Vector3 playerFlat = new Vector3(player.position.x, player.position.y, eyeWorldNow.z);
         beamAimPoint = Vector3.MoveTowards(beamAimPoint, playerFlat, chaseSpeed * Time.deltaTime);
+
+        // 실제 플레이어와의 거리로 감쇠를 보정한다(조준점이 아니라 플레이어 기준 — "내가 지금
+        // 비춰지고 있다"는 걸 알려주는 게 목적이므로).
+        float distToPlayer = Vector3.Distance(eyeWorldNow, playerFlat);
+        float distT = Mathf.Clamp01(distToPlayer / Mathf.Max(0.01f, beamRange));
+        beamLight.intensity = beamIntensity * Mathf.Lerp(beamNearIntensityMultiplier, beamFarIntensityMultiplier, distT);
+        // 사용자 지시(2026-08-10): "빔의 크기는 딱 플레이어와의 거리로" — 사거리(beamRange)를 항상
+        // 꽉 채우는 대신, 매 프레임 실제 거리만큼만 뻗는다(플레이어가 가까우면 짧게, 멀면 길게).
+        // beamRange는 그 위에 거는 최대 한도로만 남긴다(위 세기 보정의 정규화 기준값과도 공유).
+        beamLight.pointLightOuterRadius = Mathf.Min(distToPlayer, beamRange);
 
         Vector3 aimDir = beamAimPoint - eyeWorldNow;
         aimDir.z = 0f;

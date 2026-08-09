@@ -64,6 +64,10 @@ public class BossOverlapOutlineFeature : ScriptableRendererFeature
         if (_maskMaterial == null || _outlineMaterial == null) return;
         if (BossTexture == null) return;                       // 보스가 없는 씬 — 아무 비용도 들이지 않는다
         if (OutlineLayers == 0) return;
+        // 폭주 중엔 화면이 암전(RampageVisionFeature)되고 그 위로 이 패스가 나중에 그려지는 순서라
+        // 어둠을 뚫고 흰 선이 그대로 보였다(사용자 리포트 2026-08-10) — 폭주 강도가 0보다 크면
+        // (페이드 도중 포함) 아웃라인 패스 자체를 건너뛴다. 폭주가 아닐 때(레이저 문 포함)는 평소대로.
+        if (RampageVisionFeature.Instance != null && RampageVisionFeature.Instance.Intensity > 0.001f) return;
 
         var cameraData = renderingData.cameraData;
         // 게임 화면에만 적용한다. 씬 뷰는 보스 RT와 화면 좌표가 안 맞아(다른 카메라) 엉뚱한 곳에

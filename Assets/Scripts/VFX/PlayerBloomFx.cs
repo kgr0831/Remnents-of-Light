@@ -12,18 +12,16 @@ using UnityEngine;
 public class PlayerBloomFx : MonoBehaviour
 {
     const string ShaderName = "Custom/PlayerBloomOverlay";
-    const string MaskFolder = "Assets/Sprites/Player/Mask/";
+    // Assets/Sprites/Player/Mask/Resources/PlayerMask/ 아래를 가리키는 런타임 로드 경로.
+    const string MaskResourcePath = "PlayerMask/";
 
     static readonly int IdIntensity = Shader.PropertyToID("_Intensity");
     static readonly int IdEmissionMask = Shader.PropertyToID("_EmissionMask");
     static readonly int IdColor = Shader.PropertyToID("_Color");
 
-    // 시트 텍스처 이름 → 발광 마스크. 없으면(부록A 마스크가 아직 없는 시트, 또는 에디터 밖) null을
-    // 그대로 캐싱해 매 프레임 재조회하지 않는다. AssetDatabase는 에디터 전용이라 빌드에서는 항상
-    // 폴백(흰색 = 기존 _Flatten 동작)으로 빠진다 — Resources/Addressables 이관은 실제 빌드가 필요해질 때.
-#if UNITY_EDITOR
+    // 시트 텍스처 이름 → 발광 마스크. 없으면(부록A 마스크가 아직 없는 시트) null을 그대로 캐싱해
+    // 매 프레임 재조회하지 않는다.
     static readonly Dictionary<string, Texture2D> _maskCache = new Dictionary<string, Texture2D>();
-#endif
 
     SpriteRenderer sr;
     SpriteRenderer ownerSr;
@@ -187,20 +185,22 @@ public class PlayerBloomFx : MonoBehaviour
         }
     }
 
-    // 시트 텍스처 이름과 같은 파일명의 마스크를 부록A 산출물 폴더에서 찾는다(예: "Glitch Samurai-Idle"
-    // → "Assets/Sprites/Player/Mask/Glitch Samurai-Idle.png"). 마스크가 아직 없는 시트(마스터 시트 등)는
-    // null을 캐싱해 반복 조회를 막는다 — 호출부가 null을 흰색 폴백으로 치환한다.
+    // 시트 텍스처 이름과 같은 파일명의 마스크를 찾는다(예: "Glitch Samurai-Idle" →
+    // Assets/Sprites/Player/Mask/Resources/PlayerMask/Glitch Samurai-Idle.png).
+    // 마스크가 아직 없는 시트(마스터 시트 등)는 null을 캐싱해 반복 조회를 막는다 — 호출부가 null을
+    // 흰색 폴백으로 치환한다.
+    //
+    // ⚠️ 빌드 전용 버그(사용자 리포트 2026-08-09 "블룸이 마스크대로 적용 안 됨"): 예전엔 이 조회를
+    //    AssetDatabase로 했는데 그건 **에디터 전용 API**라 빌드에서는 항상 null → 흰색 폴백 →
+    //    눈·글리치만 빛나야 할 것이 몸 전체가 빛났다(에디터에서는 정상이라 안 보이던 문제).
+    //    그래서 마스크를 Resources 아래로 옮기고 에디터·빌드가 같은 경로로 로드하게 했다.
     static Texture2D FindMask(Texture mainTex)
     {
         if (mainTex == null) return null;
-#if UNITY_EDITOR
         if (_maskCache.TryGetValue(mainTex.name, out Texture2D cached)) return cached;
-        Texture2D mask = UnityEditor.AssetDatabase.LoadAssetAtPath<Texture2D>(MaskFolder + mainTex.name + ".png");
+        Texture2D mask = Resources.Load<Texture2D>(MaskResourcePath + mainTex.name);
         _maskCache[mainTex.name] = mask;
         return mask;
-#else
-        return null;
-#endif
     }
 
     void OnDestroy()
