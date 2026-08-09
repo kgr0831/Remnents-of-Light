@@ -44,8 +44,12 @@ public class RampageVisionFx : MonoBehaviour
         new Dictionary<DoorSwitch, RampageEnemyOutlineFx>();
     readonly Dictionary<LaserDoor, RampageEnemyOutlineFx> doorOutlines =
         new Dictionary<LaserDoor, RampageEnemyOutlineFx>();
+    // fan activ 차폐 기믹도 같은 취급(사용자 지시 2026-08-10) — 문/스위치와 완전히 같은 패턴.
+    readonly Dictionary<FanActiv, RampageEnemyOutlineFx> fanOutlines =
+        new Dictionary<FanActiv, RampageEnemyOutlineFx>();
     readonly List<DoorSwitch> switchScratch = new List<DoorSwitch>();
     readonly List<LaserDoor> doorScratch = new List<LaserDoor>();
+    readonly List<FanActiv> fanScratch = new List<FanActiv>();
 
     float k;        // 현재 세기 0~1
     bool ending;
@@ -155,6 +159,14 @@ public class RampageVisionFx : MonoBehaviour
             kv.Value.SetAlpha(k);
         }
         for (int i = 0; i < doorScratch.Count; i++) doorOutlines.Remove(doorScratch[i]);
+
+        fanScratch.Clear();
+        foreach (var kv in fanOutlines)
+        {
+            if (kv.Value == null) { fanScratch.Add(kv.Key); continue; }
+            kv.Value.SetAlpha(k);
+        }
+        for (int i = 0; i < fanScratch.Count; i++) fanOutlines.Remove(fanScratch[i]);
     }
 
     // 월드 반경을 스크린 UV 반경으로 환산한다. 화면 높이 = 2 * orthographicSize이므로
@@ -247,6 +259,25 @@ public class RampageVisionFx : MonoBehaviour
                 doorOutlines.Remove(d);
             }
         }
+
+        var fans = FindObjectsByType<FanActiv>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
+        for (int i = 0; i < fans.Length; i++)
+        {
+            var fan = fans[i];
+            bool want = Vector2.Distance(c, fan.transform.position) <= CullRadius && HasLineOfSight(c, fan.transform.position);
+            bool has = fanOutlines.TryGetValue(fan, out var fx) && fx != null;
+
+            if (want && !has)
+            {
+                var made = RampageEnemyOutlineFx.Attach(fan.transform);
+                if (made != null) { made.SetAlpha(k); fanOutlines[fan] = made; }
+            }
+            else if (!want && has)
+            {
+                fx.Detach();
+                fanOutlines.Remove(fan);
+            }
+        }
     }
 
     // CullRadius는 순수 직선거리라 벽 뒤·옆방처럼 화면에 실제로 안 보여야 할 적도 반경 안이면
@@ -279,6 +310,10 @@ public class RampageVisionFx : MonoBehaviour
         foreach (var kv in doorOutlines)
             if (kv.Value != null) kv.Value.Detach();
         doorOutlines.Clear();
+
+        foreach (var kv in fanOutlines)
+            if (kv.Value != null) kv.Value.Detach();
+        fanOutlines.Clear();
 
         if (terrain != null) Destroy(terrain.gameObject);
         if (Instance == this) Instance = null;
