@@ -1,0 +1,923 @@
+fileFormatVersion: 2
+guid: 0d7956091d112544a8b3f35ee56d7873
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 6494277201599807040
+    second: Protect_Up_0
+  - first:
+      213: -5463405763118185000
+    second: Protect_Up_1
+  - first:
+      213: 3016844644076440081
+    second: Protect_Up_2
+  - first:
+      213: 1029079634076223330
+    second: Protect_Up_3
+  - first:
+      213: 348382499346248527
+    second: Protect_Up_4
+  - first:
+      213: 488504990299466565
+    second: Protect_Up_5
+  - first:
+      213: -5036125779815898222
+    second: Protect_Up_6
+  - first:
+      213: -3135522436943597010
+    second: Protect_Up_7
+  - first:
+      213: -8673511870980943666
+    second: Protect_Up_8
+  - first:
+      213: 5409886236367038290
+    second: Protect_Up_9
+  - first:
+      213: -3915793066618713551
+    second: Protect_Up_10
+  - first:
+      213: -2151316542386692476
+    second: Protect_Up_11
+  - first:
+      213: -6443167898120100280
+    second: Protect_Up_12
+  - first:
+      213: -3703775844187253262
+    second: Protect_Up_13
+  - first:
+      213: -1593288115043368311
+    second: Protect_Up_14
+  - first:
+      213: -9007246602989530986
+    second: Protect_Up_15
+  - first:
+      213: -7471477609305063107
+    second: Protect_Up_16
+  - first:
+      213: -2230865990119952630
+    second: Protect_Up_17
+  - first:
+      213: -6581840989767531882
+    second: Protect_Up_18
+  - first:
+      213: 6446006819690088273
+    second: Protect_Up_19
+  - first:
+      213: 5889809268345635531
+    second: Protect_Up_20
+  - first:
+      213: -2541962616019273142
+    second: Protect_Up_21
+  - first:
+      213: 6740580636439732086
+    second: Protect_Up_22
+  - first:
+      213: -424414494062002443
+    second: Protect_Up_23
+  - first:
+      213: -172318125241486014
+    second: Protect_Up_24
+  - first:
+      213: -8658844684548723286
+    second: Protect_Up_25
+  - first:
+      213: 1207405518949591311
+    second: Protect_Up_26
+  - first:
+      213: 863974401530920874
+    second: Protect_Up_27
+  - first:
+      213: -4066693571322940600
+    second: Protect_Up_28
+  - first:
+      213: 6187678108991895152
+    second: Protect_Up_29
+  - first:
+      213: -5839899416334682369
+    second: Protect_Up_30
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 0
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Protect_Up_0
+      rect:
+        serializedVersion: 2
+        x: 149
+        y: 347
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 04e364ae4be402a50800000000000000
+      internalID: 6494277201599807040
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Protect_Up_1
+      rect:
+        serializedVersion: 2
+        x: 230
+        y: 323
+        width: 26
+        height: 35
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8d5c481a7651e24b0800000000000000
+      internalID: -5463405763118185000
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Protect_Up_2
+      rect:
+        serializedVersion: 2
+        x: 323
+        y: 347
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 11a47b8483cfdd920800000000000000
+      internalID: 3016844644076440081
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Protect_Up_3
+      rect:
+        serializedVersion: 2
+        x: 326
+        y: 314
+        width: 29
+        height: 50
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 267c3b29976084e00800000000000000
+      internalID: 1029079634076223330
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Protect_Up_4
+      rect:
+        serializedVersion: 2
+        x: 416
+        y: 308
+        width: 35
+        height: 56
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f43fe7f8904b5d400800000000000000
+      internalID: 348382499346248527
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Protect_Up_5
+      rect:
+        serializedVersion: 2
+        x: 509
+        y: 308
+        width: 38
+        height: 56
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 54b2ec153b487c600800000000000000
+      internalID: 488504990299466565
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Protect_Up_6
+      rect:
+        serializedVersion: 2
+        x: 44
+        y: 332
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 293e2e929461c1ab0800000000000000
+      internalID: -5036125779815898222
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Protect_Up_7
+      rect:
+        serializedVersion: 2
+        x: 137
+        y: 329
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e22b5b0d4f26c74d0800000000000000
+      internalID: -3135522436943597010
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Protect_Up_8
+      rect:
+        serializedVersion: 2
+        x: 245
+        y: 317
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ec01c0758ee71a780800000000000000
+      internalID: -8673511870980943666
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Protect_Up_9
+      rect:
+        serializedVersion: 2
+        x: 29
+        y: 212
+        width: 41
+        height: 56
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 257aee18ed6c31b40800000000000000
+      internalID: 5409886236367038290
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Protect_Up_10
+      rect:
+        serializedVersion: 2
+        x: 44
+        y: 266
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 13a0142e3fe48a9c0800000000000000
+      internalID: -3915793066618713551
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Protect_Up_11
+      rect:
+        serializedVersion: 2
+        x: 122
+        y: 203
+        width: 47
+        height: 74
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 48e9e9bb00df422e0800000000000000
+      internalID: -2151316542386692476
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Protect_Up_12
+      rect:
+        serializedVersion: 2
+        x: 209
+        y: 197
+        width: 62
+        height: 86
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 846e95c1fe44596a0800000000000000
+      internalID: -6443167898120100280
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Protect_Up_13
+      rect:
+        serializedVersion: 2
+        x: 302
+        y: 197
+        width: 68
+        height: 86
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2f5db8f3e7b899cc0800000000000000
+      internalID: -3703775844187253262
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Protect_Up_14
+      rect:
+        serializedVersion: 2
+        x: 398
+        y: 197
+        width: 68
+        height: 86
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9820df5a6e083e9e0800000000000000
+      internalID: -1593288115043368311
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Protect_Up_15
+      rect:
+        serializedVersion: 2
+        x: 494
+        y: 197
+        width: 68
+        height: 86
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6901770efe4dff280800000000000000
+      internalID: -9007246602989530986
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Protect_Up_16
+      rect:
+        serializedVersion: 2
+        x: 116
+        y: 251
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d31461e23baff4890800000000000000
+      internalID: -7471477609305063107
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Protect_Up_17
+      rect:
+        serializedVersion: 2
+        x: 164
+        y: 251
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a0f666d933f5a01e0800000000000000
+      internalID: -2230865990119952630
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Protect_Up_18
+      rect:
+        serializedVersion: 2
+        x: 116
+        y: 221
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6920dcced7a98a4a0800000000000000
+      internalID: -6581840989767531882
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Protect_Up_19
+      rect:
+        serializedVersion: 2
+        x: 164
+        y: 221
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1578f53dc01d47950800000000000000
+      internalID: 6446006819690088273
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Protect_Up_20
+      rect:
+        serializedVersion: 2
+        x: 44
+        y: 206
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bc28b82f25eccb150800000000000000
+      internalID: 5889809268345635531
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Protect_Up_21
+      rect:
+        serializedVersion: 2
+        x: 14
+        y: 101
+        width: 68
+        height: 86
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a4a39d7f77229bcd0800000000000000
+      internalID: -2541962616019273142
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Protect_Up_22
+      rect:
+        serializedVersion: 2
+        x: 110
+        y: 101
+        width: 68
+        height: 86
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 67fddde206a5b8d50800000000000000
+      internalID: 6740580636439732086
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Protect_Up_23
+      rect:
+        serializedVersion: 2
+        x: 206
+        y: 101
+        width: 68
+        height: 86
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5fe38eb244d2c1af0800000000000000
+      internalID: -424414494062002443
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Protect_Up_24
+      rect:
+        serializedVersion: 2
+        x: 302
+        y: 101
+        width: 68
+        height: 86
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 245be9cf39dcb9df0800000000000000
+      internalID: -172318125241486014
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Protect_Up_25
+      rect:
+        serializedVersion: 2
+        x: 398
+        y: 101
+        width: 68
+        height: 86
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: aada13cc2aa95d780800000000000000
+      internalID: -8658844684548723286
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Protect_Up_26
+      rect:
+        serializedVersion: 2
+        x: 494
+        y: 101
+        width: 68
+        height: 86
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f0926d02ce091c010800000000000000
+      internalID: 1207405518949591311
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Protect_Up_27
+      rect:
+        serializedVersion: 2
+        x: 14
+        y: 5
+        width: 68
+        height: 86
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: aaff74204247dfb00800000000000000
+      internalID: 863974401530920874
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Protect_Up_28
+      rect:
+        serializedVersion: 2
+        x: 110
+        y: 5
+        width: 68
+        height: 86
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8437eee3eb33097c0800000000000000
+      internalID: -4066693571322940600
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Protect_Up_29
+      rect:
+        serializedVersion: 2
+        x: 206
+        y: 5
+        width: 68
+        height: 86
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0763ce6d47c0fd550800000000000000
+      internalID: 6187678108991895152
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Protect_Up_30
+      rect:
+        serializedVersion: 2
+        x: 302
+        y: 5
+        width: 68
+        height: 86
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ff63c550c6284fea0800000000000000
+      internalID: -5839899416334682369
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Protect_Up_0: 6494277201599807040
+      Protect_Up_1: -5463405763118185000
+      Protect_Up_10: -3915793066618713551
+      Protect_Up_11: -2151316542386692476
+      Protect_Up_12: -6443167898120100280
+      Protect_Up_13: -3703775844187253262
+      Protect_Up_14: -1593288115043368311
+      Protect_Up_15: -9007246602989530986
+      Protect_Up_16: -7471477609305063107
+      Protect_Up_17: -2230865990119952630
+      Protect_Up_18: -6581840989767531882
+      Protect_Up_19: 6446006819690088273
+      Protect_Up_2: 3016844644076440081
+      Protect_Up_20: 5889809268345635531
+      Protect_Up_21: -2541962616019273142
+      Protect_Up_22: 6740580636439732086
+      Protect_Up_23: -424414494062002443
+      Protect_Up_24: -172318125241486014
+      Protect_Up_25: -8658844684548723286
+      Protect_Up_26: 1207405518949591311
+      Protect_Up_27: 863974401530920874
+      Protect_Up_28: -4066693571322940600
+      Protect_Up_29: 6187678108991895152
+      Protect_Up_3: 1029079634076223330
+      Protect_Up_30: -5839899416334682369
+      Protect_Up_4: 348382499346248527
+      Protect_Up_5: 488504990299466565
+      Protect_Up_6: -5036125779815898222
+      Protect_Up_7: -3135522436943597010
+      Protect_Up_8: -8673511870980943666
+      Protect_Up_9: 5409886236367038290
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

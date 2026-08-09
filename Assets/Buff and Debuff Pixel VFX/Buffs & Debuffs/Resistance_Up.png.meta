@@ -1,0 +1,503 @@
+fileFormatVersion: 2
+guid: aa4efed8289a6534da9c0cf8c13d0b54
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 6099321057130156223
+    second: Resistance_Up_0
+  - first:
+      213: -2982990910746007728
+    second: Resistance_Up_1
+  - first:
+      213: 8753630697906500079
+    second: Resistance_Up_2
+  - first:
+      213: 7083401184991859935
+    second: Resistance_Up_3
+  - first:
+      213: -6729452848112448647
+    second: Resistance_Up_4
+  - first:
+      213: -4305742006023455303
+    second: Resistance_Up_5
+  - first:
+      213: 3252137596667913340
+    second: Resistance_Up_6
+  - first:
+      213: 4029301796669528137
+    second: Resistance_Up_7
+  - first:
+      213: -4066779901706022740
+    second: Resistance_Up_8
+  - first:
+      213: 6251399762137678324
+    second: Resistance_Up_9
+  - first:
+      213: -2280479863248251942
+    second: Resistance_Up_10
+  - first:
+      213: -5612241980953795987
+    second: Resistance_Up_11
+  - first:
+      213: 4513390742900607660
+    second: Resistance_Up_12
+  - first:
+      213: -2132911173772505439
+    second: Resistance_Up_13
+  - first:
+      213: 3923850505888437857
+    second: Resistance_Up_14
+  - first:
+      213: -2176881574146696619
+    second: Resistance_Up_15
+  - first:
+      213: -1716738779489856530
+    second: Resistance_Up_16
+  - first:
+      213: -3899502025756212377
+    second: Resistance_Up_17
+  - first:
+      213: 4460522101538182717
+    second: Resistance_Up_18
+  - first:
+      213: 2427266591995681411
+    second: Resistance_Up_19
+  - first:
+      213: -4083649880760261389
+    second: Resistance_Up_20
+  - first:
+      213: -5466823169404867820
+    second: Resistance_Up_21
+  - first:
+      213: 9044785995590299664
+    second: Resistance_Up_22
+  - first:
+      213: -3650291094537392398
+    second: Resistance_Up_23
+  - first:
+      213: -5269509751313743943
+    second: Resistance_Up_24
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 32
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 0
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Resistance_Up_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 96
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0dad609ddaf6e484380f57ea7dd5cb65
+      internalID: 6099321057130156223
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resistance_Up_1
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 96
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3ab1ceb42569b354586be50cff65e11d
+      internalID: -2982990910746007728
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resistance_Up_2
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 96
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 164993553470be048898ba7bf4360e00
+      internalID: 8753630697906500079
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resistance_Up_3
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 96
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 930708495d2b9444fbc312797cd86738
+      internalID: 7083401184991859935
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resistance_Up_4
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 96
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a712ed220e6b83849adcd5a4194df43c
+      internalID: -6729452848112448647
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resistance_Up_5
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 96
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 29a12edc0a20b6543bc5d98aae1837c4
+      internalID: -4305742006023455303
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resistance_Up_6
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 64
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a43f0f512f1c9e04280677a564553801
+      internalID: 3252137596667913340
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resistance_Up_7
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 64
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 45c2937b52cc6c84b82e4b2d9066fe1e
+      internalID: 4029301796669528137
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resistance_Up_8
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 64
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 380d8924bc3b30f43a3823ed8e942e30
+      internalID: -4066779901706022740
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resistance_Up_9
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 64
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 91058ed412345a647b78af233a6de254
+      internalID: 6251399762137678324
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resistance_Up_10
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 64
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 226b2c521f869114283763858a08620a
+      internalID: -2280479863248251942
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resistance_Up_11
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 64
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d7959b5ebdaa16d4eb053d79049b05dd
+      internalID: -5612241980953795987
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Resistance_Up_12
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 32
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 72e14df8cdaae0e4fb7b8f2df1007471
+      internalID: 4513390742900607660
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: fa30261e2ea90e3479422f23985847c5
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Resistance_Up_0: 6099321057130156223
+      Resistance_Up_1: -2982990910746007728
+      Resistance_Up_10: -2280479863248251942
+      Resistance_Up_11: -5612241980953795987
+      Resistance_Up_12: 4513390742900607660
+      Resistance_Up_13: -2132911173772505439
+      Resistance_Up_14: 3923850505888437857
+      Resistance_Up_15: -2176881574146696619
+      Resistance_Up_16: -1716738779489856530
+      Resistance_Up_17: -3899502025756212377
+      Resistance_Up_18: 4460522101538182717
+      Resistance_Up_19: 2427266591995681411
+      Resistance_Up_2: 8753630697906500079
+      Resistance_Up_20: -4083649880760261389
+      Resistance_Up_21: -5466823169404867820
+      Resistance_Up_22: 9044785995590299664
+      Resistance_Up_23: -3650291094537392398
+      Resistance_Up_24: -5269509751313743943
+      Resistance_Up_3: 7083401184991859935
+      Resistance_Up_4: -6729452848112448647
+      Resistance_Up_5: -4305742006023455303
+      Resistance_Up_6: 3252137596667913340
+      Resistance_Up_7: 4029301796669528137
+      Resistance_Up_8: -4066779901706022740
+      Resistance_Up_9: 6251399762137678324
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

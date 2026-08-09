@@ -1,0 +1,871 @@
+fileFormatVersion: 2
+guid: 31d29e9e648e0424f96fd1f6d7c0a0d5
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 7241954470241462674
+    second: Charm_Up_0
+  - first:
+      213: -9046410864527717323
+    second: Charm_Up_1
+  - first:
+      213: -4917068381201450369
+    second: Charm_Up_2
+  - first:
+      213: 1623750730979317571
+    second: Charm_Up_3
+  - first:
+      213: -5684349286928031087
+    second: Charm_Up_4
+  - first:
+      213: 7971296738876689555
+    second: Charm_Up_5
+  - first:
+      213: 6681465887669658212
+    second: Charm_Up_6
+  - first:
+      213: -861185538072513116
+    second: Charm_Up_7
+  - first:
+      213: 2156081129590638655
+    second: Charm_Up_8
+  - first:
+      213: -19174628386195234
+    second: Charm_Up_9
+  - first:
+      213: -347646357995108839
+    second: Charm_Up_10
+  - first:
+      213: -6069945889697104025
+    second: Charm_Up_11
+  - first:
+      213: -6739123347472083376
+    second: Charm_Up_12
+  - first:
+      213: -7616284916614637897
+    second: Charm_Up_13
+  - first:
+      213: 3102578267801681238
+    second: Charm_Up_14
+  - first:
+      213: 6289636642736077104
+    second: Charm_Up_15
+  - first:
+      213: -8430818958889131564
+    second: Charm_Up_16
+  - first:
+      213: -6929507651111243323
+    second: Charm_Up_17
+  - first:
+      213: -8899560812243256744
+    second: Charm_Up_18
+  - first:
+      213: 8972293391735452243
+    second: Charm_Up_19
+  - first:
+      213: -7675574780633772109
+    second: Charm_Up_20
+  - first:
+      213: 2410702270567536748
+    second: Charm_Up_21
+  - first:
+      213: -2458471921967225426
+    second: Charm_Up_22
+  - first:
+      213: 7198140380198707431
+    second: Charm_Up_23
+  - first:
+      213: 6181779432986076506
+    second: Charm_Up_24
+  - first:
+      213: 1602564086704563368
+    second: Charm_Up_25
+  - first:
+      213: -6337227785992043087
+    second: Charm_Up_26
+  - first:
+      213: -2125775832831755495
+    second: Charm_Up_27
+  - first:
+      213: 1416217625200483302
+    second: Charm_Up_28
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 0
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Charm_Up_0
+      rect:
+        serializedVersion: 2
+        x: 29
+        y: 221
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2996b4e9837908460800000000000000
+      internalID: 7241954470241462674
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Charm_Up_1
+      rect:
+        serializedVersion: 2
+        x: 89
+        y: 219
+        width: 14
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 53c4797af31b47280800000000000000
+      internalID: -9046410864527717323
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Charm_Up_2
+      rect:
+        serializedVersion: 2
+        x: 151
+        y: 217
+        width: 18
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f7abe2aeb5013cbb0800000000000000
+      internalID: -4917068381201450369
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Charm_Up_3
+      rect:
+        serializedVersion: 2
+        x: 211
+        y: 215
+        width: 24
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3479dc3dfa8b88610800000000000000
+      internalID: 1623750730979317571
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Charm_Up_4
+      rect:
+        serializedVersion: 2
+        x: 271
+        y: 211
+        width: 32
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 192e865c0722d11b0800000000000000
+      internalID: -5684349286928031087
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Charm_Up_5
+      rect:
+        serializedVersion: 2
+        x: 335
+        y: 211
+        width: 32
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 39c89f7762cbf9e60800000000000000
+      internalID: 7971296738876689555
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Charm_Up_6
+      rect:
+        serializedVersion: 2
+        x: 11
+        y: 145
+        width: 40
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 462a07d23d559bc50800000000000000
+      internalID: 6681465887669658212
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Charm_Up_7
+      rect:
+        serializedVersion: 2
+        x: 75
+        y: 145
+        width: 40
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4a5fb7dd0547c04f0800000000000000
+      internalID: -861185538072513116
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Charm_Up_8
+      rect:
+        serializedVersion: 2
+        x: 143
+        y: 147
+        width: 32
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f384c2c2d50fbed10800000000000000
+      internalID: 2156081129590638655
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Charm_Up_9
+      rect:
+        serializedVersion: 2
+        x: 207
+        y: 147
+        width: 32
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ed8375ee6c0ebbff0800000000000000
+      internalID: -19174628386195234
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Charm_Up_10
+      rect:
+        serializedVersion: 2
+        x: 267
+        y: 145
+        width: 40
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9164e34ba79ec2bf0800000000000000
+      internalID: -347646357995108839
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Charm_Up_11
+      rect:
+        serializedVersion: 2
+        x: 331
+        y: 145
+        width: 40
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 76ff2ce8f5833cba0800000000000000
+      internalID: -6069945889697104025
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Charm_Up_12
+      rect:
+        serializedVersion: 2
+        x: 11
+        y: 81
+        width: 40
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 05692685503d972a0800000000000000
+      internalID: -6739123347472083376
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Charm_Up_13
+      rect:
+        serializedVersion: 2
+        x: 79
+        y: 79
+        width: 34
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7b6d40d98358d4690800000000000000
+      internalID: -7616284916614637897
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Charm_Up_14
+      rect:
+        serializedVersion: 2
+        x: 161
+        y: 97
+        width: 18
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 65d7a241f729e0b20800000000000000
+      internalID: 3102578267801681238
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Charm_Up_15
+      rect:
+        serializedVersion: 2
+        x: 203
+        y: 93
+        width: 18
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0397090e337494750800000000000000
+      internalID: 6289636642736077104
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Charm_Up_16
+      rect:
+        serializedVersion: 2
+        x: 225
+        y: 101
+        width: 18
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4d1e8c543d6bffa80800000000000000
+      internalID: -8430818958889131564
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Charm_Up_17
+      rect:
+        serializedVersion: 2
+        x: 267
+        y: 97
+        width: 18
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5c1b923618175df90800000000000000
+      internalID: -6929507651111243323
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Charm_Up_18
+      rect:
+        serializedVersion: 2
+        x: 287
+        y: 105
+        width: 18
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 85af049d7986e7480800000000000000
+      internalID: -8899560812243256744
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Charm_Up_19
+      rect:
+        serializedVersion: 2
+        x: 331
+        y: 101
+        width: 18
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 352f9f27d4df38c70800000000000000
+      internalID: 8972293391735452243
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Charm_Up_20
+      rect:
+        serializedVersion: 2
+        x: 351
+        y: 109
+        width: 18
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3bf80696761ea7590800000000000000
+      internalID: -7675574780633772109
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Charm_Up_21
+      rect:
+        serializedVersion: 2
+        x: 141
+        y: 91
+        width: 18
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c68d76051f8847120800000000000000
+      internalID: 2410702270567536748
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Charm_Up_22
+      rect:
+        serializedVersion: 2
+        x: 157
+        y: 77
+        width: 18
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ea52fd000d0c1edd0800000000000000
+      internalID: -2458471921967225426
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Charm_Up_23
+      rect:
+        serializedVersion: 2
+        x: 223
+        y: 79
+        width: 18
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7e0a325d98ee4e360800000000000000
+      internalID: 7198140380198707431
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Charm_Up_24
+      rect:
+        serializedVersion: 2
+        x: 289
+        y: 81
+        width: 18
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a5563fe44a71ac550800000000000000
+      internalID: 6181779432986076506
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Charm_Up_25
+      rect:
+        serializedVersion: 2
+        x: 355
+        y: 83
+        width: 18
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8a4e2ddcb837d3610800000000000000
+      internalID: 1602564086704563368
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Charm_Up_26
+      rect:
+        serializedVersion: 2
+        x: 13
+        y: 41
+        width: 18
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1b5853b97e4ad08a0800000000000000
+      internalID: -6337227785992043087
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Charm_Up_27
+      rect:
+        serializedVersion: 2
+        x: 33
+        y: 49
+        width: 18
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 91bf3f3942abf72e0800000000000000
+      internalID: -2125775832831755495
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Charm_Up_28
+      rect:
+        serializedVersion: 2
+        x: 35
+        y: 23
+        width: 18
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6ebd8ba3d6a67a310800000000000000
+      internalID: 1416217625200483302
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Charm_Up_0: 7241954470241462674
+      Charm_Up_1: -9046410864527717323
+      Charm_Up_10: -347646357995108839
+      Charm_Up_11: -6069945889697104025
+      Charm_Up_12: -6739123347472083376
+      Charm_Up_13: -7616284916614637897
+      Charm_Up_14: 3102578267801681238
+      Charm_Up_15: 6289636642736077104
+      Charm_Up_16: -8430818958889131564
+      Charm_Up_17: -6929507651111243323
+      Charm_Up_18: -8899560812243256744
+      Charm_Up_19: 8972293391735452243
+      Charm_Up_2: -4917068381201450369
+      Charm_Up_20: -7675574780633772109
+      Charm_Up_21: 2410702270567536748
+      Charm_Up_22: -2458471921967225426
+      Charm_Up_23: 7198140380198707431
+      Charm_Up_24: 6181779432986076506
+      Charm_Up_25: 1602564086704563368
+      Charm_Up_26: -6337227785992043087
+      Charm_Up_27: -2125775832831755495
+      Charm_Up_28: 1416217625200483302
+      Charm_Up_3: 1623750730979317571
+      Charm_Up_4: -5684349286928031087
+      Charm_Up_5: 7971296738876689555
+      Charm_Up_6: 6681465887669658212
+      Charm_Up_7: -861185538072513116
+      Charm_Up_8: 2156081129590638655
+      Charm_Up_9: -19174628386195234
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -7,10 +7,21 @@ history / task.md for the full relay+executor design rationale.
 import asyncio
 import json
 import subprocess
+import time
 from pathlib import Path
+
+# executor.py runs under pythonw.exe (no console, so its own window can't be closed -
+# see LOOP_ENGINEERING bug #11). But a console-less parent spawning a console app makes
+# Windows allocate a BRAND NEW console window for the child, so every `claude -p` popped
+# an unexplained window titled "claude" - and closing one kills the child, which comes
+# back as an empty stdout+stderr and reads as "(no output; stderr: )". That is exactly
+# what killed the 22:28 loop task on 2026-07-26. CREATE_NO_WINDOW stops the console from
+# being created at all; output still flows through the pipes.
+NO_WINDOW = getattr(subprocess, "CREATE_NO_WINDOW", 0)
 
 PROJECT_ROOT = Path(__file__).parent.parent
 MEMORY_DIR = "C:/Users/kimga/.claude/projects/C--Users-kimga-Remnents-of-Light/memory"
+SESSIONS_DIR = Path("C:/Users/kimga/.claude/projects/C--Users-kimga-Remnents-of-Light")
 
 QUICK_ALLOWED_TOOLS = [
     "Read", "Grep", "Glob",
@@ -46,6 +57,7 @@ LOOP_ALLOWED_TOOLS = [
     "Read", "Grep", "Glob", "Skill", "WebSearch", "WebFetch",
     "Edit(*.cs)", "Write(*.cs)", "Edit(*.md)", "Write(*.md)",
     "Bash(dotnet test*)",
+    "Bash(tools/.venv/Scripts/python.exe tools/report_video.py*)",
     "mcp__UnityMCP__read_console",
     "mcp__UnityMCP__manage_editor",
     "mcp__UnityMCP__execute_menu_item",
@@ -75,6 +87,19 @@ LOOP_SYSTEM_PREAMBLE = """\
 - `execute_code`(Unity 에디터 안에서 임의 C# 실행)는 상태 확인·디버깅 등 **읽기/진단 목적으로만** 써라.
   이걸로 씬 오브젝트 생성/삭제, 에셋 변경, 프로젝트 설정 변경 같은 걸 하려면 아래와 똑같이 승인부터 구해라 —
   "도구가 허용 목록에 있다"는 게 "그 행동에 승인이 필요없다"는 뜻이 아니다.
+  단, `TestRecorder.StartRecording(파일명)`/`StopRecording()` 호출(Play 모드 검증 구간을 녹화, `Recordings/`에
+  mp4 생성)은 씬/에셋을 바꾸는 게 아니므로 이 제한의 예외다 - 진단 코드 안에서 자유롭게 써라.
+- **실제 코드 변경이 있었던 완료 작업(기능 추가/버그 수정 등, 코드 변경 없이 조사만 하고 끝난 경우는 제외)은
+  영상 보고가 필수다.** Play 모드 검증을 할 때 그 구간을 `TestRecorder.StartRecording("<기능 요약>_<날짜
+  YYYYMMDD>")`로 감싸서 녹화하고, 끝나면 `StopRecording()`이 반환한 mp4 경로로
+  `Bash(tools/.venv/Scripts/python.exe tools/report_video.py <mp4경로> "<기능 요약>_<날짜>" "<판단 기준 한
+  문장>")`을 실행해라 - stdout에 `URL: ...`과 `VERDICT: PASS/FAIL (n/m)`이 찍힌다. 이 URL을 아래 DONE: 블록에
+  반드시 포함해라.
+- 작업을 끝까지 완료했으면 task.md를 갱신하고, 마지막 줄부터 정확히 이 형식으로 출력해(코드 변경이 없어서
+  영상 보고 대상이 아니면 "- 영상:" 줄은 생략해도 된다):
+  DONE: <한 줄 요약>
+  - 영상: <report_video.py가 출력한 URL>
+  - 다음: <다음에 할 만한 작업 한 줄>
 - **NEEDS_APPROVAL을 남발하지 마라.** 노트북 앞에 아무도 없다는 건 "물어볼 사람이 없다"는 뜻이지
   "물어볼 핑계를 만들라"는 뜻이 아니다. 스스로 재현·테스트·조사해서 답을 낼 수 있는 건 **끝까지 직접
   확인하고 답을 낸 뒤에 진행해라** - "왼쪽에 벽이 있었나요?" 같은, 니가 Play 모드+execute_code로 직접
@@ -93,8 +118,6 @@ LOOP_SYSTEM_PREAMBLE = """\
   - <선택지 2>
   (선택지는 몇 개든 가능, 각각 "- "로 시작하는 한 줄 - 사용자가 "1번/2번"으로 답할 수 있도록 항상
   숫자로 세는 목록으로 제시해라. A/B/C 같은 글자 목록은 쓰지 마라.)
-- 작업을 끝까지 완료했으면 task.md를 갱신하고, 마지막 줄에 정확히 이 형식으로 출력해:
-  DONE: <한 줄 요약>
 
 작업: {task}
 """
@@ -119,8 +142,17 @@ AUTO_SYSTEM_PREAMBLE = """\
    (b) 조사 결과 여러 최종 방향 중 **테스트로는 못 고르고** 사용자의 취향/결정이 필요할 때 - 이 순간
        세션이 끊기면 다음 세션은 제시한 옵션 자체를 기억 못 하니, 옵션을 숫자 목록(1/2/3 - A/B/C 금지,
        사용자가 "1번/2번"으로 답할 수 있게)으로 제시하며 반드시 이 형식으로 멈춰라.
-4. 작업을 끝까지 완료했으면 task.md를 갱신하고, 마지막 줄에 정확히 이 형식으로 출력해:
+   `execute_code`로 `TestRecorder.StartRecording`/`StopRecording`(Play 모드 구간 녹화)을 쓰는 건 씬/에셋을
+   바꾸지 않으니 예외로 자유롭게 허용된다.
+4. **실제 코드 변경이 있었던 완료 작업(조사만 하고 끝난 경우는 제외)은 영상 보고가 필수다.** Play 모드
+   검증 구간을 `TestRecorder.StartRecording("<기능 요약>_<날짜 YYYYMMDD>")`로 감싸 녹화하고, 끝나면
+   `StopRecording()`이 반환한 mp4 경로로 `Bash(tools/.venv/Scripts/python.exe tools/report_video.py <mp4경로>
+   "<기능 요약>_<날짜>" "<판단 기준 한 문장>")`을 실행해라 - stdout의 `URL: ...`을 아래 DONE: 블록에 포함해라.
+5. 작업을 끝까지 완료했으면 task.md를 갱신하고, 마지막 줄부터 정확히 이 형식으로 출력해(영상 보고 대상이
+   아니면 "- 영상:" 줄은 생략해도 된다):
    DONE: <한 줄 요약>
+   - 영상: <report_video.py가 출력한 URL>
+   - 다음: <다음에 할 만한 작업 한 줄>
 """
 
 
@@ -183,28 +215,68 @@ TRANSIENT_ERROR_PATTERNS = ["Overloaded", "overloaded_error", "rate_limit_error"
 TRANSIENT_RETRY_DELAY_S = 15
 TRANSIENT_MAX_RETRIES = 3
 
+# The API stream can also just drop mid-answer ("API Error: Connection closed mid-response.").
+# Also transient, but NOT safe to handle like the ones above: those fail before any work
+# happens, while a dropped stream usually hits after files were already edited / Play mode
+# already run, so re-running the original prompt from scratch redoes all of it. Resume the
+# interrupted session instead. Found 2026-07-28 - the raw API error string was being posted
+# to Discord as if it were the task result.
+CONNECTION_ERROR_PATTERNS = ["Connection closed mid-response", "Connection error", "ECONNRESET", "socket hang up"]
+CONNECTION_RESUME_PROMPT = """\
+직전 응답이 네트워크 문제로 중간에 끊겼다. 처음부터 다시 하지 말고, 하던 작업을 그대로 이어서 계속 진행해라.
+(먼저 방금 어디까지 했는지 확인하고 - 파일이 반쯤 수정됐을 수 있다 - 그 지점부터 이어라.)
+완료하거나 승인이 필요하면 원래 지시대로 DONE: / NEEDS_APPROVAL: 블록 형식을 지켜서 출력해라."""
 
-async def _run_claude_once(prompt: str, allowed_tools: list[str], session_id: str | None, timeout: int) -> dict:
+
+def _find_new_session_id(after: float) -> str | None:
+    """`claude -p` writes its session transcript (<session-id>.jsonl) incrementally as it
+    works, so even a killed process usually leaves one behind. On Windows st_ctime is the
+    file's creation time (not an inode-change time like on Unix), so filtering on
+    "created after this subprocess launched" reliably picks out the new session and not
+    some other session (e.g. this very interactive one) that merely got touched around
+    the same time. Found necessary 2026-07-22: a timeout used to just discard 30 minutes
+    of progress with no way to continue the same session."""
+    candidates = [p for p in SESSIONS_DIR.glob("*.jsonl") if p.stat().st_ctime > after]
+    if not candidates:
+        return None
+    return max(candidates, key=lambda p: p.stat().st_ctime).stem
+
+
+async def _run_claude_once(prompt: str, allowed_tools: list[str], session_id: str | None, timeout: int | None, model: str = "claude-opus-5") -> dict:
     global current_proc
     cmd = [
         "claude", "-p", prompt,
         "--permission-mode", "dontAsk",
         "--allowedTools", ",".join(allowed_tools),
         "--output-format", "json",
+        # ~/.claude/settings.json defaults to opus at xhigh effort for this machine's
+        # interactive use - fine there, but every headless remote-loop call silently
+        # inheriting that burned through the monthly spend limit in a few hours
+        # (found 2026-07-22). Pin these calls to a specific model regardless of the
+        # global default - callers doing lightweight work (voice cleanup) pass haiku.
+        # 2026-07-26: default raised sonnet-5 -> opus-5 by user decision (spend risk
+        # accepted knowingly). What still protects us is the pinning itself: the global
+        # xhigh reasoning effort is NOT inherited here, and that was the other half of
+        # the 07-22 burn. If the limit gets hit again, drop this back to sonnet first.
+        "--model", model,
     ]
     if session_id:
         cmd += ["--resume", session_id]
 
+    start = time.time()
     proc = await asyncio.create_subprocess_exec(
         *cmd, cwd=str(PROJECT_ROOT),
         stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+        creationflags=NO_WINDOW,
     )
     current_proc = proc
     try:
         stdout, stderr = await asyncio.wait_for(proc.communicate(), timeout=timeout)
     except asyncio.TimeoutError:
         proc.kill()
-        return {"text": f"(timeout after {timeout}s, killed)", "session_id": session_id}
+        recovered = _find_new_session_id(start) or session_id
+        note = f"이어할 수 있음 (session {recovered})" if recovered else "이어할 세션을 못 찾음"
+        return {"text": f"(timeout after {timeout}s, killed - {note})", "session_id": recovered, "timed_out": True}
     finally:
         current_proc = None
 
@@ -217,10 +289,23 @@ async def _run_claude_once(prompt: str, allowed_tools: list[str], session_id: st
         return {"text": raw or f"(no output; stderr: {err[:500]})", "session_id": session_id}
 
 
-async def run_claude(prompt: str, allowed_tools: list[str], session_id: str | None, timeout: int) -> dict:
+async def run_claude(prompt: str, allowed_tools: list[str], session_id: str | None, timeout: int | None, model: str = "claude-opus-5") -> dict:
     for attempt in range(TRANSIENT_MAX_RETRIES + 1):
-        result = await _run_claude_once(prompt, allowed_tools, session_id, timeout)
-        if attempt < TRANSIENT_MAX_RETRIES and any(p in result["text"] for p in TRANSIENT_ERROR_PATTERNS):
+        start = time.time()
+        result = await _run_claude_once(prompt, allowed_tools, session_id, timeout, model)
+        if attempt >= TRANSIENT_MAX_RETRIES:
+            return result
+        if any(p in result["text"] for p in TRANSIENT_ERROR_PATTERNS):
+            await asyncio.sleep(TRANSIENT_RETRY_DELAY_S)
+            continue
+        if any(p in result["text"] for p in CONNECTION_ERROR_PATTERNS):
+            # A dropped stream often means stdout wasn't valid JSON either, so result's
+            # session_id can be the (possibly None) one we passed in - fall back to the
+            # transcript the killed run left behind, same as the timeout path does.
+            resumed = result["session_id"] or _find_new_session_id(start)
+            if not resumed:
+                return result  # nothing to resume into; report the error as-is
+            session_id, prompt = resumed, CONNECTION_RESUME_PROMPT
             await asyncio.sleep(TRANSIENT_RETRY_DELAY_S)
             continue
         return result
@@ -231,6 +316,25 @@ def extract_marker(text: str, marker: str) -> str | None:
     for line in reversed(text.splitlines()):
         if line.startswith(marker):
             return line[len(marker):].strip()
+    return None
+
+
+def extract_done(text: str) -> dict | None:
+    """Finds 'DONE: <summary>' plus any following '- <label>: <value>' lines
+    (e.g. '- 영상: <url>', '- 다음: <task>')."""
+    lines = text.splitlines()
+    for i, line in enumerate(lines):
+        if line.startswith("DONE:"):
+            summary = line[len("DONE:"):].strip()
+            extras: dict[str, str] = {}
+            for extra_line in lines[i + 1:]:
+                stripped = extra_line.strip()
+                if not stripped.startswith("- "):
+                    break
+                key, _, value = stripped[2:].partition(":")
+                if value:
+                    extras[key.strip()] = value.strip()
+            return {"summary": summary, "extras": extras}
     return None
 
 

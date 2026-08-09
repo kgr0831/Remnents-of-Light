@@ -1,0 +1,767 @@
+fileFormatVersion: 2
+guid: a852a94ef70b7854d85757ec825f10e2
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 401808170240637756
+    second: ilseom_charge_pixels_0
+  - first:
+      213: -1025143147952793158
+    second: ilseom_charge_pixels_1
+  - first:
+      213: -1029950094174830492
+    second: ilseom_charge_pixels_2
+  - first:
+      213: -1700627996381333798
+    second: ilseom_charge_pixels_3
+  - first:
+      213: -5706377717480152123
+    second: ilseom_charge_pixels_4
+  - first:
+      213: -4997527289588718625
+    second: ilseom_charge_pixels_5
+  - first:
+      213: -5397268598648145592
+    second: ilseom_charge_pixels_6
+  - first:
+      213: 8821199265104202218
+    second: ilseom_charge_pixels_7
+  - first:
+      213: -2481282370567245681
+    second: ilseom_charge_pixels_8
+  - first:
+      213: 5057052728588115137
+    second: ilseom_charge_pixels_9
+  - first:
+      213: -7722333240945327153
+    second: ilseom_charge_pixels_10
+  - first:
+      213: -4150614163641242085
+    second: ilseom_charge_pixels_11
+  - first:
+      213: -1124126217539867732
+    second: ilseom_charge_pixels_12
+  - first:
+      213: 8010274639656923421
+    second: ilseom_charge_pixels_13
+  - first:
+      213: 2115435390979930076
+    second: ilseom_charge_pixels_14
+  - first:
+      213: 1502936674127601223
+    second: ilseom_charge_pixels_15
+  - first:
+      213: 3738183728678370099
+    second: ilseom_charge_pixels_16
+  - first:
+      213: 2573674804322483938
+    second: ilseom_charge_pixels_17
+  - first:
+      213: 6952340625140444664
+    second: ilseom_charge_pixels_18
+  - first:
+      213: 1196509821048059685
+    second: ilseom_charge_pixels_19
+  - first:
+      213: 5415061480639191850
+    second: ilseom_charge_pixels_20
+  - first:
+      213: -4081607239991907247
+    second: ilseom_charge_pixels_21
+  - first:
+      213: -3080050183690780605
+    second: ilseom_charge_pixels_22
+  - first:
+      213: -1406374334176472967
+    second: ilseom_charge_pixels_23
+  - first:
+      213: -7815136087322355830
+    second: ilseom_charge_pixels_24
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 0
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: ilseom_charge_pixels_0
+      rect:
+        serializedVersion: 2
+        x: 381
+        y: 153
+        width: 53
+        height: 45
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c3bfa07e662839500800000000000000
+      internalID: 401808170240637756
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ilseom_charge_pixels_1
+      rect:
+        serializedVersion: 2
+        x: 526
+        y: 153
+        width: 52
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ab919560db5f5c1f0800000000000000
+      internalID: -1025143147952793158
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ilseom_charge_pixels_2
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 63
+        height: 49
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4604454a8d1e4b1f0800000000000000
+      internalID: -1029950094174830492
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ilseom_charge_pixels_3
+      rect:
+        serializedVersion: 2
+        x: 65
+        y: 0
+        width: 58
+        height: 49
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ad63b9cf8d72668e0800000000000000
+      internalID: -1700627996381333798
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ilseom_charge_pixels_4
+      rect:
+        serializedVersion: 2
+        x: 125
+        y: 0
+        width: 58
+        height: 49
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5c3246b13bfdec0b0800000000000000
+      internalID: -5706377717480152123
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ilseom_charge_pixels_5
+      rect:
+        serializedVersion: 2
+        x: 185
+        y: 0
+        width: 58
+        height: 49
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fd36ebc786735aab0800000000000000
+      internalID: -4997527289588718625
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ilseom_charge_pixels_6
+      rect:
+        serializedVersion: 2
+        x: 245
+        y: 0
+        width: 58
+        height: 49
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 849f4343ecc0915b0800000000000000
+      internalID: -5397268598648145592
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ilseom_charge_pixels_7
+      rect:
+        serializedVersion: 2
+        x: 305
+        y: 0
+        width: 58
+        height: 49
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ae90971bef13b6a70800000000000000
+      internalID: 8821199265104202218
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ilseom_charge_pixels_8
+      rect:
+        serializedVersion: 2
+        x: 365
+        y: 0
+        width: 58
+        height: 49
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f8076e294d6b09dd0800000000000000
+      internalID: -2481282370567245681
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ilseom_charge_pixels_9
+      rect:
+        serializedVersion: 2
+        x: 425
+        y: 0
+        width: 58
+        height: 49
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1cc1ae9c9a24e2640800000000000000
+      internalID: 5057052728588115137
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ilseom_charge_pixels_10
+      rect:
+        serializedVersion: 2
+        x: 485
+        y: 0
+        width: 58
+        height: 49
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fc3434005d2c4d490800000000000000
+      internalID: -7722333240945327153
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ilseom_charge_pixels_11
+      rect:
+        serializedVersion: 2
+        x: 545
+        y: 48
+        width: 131
+        height: 68
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b1e6578b86e0666c0800000000000000
+      internalID: -4150614163641242085
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ilseom_charge_pixels_12
+      rect:
+        serializedVersion: 2
+        x: 545
+        y: 0
+        width: 58
+        height: 49
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cab25d8392d4660f0800000000000000
+      internalID: -1124126217539867732
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ilseom_charge_pixels_13
+      rect:
+        serializedVersion: 2
+        x: 605
+        y: 0
+        width: 58
+        height: 49
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d11321238563a2f60800000000000000
+      internalID: 8010274639656923421
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ilseom_charge_pixels_14
+      rect:
+        serializedVersion: 2
+        x: 665
+        y: 0
+        width: 58
+        height: 49
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cd7f5a0b7498b5d10800000000000000
+      internalID: 2115435390979930076
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ilseom_charge_pixels_15
+      rect:
+        serializedVersion: 2
+        x: 725
+        y: 0
+        width: 58
+        height: 49
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 74e584531f08bd410800000000000000
+      internalID: 1502936674127601223
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ilseom_charge_pixels_16
+      rect:
+        serializedVersion: 2
+        x: 785
+        y: 0
+        width: 58
+        height: 49
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 33bf405ab42b0e330800000000000000
+      internalID: 3738183728678370099
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ilseom_charge_pixels_17
+      rect:
+        serializedVersion: 2
+        x: 845
+        y: 0
+        width: 58
+        height: 49
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2eeb30f399787b320800000000000000
+      internalID: 2573674804322483938
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ilseom_charge_pixels_18
+      rect:
+        serializedVersion: 2
+        x: 905
+        y: 0
+        width: 58
+        height: 49
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8fd6307a6fcab7060800000000000000
+      internalID: 6952340625140444664
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ilseom_charge_pixels_19
+      rect:
+        serializedVersion: 2
+        x: 965
+        y: 0
+        width: 58
+        height: 49
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 527f5d5c75bda9010800000000000000
+      internalID: 1196509821048059685
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ilseom_charge_pixels_20
+      rect:
+        serializedVersion: 2
+        x: 1025
+        y: 0
+        width: 58
+        height: 49
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a2b5666f9b9262b40800000000000000
+      internalID: 5415061480639191850
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ilseom_charge_pixels_21
+      rect:
+        serializedVersion: 2
+        x: 1085
+        y: 0
+        width: 58
+        height: 49
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 15cae9b27d73b57c0800000000000000
+      internalID: -4081607239991907247
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ilseom_charge_pixels_22
+      rect:
+        serializedVersion: 2
+        x: 1145
+        y: 0
+        width: 58
+        height: 49
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3400cbe3da67145d0800000000000000
+      internalID: -3080050183690780605
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ilseom_charge_pixels_23
+      rect:
+        serializedVersion: 2
+        x: 1205
+        y: 0
+        width: 58
+        height: 49
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9705f2e8efd8b7ce0800000000000000
+      internalID: -1406374334176472967
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ilseom_charge_pixels_24
+      rect:
+        serializedVersion: 2
+        x: 1265
+        y: 0
+        width: 15
+        height: 49
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a8790db822f0b8390800000000000000
+      internalID: -7815136087322355830
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      ilseom_charge_pixels_0: 401808170240637756
+      ilseom_charge_pixels_1: -1025143147952793158
+      ilseom_charge_pixels_10: -7722333240945327153
+      ilseom_charge_pixels_11: -4150614163641242085
+      ilseom_charge_pixels_12: -1124126217539867732
+      ilseom_charge_pixels_13: 8010274639656923421
+      ilseom_charge_pixels_14: 2115435390979930076
+      ilseom_charge_pixels_15: 1502936674127601223
+      ilseom_charge_pixels_16: 3738183728678370099
+      ilseom_charge_pixels_17: 2573674804322483938
+      ilseom_charge_pixels_18: 6952340625140444664
+      ilseom_charge_pixels_19: 1196509821048059685
+      ilseom_charge_pixels_2: -1029950094174830492
+      ilseom_charge_pixels_20: 5415061480639191850
+      ilseom_charge_pixels_21: -4081607239991907247
+      ilseom_charge_pixels_22: -3080050183690780605
+      ilseom_charge_pixels_23: -1406374334176472967
+      ilseom_charge_pixels_24: -7815136087322355830
+      ilseom_charge_pixels_3: -1700627996381333798
+      ilseom_charge_pixels_4: -5706377717480152123
+      ilseom_charge_pixels_5: -4997527289588718625
+      ilseom_charge_pixels_6: -5397268598648145592
+      ilseom_charge_pixels_7: 8821199265104202218
+      ilseom_charge_pixels_8: -2481282370567245681
+      ilseom_charge_pixels_9: 5057052728588115137
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

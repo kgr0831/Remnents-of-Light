@@ -1,0 +1,767 @@
+fileFormatVersion: 2
+guid: 02b1575f735185545b9e0b43d22bf403
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -7446150366975307998
+    second: black_bug_fixed_check_0
+  - first:
+      213: 1397572232383668993
+    second: black_bug_fixed_check_1
+  - first:
+      213: -429234029407365427
+    second: black_bug_fixed_check_2
+  - first:
+      213: -4628359844301575641
+    second: black_bug_fixed_check_3
+  - first:
+      213: -7359125426376644763
+    second: black_bug_fixed_check_4
+  - first:
+      213: 2838636304610692221
+    second: black_bug_fixed_check_5
+  - first:
+      213: -3261914784906488802
+    second: black_bug_fixed_check_6
+  - first:
+      213: -1473892355680593548
+    second: black_bug_fixed_check_7
+  - first:
+      213: 7940294459008998099
+    second: black_bug_fixed_check_8
+  - first:
+      213: -6170190990764497204
+    second: black_bug_fixed_check_9
+  - first:
+      213: -8921979227627519167
+    second: black_bug_fixed_check_10
+  - first:
+      213: 8189703796758352521
+    second: black_bug_fixed_check_11
+  - first:
+      213: 7455641356208780595
+    second: black_bug_fixed_check_12
+  - first:
+      213: 3861782327753451157
+    second: black_bug_fixed_check_13
+  - first:
+      213: 2669190850272254750
+    second: black_bug_fixed_check_14
+  - first:
+      213: 4235539238175422668
+    second: black_bug_fixed_check_15
+  - first:
+      213: 3963442760770257771
+    second: black_bug_fixed_check_16
+  - first:
+      213: 5321691607050227475
+    second: black_bug_fixed_check_17
+  - first:
+      213: -7837138121503345855
+    second: black_bug_fixed_check_18
+  - first:
+      213: 388337571007607273
+    second: black_bug_fixed_check_19
+  - first:
+      213: -8929073287622796078
+    second: black_bug_fixed_check_20
+  - first:
+      213: 846574139547997118
+    second: black_bug_fixed_check_21
+  - first:
+      213: 3847437266376585700
+    second: black_bug_fixed_check_22
+  - first:
+      213: -2079594889829821908
+    second: black_bug_fixed_check_23
+  - first:
+      213: -4859328694864968765
+    second: black_bug_fixed_check_24
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 0
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: black_bug_fixed_check_0
+      rect:
+        serializedVersion: 2
+        x: 832
+        y: 242
+        width: 78
+        height: 38
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 22fca4051b5f9a890800000000000000
+      internalID: -7446150366975307998
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: black_bug_fixed_check_1
+      rect:
+        serializedVersion: 2
+        x: 1048
+        y: 242
+        width: 78
+        height: 67
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 103ad2b6a8c256310800000000000000
+      internalID: 1397572232383668993
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: black_bug_fixed_check_2
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 93
+        height: 73
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dc61aa7aced0b0af0800000000000000
+      internalID: -429234029407365427
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: black_bug_fixed_check_3
+      rect:
+        serializedVersion: 2
+        x: 97
+        y: 0
+        width: 86
+        height: 73
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 72ae8b36e33c4cfb0800000000000000
+      internalID: -4628359844301575641
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: black_bug_fixed_check_4
+      rect:
+        serializedVersion: 2
+        x: 187
+        y: 0
+        width: 86
+        height: 73
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 567664f3a622fd990800000000000000
+      internalID: -7359125426376644763
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: black_bug_fixed_check_5
+      rect:
+        serializedVersion: 2
+        x: 277
+        y: 0
+        width: 86
+        height: 73
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d7c09d6edacd46720800000000000000
+      internalID: 2838636304610692221
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: black_bug_fixed_check_6
+      rect:
+        serializedVersion: 2
+        x: 367
+        y: 0
+        width: 86
+        height: 73
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e14dd0619c95bb2d0800000000000000
+      internalID: -3261914784906488802
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: black_bug_fixed_check_7
+      rect:
+        serializedVersion: 2
+        x: 457
+        y: 0
+        width: 86
+        height: 73
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4799e7626beab8be0800000000000000
+      internalID: -1473892355680593548
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: black_bug_fixed_check_8
+      rect:
+        serializedVersion: 2
+        x: 547
+        y: 0
+        width: 86
+        height: 73
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3dadb31bdb7913e60800000000000000
+      internalID: 7940294459008998099
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: black_bug_fixed_check_9
+      rect:
+        serializedVersion: 2
+        x: 637
+        y: 0
+        width: 86
+        height: 73
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cc6aa272cf31f5aa0800000000000000
+      internalID: -6170190990764497204
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: black_bug_fixed_check_10
+      rect:
+        serializedVersion: 2
+        x: 727
+        y: 0
+        width: 86
+        height: 73
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 14309d3c923ce2480800000000000000
+      internalID: -8921979227627519167
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: black_bug_fixed_check_11
+      rect:
+        serializedVersion: 2
+        x: 738
+        y: 73
+        width: 293
+        height: 131
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9821375563ca7a170800000000000000
+      internalID: 8189703796758352521
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: black_bug_fixed_check_12
+      rect:
+        serializedVersion: 2
+        x: 817
+        y: 0
+        width: 86
+        height: 73
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3353981df42c77760800000000000000
+      internalID: 7455641356208780595
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: black_bug_fixed_check_13
+      rect:
+        serializedVersion: 2
+        x: 907
+        y: 0
+        width: 86
+        height: 73
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 59620a5019ec79530800000000000000
+      internalID: 3861782327753451157
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: black_bug_fixed_check_14
+      rect:
+        serializedVersion: 2
+        x: 997
+        y: 0
+        width: 86
+        height: 73
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e1b5334bfeeda0520800000000000000
+      internalID: 2669190850272254750
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: black_bug_fixed_check_15
+      rect:
+        serializedVersion: 2
+        x: 1087
+        y: 0
+        width: 86
+        height: 73
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cc8bcab0f78a7ca30800000000000000
+      internalID: 4235539238175422668
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: black_bug_fixed_check_16
+      rect:
+        serializedVersion: 2
+        x: 1177
+        y: 0
+        width: 86
+        height: 73
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b630e43113af00730800000000000000
+      internalID: 3963442760770257771
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: black_bug_fixed_check_17
+      rect:
+        serializedVersion: 2
+        x: 1267
+        y: 0
+        width: 86
+        height: 73
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 31f086232527ad940800000000000000
+      internalID: 5321691607050227475
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: black_bug_fixed_check_18
+      rect:
+        serializedVersion: 2
+        x: 1357
+        y: 0
+        width: 86
+        height: 73
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 143fe14c664ec3390800000000000000
+      internalID: -7837138121503345855
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: black_bug_fixed_check_19
+      rect:
+        serializedVersion: 2
+        x: 1447
+        y: 0
+        width: 86
+        height: 73
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9e1b8dc96f6a36500800000000000000
+      internalID: 388337571007607273
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: black_bug_fixed_check_20
+      rect:
+        serializedVersion: 2
+        x: 1537
+        y: 0
+        width: 86
+        height: 73
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2dc50d5372f851480800000000000000
+      internalID: -8929073287622796078
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: black_bug_fixed_check_21
+      rect:
+        serializedVersion: 2
+        x: 1627
+        y: 0
+        width: 86
+        height: 73
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: eb35acfc1b2afbb00800000000000000
+      internalID: 846574139547997118
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: black_bug_fixed_check_22
+      rect:
+        serializedVersion: 2
+        x: 1717
+        y: 0
+        width: 86
+        height: 73
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4e1f9f52fc7d46530800000000000000
+      internalID: 3847437266376585700
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: black_bug_fixed_check_23
+      rect:
+        serializedVersion: 2
+        x: 1807
+        y: 0
+        width: 86
+        height: 73
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c22d9f2477bc323e0800000000000000
+      internalID: -2079594889829821908
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: black_bug_fixed_check_24
+      rect:
+        serializedVersion: 2
+        x: 1897
+        y: 0
+        width: 23
+        height: 73
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3c306bf3c42309cb0800000000000000
+      internalID: -4859328694864968765
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      black_bug_fixed_check_0: -7446150366975307998
+      black_bug_fixed_check_1: 1397572232383668993
+      black_bug_fixed_check_10: -8921979227627519167
+      black_bug_fixed_check_11: 8189703796758352521
+      black_bug_fixed_check_12: 7455641356208780595
+      black_bug_fixed_check_13: 3861782327753451157
+      black_bug_fixed_check_14: 2669190850272254750
+      black_bug_fixed_check_15: 4235539238175422668
+      black_bug_fixed_check_16: 3963442760770257771
+      black_bug_fixed_check_17: 5321691607050227475
+      black_bug_fixed_check_18: -7837138121503345855
+      black_bug_fixed_check_19: 388337571007607273
+      black_bug_fixed_check_2: -429234029407365427
+      black_bug_fixed_check_20: -8929073287622796078
+      black_bug_fixed_check_21: 846574139547997118
+      black_bug_fixed_check_22: 3847437266376585700
+      black_bug_fixed_check_23: -2079594889829821908
+      black_bug_fixed_check_24: -4859328694864968765
+      black_bug_fixed_check_3: -4628359844301575641
+      black_bug_fixed_check_4: -7359125426376644763
+      black_bug_fixed_check_5: 2838636304610692221
+      black_bug_fixed_check_6: -3261914784906488802
+      black_bug_fixed_check_7: -1473892355680593548
+      black_bug_fixed_check_8: 7940294459008998099
+      black_bug_fixed_check_9: -6170190990764497204
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

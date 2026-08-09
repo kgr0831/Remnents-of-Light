@@ -1,0 +1,48 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: IlseomChargePixels
+  m_Shader: {fileID: 4800000, guid: 725eb63df15d9794c81df7e189a85606, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats:
+    - _Alpha: 1
+    - _BloomBoost: 4.5
+    - _Burst: 0
+    - _BurstDistance: 0.55
+    - _Count: 64
+    - _FadeInFrac: 0.25
+    - _FadeOutFrac: 0.42
+    - _Flow: 0
+    - _FlowSpeed: 0.85
+    - _PixelSize: 0.0625
+    - _Progress: 0
+    - _RadiusMax: 1.7
+    - _RadiusMin: 0.75
+    - _Seed: 0
+    - _Stagger: 0.55
+    - _Swirl: 1.1
+    m_Colors:
+    - _Color: {r: 0.36, g: 0.62, b: 0.95, a: 0.5}
+    - _Target: {r: 0.45, g: 0.55, b: 0, a: 0}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1

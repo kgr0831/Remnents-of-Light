@@ -1,0 +1,767 @@
+fileFormatVersion: 2
+guid: ceb6257cbb2fb424e98288c65036a8a8
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -2588961535999776787
+    second: final_safe_state_check_0
+  - first:
+      213: -7323204691469249824
+    second: final_safe_state_check_1
+  - first:
+      213: 5722328443522423528
+    second: final_safe_state_check_2
+  - first:
+      213: 8224262629492339321
+    second: final_safe_state_check_3
+  - first:
+      213: 3738367525511309081
+    second: final_safe_state_check_4
+  - first:
+      213: -481500116894333004
+    second: final_safe_state_check_5
+  - first:
+      213: 604356164109898227
+    second: final_safe_state_check_6
+  - first:
+      213: -1966326717079044898
+    second: final_safe_state_check_7
+  - first:
+      213: 7718626893046679988
+    second: final_safe_state_check_8
+  - first:
+      213: 3381290269989537366
+    second: final_safe_state_check_9
+  - first:
+      213: -8792134502024226015
+    second: final_safe_state_check_10
+  - first:
+      213: 1776287224462669397
+    second: final_safe_state_check_11
+  - first:
+      213: 5280709504120607964
+    second: final_safe_state_check_12
+  - first:
+      213: -3403291940617782153
+    second: final_safe_state_check_13
+  - first:
+      213: 6482143087242535980
+    second: final_safe_state_check_14
+  - first:
+      213: 335963498569967409
+    second: final_safe_state_check_15
+  - first:
+      213: -8794246185290867793
+    second: final_safe_state_check_16
+  - first:
+      213: -8888274457629281346
+    second: final_safe_state_check_17
+  - first:
+      213: 3125530796206706491
+    second: final_safe_state_check_18
+  - first:
+      213: 4711675206312456265
+    second: final_safe_state_check_19
+  - first:
+      213: 3308706953549851777
+    second: final_safe_state_check_20
+  - first:
+      213: 7845981706159937217
+    second: final_safe_state_check_21
+  - first:
+      213: -1781649051051716938
+    second: final_safe_state_check_22
+  - first:
+      213: -4722670672267886243
+    second: final_safe_state_check_23
+  - first:
+      213: -8897129932536136710
+    second: final_safe_state_check_24
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 0
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: final_safe_state_check_0
+      rect:
+        serializedVersion: 2
+        x: 832
+        y: 242
+        width: 78
+        height: 38
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: de7659d2339221cd0800000000000000
+      internalID: -2588961535999776787
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: final_safe_state_check_1
+      rect:
+        serializedVersion: 2
+        x: 1048
+        y: 242
+        width: 78
+        height: 67
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0e250831220ce5a90800000000000000
+      internalID: -7323204691469249824
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: final_safe_state_check_2
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 93
+        height: 73
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8ea9444b66bc96f40800000000000000
+      internalID: 5722328443522423528
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: final_safe_state_check_3
+      rect:
+        serializedVersion: 2
+        x: 97
+        y: 0
+        width: 86
+        height: 73
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 972396a9943722270800000000000000
+      internalID: 8224262629492339321
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: final_safe_state_check_4
+      rect:
+        serializedVersion: 2
+        x: 187
+        y: 0
+        width: 86
+        height: 73
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 91725fd257951e330800000000000000
+      internalID: 3738367525511309081
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: final_safe_state_check_5
+      rect:
+        serializedVersion: 2
+        x: 277
+        y: 0
+        width: 86
+        height: 73
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4b7443dd13e5159f0800000000000000
+      internalID: -481500116894333004
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: final_safe_state_check_6
+      rect:
+        serializedVersion: 2
+        x: 367
+        y: 0
+        width: 86
+        height: 73
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3f1969faaba136800800000000000000
+      internalID: 604356164109898227
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: final_safe_state_check_7
+      rect:
+        serializedVersion: 2
+        x: 457
+        y: 0
+        width: 86
+        height: 73
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: edcb424d44436b4e0800000000000000
+      internalID: -1966326717079044898
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: final_safe_state_check_8
+      rect:
+        serializedVersion: 2
+        x: 547
+        y: 0
+        width: 86
+        height: 73
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4b903d1a3421e1b60800000000000000
+      internalID: 7718626893046679988
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: final_safe_state_check_9
+      rect:
+        serializedVersion: 2
+        x: 637
+        y: 0
+        width: 86
+        height: 73
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6560631f591ccee20800000000000000
+      internalID: 3381290269989537366
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: final_safe_state_check_10
+      rect:
+        serializedVersion: 2
+        x: 727
+        y: 0
+        width: 86
+        height: 73
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 12bd36dc0401cf580800000000000000
+      internalID: -8792134502024226015
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: final_safe_state_check_11
+      rect:
+        serializedVersion: 2
+        x: 738
+        y: 73
+        width: 293
+        height: 131
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5567929c1d3a6a810800000000000000
+      internalID: 1776287224462669397
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: final_safe_state_check_12
+      rect:
+        serializedVersion: 2
+        x: 817
+        y: 0
+        width: 86
+        height: 73
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cd4532bc059d84940800000000000000
+      internalID: 5280709504120607964
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: final_safe_state_check_13
+      rect:
+        serializedVersion: 2
+        x: 907
+        y: 0
+        width: 86
+        height: 73
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 77cf68ce20415c0d0800000000000000
+      internalID: -3403291940617782153
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: final_safe_state_check_14
+      rect:
+        serializedVersion: 2
+        x: 997
+        y: 0
+        width: 86
+        height: 73
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c2468524bc235f950800000000000000
+      internalID: 6482143087242535980
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: final_safe_state_check_15
+      rect:
+        serializedVersion: 2
+        x: 1087
+        y: 0
+        width: 86
+        height: 73
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 137a2cd950599a400800000000000000
+      internalID: 335963498569967409
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: final_safe_state_check_16
+      rect:
+        serializedVersion: 2
+        x: 1177
+        y: 0
+        width: 86
+        height: 73
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fab576a30bf84f580800000000000000
+      internalID: -8794246185290867793
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: final_safe_state_check_17
+      rect:
+        serializedVersion: 2
+        x: 1267
+        y: 0
+        width: 86
+        height: 73
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: eb334de097186a480800000000000000
+      internalID: -8888274457629281346
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: final_safe_state_check_18
+      rect:
+        serializedVersion: 2
+        x: 1357
+        y: 0
+        width: 86
+        height: 73
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b3fc17a03bd106b20800000000000000
+      internalID: 3125530796206706491
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: final_safe_state_check_19
+      rect:
+        serializedVersion: 2
+        x: 1447
+        y: 0
+        width: 86
+        height: 73
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 940f449f2ab336140800000000000000
+      internalID: 4711675206312456265
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: final_safe_state_check_20
+      rect:
+        serializedVersion: 2
+        x: 1537
+        y: 0
+        width: 86
+        height: 73
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 18c2438a173eaed20800000000000000
+      internalID: 3308706953549851777
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: final_safe_state_check_21
+      rect:
+        serializedVersion: 2
+        x: 1627
+        y: 0
+        width: 86
+        height: 73
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1c650edbac682ec60800000000000000
+      internalID: 7845981706159937217
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: final_safe_state_check_22
+      rect:
+        serializedVersion: 2
+        x: 1717
+        y: 0
+        width: 86
+        height: 73
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6be86ada0af4647e0800000000000000
+      internalID: -1781649051051716938
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: final_safe_state_check_23
+      rect:
+        serializedVersion: 2
+        x: 1807
+        y: 0
+        width: 86
+        height: 73
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d51415c9b04b57eb0800000000000000
+      internalID: -4722670672267886243
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: final_safe_state_check_24
+      rect:
+        serializedVersion: 2
+        x: 1897
+        y: 0
+        width: 23
+        height: 73
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: afb30b2277b078480800000000000000
+      internalID: -8897129932536136710
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      final_safe_state_check_0: -2588961535999776787
+      final_safe_state_check_1: -7323204691469249824
+      final_safe_state_check_10: -8792134502024226015
+      final_safe_state_check_11: 1776287224462669397
+      final_safe_state_check_12: 5280709504120607964
+      final_safe_state_check_13: -3403291940617782153
+      final_safe_state_check_14: 6482143087242535980
+      final_safe_state_check_15: 335963498569967409
+      final_safe_state_check_16: -8794246185290867793
+      final_safe_state_check_17: -8888274457629281346
+      final_safe_state_check_18: 3125530796206706491
+      final_safe_state_check_19: 4711675206312456265
+      final_safe_state_check_2: 5722328443522423528
+      final_safe_state_check_20: 3308706953549851777
+      final_safe_state_check_21: 7845981706159937217
+      final_safe_state_check_22: -1781649051051716938
+      final_safe_state_check_23: -4722670672267886243
+      final_safe_state_check_24: -8897129932536136710
+      final_safe_state_check_3: 8224262629492339321
+      final_safe_state_check_4: 3738367525511309081
+      final_safe_state_check_5: -481500116894333004
+      final_safe_state_check_6: 604356164109898227
+      final_safe_state_check_7: -1966326717079044898
+      final_safe_state_check_8: 7718626893046679988
+      final_safe_state_check_9: 3381290269989537366
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

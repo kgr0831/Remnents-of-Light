@@ -1,0 +1,247 @@
+fileFormatVersion: 2
+guid: 61a136f043efc864caa0f32c54593539
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -1616812048525330196
+    second: Glitch Samurai-Glitch Climb Glitch_0
+  - first:
+      213: 923918466314549093
+    second: Glitch Samurai-Glitch Climb Glitch_1
+  - first:
+      213: 4027410610500847442
+    second: Glitch Samurai-Glitch Climb Glitch_2
+  - first:
+      213: -5799661384698479572
+    second: Glitch Samurai-Glitch Climb Glitch_3
+  - first:
+      213: -2973847367711208867
+    second: Glitch Samurai-Glitch Climb Glitch_4
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 18
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 0
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Glitch Samurai-Glitch Climb Glitch_0
+      rect:
+        serializedVersion: 2
+        x: 8
+        y: 3
+        width: 18
+        height: 28
+      alignment: 9
+      pivot: {x: 0.38, y: 0.03}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ce87313120eef89e0800000000000000
+      internalID: -1616812048525330196
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Glitch Samurai-Glitch Climb Glitch_1
+      rect:
+        serializedVersion: 2
+        x: 44
+        y: 3
+        width: 17
+        height: 27
+      alignment: 9
+      pivot: {x: 0.38, y: 0.03}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5673a1233fa62dc00800000000000000
+      internalID: 923918466314549093
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Glitch Samurai-Glitch Climb Glitch_2
+      rect:
+        serializedVersion: 2
+        x: 79
+        y: 3
+        width: 17
+        height: 27
+      alignment: 9
+      pivot: {x: 0.38, y: 0.03}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 257ca83bc9c34e730800000000000000
+      internalID: 4027410610500847442
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Glitch Samurai-Glitch Climb Glitch_3
+      rect:
+        serializedVersion: 2
+        x: 114
+        y: 3
+        width: 17
+        height: 27
+      alignment: 9
+      pivot: {x: 0.38, y: 0.03}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c2c3f73d2b6738fa0800000000000000
+      internalID: -5799661384698479572
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Glitch Samurai-Glitch Climb Glitch_4
+      rect:
+        serializedVersion: 2
+        x: 149
+        y: 3
+        width: 17
+        height: 27
+      alignment: 9
+      pivot: {x: 0.38, y: 0.03}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d5ac75f3395cab6d0800000000000000
+      internalID: -2973847367711208867
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: f8b8f0c3bf2923f4db96ed59a5f755ed
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Glitch Samurai-Glitch Climb Glitch_0: -1616812048525330196
+      Glitch Samurai-Glitch Climb Glitch_1: 923918466314549093
+      Glitch Samurai-Glitch Climb Glitch_2: 4027410610500847442
+      Glitch Samurai-Glitch Climb Glitch_3: -5799661384698479572
+      Glitch Samurai-Glitch Climb Glitch_4: -2973847367711208867
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
