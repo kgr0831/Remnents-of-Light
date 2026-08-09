@@ -43,14 +43,31 @@ public class SectionCamera : MonoBehaviour
     bool hasRoom;
     Vector3 roomTargetPos;
     float roomTargetOrthoSize;
+    // 룸의 화면비가 실제 화면비와 다를 때, 그냥 더 넓게 보여주는 대신(기존 Max 방식) 레터박스/
+    // 필러박스(검은 바)로 룸의 비율을 그대로 지킬지 여부 — 룸별로 opt-in(사용자 지시 2026-08-08,
+    // BossRoomTrigger 전용). 기존 RoomTrigger들은 이 값이 기본 false라 동작이 그대로 유지된다.
+    bool roomLetterbox;
+    float roomAspect = 1f;
 
     /// <summary>룸(월드 Bounds)에 맞춰 카메라를 고정 프레임한다 — RoomTrigger.OnTriggerEnter2D가 호출.
-    /// 그리드 자동분할을 대체(이후 LateUpdate는 이 값을 targetPos/baseOrthoSize로 슬라이드).</summary>
-    public void EnterRoom(Bounds b)
+    /// 그리드 자동분할을 대체(이후 LateUpdate는 이 값을 targetPos/baseOrthoSize로 슬라이드).
+    /// letterbox가 true면 룸의 화면비를 그대로 지키고 남는 부분은 검은 바로 채운다.</summary>
+    public void EnterRoom(Bounds b, bool letterbox = false)
     {
-        float halfH = b.size.y * 0.5f;
-        float halfW = (b.size.x * 0.5f) / cam.aspect;
-        roomTargetOrthoSize = Mathf.Max(halfH, halfW);
+        roomLetterbox = letterbox;
+        if (letterbox)
+        {
+            // 화면비를 룸 자체 비율로 고정 — 높이를 기준으로 orthoSize를 정하고, 뷰포트(cam.rect)로
+            // 레터박스/필러박스를 만든다(실제 화면비와 다른 만큼만 검은 바).
+            roomAspect = b.size.x / Mathf.Max(0.001f, b.size.y);
+            roomTargetOrthoSize = b.size.y * 0.5f;
+        }
+        else
+        {
+            float halfH = b.size.y * 0.5f;
+            float halfW = (b.size.x * 0.5f) / cam.aspect;
+            roomTargetOrthoSize = Mathf.Max(halfH, halfW);
+        }
         roomTargetPos = new Vector3(b.center.x, b.center.y, basePos.z);
         hasRoom = true;
     }
@@ -258,5 +275,35 @@ public class SectionCamera : MonoBehaviour
 
         transform.position = basePos + shakeOffset + sustainOffset + focusOffset + sustainFocusOffset;
         cam.orthographicSize = baseOrthoSize + focusZoomDelta + sustainFocusZoomDelta;
+
+        ApplyLetterbox();
+    }
+
+    // hasRoom && roomLetterbox일 때만 카메라 뷰포트(cam.rect)를 룸 비율에 맞춰 줄이고, 남는 공간은
+    // 검은 바로 남긴다(뷰포트 밖은 아무 카메라도 안 그리므로 기본적으로 검게 남는다). 그 외의 모든
+    // 경우(레터박스 안 쓰는 룸, 그리드 모드)는 항상 풀스크린으로 되돌려 기존 동작을 지킨다.
+    void ApplyLetterbox()
+    {
+        if (!hasRoom || !roomLetterbox)
+        {
+            if (cam.rect != new Rect(0f, 0f, 1f, 1f)) cam.rect = new Rect(0f, 0f, 1f, 1f);
+            return;
+        }
+
+        float screenAspect = (float)Screen.width / Screen.height;
+        Rect r;
+        if (roomAspect > screenAspect)
+        {
+            // 룸이 화면보다 상대적으로 넓다 → 위아래 레터박스
+            float h = screenAspect / roomAspect;
+            r = new Rect(0f, (1f - h) * 0.5f, 1f, h);
+        }
+        else
+        {
+            // 룸이 화면보다 상대적으로 좁다 → 좌우 필러박스
+            float w = roomAspect / screenAspect;
+            r = new Rect((1f - w) * 0.5f, 0f, w, 1f);
+        }
+        cam.rect = r;
     }
 }

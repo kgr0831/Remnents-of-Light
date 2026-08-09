@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RampageVisionFeature
   m_Active: 1
   Intensity: 0
-  Center: {x: 0.7567316, y: 0.120415114}
+  Center: {x: 0.46000835, y: 0.057753183}
   Radius: -1
   Softness: 0.0001
   Darkness: 1
@@ -49,7 +49,8 @@ MonoBehaviour:
   - {fileID: 2631605092135521115}
   - {fileID: -2305740375038657115}
   - {fileID: 4967651120529689474}
-  m_RendererFeatureMap: 5bcbd871e3568524a57d8b61585d00e0
+  - {fileID: 467566846025169758}
+  m_RendererFeatureMap: 5bcbd871e3568524a57d8b61585d00e0a57d8b61585d00e05e7b14b691217d06
   m_UseNativeRenderPass: 0
   m_LayerMask:
     serializedVersion: 2
@@ -80,6 +81,25 @@ MonoBehaviour:
   m_PostProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
   m_DefaultMaterialType: 0
   m_DefaultCustomMaterial: {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+--- !u!114 &467566846025169758
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26a14e00960c43a78f56fb620dfee4d8, type: 3}
+  m_Name: BossOverlapOutlineFeature
+  m_EditorClassIdentifier: Assembly-CSharp::BossOverlapOutlineFeature
+  m_Active: 1
+  OutlineLayers:
+    serializedVersion: 2
+    m_Bits: 3840
+  OutlineColor: {r: 1, g: 1, b: 1, a: 1}
+  Thickness: 1
+  BossAlphaCutoff: 0.08
 --- !u!114 &2631605092135521115
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -94,7 +114,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GrayscaleRendererFeature
   m_Active: 1
   Intensity: 0
-  Center: {x: 0.65879077, y: 0.16419223}
+  Center: {x: 0.43310863, y: 0.0553267}
   Radius: 1.8
   Softness: 0.35
   FocusCenter: {x: 0.5, y: 0.5}
@@ -117,7 +137,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ScreenGlitchFeature
   m_Active: 1
   Intensity: 0
-  Seed: 0
+  Seed: 542
   ScanlineDensity: 90
   ScanlineJitter: 0.02
   NoiseAmount: 0.06

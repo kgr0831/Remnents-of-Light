@@ -6,6 +6,10 @@ using UnityEngine;
 [RequireComponent(typeof(BoxCollider2D))]
 public class RoomTrigger : MonoBehaviour
 {
+    // 이 방의 화면비를 그대로 지키고(카메라가 그냥 더 넓게 보여주는 대신) 화면비 안 맞는 만큼
+    // 레터박스/필러박스(검은 바)로 채운다 — 기본 false라 기존 방들은 동작 그대로.
+    public bool useLetterbox = false;
+
     private BoxCollider2D box;
 
     void Awake()
@@ -20,13 +24,13 @@ public class RoomTrigger : MonoBehaviour
         if (SectionCamera.Instance == null) return;
         var player = GameObject.FindGameObjectWithTag("Player");
         if (player != null && box.OverlapPoint(player.transform.position))
-            SectionCamera.Instance.EnterRoom(box.bounds);
+            SectionCamera.Instance.EnterRoom(box.bounds, useLetterbox);
     }
 
     void OnTriggerEnter2D(Collider2D other)
     {
         if (!other.CompareTag("Player")) return;
         if (SectionCamera.Instance != null)
-            SectionCamera.Instance.EnterRoom(box.bounds);
+            SectionCamera.Instance.EnterRoom(box.bounds, useLetterbox);
     }
 }

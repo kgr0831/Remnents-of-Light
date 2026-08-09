@@ -12,23 +12,36 @@ public class ScreenGlitchFx : MonoBehaviour
 
     public static ScreenGlitchFx Instance { get; private set; }
 
+    /// <summary>글리치를 켜는 주체. 여러 개가 동시에 켜질 수 있어 원인별로 구분한다 —
+    /// 하나가 End를 불러도 다른 원인이 살아 있으면 화면은 계속 깨져 있어야 한다.
+    /// (2026-08-09: 보스 레이저 노출이 세 번째 원인으로 들어오면서 필요해졌다. 그전까지는
+    ///  자아 고갈과 폭주 심박이 서로의 End에 꺼지는 잠재 버그가 있었다.)</summary>
+    [System.Flags]
+    public enum Source { Ego = 1, Heartbeat = 2, BossBeam = 4 }
+
+    static int activeSources;
+
     float k; // 현재 세기 0~1
     bool ending;
     float seed;
 
     // [ASSERT] 판독구
     public float Intensity => k;
+    public static int ActiveSources => activeSources;
 
-    public static void Begin()
+    public static void Begin(Source source = Source.Ego)
     {
+        activeSources |= (int)source;
         if (Instance != null) { Instance.ending = false; return; } // 페이드아웃 중 재진입 시 되살린다
         var go = new GameObject("ScreenGlitchFx");
         Instance = go.AddComponent<ScreenGlitchFx>();
     }
 
-    /// <summary>페이드아웃 후 스스로 파괴된다(오브젝트 누수 0).</summary>
-    public static void End()
+    /// <summary>해당 원인만 끈다. 남은 원인이 없을 때만 페이드아웃 후 스스로 파괴된다(오브젝트 누수 0).</summary>
+    public static void End(Source source = Source.Ego)
     {
+        activeSources &= ~(int)source;
+        if (activeSources != 0) return;
         if (Instance != null) Instance.ending = true;
     }
 
@@ -55,6 +68,6 @@ public class ScreenGlitchFx : MonoBehaviour
     {
         var f = ScreenGlitchFeature.Instance;
         if (f != null) f.Intensity = 0f; // 어떤 경로로 끝나도 화면은 반드시 원복된다
-        if (Instance == this) Instance = null;
+        if (Instance == this) { Instance = null; activeSources = 0; }
     }
 }
