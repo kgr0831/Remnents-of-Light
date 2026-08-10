@@ -28,7 +28,8 @@ using UnityEngine.Rendering.Universal;
 /// 빨간 칸만 블룸시키는 것(사용자 지시 2026-08-10)은 Screen Space Overlay 캔버스가 URP
 /// 포스트프로세싱을 아예 안 받는다는 제약 때문에 별도 파이프라인이 필요하다 — 전용 레이어(HPBloom)
 /// + 그 레이어만 컬링하는 Overlay 카메라(메인 카메라 스택에 추가) + 그 카메라의 Volume Mask에만
-/// 걸리는 전용 Bloom 볼륨을 코드로 만든다(BuildHpBloomPipeline). 전역 DefaultVolumeProfile은
+/// 걸리는 전용 Bloom 볼륨을 코드로 만든다(BuildBloomPipeline — 2026-08-11부터 광원 블룸과 공유).
+/// 전역 DefaultVolumeProfile은
 /// 건드리지 않는다 — 이미 threshold=0.9/intensity=0으로 다른 용도(플레이어 블룸)를 위해 대기 중인
 /// 설정이라, 만졌다간 게임 전체 밝은 픽셀이 다 번진다. 아이콘 위 "빨간 칸"만 골라내는 것도 카메라
 /// 컬링마스크가 아니라(그건 오브젝트 단위 필터일 뿐 픽셀 단위가 아니다) 마스크 텍스처
@@ -37,16 +38,39 @@ using UnityEngine.Rendering.Universal;
 /// DodgeUI/ExecutionUI와 같은 자가완결 방식 — 씬에 배치하지 않고 런타임에 전부 코드로 만든다.
 /// 블룸 카메라·볼륨·글로우 캔버스까지 전부 이 안에서 만들어지므로, 이 스크립트가 붙는 씬이라면
 /// (map-test든 UISandbox든) 별도 씬 작업 없이 그대로 동작한다.
+///
+/// 광원(에너지) 게이지도 더 이상 채움 바가 아니다(2026-08-11 사용자 지시) — Resources/UI/EnergyBar.png
+/// (8프레임, x좌표 순 정렬)와 EnergyBar-Zero.png(0) 사이를 스프라이트째로 스왑하는 아이콘 하나로
+/// 바뀐다. HP와 달리 크로스페이드는 하지 않는다 — 사용자 지시가 "n/8 이상일 때 그 프레임으로
+/// 스위치"라는 계단 함수를 명시했고, 어차피 매 프레임 스무딩되는 _energyDisplay를 그대로 문턱값에
+/// 먹이므로 경계를 넘는 순간 자연스럽게 프레임이 바뀐다(ApplyEnergyIcon 참고).
+///
+/// EnergyBar.png는 HpBar.png와 같은 2색 픽셀아트지만 색상이 청록이라(실측: 꺼진 칸(9,88,95)/켜진
+/// 칸(52,221,236) — 둘 다 빨강 채널이 거의 0) HP의 _LitTint 셰이더(빨강 채널 문턱)를 그대로 못
+/// 쓴다. 전용 셰이더 Custom/UIEnergyIconBody가 대신 파랑 채널(0.37 대 0.93로 크게 갈림)로 켜진/꺼진
+/// 칸을 나누고, 켜진 칸은 _LitTint로(저에너지/폭주 시 매 프레임 빨갛게), 꺼진 칸은 평소엔 원본
+/// 그대로 두다가 폭주 중에만 _UnlitTint로 어둡게 눌러 대비를 살린다(사용자 지시 2026-08-11 "폭주
+/// 상태에서 빈칸이 잘 안보이니까 대비 잘되게"). HP와 마찬가지로 흰색 아웃라인(Custom/
+/// UISilhouetteOutline)도 두른다.
+///
+/// 블룸도 HP와 같은 파이프라인을 공유한다(BuildBloomPipeline, 색만 다름 — 사용자 지시 2026-08-11)
+/// — 전용 글로우 마스크(Resources/UI/EnergyBarGlowMask.png, EnergyBar.png의 켜진 칸만 흰색으로
+/// 뽑아 미리 구운 텍스처)로 Custom/UIHpGlow 셰이더를 그대로 재사용한다. 폭주 중엔 글로우가
+/// RampageHeartbeatFx의 lub 박동 리듬을 참고한 빠른 삼각파로 페이드 인/아웃한다(RampagePulse 참고).
 /// </summary>
 [ExecuteAlways]
 public class PlayerHudUI : MonoBehaviour
 {
     [Header("Layout (CanvasScaler 1920x1080 기준 px, 좌상단 원점)")]
     public Vector2 origin = new Vector2(56f, -52f);
-    public Vector2 hpIconSize = new Vector2(96f, 96f);
-    public Vector2 energyBarSize = new Vector2(460f, 20f);
+    public Vector2 hpIconSize = new Vector2(96f, 96f); // 광원 아이콘도 이 크기를 그대로 쓴다(사용자 지시: "크기는 HP UI와 동일")
     public float barGap = 14f;
-    public float border = 3f;
+
+    // 원본 아트의 "켜진 칸" 색(237,0,0)이 "꺼진 칸"(142,0,0)과 명도 차이만 있어 대비가 잘 안
+    // 느껴졌다(사용자 지시 2026-08-11 "아직 차있는 HP를 좀 더 연하고 밝은 색으로") — 켜진 칸만
+    // 이 색으로 다시 칠한다(Custom/UIHpIconBody._LitTint). 꺼진 칸은 원래 색 그대로 둔다.
+    [Header("HP 칸 색 대비")]
+    public Color hpLitTint = new Color(1f, 0.42f, 0.38f, 1f);
 
     [Header("Lerp 스무딩")]
     public float hpLerpSpeed = 8f;       // 유닛별 스무딩 배열이 목표로 접근하는 속도(기존 pipLerpSpeed)
@@ -58,30 +82,20 @@ public class PlayerHudUI : MonoBehaviour
 
     [Header("색")]
     // 광원바 색(2026-08-02 사용자 지시: "픽셀 이팩트 폭주=붉은, 초월=흰, 둘다 아니면 흰"과 통일):
-    // 평상시·초월 둘 다 흰색이라 energyColor/transcendColor가 사실상 같은 값이지만, 상태별로
-    // 독립 튜닝할 수 있도록 필드는 그대로 분리해 둔다(폭주만 rampageColor로 붉게 갈린다).
-    public Color energyColor = Color.white;
+    // 옛 채움 바 시절엔 이 색을 Image.color로 "곱했을" 뿐이라 흰색=무변화(원래 바 색 그대로)였다.
+    // 지금은 Custom/UIEnergyIconBody._LitTint가 켜진 칸 색을 통째로 "대체"하므로, 흰색을 그대로
+    // 넣으면 EnergyBar.png의 원래 청록이 지워지고 하얗게 빛나 보인다(사용자 리포트 2026-08-11
+    // "과하게, 이상한 색상으로 빛납니다" — 블룸 세기가 아니라 이 흰색 대체가 원인이었다). 그래서
+    // "평상시"의 기본값을 EnergyBar.png 실측 켜진 칸 색(52,221,236)으로 바꿔 사실상 무변화가 되게
+    // 한다. 초월도 같은 이유로 흰색 대신 같은 청록을 쓴다(상태별로 독립 튜닝할 수 있게 필드는
+    // 분리 — 폭주만 rampageColor로 붉게 갈린다).
+    public Color energyColor = new Color(0.204f, 0.867f, 0.925f, 1f);
     public Color energyLowColor = new Color(0.95f, 0.25f, 0.22f); // A-2/C-3: 에너지 부족 경고색
     public float energyColorLerpSpeed = 20f; // 정상↔경고색 전환 속도(대략 0.15s)
-    public Color transcendColor = Color.white; // 초월 중(2026-08-02 지시로 청록→흰색)
+    public Color transcendColor = new Color(0.204f, 0.867f, 0.925f, 1f); // 초월 중(평상시와 동일 — 위 주석 참고)
     public float transcendColorLerpSpeed = 20f; // 저에너지 경고와 같은 속도(대략 0.15s)
     public Color rampageColor = new Color(0.95f, 0.20f, 0.18f); // 폭주 중(2026-08-02 신규 지시)
     public float rampageColorLerpSpeed = 20f; // 위 두 전환과 같은 속도
-
-    [Header("광원 변경치 표시 (격투게임 바)")]
-    // 격투게임 체력바의 "칩 데미지" 관습 그대로 — 줄어든 만큼이 잠깐 그 자리에 남았다가(고스트)
-    // 서서히 따라 내려오고, 늘어난 만큼은 밝은 예고 구간으로 먼저 보인 뒤 채움이 그 안으로 자란다.
-    // 둘 다 채움(EnergyFill) "뒤"에 깔기만 하면 되므로 좌표 계산이 필요 없다 —
-    // 더 긴 쪽이 채움 밖으로 삐져나온 부분만 보이고, 감소/증가는 동시에 일어나지 않는다.
-    public Color energyLossColor = new Color(0.20f, 0.16f, 0.38f, 0.95f);  // 잃은 구간(칩) — 짙은 남보라
-    public Color energyGainColor = new Color(1f, 0.82f, 0.20f, 0.95f);    // 얻은 구간(예고) — 밝은 금색
-    public float energyLossDelay = 0.25f;            // 줄어든 직후 고스트가 그대로 멈춰 있는 시간
-    public float energyLossDrainPerSecond = 0.55f;   // 그 뒤 고스트가 따라 내려오는 속도(바 비율/초)
-    public float energyGainHold = 0.15f;             // 얻은 구간이 목표에 머무는 시간
-    public float energyGainFadePerSecond = 1.2f;     // 그 뒤 채움에 흡수되는 속도(바 비율/초)
-
-    public Color backColor = new Color(0.05f, 0.05f, 0.07f, 0.85f);
-    public Color borderColor = new Color(0.82f, 0.87f, 0.95f, 0.55f);
 
     // 자아 바를 따로 그리지 않고(사용자 지시 2026-08-01: "더이상 자아 게이지가 바로 표시되지 않고"),
     // HP 아이콘 자체가 자아 상태를 대신 표시한다 — 전부 폭주 중에만 켜진다(자아는 폭주 중에만 의미 있는 값).
@@ -111,12 +125,53 @@ public class PlayerHudUI : MonoBehaviour
     public bool hpOutlineEnabled = true;
     public Color hpOutlineColor = Color.white;
 
+    // 만피(찼을 때)를 안 찼을 때와 색으로 바로 구분되게 한다(사용자 지시 2026-08-11). 평소엔 빨간
+    // 아이콘 그대로 두고, 8칸이 전부 찼을 때만 금빛 틴트 + 전용(더 강한) 글로우로 바뀐다.
+    [Header("HP 만피 강조 (안 찼을 때와 색으로 구분, 2026-08-11 사용자 지시)")]
+    public Color hpFullTint = new Color(1f, 0.92f, 0.55f);
+    public Color hpFullGlowColor = new Color(1f, 0.82f, 0.25f, 1f);
+    [Range(1f, 8f)] public float hpFullGlowBoost = 6f;
+
+    // 칸이 찰 때/깎일 때 훨씬 잘 보이게(사용자 지시 2026-08-11) — 변화 순간 아이콘에 색이 번쩍
+    // 스치고 살짝 커졌다 돌아온다. 방향(회복/피격)에 따라 색만 다르고 메커니즘은 같다.
+    [Header("HP 변화 이펙트 (채움/깎임을 훨씬 잘 보이게, 2026-08-11 사용자 지시)")]
+    public Color hpGainFlashColor = new Color(1f, 0.98f, 0.75f);
+    public Color hpLossFlashColor = new Color(1f, 0.08f, 0.05f);
+    public float hpChangeFlashDecay = 6f;
+    public float hpChangePunchScale = 0.3f;
+    public float hpChangePunchDecay = 10f;
+
+    // HP와 같은 파이프라인(BuildBloomPipeline이 카메라·볼륨·글로우 캔버스를 공유)이지만 색은
+    // 다르게(사용자 지시 2026-08-11) — 평상시엔 아이콘 원래 색(청록)에 가깝게, 폭주 중엔 HP 블룸과
+    // 같은 계열의 빨강으로 갈린다.
+    [Header("광원 블룸 (2026-08-11 사용자 지시 — HP와 같은 방식, 색은 다르게)")]
+    public bool energyGlowEnabled = true;
+    public Color energyGlowColor = new Color(0.20f, 0.92f, 1f, 1f);
+    public Color energyRampageGlowColor = new Color(1f, 0.16f, 0.08f, 1f);
+    [Range(1f, 8f)] public float energyGlowBoost = 4f;
+    [Range(0f, 1f)] public float energyGlowIntensity = 1f;
+    // 폭주 중엔 블룸이 하트비트처럼 빠르게 페이드 인/아웃을 반복한다(사용자 지시 2026-08-11,
+    // RampageHeartbeatFx.cs의 lub 박동 리듬(상승 0.05s/하강 0.10s)을 참고한 빠른 삼각파 펄스 —
+    // 화면 전체가 아니라 이 블룸 하나에만 건다).
+    public float energyRampagePulseRise = 0.08f;
+    public float energyRampagePulseFall = 0.18f;
+    [Range(0f, 1f)] public float energyRampagePulseFloor = 0.35f; // 펄스 바닥에서도 완전히 안 꺼지게
+
+    [Header("광원 아웃라인 (흰색, HP와 동일 — 2026-08-11 사용자 지시)")]
+    public bool energyOutlineEnabled = true;
+    public Color energyOutlineColor = Color.white;
+
+    // 폭주 중엔 화면 전체가 붉게 물들어(스크린 비네트 등) 켜진 칸(밝은 경고색)만 두드러지고
+    // 꺼진 칸(원래 어두운 청록)은 묻혀 안 보인다는 피드백(사용자 지시 2026-08-11) — 폭주 중에만
+    // 꺼진 칸을 이 어두운 색으로 눌러 대비를 살린다(Custom/UIEnergyIconBody._UnlitTint).
+    [Header("광원 대비 (폭주 중 빈칸 강조, 2026-08-11 사용자 지시)")]
+    public Color energyUnlitRampageTint = new Color(0.08f, 0.02f, 0.02f);
+
     static PlayerHudUI _instance;
     public static PlayerHudUI Instance => _instance;
 
     PlayerController _player;
     GameObject _root;
-    RectTransform _energyFill, _energyLoss, _energyGain;
 
     // HP 아이콘 — 낮은 프레임(Base, 항상 불투명)과 다음 프레임(Ghost, 알파=frac)을 겹쳐 크로스페이드한다.
     GameObject _hpIconGO;
@@ -124,11 +179,22 @@ public class PlayerHudUI : MonoBehaviour
     Material _hpOutlineMat, _hpEgoMat, _hpBaseMat, _hpGhostMat;
     float[] _pipDisplay;
     float _lossHoldTimer, _energyDisplay, _findTimer;
+    // HP 변화 이펙트(채움/깎임 번쩍임 + 펀치 스케일) 상태 — ApplyHpIcon이 읽어 그린다.
+    float _hpChangeFlash, _hpChangePunch;
+    Color _hpChangeFlashColor = Color.white;
     float _energyColorLerp, _energyFlashTimer, _transcendColorLerp, _rampageColorLerp;
-    Image _energyFillImage;
     int _builtPipCount, _prevLit = -1;
-    // 광원 변경치(격투게임 바) 상태
-    float _energyGhost, _energyGainDisplay, _energyLossTimer, _energyGainTimer, _prevEnergyTarget = -1f;
+
+    // 광원 아이콘 — 본체(현재 n/8 프레임)에 직접 켜진/꺼진 칸을 재색칠하는 전용 셰이더를 쓴다
+    // (EnergyBar.png가 청록 고정색이라 HP처럼 플랫 오버레이로는 빨강 경고색을 못 낸다 — 대신
+    // Custom/UIEnergyIconBody가 파랑 채널로 켜진/꺼진 칸을 갈라 각각 독립적으로 재색칠한다).
+    GameObject _energyIconGO;
+    Image _energyIcon, _energyIconOutline;
+    Material _energyBaseMat, _energyOutlineMat;
+    // 광원 블룸 — 전용 카메라·볼륨·글로우 캔버스는 HP와 공유한다(BuildBloomPipeline 참고).
+    Image _energyGlowIcon;
+    Material _energyGlowMat;
+    float _energyGlowPulsePhase; // 폭주 중 하트비트 펄스 위상(0에서 시작, rampaging 아니면 리셋)
 
     // HP 블룸 파이프라인(전용 카메라·볼륨·글로우 캔버스)
     Camera _hpBloomCamera;
@@ -139,6 +205,9 @@ public class PlayerHudUI : MonoBehaviour
     static Sprite[] _hpSpriteCache;   // 0=HP1 .. 7=HP8 (x좌표 순 정렬)
     static Sprite _hpZeroSpriteCache; // HP0
     static Texture2D _hpGlowMaskCache;
+    static Sprite[] _energySpriteCache;   // 0=Energy 1/8 .. 7=Energy 8/8 (x좌표 순 정렬)
+    static Sprite _energyZeroSpriteCache; // Energy 0
+    static Texture2D _energyGlowMaskCache;
 
     // 테스트(PlayTestRunner)에서 "실제 수치"가 아니라 "화면에 그려지는 값"을 검증하기 위한 판독구.
     // 아이콘이 하나뿐이어도 내부적으로는 예전과 같은 유닛별 스무딩 배열(_pipDisplay)을 그대로 쓰므로
@@ -169,10 +238,6 @@ public class PlayerHudUI : MonoBehaviour
         }
     }
     public float EnergyDisplayRatio => _energyDisplay;
-    /// <summary>감소분 고스트(칩) 바의 현재 비율. 채움보다 길면 그 차이가 "방금 잃은 양"이다.</summary>
-    public float EnergyGhostRatio => _energyGhost;
-    /// <summary>증가분 예고 바의 현재 비율. 채움보다 길면 그 차이가 "방금 얻은 양"이다.</summary>
-    public float EnergyGainRatio => _energyGainDisplay;
     public bool HasPlayer => _player != null;
 
     /// <summary>에너지 바를 잠깐 붉게 점멸시킨다(일섬 게이팅 실패 등 1회성 경고 피드백).</summary>
@@ -256,8 +321,8 @@ public class PlayerHudUI : MonoBehaviour
         rt.SetAsFirstSibling();
 
         BuildHpIcon(_player != null ? _player.maxHealth : 5);
-        BuildEnergyBar();
-        BuildHpBloomPipeline();
+        BuildEnergyIcon();
+        BuildBloomPipeline();
     }
 
     /// <summary>
@@ -309,6 +374,7 @@ public class PlayerHudUI : MonoBehaviour
         {
             _hpBaseMat = new Material(bodyShader);
             _hpBaseMat.SetColor("_GrayTint", pipDepletedColor);
+            _hpBaseMat.SetColor("_LitTint", hpLitTint);
             _hpIconBase.material = _hpBaseMat;
         }
 
@@ -319,6 +385,7 @@ public class PlayerHudUI : MonoBehaviour
         {
             _hpGhostMat = new Material(bodyShader);
             _hpGhostMat.SetColor("_GrayTint", pipDepletedColor);
+            _hpGhostMat.SetColor("_LitTint", hpLitTint);
             _hpIconGhost.material = _hpGhostMat;
         }
 
@@ -349,20 +416,24 @@ public class PlayerHudUI : MonoBehaviour
     }
 
     /// <summary>
-    /// 빨간 칸만 블룸시키는 전용 파이프라인 — 전용 레이어(HPBloom)만 컬링하는 Overlay 카메라를
-    /// 메인 카메라 스택에 추가하고, 그 카메라의 Volume Mask에만 걸리는 전용 Bloom 볼륨을 단다.
-    /// Screen Space Overlay 캔버스(HUD 본체)는 URP 포스트프로세싱을 안 받으므로, 글로우만 별도
-    /// Screen Space - Camera 캔버스(같은 좌표계·같은 origin)로 그 카메라에 붙인다.
+    /// 빨간 칸/청록 칸만 블룸시키는 공유 파이프라인(HP+광원) — 전용 레이어(HPBloom)만 컬링하는
+    /// Overlay 카메라를 메인 카메라 스택에 추가하고, 그 카메라의 Volume Mask에만 걸리는 전용 Bloom
+    /// 볼륨을 단다. Screen Space Overlay 캔버스(HUD 본체)는 URP 포스트프로세싱을 안 받으므로, 글로우만
+    /// 별도 Screen Space - Camera 캔버스(같은 좌표계·같은 origin)로 그 카메라에 붙인다. 카메라·볼륨·
+    /// 캔버스는 HP·광원 아이콘 둘 다 공유하고(둘 다 같은 레이어일 뿐이라 하나로 충분), 아이콘별
+    /// on/off(hpGlowEnabled/energyGlowEnabled)만 독립적이다.
     /// </summary>
-    void BuildHpBloomPipeline()
+    void BuildBloomPipeline()
     {
         _hpBloomCamera = null;
         _hpGlowIcon = null;
+        _energyGlowIcon = null;
         if (_hpGlowMat != null) { if (Application.isPlaying) Destroy(_hpGlowMat); else DestroyImmediate(_hpGlowMat); _hpGlowMat = null; }
-        if (!hpGlowEnabled) return;
+        if (_energyGlowMat != null) { if (Application.isPlaying) Destroy(_energyGlowMat); else DestroyImmediate(_energyGlowMat); _energyGlowMat = null; }
+        if (!hpGlowEnabled && !energyGlowEnabled) return;
 
         int layer = LayerMask.NameToLayer("HPBloom");
-        if (layer < 0) return; // 레이어가 없는 프로젝트에서도 HP 아이콘 자체는 정상 동작해야 한다
+        if (layer < 0) return; // 레이어가 없는 프로젝트에서도 HP·광원 아이콘 자체는 정상 동작해야 한다
 
         Camera baseCam = Camera.main;
         if (baseCam == null) return; // 붙일 메인 카메라가 없으면 블룸을 걸 대상이 없다
@@ -418,39 +489,96 @@ public class PlayerHudUI : MonoBehaviour
         glowScaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
         glowScaler.referenceResolution = new Vector2(1920, 1080);
 
-        var glowIconGO = new GameObject("HpGlowIcon", typeof(RectTransform), typeof(Image));
-        glowIconGO.layer = layer;
-        var glowRt = (RectTransform)glowIconGO.transform;
-        glowRt.SetParent(glowCanvasGO.transform, false);
-        glowRt.anchorMin = glowRt.anchorMax = glowRt.pivot = new Vector2(0f, 1f);
-        glowRt.anchoredPosition = origin; // 본체 HUD와 같은 원점 → 화면상 같은 자리에 겹친다
-        glowRt.sizeDelta = hpIconSize;
-        _hpGlowIcon = glowIconGO.GetComponent<Image>();
-        _hpGlowIcon.raycastTarget = false;
-
-        Shader glowShader = Shader.Find("Custom/UIHpGlow");
-        if (glowShader != null)
+        if (hpGlowEnabled)
         {
-            _hpGlowMat = new Material(glowShader);
-            _hpGlowIcon.material = _hpGlowMat;
-            if (_hpGlowMaskCache != null) _hpGlowMat.SetTexture("_EmissionMask", _hpGlowMaskCache);
-            _hpGlowMat.SetColor("_Color", hpGlowColor);
-            _hpGlowMat.SetFloat("_BloomBoost", hpGlowBoost);
-            _hpGlowMat.SetFloat("_Intensity", hpGlowIntensity);
+            var glowIconGO = new GameObject("HpGlowIcon", typeof(RectTransform), typeof(Image));
+            glowIconGO.layer = layer;
+            var glowRt = (RectTransform)glowIconGO.transform;
+            glowRt.SetParent(glowCanvasGO.transform, false);
+            glowRt.anchorMin = glowRt.anchorMax = glowRt.pivot = new Vector2(0f, 1f);
+            glowRt.anchoredPosition = origin; // 본체 HUD와 같은 원점 → 화면상 같은 자리에 겹친다
+            glowRt.sizeDelta = hpIconSize;
+            _hpGlowIcon = glowIconGO.GetComponent<Image>();
+            _hpGlowIcon.raycastTarget = false;
+
+            Shader glowShader = Shader.Find("Custom/UIHpGlow");
+            if (glowShader != null)
+            {
+                _hpGlowMat = new Material(glowShader);
+                _hpGlowIcon.material = _hpGlowMat;
+                if (_hpGlowMaskCache != null) _hpGlowMat.SetTexture("_EmissionMask", _hpGlowMaskCache);
+                _hpGlowMat.SetColor("_Color", hpGlowColor);
+                _hpGlowMat.SetFloat("_BloomBoost", hpGlowBoost);
+                _hpGlowMat.SetFloat("_Intensity", hpGlowIntensity);
+            }
+        }
+
+        if (energyGlowEnabled)
+        {
+            var glowIconGO = new GameObject("EnergyGlowIcon", typeof(RectTransform), typeof(Image));
+            glowIconGO.layer = layer;
+            var glowRt = (RectTransform)glowIconGO.transform;
+            glowRt.SetParent(glowCanvasGO.transform, false);
+            glowRt.anchorMin = glowRt.anchorMax = glowRt.pivot = new Vector2(0f, 1f);
+            // 본체 광원 아이콘과 같은 오프셋(HP 아이콘 바로 아래)으로 화면상 같은 자리에 겹친다.
+            glowRt.anchoredPosition = origin + new Vector2(0f, -(hpIconSize.y + barGap));
+            glowRt.sizeDelta = hpIconSize;
+            _energyGlowIcon = glowIconGO.GetComponent<Image>();
+            _energyGlowIcon.raycastTarget = false;
+
+            Shader glowShader = Shader.Find("Custom/UIHpGlow"); // 범용 셰이더 — 마스크·색만 다르게 재사용
+            if (glowShader != null)
+            {
+                _energyGlowMat = new Material(glowShader);
+                _energyGlowIcon.material = _energyGlowMat;
+                if (_energyGlowMaskCache != null) _energyGlowMat.SetTexture("_EmissionMask", _energyGlowMaskCache);
+                _energyGlowMat.SetColor("_Color", energyGlowColor);
+                _energyGlowMat.SetFloat("_BloomBoost", energyGlowBoost);
+                _energyGlowMat.SetFloat("_Intensity", energyGlowIntensity);
+            }
         }
     }
 
-    void BuildEnergyBar()
+    /// <summary>
+    /// 광원 아이콘을 만든다 — HP 아이콘과 같은 크기, 그 아래(barGap만큼 띄워서) 배치한다.
+    /// HP와 같은 순서(Outline 맨 뒤 → Base)를 쓴다. 색 재계산은 전용 셰이더(Custom/UIEnergyIconBody)
+    /// 안에서 켜진/꺼진 칸을 갈라 각각 처리하므로 별도 오버레이 레이어가 필요 없다.
+    /// </summary>
+    void BuildEnergyIcon()
     {
-        float top = -(hpIconSize.y + barGap);
-        AddImage(_root.transform, "EnergyBorder", energyBarSize + Vector2.one * (border * 2f),
-                 new Vector2(-border, top + border), borderColor);
-        AddImage(_root.transform, "EnergyBack", energyBarSize, new Vector2(0f, top), backColor);
-        // 순서가 곧 레이어다 — 고스트/획득은 채움보다 먼저 넣어 "뒤"에 깔린다.
-        _energyLoss = AddImage(_root.transform, "EnergyLoss", energyBarSize, new Vector2(0f, top), energyLossColor);
-        _energyGain = AddImage(_root.transform, "EnergyGain", energyBarSize, new Vector2(0f, top), energyGainColor);
-        _energyFill = AddImage(_root.transform, "EnergyFill", energyBarSize, new Vector2(0f, top), energyColor);
-        _energyFillImage = _energyFill.GetComponent<Image>();
+        if (_energyIconGO != null) { if (Application.isPlaying) Destroy(_energyIconGO); else DestroyImmediate(_energyIconGO); }
+        if (_energyBaseMat != null) { if (Application.isPlaying) Destroy(_energyBaseMat); else DestroyImmediate(_energyBaseMat); _energyBaseMat = null; }
+        if (_energyOutlineMat != null) { if (Application.isPlaying) Destroy(_energyOutlineMat); else DestroyImmediate(_energyOutlineMat); _energyOutlineMat = null; }
+
+        LoadEnergyAssets();
+
+        _energyIconGO = new GameObject("EnergyIcon", typeof(RectTransform));
+        var iconRt = (RectTransform)_energyIconGO.transform;
+        iconRt.SetParent(_root.transform, false);
+        iconRt.anchorMin = iconRt.anchorMax = iconRt.pivot = new Vector2(0f, 1f);
+        iconRt.anchoredPosition = new Vector2(0f, -(hpIconSize.y + barGap));
+        iconRt.sizeDelta = hpIconSize;
+
+        var outlineImg = AddImage(_energyIconGO.transform, "Outline", hpIconSize, Vector2.zero, Color.white);
+        _energyIconOutline = outlineImg.GetComponent<Image>();
+        Shader outlineShader = Shader.Find("Custom/UISilhouetteOutline");
+        if (outlineShader != null)
+        {
+            _energyOutlineMat = new Material(outlineShader);
+            _energyOutlineMat.SetColor("_OutlineColor", energyOutlineColor);
+            _energyIconOutline.material = _energyOutlineMat;
+        }
+        _energyIconOutline.enabled = false;
+
+        var baseImg = AddImage(_energyIconGO.transform, "Base", hpIconSize, Vector2.zero, Color.white);
+        _energyIcon = baseImg.GetComponent<Image>();
+        _energyIcon.sprite = _energyZeroSpriteCache;
+        Shader bodyShader = Shader.Find("Custom/UIEnergyIconBody");
+        if (bodyShader != null)
+        {
+            _energyBaseMat = new Material(bodyShader);
+            _energyIcon.material = _energyBaseMat;
+        }
     }
 
     RectTransform AddImage(Transform parent, string name, Vector2 size, Vector2 pos, Color color)
@@ -522,8 +650,17 @@ public class PlayerHudUI : MonoBehaviour
 
         // 칸을 잃은 "그 순간"에만 지연을 건다(꺼지는 중인 상태를 조건으로 삼으면 지연이 영원히 갱신된다).
         if (_prevLit >= 0 && lit < _prevLit) _lossHoldTimer = hpLossDelay;
+        // 칸이 바뀐 "그 순간"에 번쩍임+펀치 스케일을 터뜨린다(회복·피격 공통, 색만 다르다).
+        if (_prevLit >= 0 && lit != _prevLit)
+        {
+            _hpChangeFlash = 1f;
+            _hpChangePunch = 1f;
+            _hpChangeFlashColor = lit > _prevLit ? hpGainFlashColor : hpLossFlashColor;
+        }
         _prevLit = lit;
         if (_lossHoldTimer > 0f) _lossHoldTimer -= dt;
+        _hpChangeFlash = Mathf.MoveTowards(_hpChangeFlash, 0f, hpChangeFlashDecay * dt);
+        _hpChangePunch = Mathf.MoveTowards(_hpChangePunch, 0f, hpChangePunchDecay * dt);
 
         for (int i = 0; i < _pipDisplay.Length; i++)
         {
@@ -547,21 +684,17 @@ public class PlayerHudUI : MonoBehaviour
                 ? Ratio(_player.currentEnergy - _player.TranscendExitEnergy, _player.maxEnergy - _player.TranscendExitEnergy)
                 : Ratio(_player.currentEnergy, _player.maxEnergy);
         _energyDisplay = Smooth(_energyDisplay, energyTarget, energyLerpSpeed, dt);
-        UpdateEnergyDelta(energyTarget, dt);
 
-        // 저에너지 경고(10% 이하) + 1회성 점멸(A-2 일섬 게이팅 실패 피드백)이 같은 색 전환 장치를 공유한다.
-        // 폭주·초월 중엔 위 재스케일과 뜻이 달라지므로(폭주는 항상 낮게, 초월은 항상 높게 나옴)
-        // 경고색 전환은 평상시에만 건다(폭주 중 끄던 것과 같은 이유 — PlayerHudUI.cs:324 선례).
+        // 저에너지 경고(1/8 이하, 사용자 지시 2026-08-11로 10%→1/8) + 1회성 점멸(A-2 일섬 게이팅
+        // 실패 피드백)이 같은 색 전환 장치를 공유한다. 폭주·초월 중엔 위 재스케일과 뜻이 달라지므로
+        // (폭주는 항상 낮게, 초월은 항상 높게 나옴) 경고색 전환은 평상시에만 건다(폭주 중 끄던 것과
+        // 같은 이유 — PlayerHudUI.cs:324 선례). 폭주 진입 문턱과 값을 공유(PlayerController.RampageEnterEnergy)
+        // — 둘 다 "1/8" 하나의 개념이라는 사용자 지시를 코드에서도 한 값으로 묶는다.
         if (_energyFlashTimer > 0f) _energyFlashTimer -= dt;
-        bool lowEnergy = !rampaging && !transcending && _player.maxEnergy > 0 && _player.currentEnergy <= _player.maxEnergy * 0.1f;
+        bool lowEnergy = !rampaging && !transcending && _player.maxEnergy > 0 && _player.currentEnergy <= _player.RampageEnterEnergy;
         _energyColorLerp = Smooth(_energyColorLerp, (lowEnergy || _energyFlashTimer > 0f) ? 1f : 0f, energyColorLerpSpeed, dt);
         _transcendColorLerp = Smooth(_transcendColorLerp, transcending ? 1f : 0f, transcendColorLerpSpeed, dt);
         _rampageColorLerp = Smooth(_rampageColorLerp, rampaging ? 1f : 0f, rampageColorLerpSpeed, dt);
-        if (_energyFillImage != null)
-        {
-            Color blended = Color.Lerp(Color.Lerp(energyColor, energyLowColor, _energyColorLerp), transcendColor, _transcendColorLerp);
-            _energyFillImage.color = Color.Lerp(blended, rampageColor, _rampageColorLerp);
-        }
 
         // 자아 상태 → HP 아이콘 연출(자아는 폭주 중에만 의미 있는 값이라 전부 폭주 게이트를 공유한다).
         bool egoDepleted = rampaging && _player.currentEgo <= 0;
@@ -580,39 +713,18 @@ public class PlayerHudUI : MonoBehaviour
         // 보였다. 원본 값 자체가 이미 매끈한 선형이라 그대로 대입하면 충분하다.
         if (egoDepleted && lit > 0) _pipDisplay[lit - 1] = 1f - _player.EgoDepletedProgress;
 
+        // 폭주 중엔 진행시키고, 아니면 리셋 — 폭주가 다시 시작될 때마다 항상 상승부터 시작한다.
+        if (rampaging) _energyGlowPulsePhase += dt; else _energyGlowPulsePhase = 0f;
+
         ApplyHpIcon(grayFill);
-        ApplyBar(_energyLoss, energyBarSize, _energyGhost);
-        ApplyBar(_energyGain, energyBarSize, _energyGainDisplay);
-        ApplyBar(_energyFill, energyBarSize, _energyDisplay);
+        ApplyEnergyIcon(EnergyTint(), rampaging);
     }
 
-    // 광원이 바뀐 "그 순간"을 잡아 고스트(감소)·예고(증가) 구간을 굴린다.
-    // 폭주 드레인·광원 소모처럼 매 프레임 조금씩 깎이는 경로에서도 지연이 계속 갱신돼
-    // 고스트가 실제 값보다 한 박자 뒤에서 따라오게 되고, 그게 격투게임 바의 그 느낌이다.
-    void UpdateEnergyDelta(float energyTarget, float dt)
+    /// <summary>평상시(흰)→저에너지/폭주(경고색) 색 전환 — Update/SnapToPlayer가 공유하는 계산.</summary>
+    Color EnergyTint()
     {
-        if (_prevEnergyTarget < 0f) { _prevEnergyTarget = energyTarget; _energyGhost = energyTarget; _energyGainDisplay = energyTarget; }
-
-        if (energyTarget < _prevEnergyTarget - 0.0001f)
-        {
-            _energyLossTimer = energyLossDelay;                       // 줄어든 자리에 잠깐 멈춰 선다
-            _energyGainDisplay = Mathf.Min(_energyGainDisplay, energyTarget); // 남아 있던 예고는 즉시 접는다
-        }
-        else if (energyTarget > _prevEnergyTarget + 0.0001f)
-        {
-            _energyGainDisplay = Mathf.Max(_energyGainDisplay, energyTarget);
-            _energyGainTimer = energyGainHold;
-            _energyGhost = Mathf.Max(_energyGhost, energyTarget);     // 회복분 위로 고스트가 남지 않게
-        }
-        _prevEnergyTarget = energyTarget;
-
-        if (_energyLossTimer > 0f) _energyLossTimer -= dt;
-        else _energyGhost = Mathf.MoveTowards(_energyGhost, _energyDisplay, energyLossDrainPerSecond * dt);
-        _energyGhost = Mathf.Max(_energyGhost, _energyDisplay);       // 채움보다 짧아지면 의미가 없다
-
-        if (_energyGainTimer > 0f) _energyGainTimer -= dt;
-        else _energyGainDisplay = Mathf.MoveTowards(_energyGainDisplay, _energyDisplay, energyGainFadePerSecond * dt);
-        _energyGainDisplay = Mathf.Max(_energyGainDisplay, _energyDisplay);
+        Color blended = Color.Lerp(Color.Lerp(energyColor, energyLowColor, _energyColorLerp), transcendColor, _transcendColorLerp);
+        return Color.Lerp(blended, rampageColor, _rampageColorLerp);
     }
 
     /// <summary>보간 없이 현재 수치로 맞춘다(HUD 생성 직후 칸이 0에서 차오르지 않도록).</summary>
@@ -631,24 +743,15 @@ public class PlayerHudUI : MonoBehaviour
                 ? Ratio(_player.currentEnergy - _player.TranscendExitEnergy, _player.maxEnergy - _player.TranscendExitEnergy)
                 : Ratio(_player.currentEnergy, _player.maxEnergy);
         _energyFlashTimer = 0f;
-        _energyColorLerp = (!rampaging && !transcending && _player.maxEnergy > 0 && _player.currentEnergy <= _player.maxEnergy * 0.1f) ? 1f : 0f;
+        _energyColorLerp = (!rampaging && !transcending && _player.maxEnergy > 0 && _player.currentEnergy <= _player.RampageEnterEnergy) ? 1f : 0f;
         _transcendColorLerp = transcending ? 1f : 0f;
         _rampageColorLerp = rampaging ? 1f : 0f;
-        if (_energyFillImage != null)
-        {
-            Color blended = Color.Lerp(Color.Lerp(energyColor, energyLowColor, _energyColorLerp), transcendColor, _transcendColorLerp);
-            _energyFillImage.color = Color.Lerp(blended, rampageColor, _rampageColorLerp);
-        }
         _lossHoldTimer = 0f;
         _prevLit = lit;
-
-        _energyGhost = _energyGainDisplay = _prevEnergyTarget = _energyDisplay;
-        _energyLossTimer = _energyGainTimer = 0f;
+        _energyGlowPulsePhase = 0f;
 
         ApplyHpIcon(0f);
-        ApplyBar(_energyLoss, energyBarSize, _energyGhost);
-        ApplyBar(_energyGain, energyBarSize, _energyGainDisplay);
-        ApplyBar(_energyFill, energyBarSize, _energyDisplay);
+        ApplyEnergyIcon(EnergyTint(), rampaging);
     }
 
     /// <summary>에디터 프리뷰용(UISandbox 등 플레이어 없는 씬) — 칸·에너지를 꽉 찬 상태로 보여준다.</summary>
@@ -656,12 +759,11 @@ public class PlayerHudUI : MonoBehaviour
     {
         if (_pipDisplay == null) return;
         for (int i = 0; i < _pipDisplay.Length; i++) _pipDisplay[i] = 1f;
-        _energyGhost = _energyGainDisplay = _prevEnergyTarget = _energyDisplay = 1f;
-        if (_energyFillImage != null) _energyFillImage.color = energyColor;
+        _energyDisplay = 1f;
+        _energyColorLerp = _transcendColorLerp = _rampageColorLerp = 0f;
+        _energyGlowPulsePhase = 0f;
         ApplyHpIcon(0f);
-        ApplyBar(_energyLoss, energyBarSize, _energyGhost);
-        ApplyBar(_energyGain, energyBarSize, _energyGainDisplay);
-        ApplyBar(_energyFill, energyBarSize, _energyDisplay);
+        ApplyEnergyIcon(EnergyTint(), false);
     }
 
     /// <summary>
@@ -686,7 +788,15 @@ public class PlayerHudUI : MonoBehaviour
         Sprite baseSprite = floorHp <= 0 ? _hpZeroSpriteCache : GetHpSprite(floorHp - 1);
         Sprite ghostSprite = frac > 0.001f ? GetHpSprite(floorHp) : null;
 
+        // 만피(안 찼을 때와 색으로 구분) + 변화 번쩍임(채움/깎임을 훨씬 잘 보이게) — 둘 다 사용자
+        // 지시 2026-08-11. 만피 틴트가 바탕이고, 그 위에 변화 번쩍임 색이 순간적으로 섞여 든다.
+        bool isFull = _pipDisplay.Length > 0 && hp >= _pipDisplay.Length - 0.001f;
+        Color hpTint = Color.Lerp(isFull ? hpFullTint : Color.white, _hpChangeFlashColor, _hpChangeFlash);
+        if (_hpIconGO != null)
+            _hpIconGO.transform.localScale = Vector3.one * (1f + hpChangePunchScale * _hpChangePunch);
+
         _hpIconBase.sprite = baseSprite;
+        _hpIconBase.color = hpTint;
 
         // 자아가 0이 되어 HP가 깎일 때만 "꺼진 칸"을 투명하게 비운다(사용자 지시 2026-08-11) —
         // 평소(폭주 아님 또는 자아 남아있음) 깎이는 칸은 원래대로 어두운 적갈색으로 보인다.
@@ -719,7 +829,7 @@ public class PlayerHudUI : MonoBehaviour
             if (ghostSprite != null)
             {
                 _hpIconGhost.sprite = ghostSprite;
-                var c = Color.white;
+                var c = hpTint;
                 c.a = frac;
                 _hpIconGhost.color = c;
             }
@@ -744,13 +854,95 @@ public class PlayerHudUI : MonoBehaviour
         {
             bool showGlow = baseSprite != null && baseSprite != _hpZeroSpriteCache;
             _hpGlowIcon.enabled = showGlow;
-            if (showGlow) _hpGlowIcon.sprite = baseSprite;
+            if (showGlow)
+            {
+                _hpGlowIcon.sprite = baseSprite;
+                if (_hpGlowMat != null)
+                {
+                    Color glowBase = isFull ? hpFullGlowColor : hpGlowColor;
+                    float boostBase = isFull ? hpFullGlowBoost : hpGlowBoost;
+                    _hpGlowMat.SetColor("_Color", Color.Lerp(glowBase, _hpChangeFlashColor, _hpChangeFlash * 0.8f));
+                    _hpGlowMat.SetFloat("_BloomBoost", Mathf.Lerp(boostBase, boostBase * 1.6f, _hpChangeFlash));
+                    _hpGlowMat.SetFloat("_Intensity", hpGlowIntensity);
+                }
+            }
         }
     }
 
-    void ApplyBar(RectTransform bar, Vector2 size, float ratio)
+    /// <summary>
+    /// 광원 비율(_energyDisplay, 0~1 — 폭주·초월 재스케일까지 이미 반영된 값)을 8분할 스프라이트로
+    /// 매핑한다. n이라면 n/8 이상일 때 프레임 n으로 스위치하는 계단 함수(사용자 지시 2026-08-11) —
+    /// HP처럼 프레임 사이를 알파 크로스페이드하지 않는다. 대신 _energyDisplay 자체가 이미 매 프레임
+    /// 지수 스무딩되므로(Update의 Smooth 호출), 문턱을 넘는 순간 프레임이 바뀌는 것도 부드럽게
+    /// 이어진다. 폭주/초월 상태에서도 이 값은 그대로 재사용된다 — 그 상태에서 이미 재스케일된 비율을
+    /// 만드는 쪽(Update의 energyTarget 계산)은 이 함수와 별개이고, 여기선 결과 비율만 받는다.
+    /// </summary>
+    void ApplyEnergyIcon(Color tint, bool rampaging)
     {
-        if (bar != null) bar.sizeDelta = new Vector2(size.x * Mathf.Clamp01(ratio), size.y);
+        if (_energyIcon == null) return;
+
+        int n = Mathf.Clamp(Mathf.FloorToInt(_energyDisplay * 8f + 0.0001f), 0, 8);
+        Sprite sprite = n <= 0 ? _energyZeroSpriteCache : GetEnergySprite(n - 1);
+        _energyIcon.sprite = sprite;
+
+        if (_energyBaseMat != null)
+        {
+            // 켜진 칸은 항상 이 색으로 완전히 덮어 그린다(평소 청록에 가깝게, 저에너지/폭주 시 빨강).
+            _energyBaseMat.SetColor("_LitTint", tint);
+            // 꺼진 칸은 평소엔 원본(어두운 청록) 그대로(알파 0 = pass-through), 폭주 중에만 대비용
+            // 어두운 색으로 덮는다(사용자 지시 2026-08-11 "폭주 상태에서 빈칸이 잘 안보이니까").
+            Color unlitOverride = energyUnlitRampageTint;
+            unlitOverride.a = _rampageColorLerp;
+            _energyBaseMat.SetColor("_UnlitTint", unlitOverride);
+        }
+
+        if (_energyIconOutline != null)
+        {
+            bool showOutline = energyOutlineEnabled && sprite != null;
+            _energyIconOutline.enabled = showOutline;
+            if (showOutline)
+            {
+                _energyIconOutline.sprite = sprite;
+                // HP 아웃라인과 같은 이유로 텍셀 크기를 직접 채운다(PlayerHudUI.cs의 HP 아웃라인
+                // 블록 주석 참고 — CanvasRenderer는 _MainTex_TexelSize를 자동으로 안 채운다).
+                if (_energyOutlineMat != null && sprite.texture != null)
+                {
+                    var tex = sprite.texture;
+                    _energyOutlineMat.SetVector("_MainTex_TexelSize",
+                        new Vector4(1f / tex.width, 1f / tex.height, tex.width, tex.height));
+                }
+            }
+        }
+
+        if (_energyGlowIcon != null)
+        {
+            bool showGlow = sprite != null && sprite != _energyZeroSpriteCache;
+            _energyGlowIcon.enabled = showGlow;
+            if (showGlow && _energyGlowMat != null)
+            {
+                _energyGlowIcon.sprite = sprite;
+                Color glowColor = Color.Lerp(energyGlowColor, energyRampageGlowColor, _rampageColorLerp);
+                float pulse = rampaging ? RampagePulse() : 1f;
+                _energyGlowMat.SetColor("_Color", glowColor);
+                _energyGlowMat.SetFloat("_BloomBoost", energyGlowBoost);
+                _energyGlowMat.SetFloat("_Intensity", energyGlowIntensity * pulse);
+            }
+        }
+    }
+
+    /// <summary>
+    /// 하트비트 리듬의 빠른 삼각파 펄스(0~1, 바닥은 energyRampagePulseFloor) — 폭주 중 광원 블룸에만
+    /// 건다(사용자 지시 2026-08-11 "하트 쉐이킹 효과 같이 빠르게 페이드 인 아웃", RampageHeartbeatFx.cs의
+    /// lub 박동 리듬(상승 0.05s/하강 0.10s) 참고).
+    /// </summary>
+    float RampagePulse()
+    {
+        float cycle = Mathf.Max(0.001f, energyRampagePulseRise + energyRampagePulseFall);
+        float t = _energyGlowPulsePhase % cycle;
+        float k = t < energyRampagePulseRise
+            ? t / Mathf.Max(0.001f, energyRampagePulseRise)
+            : 1f - (t - energyRampagePulseRise) / Mathf.Max(0.001f, energyRampagePulseFall);
+        return Mathf.Lerp(energyRampagePulseFloor, 1f, Mathf.Clamp01(k));
     }
 
     static float Ratio(int current, int max) => max <= 0 ? 0f : Mathf.Clamp01((float)current / max);
@@ -781,5 +973,26 @@ public class PlayerHudUI : MonoBehaviour
 
     static Sprite GetHpSprite(int index) =>
         _hpSpriteCache != null && index >= 0 && index < _hpSpriteCache.Length ? _hpSpriteCache[index] : null;
+
+    /// <summary>EnergyBar 1~8/EnergyBar-Zero 스프라이트를 한 번만 로드해 캐싱한다(LoadHpAssets와 같은 패턴).</summary>
+    static void LoadEnergyAssets()
+    {
+        if (_energySpriteCache != null) return;
+
+        var all = Resources.LoadAll<Sprite>("UI/EnergyBar");
+        if (all == null || all.Length == 0)
+        {
+            Debug.LogWarning("[PlayerHudUI] Resources/UI/EnergyBar 스프라이트를 찾을 수 없습니다.");
+            return;
+        }
+        // HpBar와 동일하게 이름이 아니라 아틀라스 내 x좌표로 정렬한다(왼쪽=적게 참, 오른쪽=많이 참).
+        System.Array.Sort(all, (a, b) => a.rect.x.CompareTo(b.rect.x));
+        _energySpriteCache = all;
+        _energyZeroSpriteCache = Resources.Load<Sprite>("UI/EnergyBar-Zero");
+        _energyGlowMaskCache = Resources.Load<Texture2D>("UI/EnergyBarGlowMask");
+    }
+
+    static Sprite GetEnergySprite(int index) =>
+        _energySpriteCache != null && index >= 0 && index < _energySpriteCache.Length ? _energySpriteCache[index] : null;
 
 }

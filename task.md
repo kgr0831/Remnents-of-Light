@@ -5067,3 +5067,461 @@ GameObject 자체와는 다름, 처음엔 이걸 헷갈려 오검증할 뻔함) 
 **검증 후 원복**: `TimeScale=1`, `GrayscaleRendererFeature.Instance.Intensity=0`으로 클린 상태 확인
 (이 값들이 ScriptableObject 에셋이라 Play 모드 종료해도 자동 복구가 안 될 수 있다는 걸 이번 세션
 초반의 "기본적으로 흑백" 버그로 이미 겪어서, 이번에도 명시적으로 재확인함).
+
+## 2026-08-11 — /goal 일괄 처리 7건 (HP 연출·부활·낙사·피격·벽점프)
+
+**1. HP 만피 색상 구분 + 채움/깎임 이펙트 강화** — `PlayerHudUI.cs`. 만피(8/8)일 때만 아이콘에
+금빛 틴트(`hpFullTint`)와 전용 글로우(`hpFullGlowColor`/`hpFullGlowBoost`, 평소보다 강한 블룸)를
+입혀 안 찼을 때(빨강 그대로)와 색으로 바로 구분되게 함. 칸이 바뀌는 "그 순간"(회복/피격 공통,
+`_prevLit` 변화 감지)에 `hpGainFlashColor`/`hpLossFlashColor`가 아이콘 전체(Base/Ghost/글로우)에
+잠깐 섞여 들고 아이콘이 펀치 스케일(`hpChangePunchScale`, localScale 순간 확대→복귀)로 튀는 연출
+추가.
+
+**2. 부활 시 광원으로 폭주 해제** — `PlayerController.RespawnAtCheckpoint()`. 예전엔 폭주 유지 중
+부활하면 자아만 꽉 채워 폭주를 그대로 이어갔는데, 반대로 뒤집음 — 부활 시 `currentEnergy`를
+`RampageExitEnergy`(기본 25%)까지 채우고 `EndRampage("respawn_light")`를 직접 호출해 그 프레임에
+즉시 폭주 해제.
+
+**3. 자아 0 노이즈 중엔 보스 노이즈가 안 보임 — 코드 변경 없이 이미 충족 확인.**
+`ScreenGlitchFx`는 `Source`(Ego/Heartbeat/BossBeam/Death) 비트마스크로 원인만 구분할 뿐, 실제
+화면에 그리는 세기(`k`, `ScreenGlitchFeature.Intensity`)는 전역에서 하나뿐이고 상한이 1로 캡되어
+있어 여러 원인이 동시에 켜져도 더 진해지거나 겹쳐 보이지 않는다 — 자아 글리치가 이미 떠 있는 동안
+보스 노출이 추가로 걸려도(`BossEyeTracker.UpdateExposure`) 시각적으로는 아무 변화가 없다(이미
+설계로 충족). `NoiseAmount`/`ScanlineJitter`/`ScanlineDensity`도 소스별 분기 없이 고정값 하나만
+쓰는 것까지 확인.
+
+**4. 낙하 후 플랫폼 복귀 시 플랫폼 중앙으로** — `PlayerController.cs` 신규
+`ResolvePlatformCenter()`/`HasGroundBelow()`. 지형이 타일 컴포지트 콜라이더(지형 전체가 콜라이더
+하나)라 `collider.bounds.center`로는 "그 발판"의 범위를 알 수 없어, 마지막 접지 지점에서 좌우로
+`platformEdgeProbeStep`(0.5) 간격 레이캐스트를 쏴 지형이 끊기는 가장자리를 직접 찾고 그 중점으로
+스냅. 양쪽 가장자리를 `platformEdgeProbeMaxDistance`(20) 안에 못 찾으면(끝없이 이어지는 큰 지형 —
+"중앙" 개념이 성립하지 않음) 원래 지점 그대로 둔다. `FallRespawnRoutine`의 텔레포트 지점만 교체.
+
+**5. 아래에 플랫폼이 있으면 거리 무관하게 낙사 판정 제외** — `CheckFallDeath()`의 발밑 탐색
+거리를 `fallDeathGroundProbe`(기존 30 고정)에서 `Mathf.Infinity`로 변경, 이제 안 쓰는 필드는 제거.
+예전엔 30유닛보다 더 아래에 발판이 있으면 "허공"으로 오판해 낙사 연출이 잘못 터졌다.
+
+**6. 피격 이펙트 강화 + 항상 최상단** — `PlayerDamageFlashUI.cs`. 기존엔 HUD와 같은 Overlay
+캔버스를 공유해 그 캔버스 안에서만 맨 뒤(HUD보다 아래)였음 — 전용 `DamageFlashCanvas`
+(sortingOrder=5200, `DeathScreenUI`의 5100·`ScreenFadeUI`의 5000보다 위)로 분리해 사망 화면·암전
+·HUD·카메라 노이즈(ScreenGlitchFeature — 어차피 카메라 렌더 패스라 Overlay보다 아래) 무엇이 떠
+있어도 피격 점멸이 항상 그 위에 보이게 함. `maxAlpha` 0.35→0.6, `fadeIn` 0.06→0.04(더 빠르고
+진하게), 흰색 "충격 펄스"(`impactFlashColor`, 붉은 점멸과 같이 올라갔다가 `impactFadeOut`만큼
+훨씬 빠르게 빠지는 2겹 레이어) 추가. `FindOverlayCanvas`/`CreateOverlayCanvas`는 더는 안 써서 제거.
+
+**7. 벽타기 중 스페이스 = 일반 점프와 같은 높이** — 씬 실측(`Map-test.unity:437115`)으로
+`wallJumpForce: {x: 10, y: 5}`가 `jumpForce`(9)보다 낮게 저장돼 있던 게 원인 확정. `HandleJump()`의
+벽점프 분기에서 Y속도를 `wallJumpForce.y` 대신 `jumpForce`를 직접 쓰도록 변경 — 인스펙터에
+`wallJumpForce.y`가 어떤 값이든 항상 일반 점프와 같은 높이로 튄다. x(벽 반대쪽 수평 밀어내기)는
+`wallJumpForce.x` 그대로 유지.
+
+**검증**: `mcp__UnityMCP__validate_script`(standard, 3개 파일) 전부 오류 0(기존 패턴의 경미한
+GC/성능 경고만), `refresh_unity`(force 재컴파일) 후 콘솔 error 0건. Play 모드 실측(체력 변화·부활
+·낙사·벽점프 시각 확인)은 아직 안 함 — 다음 세션에서 사용자 직접 플레이 테스트 권장.
+
+## 2026-08-11 (후속) — 실측 리포트 4건 재수정
+
+사용자가 위 7건 중 4개를 실제로 플레이해보고 여전히 안 고쳐졌거나(2건) 새로 드러난 버그(2건)를
+리포트. 전부 근본 원인을 다시 진단해 수정.
+
+**부활 시 폭주 미해제(재발) — `isRampaging` 게이트가 죽은 코드였다.** `DieRoutine()`이 사망
+①단계에서 이미 `EndRampage("death")`를 불러 `isRampaging`을 꺼버리므로, 한참 뒤 Reconnect
+시점에 `RespawnAtCheckpoint()`가 실행될 땐 `isRampaging`이 항상 false — 내 `if(isRampaging)`
+분기가 한 번도 안 탔다. 진짜 문제는 그 시점에 `currentEnergy`가 여전히 0이라, 부활 직후
+`HandleRampage()`가 `currentEnergy<=0`을 보고 즉시 재진입시킨 것. `isRampaging` 여부와 무관하게
+`currentEnergy`부터 `RampageExitEnergy`까지 채우도록 게이트를 뗌.
+
+**낙하 복귀가 여전히 플랫폼 끝 — 좌우 "양쪽 다" 가장자리를 찾아야만 중앙을 계산했다.** 낙사는
+대부분 "발판 가장자리에서 걸어 나가 허공으로" 일어나므로, 실제로는 한쪽(방금 떨어진 쪽)만 가깝고
+반대쪽(넓은 지형 안쪽)은 탐색 한계(20유닛)를 넘기기 일쑤라 매번 포기하고 원래 지점(가장자리)을
+반환하고 있었다. `ResolvePlatformCenter`/`FindGroundEdge`를 재설계 — 못 찾은 쪽은 탐색 한계 지점을
+"임시 경계"로 삼아 항상 중앙을 계산한다. 진짜 발판이면 정확한 중앙, 큰 지형이면 가까운 가장자리에서
+최대 절반만큼 안쪽으로 물러난 안전한 위치가 된다. `HasGroundBelow`도 경사면 대비 탐침을 0.1/0.3 →
+1/2유닛으로 넉넉히 늘림.
+
+**E 홀드 시 튜토리얼 보스가 움직임(신규 발견) — `BossEyeTracker`가 카메라의 "연출 흔들림"까지
+그대로 따라가고 있었다.** `SectionCamera.transform.position = basePos + shakeOffset + sustainOffset
++ focusOffset + sustainFocusOffset`로, E홀드(`HandleLightSpend`→`SetSustainedFocus`, pan=1f=완전
+센터링)가 `sustainFocusOffset`을 움직이면 그 값이 고스란히 `transform.position`에 섞여 들어간다.
+`BossEyeTracker`는 "카메라가 실제로(=구간이 바뀌어서) 움직인 만큼만" 따라가야 하는데
+`trackedCamera.position`(합산된 값)을 그대로 봐서, E홀드 줌인 팬만으로도 보스가 밀려 보였다.
+`SectionCamera`에 `BasePosition`(쉐이크·포커스 오프셋이 안 섞인 순수 구간 추적 값) 신규 public
+프로퍼티 추가, `BossEyeTracker`가 `trackedCamera`가 `SectionCamera`면 이걸 우선 추적하도록 변경
+(`TrackedCameraPosition()` 헬퍼). 다른 씬(SectionCamera 없음)은 기존처럼 `transform.position`
+그대로라 회귀 없음.
+
+**벽점프 반대 방향 이동 거리 제약(신규 발견) — 잠금(0.15s)이 풀리자마자 입력이 없으면 속도가
+바로 0으로 스냅됐다.** 이 프로젝트는 "즉시 이동"(관성 없음) 컨벤션이라, `wallJumpLockCounter`가
+끝나는 즉시 `HandleMovement`가 `moveInput.x * speed`를 그대로 대입 — 방향키를 안 누르고 있으면
+push 속도(10)가 0.15초 만에(≈1.5유닛) 뚝 끊겼다. 신규 필드 `wallJumpHorizontalLockDuration`(0.3f,
+인스펙터 튜닝 가능)을 추가해 이 잠금 시간을 늘림 — push가 살아있는 시간이 길어져 실제 이동 거리가
+늘어난다.
+
+**참고(수정 안 함, 정보 공유)**: 이번 세션 사이 사용자가 직접 `PlayerHudUI.cs`(`hpLitTint` 필드)와
+`Assets/Shaders/UIHpIconBody.shader`(`_LitTint` 프로퍼티)를 편집해 HP "켜진 칸" 색 대비를 셰이더
+레벨에서 재작업 중이었다(같은 세션 동시 작업 확인, 되돌리지 않음). 그 셰이더의 `frag()`는 켜진
+칸에서 `_LitTint.rgb`를 고정 반환하고 `IN.color`(=Image.color)의 RGB는 안 읽는다 — 그래서 앞서
+1번 항목에서 만든 `hpFullTint`/`hpGainFlashColor`/`hpLossFlashColor`의 RGB 틴트는 "켜진 칸"
+픽셀에는 시각적으로 반영되지 않는다(알파만 반영). 만피 강조·변화 이펙트 색을 셰이더 레벨과
+합치려면 후속 작업 필요.
+
+**검증**: `refresh_unity`(force) 후 콘솔 error 0건, `validate_script`(standard) 4개 파일 전부
+오류 0. Play 모드 실측은 이번에도 못 함 — 특히 보스 이동 수정은 실제 보스룸에서 E 홀드로 재현
+확인이 필요.
+
+## 2026-08-11 (후속 2) — 보스 눈 위치 급상승 + 빔 회피 난이도 3라운드 재조정
+
+**보스가 순간적으로 훅 위로 튐(신규) — `BossEyeTracker.Awake()` vs `SectionCamera.Awake()` 실행
+순서 경합.** `SectionCamera.BasePosition`(위 항목의 E홀드 버그 수정으로 신규 추가)은 그 컴포넌트
+자신의 `Awake()`가 돌아야 실제 카메라 위치로 채워지는데, Unity는 서로 다른 오브젝트의 `Awake()`
+순서를 보장하지 않는다. `BossEyeTracker.Awake()`가 먼저 실행되면 아직 초기화 안 된 `basePos`
+(0,0,0)를 `lastCameraPosition`으로 잡고, 다음 프레임에 `SectionCamera`가 실제 위치(y≈36 등)로
+초기화되면 그 차이 전체가 "카메라가 한 번에 움직인 델타"로 보스에 그대로 더해져 훅 튀어 올랐다.
+`lastCameraPosition`의 첫 캡처를 Awake()에서 첫 `LateUpdate()`로 미룸(`cameraTrackingInitialized`
+플래그) — LateUpdate는 씬의 모든 Awake가 끝난 뒤에만 돌므로 항상 안전하다.
+
+**보스 빔 추적/회피 난이도 3라운드 재조정 + 진짜 원인 발견(값이 전혀 안 먹히고 있었음).**
+"추적속도 너무 빠름" 리포트가 이어져 `beamChaseSpeedFactor`(조준점이 플레이어를 뒤쫓는 배율,
+0.98→0.65)·`beamTrackSpeedDegPerSec`(빔이 조준점 쪽으로 도는 속도, 180→60→35)·`beamOuterAngle`
+(부채꼴 전체각, 45→25)을 세 차례에 걸쳐 스크립트 기본값을 낮췄는데도 "여전히 즉각 추격, 최대
+속도로 이동해도 못 피함"이라는 재리포트가 계속됨 — **원인은 씬(`Map-test.unity`)에 이 세 필드가
+전부 예전 인스펙터 튜닝값으로 저장돼 있어서, 스크립트 기본값을 아무리 바꿔도 Play 모드는 항상
+씬에 저장된 값(`beamOuterAngle: 45`, `beamTrackSpeedDegPerSec: 180`, `beamChaseSpeedFactor: 0.85`)을
+그대로 썼던 것.** wallJumpForce 때와 같은 함정(스크립트 기본값 ≠ 씬 직렬화값). 씬 직접 편집이라
+사용자에게 먼저 확인(`AskUserQuestion`) 후, Play 모드를 멈추고(`manage_editor.stop`) MCP
+`manage_components.set_property`로 씬의 값을 새 기본값과 동일하게(25 / 35 / 0.65) 직접 갱신,
+`manage_scene.save`로 저장. 읽어서 재확인까지 완료.
+
+**검증**: `refresh_unity`(force) 후 콘솔 error 0건. 씬 값은 `mcpforunity://scene/gameobject/.../
+component/BossEyeTracker` 리소스로 직접 읽어 25/35/0.65 반영 확인. Play 모드 실측(실제로 피하기
+쉬워졌는지)은 사용자 확인 필요.
+
+## 2026-08-11 (후속 3) — 광원 바 → 8분할 아이콘 스프라이트로 전면 교체 (`/goal`)
+
+**요청**: 광원(에너지) 게이지를 채움 바에서 HP처럼 `Assets/UI/Animated Loaders/Blue/EnergyBar`
+(8프레임) / `EnergyBar-Zero`(0) 스프라이트 스왑 아이콘으로 교체. n이라면 "n/8 이상일 때 그 프레임
+으로 스위치"하는 계단 함수, 크기는 HP 아이콘과 동일, 폭주 진입·저에너지 경고("붉은색으로 변함")
+문턱을 기존 0/10%에서 1/8로 통일, 폭주·초월 중에도 기존 재스케일 값을 그대로 n/8로 표시.
+
+**에셋 배치**: `EnergyBar.png`/`EnergyBar-Zero.png`(+`.meta`)를 `Assets/UI/Animated Loaders/Blue/`
+(비-Resources 폴더, 사용자가 처음 넣어둔 자리)에서 `Assets/Resources/UI/`로 이동 — `HpBar.png`/
+`Hp_Zero.png`와 같은 자리에 둬야 기존 `Resources.Load` 패턴을 그대로 재사용할 수 있다(런타임 전부
+코드로 만드는 PlayerHudUI의 "씬 미배치" 설계 유지). 실측(PowerShell System.Drawing으로 10배 확대):
+EnergyBar.png는 HpBar.png와 같은 2색 픽셀아트(진한 청록=미점등/밝은 청록=점등)가 8프레임 좌→우로
+채워지는 구조, `spriteCustomMetadata`에도 `gridCellCount 8x1`로 확인. EnergyBar-Zero는 완전 미점등.
+
+**구현(`PlayerHudUI.cs`)**: 기존 `BuildEnergyBar()`(EnergyBorder/Back/Loss/Gain/Fill 5개 Image +
+격투게임 칩 데미지 고스트/예고 시스템 `UpdateEnergyDelta`)를 전부 걷어내고 `BuildEnergyIcon()` +
+`ApplyEnergyIcon()`으로 교체 — HP와 달리 크로스페이드는 안 한다("n/8 이상일 때 스위치"라는 사용자
+정의가 계단 함수라 판단, 대신 이미 매 프레임 지수 스무딩되는 `_energyDisplay`를 그대로 문턱에
+먹여서 경계를 넘는 순간이 부드럽게 이어짐). `n = floor(_energyDisplay*8+ε)`, n≤0이면 Zero, 아니면
+`GetEnergySprite(n-1)`(HpBar와 동일하게 이름이 아니라 `rect.x` 정렬).
+　　⚠️ **EnergyBar.png가 고정 청록색이라 HP의 `_LitTint` 셰이더(빨강 채널 문턱)를 못 씀** — 청록은
+R채널이 거의 0이라 밝기 구분이 안 됨. "폭주/저에너지 시 붉은색으로 변함" 요구를 만족시키려고
+Image.color 곱셈 틴트 대신, HP의 자아 회색 오버레이가 쓰던 `Custom/UISilhouetteFill` 셰이더를
+재사용해 경고색 실루엣을 알파 블렌드로 덧씌우는 `_energyWarnOverlay` 레이어를 추가(`_FillAmount=1`
+고정, 알파=`1-min(r,g,b)`로 "흰색에서 벗어난 정도"를 재서 평상시 0·경고 시 최대 0.82 안팎). 크기는
+`hpIconSize`를 그대로 재사용(신규 필드 없음), 위치는 HP 아이콘 바로 아래(barGap만큼).
+　　정리: `energyBarSize`/`border`/`backColor`/`borderColor`/칩 관련 필드 6개(`energyLossColor` 등)
+/ `_energyFill`·`_energyLoss`·`_energyGain`·`_energyFillImage`·칩 상태 필드 5개 / `EnergyGhostRatio`
+·`EnergyGainRatio`(테스트 미사용 확인) / `ApplyBar()`·`UpdateEnergyDelta()` 삭제 — 전부 이번 교체로
+쓸모없어진 코드(surgical: 내가 만든 orphan만 지움, HP 쪽 로직은 그대로).
+
+**구현(`PlayerController.cs`)**: `RampageEnterEnergy` 신규 프로퍼티 추가(`CeilToInt(maxEnergy/8f)`,
+`RampageExitEnergy`와 같은 패턴) — 폭주 자동 진입 조건(`HandleRampage()`, 기존 `currentEnergy<=0`)과
+`PlayerHudUI`의 저에너지 경고 문턱(기존 `maxEnergy*0.1f`)이 이제 이 프로퍼티 하나를 공유한다(사용자
+지시가 "폭주 조건과 UI 경고 조건 둘 다 1/8"라 한 값으로 묶어야 드리프트가 안 생김).
+
+**검증**: `validate_script`(standard) 2개 파일 오류 0(기존 패턴 GC 경고만), `refresh_unity`(force)
+후 콘솔 error 0. Play 모드 실측(MCP 리플렉션, `Assembly-CSharp` 타입 리플렉션으로 `_energyDisplay`
+·`_energyIcon.sprite`·`_energyWarnOverlay` 직접 읽음) — 4개 지점 전부 수식과 일치:
+curE=75/100(평상)→sprite index5(n=6, floor(0.75*8)=6) / curE=10(자동 폭주 진입, RampageEnterEnergy=13
+확인)→경고 오버레이 RGBA(0.95,0.20,0.18,0.82) / curE=88(초월 중, 재스케일 Ratio(18,30)=0.6)→
+index3(n=4) / curE=0→EnergyBar-Zero, 경고 오버레이 붉게. 스크린샷(`Assets/Screenshots/
+screenshot-20260811-022146.png`)으로 HP 아이콘(빨강) 바로 아래 같은 크기의 청록 광원 아이콘이
+실제로 렌더링되는 것도 육안 확인.
+⚠️ 검증 중 리플렉션으로 `isRampaging` 필드를 직접 강제 조작(EndRampage() 우회)했다가 자아 고갈
+붕괴 타이머가 그대로 돌아 플레이어가 사망하는 부작용을 겪음 — 이건 테스트 방식이 게임 상태 머신을
+우회해서 생긴 현상이지 코드 버그가 아니다(정상 플로우인 `currentEnergy` 필드만 바꾸는 테스트에서는
+전혀 문제없었음).
+
+## 2026-08-11 (후속 4) — Player-Tutorial 통합 시트 슬라이스+애니메이션 4개, 광원 UI 블룸·아웃라인·대비·펄스, E홀드/일섬 게이팅 1/8 통일
+
+**배경**: 앞선 광원 아이콘 작업 중 사용자가 "HP처럼 블룸 있냐"고 물어 없다고 답했더니, 정식 요청으로
+이어짐. 동시에 사용자가 `Assets/Sprites/Player-tutorial/Player-Tutorial.png`라는 신규 통합 시트를
+채팅에 붙여넣고(Born-reverse/Grab/Idle/Run 4개 애니메이션이 한 장에 합쳐진 파일, 각각 피벗 지정)
+"이런 것도 슬라이스해서 애니메이션 만들 수 있냐"고 물어 승인 후 진행.
+
+**1. Player-Tutorial.png 슬라이스 + AnimationClip 4개.** 4608x4608, 121개 스프라이트가 이미
+올바르게(비균등, 알파 타이트 크롭) 슬라이스돼 있었다(사용자가 사전에 준비한 파일 — 이전 세션에
+발견한 Idle/Grab/Run/Born-reverse의 "격자 슬라이스로 깨짐" 문제와 무관, 그 4개 파일과 픽셀
+치수(4608x4608)만 같을 뿐). git 히스토리의 원본 Idle.png.meta/Grab.png.meta/Run.png.meta/
+Born-reverse.png.meta(커밋된 정상 상태)와 rect(x,y,width,height)를 좌표 매칭해 Player-Tutorial의
+121개 스프라이트 중 어느 것이 어느 애니메이션의 몇 번째 프레임인지 역산(정확히 일치 118개, 나머지
+3개는 "각 애니메이션의 두 번째 행 4번째 슬롯"이라는 격자 패턴으로 위치 추론 — Idle_11=_103,
+Grab_7=_33, Run_7=_29). 결과: Idle 13프레임, Grab 13프레임, Run 13프레임, Born-reverse 82프레임,
+합 121로 완전히 들어맞음. `TextureImporter.spritesheet`를 읽어 그룹별로 `pivot`/`alignment`만
+덮어쓰고(rect는 그대로) `SaveAndReimport()` — 사용자 지정 피벗(Born-reverse 0.37/0.187, Grab
+0.375/0.359, Idle 0.3805/0.724, Run 0.3805/0.536)을 실제 `Sprite.pivot`으로 재확인. `Assets/
+Animations/Player-Tutorial/`에 4개 `.anim` 생성(`AnimationUtility.SetObjectReferenceCurve`,
+SpriteRenderer.m_Sprite 바인딩, 12fps — 기존 `Glitch Samurai-Idle.anim`과 같은 관례, Idle/Run은
+루프, Grab/Born-reverse는 비루프). 사용자가 요청한 산출물이 "AnimationClip 4개만"이라 Animator
+Controller 연결은 하지 않음.
+
+**2. 광원 UI 블룸 — HP와 같은 파이프라인 공유, 색은 다르게.** `EnergyBar.png` 실측(PowerShell
+System.Drawing 10배 확대 + Unity Texture2D.GetPixel)으로 꺼진 칸=(9,88,95)/켜진 칸=(52,221,236)
+확인 — HP(빨강 계열, R채널로 구분)와 달리 청록이라 R채널로는 구분 불가, 대신 B채널이 크게
+갈린다(0.37 대 0.93). 신규 `Custom/UIEnergyIconBody.shader`(Custom/UIHpIconBody와 같은 구조, 판별
+채널만 B로 교체) + `EnergyBarGlowMask.png`(EnergyBar.png에서 켜진 칸만 흰색으로 뽑아 미리 구운
+마스크, `Custom/UIHpGlow` 셰이더 그대로 재사용) 신규 생성. `BuildHpBloomPipeline`을
+`BuildBloomPipeline`으로 확장 — 카메라·볼륨·글로우 캔버스는 HP와 광원이 공유하고
+(`hpGlowEnabled`/`energyGlowEnabled` 각자 독립 on/off), 광원 전용 글로우 아이콘을 같은 캔버스에
+추가. 색은 평상시 `energyGlowColor`(청록), 폭주 중 `energyRampageGlowColor`(HP 블룸과 같은 빨강)로
+갈린다.
+
+**3. 광원 UI 경고색·대비 — 오버레이 대신 셰이더 레벨 재색칠로 전면 교체.** 이전 세션에 만든
+`_energyWarnOverlay`(Custom/UISilhouetteFill 플랫 오버레이)를 폐기 — 켜진/꺼진 칸을 구분 못 하고
+전체를 한 색으로 덮어서 "폭주 중 빈칸이 잘 안 보인다"는 피드백(사용자 지시 2026-08-11)의 원인이
+됐다. `UIEnergyIconBody`가 켜진 칸은 `_LitTint`(평소 흰=원본 청록 통과, 저에너지/폭주 시 매 프레임
+빨갛게)로, 꺼진 칸은 `_UnlitTint`(평소 알파 0=원본 어두운 청록 그대로, 폭주 중에만 알파 상승시켜
+`energyUnlitRampageTint`라는 대비용 어두운 색으로 덮음)로 각각 독립 재색칠한다 — 폭주 중에도 "찬
+칸/빈 칸"이 서로 다른 밝기로 분리돼 남는다.
+
+**4. 폭주 중 블룸 하트비트 펄스.** `RampageHeartbeatFx.cs`(폭주 진입 시 1회성 화면 펄스)의
+lub 박동 리듬(상승 0.05s/하강 0.10s)을 참고해, 광원 블룸에만 거는 상시 반복 삼각파 펄스를 새로
+만듦(`RampagePulse()`, 화면 전체 이펙트가 아니라 광원 블룸의 `_Intensity`만 조절 — 사용자 지시
+"광원 UI의 블룸이 하트 쉐이킹 효과 같이 빠르게 페이드 인 아웃"). 상승
+`energyRampagePulseRise`(0.08s)/하강 `energyRampagePulseFall`(0.18s), 바닥
+`energyRampagePulseFloor`(0.35, 완전히 안 꺼지게). `_energyGlowPulsePhase`를 폭주 중에만 누적하고
+아니면 리셋 — 매번 상승부터 다시 시작한다.
+
+**5. 광원 아이콘에 HP와 같은 흰색 아웃라인 추가.** `Custom/UISilhouetteOutline` 재사용, HP와 같은
+패턴(`_MainTex_TexelSize` 수동 채움 포함).
+
+**6. E홀드/일섬 게이팅 문턱 10%→1/8 통일.** `ilseomCancelEnergyPercent`(0.1f)/
+`lightSpendLowWarnPercent`(0.1f) 두 전용 필드를 제거하고 양쪽 다 `PlayerController.RampageEnterEnergy`
+(1/8, 앞선 세션에서 만든 프로퍼티)를 직접 참조하도록 통일 — 사용자 지시("폭주 조건 및 UI 경고
+조건이 1/8")가 사실상 세 번째 소비처(E홀드)까지 포함한다고 판단해 값을 하나로 묶었다. E홀드
+쪽에는 기존에 없던 `PlayerHudUI.Instance?.FlashEnergyBarRed()` 호출을 추가(일섬 쪽엔 이미 있었음)
+— 사용자 지시("마지막 1칸이 붉은색으로 바뀌며 막아줌")를 두 게이팅 경로 모두에 적용.
+
+**검증**: `validate_script`(standard) 2개 파일 오류 0, `refresh_unity`(force) 후 콘솔 error 0(HP
+블룸 카메라 스택 정리 관련 기존 경고 1건만, 무관). Play 모드 실측(MCP 리플렉션) — 평상시(curE=50):
+`_LitTint`=흰, `_UnlitTint`.a=0(원본 통과), 글로우 색=청록·Intensity=1(펄스 없음), EmissionMask가
+`EnergyBarGlowMask`로 정확히 바인딩됨 확인. 폭주 진입(curE=5, 자동 트리거 확인):
+`_LitTint`=빨강(rampageColor), `_UnlitTint`=(0.08,0.02,0.02,1)(대비용 어두운 색 활성),
+글로우 색=`energyRampageGlowColor`, `_Intensity`가 0.777→0.489로 프레임 간 변동(펄스 동작 확인).
+E홀드/일섬 게이팅 실측(실제로 막히는 순간의 상호작용)은 상태 전이가 빨라 이번엔 재현 못 함 —
+로직 자체는 컴파일·리플렉션으로 확인했으나 다음 세션에서 사용자 직접 플레이 테스트 권장.
+
+**참고**: 이번 세션 중 `Assets/Sprites/Player-tutorial/`의 기존 4개 파일(Idle/Grab/Run/
+Born-reverse.png.meta)이 원인 불명의 격자 재슬라이스로 깨진 것을 발견해 사용자에게 보고 — 사용자가
+"일단 두기"를 선택해 손대지 않음(`git checkout -- Assets/Sprites/Player-tutorial/`로 언제든 복구
+가능). Player-Tutorial.png는 이 문제와 무관하게 처음부터 올바르게 슬라이스돼 있었다.
+
+## 2026-08-11 (후속 5) — 사용자 리포트 3건: 광원 흰색 발광·게이팅 안 끊김·낙사 무한루프
+
+**1. 광원 아이콘이 청록이 아니라 흰색으로 "과하게, 이상한 색상으로" 빛남(사용자 스크린샷).**
+블룸 세기 문제가 아니었다 — `Custom/UIEnergyIconBody._LitTint`는 켜진 칸 색을 통째로 "대체"하는데,
+`PlayerHudUI.energyColor` 기본값이 옛 채움-바 시절 그대로 `Color.white`였다(그땐 Image.color를
+"곱했을" 뿐이라 흰색=무변화였지만, 지금은 대체라 흰색=원래 청록을 지워버림). `energyColor`/
+`transcendColor` 기본값을 `EnergyBar.png` 실측 켜진 칸 색(0.204, 0.867, 0.925)으로 교체.
+　　⚠️ **2차 발견**: 코드를 고쳤는데도 Play 모드에서 여전히 흰색이었다 — 리플렉션으로 직접 필드를
+읽어보니 `energyColor` 필드값 자체가 흰색으로 고정. 원인: `PlayerHudUI`는 "씬에 배치하지 않고
+런타임에 전부 코드로 만든다"는 설계인데, `[ExecuteAlways]`가 에디터 편집 모드에서도 `Awake()`를
+돌리다 보니 어느 세션에선가 `Map-test.unity`에 그 GameObject가 실제로 저장돼버렸다(`grep`으로
+씬 파일에서 `PlayerHudUI`/`PlayerHudCanvas` 직접 확인). 씬에 저장된 인스턴스는 도메인 리로드
+때마다 그 시점의 필드값을 그대로 복원하므로, 코드의 기본값을 바꿔도 반영되지 않는다. 사용자 확인
+후 `manage_gameobject`로 씬의 `PlayerHudUI` GameObject를 삭제하고 씬 저장 — 다음 실행부터
+`AutoCreate()`가 새 기본값으로 완전히 새로 만든다(자식 UI는 `Build()`의 기존 파괴-후-재생성
+로직이 알아서 정리).
+
+**2. E홀드/일섬이 끊기지 않고 바로 폭주로 넘어감(사용자 리포트).** 앞선 세션에서 게이팅 문턱과
+폭주 자동 진입 문턱을 똑같이 `RampageEnterEnergy`로 통일했더니, 게이팅이 걸리는 바로 그 프레임(또는
+`PlayerController.Update()`의 호출 순서상 `HandleIlseom()`→`HandleRampage()`라 같은 프레임)에
+폭주 조건도 동시에 성립해 체감상 "끊김 없이 바로 폭주"가 됐다. 신규 프로퍼티
+`LightGateEnergy => RampageEnterEnergy + 1` 추가 — E홀드·일섬 게이팅은 이 값을 쓰고(폭주 진입보다
+정확히 1 높아, 게이팅이 걸려 에너지가 여기서 멈추면 폭주 조건 미충족), UI 경고색·폭주 진입 자체는
+여전히 `RampageEnterEnergy`(1/8) 그대로 — 사용자 지시 "1/8"이 정확히 적용돼야 하는 건 그 둘뿐이라는
+판단.
+
+**3. 일부 플랫폼에서 낙사 복귀 후 무한으로 떨어짐(사용자 재리포트).** 근본 원인: 접지 판정
+(`CheckEnvironment`의 `isGrounded`)은 콜라이더 **전체 폭**으로 BoxCast하는데, 낙사 복귀 안전장치
+`HasGroundBelow()`는 피벗 **한 점**만 레이캐스트했다. 플랫폼 가장자리에 살짝 걸쳐 서 있던(=콜라이더
+일부만 걸쳐 `isGrounded`는 참이지만 피벗 X 바로 아래는 허공인) 지점이 `lastGroundedPosition`으로
+저장되면, `ResolvePlatformCenter`의 안전장치(`HasGroundBelow`)가 "발밑에 지형 없음"으로 오판해
+그 위험한 지점을 그대로 돌려보냈다 — 복귀 → 즉시 재낙하 → 같은 지점으로 재복귀의 무한 루프.
+`HasGroundBelow`를 점 레이캐스트에서 콜라이더 폭 그대로의 BoxCast로 교체해 `isGrounded`와 같은
+기준을 쓰도록 통일.
+
+**검증**: `validate_script`(standard) 오류 0, `refresh_unity`(force) 후 콘솔 error 0. Play 모드
+리플렉션으로 `energyColor` 필드=`_LitTint`=(0.204,0.867,0.925) 확인(흰색 버그 해소),
+`RampageEnterEnergy=13`·`LightGateEnergy=14` 분리 확인. 씬 저장 완료
+(`Assets/Scenes/Map-test.unity`에서 `PlayerHudUI` GameObject 제거됨). 낙사 무한루프 수정은 실제
+플랫폼 가장자리 재현까지는 못 했음(코드 로직상 원인은 확실 — 다음 세션 사용자 직접 확인 권장).
+
+## 2026-08-11 (후속 6) — 보스 빔 길이(사거리) 변화 속도 제한
+
+**사용자 지시**: "보스의 빔이 직선으로 쫒아오는(커지는) 것도 속도를 줄여줘요." 회전 추적
+(`beamTrackSpeedDegPerSec`)은 이미 세 차례 튜닝됐지만(180→60→35), `BossEyeTracker.LateUpdate()`의
+`beamLight.pointLightOuterRadius = Mathf.Min(distToPlayer, beamRange)`(빔 길이=플레이어와의 실제
+거리, 2026-08-10 지시)는 매 프레임 목표 길이로 그대로 스냅돼 늘어나는/줄어드는 속도에 아무 제한이
+없었다 — "직선으로 쫓아오는(커지는)"이 정확히 이 길이 변화를 가리킨다고 판단(회전은 "회전하며
+쫓아온다"지 "직선으로 쫓아온다"가 아니므로).
+
+신규 필드 `beamLengthChangeSpeed`(20 유닛/초) 추가, `beamCurrentLength`로 스무딩 상태를 들고
+`Mathf.MoveTowards`로 초당 최대 변화량을 제한(회전과 같은 패턴). 첫 프레임만
+`beamLengthInitialized` 플래그로 스무딩 없이 실제 거리로 바로 맞춰 시작 시 0에서 자라나 보이는
+것을 방지. `IsPlayerInBeam`의 사거리 판정은 원래부터 `pointLightOuterRadius`가 아니라 고정
+`beamRange`를 썼으므로 이 변경은 시각적 길이 표시에만 영향— 노출/피격 판정 범위는 그대로다.
+
+**검증**: `validate_script`(standard) 오류 0(기존 GC 경고만), `refresh_unity`(force) 후 콘솔 error
+0. Play 모드 리플렉션으로 `beamLengthChangeSpeed=20`(씬 값 없이 새 기본값 그대로 적용 확인 —
+신규 필드라 씬 직렬화값과 충돌할 여지 자체가 없음), `beamCurrentLength`가 `pointLightOuterRadius`와
+동기화됨을 확인. 실제 체감(회피 난이도 변화)은 사용자 플레이 테스트 필요.
+
+## 2026-08-11 (후속 7) — 보스 빔: 범위 축소 + 추적 속도 추가 인하 + 재포착 유예(구조적 회피 보장)
+
+**사용자 지적**: "1번(추적 속도 인하)은 늦춰도 1자 평지에서 이동하면 걸리는거 같은데요." 정확한
+지적이었다 — 부채꼴 판정은 순수 프레임 단위 각도 비교라, 눈에서 플레이어를 바라보는 각속도
+dθ/dt = v·h/(h²+x²)(h=높이차, x=수평거리, v=이동속도)는 일정 속도로 직선 이동하면 거리가 늘수록
+0에 수렴한다 — 그래서 추적 속도(`beamTrackSpeedDegPerSec`)를 아무리 낮춰도 "고정된 그 값보다
+낮은 각속도가 되는 거리"에 도달하는 순간부터는 다시 따라잡힌다는 게 수학적으로 불가피했다. 순수
+숫자 튜닝만으로는 "계속 이동하면 확실히 안전"을 구조적으로 보장할 수 없다는 뜻.
+
+**대응 3가지**:
+1. `beamRange` 55→25(이 프로젝트에서 2026-08-10 이전에 실제로 쓰던 값으로 복귀) — "방 전체를 항상
+   커버"보다 "충분히 멀어지면 확실히 안전"을 우선. 방 구석이 다시 사각지대가 되는 트레이드오프는
+   사용자가 감수.
+2. `beamTrackSpeedDegPerSec` 35→20(4차 인하).
+3. **신규 `exposureReacquireDelay`(1.5초)** — 위 수학적 한계를 근본적으로 우회하는 장치. 노출이
+   한 번이라도 실제로 끊기면(부채꼴을 벗어나면), 그 뒤 1.5초 동안은 각도 계산과 무관하게 무조건
+   노출 아님으로 강제한다. 유예가 끝났는데도 여전히 부채꼴 안(=제자리에 서 있었다)이면 그때부터
+   다시 정상 판정이 시작된다. `UpdateExposure()`에 `reacquireCooldown` 상태를 추가해 구현 —
+   "노출이 방금 끊긴 그 순간"에만 유예를 새로 걸고(유예 중 rawExposed 값이 오락가락해도 매번
+   재설정되어 무한정 늘어지지 않게), 유예 중엔 `exposed = rawExposed && reacquireCooldown<=0f`로
+   강제 차단한다.
+
+⚠️ **씬 직렬화값 재확인 필요(이번에도)** — `mcpforunity://scene/gameobject/.../component/
+BossEyeTracker` 리소스로 읽어보니 `beamRange=55`·`beamTrackSpeedDegPerSec=35`(둘 다 "후속 2"
+세션에서 이미 한 번 손으로 맞췄던 그 값) 그대로 남아있었다 — 코드 기본값을 바꿔도 씬에 저장된
+값이 우선한다는 이번 세션의 반복 교훈과 동일. `manage_components.set_property`로 씬 값을
+25/20으로 직접 갱신 후 재확인(25.0/20.0 반영 확인), `manage_scene.save`로 저장. `beamLengthChangeSpeed`
+·`exposureReacquireDelay`는 이번에 처음 추가된 필드라 씬에 아직 값이 없어 코드 기본값이 그대로
+적용됨(충돌 없음).
+
+**검증**: `validate_script`(standard) 오류 0, `refresh_unity`(force) 후 콘솔 error 0. Play 모드
+리플렉션으로 씬의 `beamRange=25`·`beamTrackSpeedDegPerSec=20`·`exposureReacquireDelay=1.5` 전부
+반영 확인. 재포착 유예의 실제 체감(1자 평지 이동으로 정말 회피가 되는지)은 사용자 플레이 테스트
+필요.
+
+## 2026-08-11 (후속 8) — UISandbox 씬에 HP/광원 UI 재생성
+
+**사용자 요청**: "UISandBox씬에 HP UI, 광원 UI 추가해줘." 확인해보니 `Assets/Scenes/UISandbox.unity`에
+`PlayerHudUI` GameObject가 이미 있었다(Map-test와 달리 이 씬은 애초에 "플레이어 없는 씬 에디터
+프리뷰"용으로 수동 배치가 의도된 곳 — 클래스 주석의 SnapToFullPreview 분기가 이 용도). 하지만
+Map-test에서 발견했던 것과 **같은 문제**였다 — `energyColor`/`transcendColor`가 옛 기본값(흰색)
+그대로 직렬화돼 있어(`mcpforunity://scene/gameobject/.../component/PlayerHudUI` 리소스로 확인),
+최근 세션에 고친 청록 기본값이 반영 안 되고 있었다. 기존 GameObject를 삭제하고
+`manage_gameobject(create, components_to_add:["PlayerHudUI"])`로 완전히 새로 생성 — Awake()가
+그 자리에서 바로 돌아(ExecuteAlways) 최신 기본값으로 HP 아이콘(만피 골드 틴트)·광원 아이콘(8/8
+청록) 전부 정상 재생성됨을 리플렉션으로 확인(`_hpIconBase.sprite`/`.color`, `_energyIcon.sprite`
+직접 읽음). `manage_scene.save`로 저장, 이후 원래 작업 중이던 Map-test 씬으로 다시 로드.
+
+**검증**: 리플렉션으로 새 인스턴스의 `energyColor`=(0.204,0.867,0.925) 확인(스크린샷은 카메라
+지정 캡처라 Screen Space Overlay가 안 찍혀 육안 확인은 못 함 — 기존에 겪은 도구 제약과 동일).
+콘솔 error 0.
+
+## 2026-08-11 (후속 9) — 보스 빔: beamRange 25→55 원복(맵 끝 안전지대 문제)
+
+**사용자 리포트**: "지금 맵 끝에 있으면 보스의 레이저 빔을 안 맞는 문제가 있습니다." 후속 7에서
+`beamRange`를 55→25로 낮춘 게 원인 — 방 구석이 빔이 아예 안 닿는 영구 안전지대가 됐다(그때
+"트레이드오프로 감수"라고 적어뒀던 바로 그 부작용).
+
+재판단: 같은 세션에 추가한 `exposureReacquireDelay`(재포착 유예, 시간 기반)가 "이동하면 확실히
+안전"이라는 원래 요구를 거리와 무관하게 이미 충족시키고 있어서, `beamRange`를 낮출 이유가
+사라졌다 — 되돌린다(55). 역할 분리: 회피는 이동(재포착 유예)으로, 도달 범위는 방 전체 커버로.
+`beamTrackSpeedDegPerSec`(20)·`exposureReacquireDelay`(1.5)는 그대로 유지.
+
+⚠️ 이번엔 코드 기본값과 씬 직렬화값을 실제로 확인하기 전에 `refresh_unity(force)` 직후 콘솔에
+"The referenced script (Unknown) on this Behaviour is missing!" 에러 15건이 떠서 조사했다 —
+Map-test.unity·UISandbox.unity 파일을 직접 grep(`m_Script: {fileID: 0}`)했지만 매치 없음(디스크엔
+깨진 참조 없음), 프로젝트 전체 grep도 매치 없음. 콘솔을 지우고 다시 `refresh_unity(force)` +
+확인했더니 새 에러 0건 — 이전 도메인 리로드(PlayerHudUI 생성/삭제를 두 씬에서 반복) 도중 남은
+일시적 버퍼 잔여물로 판단, 실제 손상 아님을 확인 후 진행.
+
+씬의 `BossEyeTracker.beamRange`가 여전히 25로 직렬화돼 있어(같은 반복 패턴)
+`manage_components.set_property`로 55로 갱신, 재확인 후 `manage_scene.save`.
+
+**검증**: 콘솔 error 0(재확인). 씬 리소스로 `beamRange=55.0`·`beamTrackSpeedDegPerSec=20.0`·
+`exposureReacquireDelay=1.5` 전부 확인. 실제 체감(맵 끝에서도 빔이 도달하는지)은 사용자 플레이
+테스트 필요.
+
+## 2026-08-11 (후속 10) — 빌드에서만 UI 블룸·셰이더 깨짐(셰이더 스트립) + 커밋 전 폰트 손상 발견
+
+**사용자 리포트**: 빌드에서 HP/광원 아이콘의 블룸이 깨지고 "UI들 쉐이더도 적용이 안되있습니다"
+(스크린샷 첨부 — 광원 아이콘이 형체 없는 흰 덩어리로 뭉개짐). 기존 메모리
+`[[reference-unity-build-only-pitfalls]]`의 1번 항목과 정확히 일치 — `Shader.Find()`로 런타임에
+찾아 쓰는 커스텀 셰이더는 어떤 Material 에셋도 정적으로 참조하지 않아 빌드에서 스트립되고, 호출부가
+`if (shader != null)` null 가드라 에러 없이 조용히 기본 UI 셰이더로 폴백된다.
+
+프로젝트 전체에서 `Shader.Find("Custom/...")` 6종 확인(`UIHpIconBody`·`UIEnergyIconBody`·
+`UIHpGlow`·`UISilhouetteOutline`·`UISilhouetteFill`·`PlayerBloomOverlay`) 후 각 .shader.meta의
+guid를 `ProjectSettings/GraphicsSettings.asset`의 `m_AlwaysIncludedShaders`와 대조 — 4개는 이미
+등록돼 있었지만(이전 세션 몫으로 추정) **`UIEnergyIconBody`(이번 세션 신규)와 `UISilhouetteFill`
+(예전부터 누락)은 등록이 안 돼 있었다.** `SerializedObject`로 `m_AlwaysIncludedShaders` 배열에
+두 guid를 추가(`AssetDatabase.LoadAllAssetsAtPath("ProjectSettings/GraphicsSettings.asset")` →
+SerializedObject → InsertArrayElementAtIndex → objectReferenceValue = shader).
+
+**빌드로 직접 검증**(메모리에 기록된 방법 그대로) — `manage_build`로 Windows64 개발 빌드(32.8초,
+error 0) → exe를 `-screen-fullscreen 0 -screen-width 1280 -screen-height 720 -logFile ...`로 실행
+→ PowerShell Win32 GetWindowRect+CopyFromScreen으로 창 캡처. 수정 전 사용자 스크린샷(형체 없는
+흰 덩어리)과 달리, 수정 후 스크린샷에서 HP·광원 아이콘 둘 다 또렷한 무늬(꽃/바람개비 실루엣)로
+렌더링됨을 육안 확인 — 셰이더가 정상 적용됨. Player.log에도 error/exception 없음.
+⚠️ 새 커스텀 셰이더를 추가할 때마다 이 등록을 잊기 쉽다 — 메모리에 "Shader.Find로 셰이더를 새로
+쓰면 등록도 같이"라고 이미 적혀 있었는데 이번에 실제로 놓쳤다. 앞으로 `Shader.Find`로 새 셰이더를
+쓸 때마다 이 단계를 빠뜨리지 않아야 한다.
+
+**커밋 전 별도 발견(부수적) — 폰트 에셋 손상.** `git status`에 이번 세션에 손대지 않은
+`Assets/Fonts/Resources/Silver Bitmap.asset`/`Silver SDF.asset`이 떠 있어 확인해보니, 텍스처
+데이터가 1024×1024 → 1×1로 파괴돼 있었다(`m_CompleteImageSize: 1048576 → 1`) — 반복된
+`refresh_unity(force)` 호출의 부작용으로 추정(Player-tutorial 스프라이트 슬라이스 손상보다 심각 —
+그건 임포트 설정만 깨졌지 픽셀 데이터는 안 날아갔는데 이번엔 실제 텍스처 데이터가 사라짐). 사용자
+확인 후 `git checkout --`로 두 파일 모두 원복(제가 만든 손상이라 사용자 작업 손실 위험 없음).
+`ProjectSettings/ProjectSettings.asset`의 `preloadedAssets` 변경(1줄, `InputSystem_Actions`
+자동 등록)은 Unity Input System의 정상 동작으로 확인, 커밋에 포함.
+
+**커밋 범위**: 사용자 지시("디버그 관련 빼고 전부") — `Assets/Screenshots/`의 디버그 스크린샷
+10개, 그리고 기존에 보고했던 손상된 4개 파일(Idle/Grab/Run/Born-reverse.png.meta, "일단 두기"로
+보류 중)은 제외하고 나머지 전부 커밋+푸시.
+
+## 2026-08-11 (후속 11) — 셰이더 스트립 잔여 1건 + 히트/일섬 완료 프리팹 미배선
+
+커밋 직전 사용자가 "적을 타격했을 때 나타나는 프리팹들과 일섬 차징 완료 프리팹이 안 나타난다"고
+추가 리포트.
+
+**1차 확인 — 셰이더 스트립 잔여분.** 후속 10에서 `Shader.Find("Custom/...")`를 리터럴 문자열로만
+찾아서, `ShaderName`/`RingShaderName` 같은 **상수 변수**로 호출하는 곳(IlseomChargeFx·
+IlseomSlashFx·ParryShieldFx·RampageOutline류·EnemyExecutionGlow·UINoiseOverlay 등 12종)은 놓쳤다.
+전부 상수 선언부를 찾아 실제 문자열로 역추적한 뒤 `GraphicsSettings.m_AlwaysIncludedShaders`와
+`Shader.Find()`로 일괄 대조 — 11개는 이미 등록돼 있었고 **`Custom/UINoiseOverlay`(DeathScreenUI의
+SIGNAL LOST 글리치 노이즈) 하나만 누락**돼 있어 추가.
+
+**2차 확인 — 진짜 원인은 미배선.** 셰이더 스트립으로는 히트 VFX·일섬 버프 팝업의 부재가 설명 안 돼
+`PlayerController` 컴포넌트를 직접 읽어보니, `hitVfxPrefabs: []`(빈 배열)·`damageTextPrefab`·
+`critHitVfxPrefab`·`executionHitVfxPrefab`·`ilseomBuffPopPrefab`가 전부 `null`이었다.
+`git show HEAD`로 대조해 **이번 세션이 아니라 마지막 커밋부터 이미 이랬음**을 확인(내가 깬 게
+아니라 애초에 인스펙터 연결이 빠져 있던 것). `CombatFx.SpawnHitVfx`/`SpawnTextObject`는 프리팹이
+null이면 그냥 조용히 리턴하고 폴백이 없다(머티리얼 필드들과 달리 — 그쪽은 `Shader.Find` 폴백이
+있어 null이어도 동작해서 이번엔 안 건드림).
+
+실제 프리팹 에셋은 전부 프로젝트에 존재했다(`Assets/VFX/HitVFX/Prefabs/`의 HitVFX1~4·Hit01~03,
+`Assets/VFX/BuffVFX/Prefabs/Resistance_Up.prefab`, `Assets/VFX/DamageText/DmgText.prefab`) —
+필드 선언부 주석("크리티컬(Hit02)·처형(Hit03)", "Resistance_Up")과 정확히 대조해 배선:
+`hitVfxPrefabs`=[HitVFX1~4, Hit01](일반 풀), `critHitVfxPrefab`=Hit02, `executionHitVfxPrefab`=Hit03,
+`damageTextPrefab`=DmgText, `ilseomBuffPopPrefab`=Resistance_Up.
+⚠️ `manage_components.set_property`가 "PlayerController" 타입을 못 찾는 도구 버그를 만나(같은
+세션에 BossEyeTracker는 정상 동작) `execute_code`로 `SerializedObject` 직접 조작해 우회.
+
+**검증**: 씬 리소스로 5개 필드 전부 올바른 asset path로 반영 확인. 콘솔 error 0(무관한 IK/재생
+관련 경고 3건만 — MCP 인스펙션 부작용으로 판단). `manage_scene.save` 완료.

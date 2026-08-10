@@ -24,6 +24,12 @@ public class PlayerController : MonoBehaviour
     public float wallClimbSpeed = 3f;
     public float wallClimbAccel = 20f;
     public Vector2 wallJumpForce = new Vector2(5f, 9f);
+    // 벽점프 직후 수평 입력을 잠그는 시간(사용자 지시 2026-08-11 "벽 반대 방향으로도 같이
+    // 이동되어야 하는데 거리가 제약되는 듯") — 예전엔 0.15f로 짧아서, 그 사이 방향키를 안 누르고
+    // 있으면 잠금이 풀리자마자 HandleMovement가 moveInput.x=0을 즉시 대입해 수평 속도가 뚝 끊겼다
+    // (이 프로젝트는 "즉시 이동" 컨벤션이라 관성이 없어 입력이 없으면 그 자리에서 바로 멈춘다).
+    // 이 값을 늘리면 push가 살아있는 시간이 길어져 실제로 벽 반대쪽으로 밀려나는 거리가 늘어난다.
+    public float wallJumpHorizontalLockDuration = 0.3f;
     public float wallClimbShakeDuration = 0.08f; // 벽에 붙는 순간 카메라 쉐이크(사용자 지시)
     public float wallClimbShakeMagnitude = 0.06f;
     // 벽 꼭대기 자동 오르기(사용자 지시 2026-08-03) — "벽을 다 올라가서 위로 갈 수 있는 상황이면
@@ -130,17 +136,26 @@ public class PlayerController : MonoBehaviour
     // ⚠️ "많이 떨어짐"만으로는 부족하다는 조건이 붙었다("아래에 플랫폼 or 땅바닥 없어야 함").
     //    긴 낙하가 정상 루트인 구간(높은 곳에서 아래층으로 내려가는 설계)에서 오발동하면 안 되므로,
     //    낙하 거리와 **발밑 탐색** 둘 다 만족해야 발동한다.
+    // ⚠️ 발밑 탐색은 거리 제한을 두지 않는다(사용자 지시 2026-08-11 "많이 아래여도 아래에 플랫폼이
+    //    존재한다면 낙하 판정 X") — 예전엔 fallDeathGroundProbe(30)로 제한해서, 30유닛보다 더 아래에
+    //    발판이 있어도 "허공"으로 오판해 낙사 연출이 터졌다. 얼마나 멀든 발밑에 지형이 하나라도
+    //    있으면 정상 낙하로 본다 — 받아줄 바닥이 아예 없는 진짜 허공일 때만 발동해야 한다.
     [Header("Fall Death (허공으로 오래 떨어지면 마지막 발판으로 복귀)")]
     [Tooltip("마지막으로 서 있던 지점보다 이만큼 아래로 내려가면 낙사 후보")]
     public float fallDeathDistance = 20f;
-    [Tooltip("그 시점에 발밑으로 이만큼 훑어서 아무 지형도 없어야 진짜 '허공'으로 본다")]
-    public float fallDeathGroundProbe = 30f;
     public int fallDeathDamage = 1;
     [Tooltip("암전(페이드 인) 시간 — 이 동안 게임은 멈춰 있다")]
     public float fallFadeInDuration = 0.22f;
     [Tooltip("완전 암전 상태로 머무는 시간(이 사이에 복귀·피해가 처리된다)")]
     public float fallBlackHoldDuration = 0.18f;
     public float fallFadeOutDuration = 0.32f;
+    // 사용자 지시(2026-08-11): "낙하 후 플랫폼 복귀시 플랫폼의 중앙에 복귀" — 예전엔 서 있던 바로 그
+    // 지점(가장자리든 어디든)으로 그대로 돌아왔다. 지형이 타일 컴포지트라(콜라이더 하나가 지형 전체를
+    // 아우름) collider.bounds로는 "그 발판"의 범위를 알 수 없어, 좌우로 발밑을 훑어 가장자리를
+    // 직접 찾는다. 훑다가 이 거리 안에 가장자리를 못 찾으면(= 끝없이 이어지는 큰 지형) "발판"이라
+    // 부를 수 없는 지형으로 보고 원래 지점 그대로 둔다(중앙이라는 개념 자체가 성립하지 않는다).
+    public float platformEdgeProbeStep = 0.5f;
+    public float platformEdgeProbeMaxDistance = 20f;
 
     // 사망 연출·로직(사용자 확정 2026-08-10, 세부 플로우 재지시로 전면 재설계). 페널티 없음 — 부활 시
     // 체력 전부/자아(폭주 유지 시) 전부 회복, 광원은 그대로 유지. 부활 지점은 RoomTrigger가 갱신하는
@@ -200,19 +215,23 @@ public class PlayerController : MonoBehaviour
     public int executionHealCount = 1;   // 처형 성공 시 회복되는 체력 "칸" 수
     public int ilseomEnergyCost = 40;
     // 사용자 확정(2026-08-01): 일섬은 발동 시 목돈을 떼는 게 아니라, 홀드(차지) 진행도에 비례해
-    // ilseomEnergyCost를 완충까지 점진적으로 다 쓴다. 그 과정에서 에너지가 이 비율(=maxEnergy 기준) 아래로
-    // 떨어지면 홀드 자체가 취소된다(이미 쓴 만큼은 안 돌려줌 — 채널링 실패의 대가).
-    [Range(0f, 1f)] public float ilseomCancelEnergyPercent = 0.1f;
+    // ilseomEnergyCost를 완충까지 점진적으로 다 쓴다. 그 과정에서 에너지가 RampageEnterEnergy(1/8)
+    // 아래로 떨어지면 홀드 자체가 취소된다(이미 쓴 만큼은 안 돌려줌 — 채널링 실패의 대가). 문턱이
+    // 기존 10%에서 1/8로 바뀌면서(사용자 지시 2026-08-11) 폭주 진입·UI 경고 문턱과 같은 값을 쓰도록
+    // 전용 필드(ilseomCancelEnergyPercent) 대신 RampageEnterEnergy 프로퍼티를 직접 참조한다.
 
     // ── 폭주(Rampage) ───────────────────────────────────────────────────────────────────────
     // 세계관: 빛을 강제로 흡수해 이성은 잃지만 파괴력·맷집이 극도로 오르는 상태(세계관_및_고유명사_설정.md:60~70).
-    // ★ 규칙(2026-08-01 사용자 확정): **광원이 0이 되면 자동 진입**하고, 광원을
+    // ★ 규칙(2026-08-01 사용자 확정): 광원이 바닥에 가까워지면 자동 진입하고, 광원을
     //   rampageExitEnergyPercent(25%) 이상 되찾아야 풀린다. 발동 키는 없다.
-    //   진입(0)과 해제(25%)를 다르게 둔 이유 = 이력(hysteresis). 같게 두면 폭주 중 한 대만 때려도
-    //   광원이 1 들어와 즉시 풀려서 전투 내내 깜빡인다(실측으로 확인한 문제).
+    //   진입과 해제(25%)를 다르게 둔 이유 = 이력(hysteresis). 같게 두면 폭주 중 한 대만 때려도
+    //   광원이 조금 들어와 즉시 풀려서 전투 내내 깜빡인다(실측으로 확인한 문제).
+    // ★ 갱신(2026-08-11 사용자 지시): 진입 문턱이 정확히 0에서 1/8(RampageEnterEnergy)로 바뀌었다 —
+    //   HUD 광원 아이콘이 8분할 스프라이트로 바뀌면서 "칸 하나(1/8)까지 닳으면 위험" 신호와 폭주
+    //   진입을 한 값으로 묶었다. PlayerHudUI의 저에너지 경고색 문턱도 이 값을 그대로 공유한다.
     [Header("Rampage (폭주)")]
     public bool rampageEnabled = true;
-    public int rampageExitEnergyPercent = 25;       // 이 % 이상 회복해야 폭주가 풀린다(진입은 0)
+    public int rampageExitEnergyPercent = 25;       // 이 % 이상 회복해야 폭주가 풀린다(진입은 RampageEnterEnergy, 1/8)
     // 폭주 중 광원 획득 75% 감소(25%만 회복) — 사용자 지시 2026-08-02로 기존 50% 감소(0.5)에서 강화.
     public float rampageEnergyGainMultiplier = 0.25f;
     public int rampageMinEnergy = 50;               // ⚠️ 고아 필드(옛 Q 토글 게이트) — 삭제는 별도 승인
@@ -252,7 +271,7 @@ public class PlayerController : MonoBehaviour
     [Header("Light Spend (광원 소모 — E 홀드)")]
     public float lightSpendDrainPerSecond = 25f;    // 초당 소모량(=% 포인트, maxEnergy 100 기준)
     public float lightSpendHealThreshold = 25f;     // 이만큼 모일 때마다 체력 1칸(또는 만체력이면 실드)
-    [Range(0f, 1f)] public float lightSpendLowWarnPercent = 0.1f; // 이 비율 이하로 내려가면 1회 강제 중지
+    // RampageEnterEnergy(1/8) 이하로 내려가면 1회 강제 중지(기존 10% 전용 필드에서 통합, 사용자 지시 2026-08-11).
     public float lightSpendPixelRate = 16f;         // 방출 픽셀 스폰 빈도(초당 개수)
     public float lightSpendZoomTarget = 1.30f;      // 홀드 지속 시 도달하는 카메라 배율
     public float lightSpendZoomRampIn = 1.5f;       // 목표 배율까지 걸리는 시간(더 오래 눌러도 이 이상 안 들어감)
@@ -1019,7 +1038,7 @@ public class PlayerController : MonoBehaviour
     // ── 낙사(허공으로 오래 떨어짐) ────────────────────────────────────────────────────────────
     // 조건 두 가지를 모두 만족해야 한다(사용자 지시 2026-08-09).
     //  ① 마지막으로 서 있던 지점보다 fallDeathDistance 이상 아래로 내려왔다.
-    //  ② 그 시점에 발밑 fallDeathGroundProbe 안에 지형이 하나도 없다(= 받아 줄 바닥이 없는 허공).
+    //  ② 발밑 아무리 멀어도 지형이 하나도 없다(= 받아 줄 바닥이 없는 진짜 허공, 거리 제한 없음).
     // ②가 없으면 "높은 곳에서 아래층으로 내려가는" 정상 루트가 통째로 낙사로 처리된다.
     void CheckFallDeath()
     {
@@ -1029,8 +1048,8 @@ public class PlayerController : MonoBehaviour
         if (lastGroundedPosition.y - transform.position.y < fallDeathDistance) return;
 
         Bounds b = coll.bounds;
-        RaycastHit2D below = Physics2D.BoxCast(b.center, b.size, 0f, Vector2.down, fallDeathGroundProbe, groundLayer);
-        if (below.collider != null) return; // 아래에 발판·땅이 있다 → 그냥 긴 낙하다
+        RaycastHit2D below = Physics2D.BoxCast(b.center, b.size, 0f, Vector2.down, Mathf.Infinity, groundLayer);
+        if (below.collider != null) return; // 아래 어디든 발판·땅이 있다 → 그냥 긴 낙하다
 
         StartCoroutine(FallRespawnRoutine());
     }
@@ -1049,7 +1068,7 @@ public class PlayerController : MonoBehaviour
         yield return ScreenFadeUI.FadeTo(1f, fallFadeInDuration);
 
         // 완전 암전 상태에서 복귀시킨다 — 순간이동이 화면에 보이지 않게.
-        transform.position = lastGroundedPosition;
+        transform.position = ResolvePlatformCenter(lastGroundedPosition);
         rb.linearVelocity = Vector2.zero;
         TakeDamage(fallDeathDamage, canKill: false);
         TestLog.Event("fall_death", $"respawned hp={currentHealth}/{maxHealth}");
@@ -1061,6 +1080,63 @@ public class PlayerController : MonoBehaviour
         isFallRespawning = false;
 
         yield return ScreenFadeUI.FadeTo(0f, fallFadeOutDuration);
+    }
+
+    /// <summary>낙사 복귀 지점을 그 발판의 중앙 X로 스냅한다(사용자 지시 2026-08-11). groundedPos에서
+    /// 좌우로 발밑을 훑어 지형이 끊기는 가장자리를 직접 찾는다 — 지형이 타일 컴포지트 콜라이더라
+    /// (지형 전체가 콜라이더 하나) collider.bounds는 "그 발판"이 아니라 지형 전체 범위를 돌려준다.
+    /// ⚠️ 재수정(2026-08-11, 사용자 재리포트 "아직도 플랫폼 끝에서 복귀") — 예전엔 좌우 "양쪽 다"
+    /// 가장자리를 찾아야만 중앙을 계산하고, 한쪽이라도 못 찾으면(=탐색 범위 안에 안 끊김) 그냥
+    /// 원래 지점(가장자리)으로 포기했다. 그런데 낙사는 거의 항상 "발판 가장자리에서 걸어 나가
+    /// 허공으로" 발생하므로 실제로는 한쪽(방금 떨어진 쪽)은 가깝고 반대쪽(넓은 지형 안쪽)은 훨씬
+    /// 멀어 포기하는 게 기본값이 되어 있었다. 이제 못 찾은 쪽은 탐색 한계(platformEdgeProbeMaxDistance)
+    /// 지점을 "임시 경계"로 삼아 항상 중앙을 계산한다 — 진짜 발판이면 정확한 중앙, 큰 지형이면
+    /// 가까운 가장자리에서 안쪽으로 최대 그 절반만큼 물러난 "안전한" 위치가 된다.</summary>
+    Vector3 ResolvePlatformCenter(Vector3 groundedPos)
+    {
+        if (!HasGroundBelow(groundedPos)) return groundedPos; // 안전장치 — 애초에 발밑이 지형이 아니면 손대지 않는다
+
+        float maxDist = Mathf.Max(platformEdgeProbeStep, platformEdgeProbeMaxDistance);
+        float leftEdge = FindGroundEdge(groundedPos, -1f, maxDist);
+        float rightEdge = FindGroundEdge(groundedPos, 1f, maxDist);
+        float centerX = (leftEdge + rightEdge) * 0.5f;
+
+        Bounds b = coll.bounds;
+        float feetOffset = groundedPos.y - b.min.y; // 피봇(발)-바닥 오프셋(TryLedgeClimb과 같은 관례)
+        RaycastHit2D surface = Physics2D.Raycast(new Vector2(centerX, groundedPos.y + 5f), Vector2.down, 20f, groundLayer);
+        if (surface.collider == null) return groundedPos;
+
+        return new Vector3(centerX, surface.point.y + feetOffset, groundedPos.z);
+    }
+
+    /// <summary>groundedPos에서 dir(-1=좌/+1=우) 방향으로 지형이 끊기는 X를 찾는다. maxDist 안에
+    /// 못 찾으면(끝없이 이어지는 큰 지형) 탐색 한계 지점(groundedPos.x + dir*maxDist)을 그대로
+    /// 돌려준다 — "경계를 모른다"가 아니라 "적어도 이만큼은 안쪽"이라는 보수적 근사치로 쓴다.</summary>
+    float FindGroundEdge(Vector3 groundedPos, float dir, float maxDist)
+    {
+        float step = Mathf.Max(0.05f, platformEdgeProbeStep);
+        int maxSteps = Mathf.Max(1, Mathf.RoundToInt(maxDist / step));
+        for (int i = 1; i <= maxSteps; i++)
+        {
+            Vector3 probe = groundedPos + new Vector3(dir * step * i, 0f, 0f);
+            if (!HasGroundBelow(probe)) return probe.x - dir * step;
+        }
+        return groundedPos.x + dir * maxDist;
+    }
+
+    /// <summary>pos에 플레이어가 그대로 서 있을 수 있는 지형이 있는지(짧은 탐침) — ResolvePlatformCenter의
+    /// 좌우 가장자리 탐색이 쓴다. 경사면도 놓치지 않도록 위에서 넉넉히 시작해 아래로 길게 훑는다.
+    /// ⚠️ 재수정(2026-08-11, 사용자 리포트 "일부 플랫폼에서 낙하 후 복귀해도 무한으로 떨어짐") —
+    /// 예전엔 폭 0인 레이캐스트(피벗 X 한 점)만 봤는데, 실제 접지 판정(CheckEnvironment의 isGrounded)은
+    /// 콜라이더 전체 폭으로 BoxCast를 쓴다. 그래서 플랫폼 가장자리에 살짝 걸쳐 서 있던(=isGrounded는
+    /// 참이지만 정확히 피벗 X 아래만은 허공인) 지점이 lastGroundedPosition으로 저장되면, 이 함수가
+    /// "발밑에 지형 없음"으로 오판해 ResolvePlatformCenter의 안전장치가 그 위험한 지점을 그대로
+    /// 돌려보냈다 — 다시 떨어지고 다시 같은 지점으로 복귀하는 무한 루프. 콜라이더 폭 그대로 BoxCast로
+    /// 바꿔 isGrounded와 같은 기준을 쓴다.</summary>
+    bool HasGroundBelow(Vector3 pos)
+    {
+        Vector2 size = coll.bounds.size;
+        return Physics2D.BoxCast(new Vector2(pos.x, pos.y + 1f), size, 0f, Vector2.down, 2f, groundLayer).collider != null;
     }
 
     /// <summary>그 방향에 "붙을 수 있는 벽면"이 있는지. 단순히 Wall 콜라이더에 닿았는지가 아니라
@@ -1339,8 +1415,12 @@ public class PlayerController : MonoBehaviour
                 // 확실히 떼어내려면(방향키 유무와 무관하게, 그 순간의 입력이 아니라 "붙어있는가"만
                 // 본다) 벽점프가 항상 먼저 처리돼야 한다 — wallJumpLockCounter를 세팅해 바로 뒤
                 // HandleWallSlide가 같은 프레임에 떼어내고 중력을 복구한다.
-                rb.linearVelocity = new Vector2(-wallDirX * wallJumpForce.x * TimeAccelMul, wallJumpForce.y * jumpMul * TimeAccelMul);
-                wallJumpLockCounter = 0.15f;
+                // 벽점프 높이는 wallJumpForce.y가 아니라 jumpForce를 그대로 쓴다(사용자 지시 2026-08-11
+                // "기존 점프와 같은 높이로") — 씬에 저장된 wallJumpForce.y(5)가 jumpForce(9)보다 낮아
+                // 벽점프가 일반 점프보다 약하게 튀던 게 원인이었다. x(벽 반대쪽으로 밀어내는 수평 힘)만
+                // wallJumpForce를 그대로 쓴다.
+                rb.linearVelocity = new Vector2(-wallDirX * wallJumpForce.x * TimeAccelMul, jumpForce * jumpMul * TimeAccelMul);
+                wallJumpLockCounter = wallJumpHorizontalLockDuration;
             }
             else if (coyoteTimeCounter > 0f) {
                 rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce * jumpMul * TimeAccelMul);
@@ -1506,8 +1586,10 @@ public class PlayerController : MonoBehaviour
                 ilseomChargeDrained += delta;
             }
 
-            // 10% 아래로 떨어지면 홀드 자체가 취소된다(사용자 확정) — 이미 쓴 만큼은 돌려주지 않는다.
-            if (currentEnergy <= ilseomCancelEnergyPercent * maxEnergy)
+            // LightGateEnergy(RampageEnterEnergy+1) 아래로 떨어지면 홀드 자체가 취소된다(사용자 확정)
+            // — 이미 쓴 만큼은 돌려주지 않는다. RampageEnterEnergy 자체가 아니라 그보다 1 높은 값을
+            // 쓰는 이유는 LightGateEnergy 프로퍼티 주석 참고(폭주 자동 진입과 겹쳐 보이는 문제 방지).
+            if (currentEnergy <= LightGateEnergy)
             {
                 PlayerHudUI.Instance?.FlashEnergyBarRed();
                 CancelCharge("ilseom_blocked_low_energy");
@@ -2064,7 +2146,7 @@ public class PlayerController : MonoBehaviour
         // 해제는 지연하지 않는다 — 폭주 해제(25% 회복)는 전투 중에만 성립해 IsActionIdle이 거의 안 열린다.
         if (!isRampaging)
         {
-            if (currentEnergy <= 0 && IsActionIdle) StartRampage();
+            if (currentEnergy <= RampageEnterEnergy && IsActionIdle) StartRampage();
             return;
         }
 
@@ -2343,9 +2425,24 @@ public class PlayerController : MonoBehaviour
     /// 이동속도가 증가하면 똑같이 증가").</summary>
     float MoveSpeedMultiplier => isRampaging ? rampageMoveSpeedMultiplier : isTranscending ? transcendMoveSpeedMultiplier : 1f;
 
-    /// <summary>폭주가 풀리는 광원 수치(기본 25%). 0으로 진입하고 여기까지 회복해야 빠져나온다.</summary>
+    /// <summary>폭주가 풀리는 광원 수치(기본 25%). RampageEnterEnergy로 진입하고 여기까지 회복해야 빠져나온다.</summary>
     public int RampageExitEnergy =>
         Mathf.Clamp(Mathf.CeilToInt(maxEnergy * rampageExitEnergyPercent / 100f), 1, maxEnergy);
+
+    /// <summary>폭주가 자동 진입하는 광원 수치(1/8, 사용자 지시 2026-08-11 — 예전엔 정확히 0이었다).
+    /// HUD 광원 아이콘의 8분할 눈금 중 첫 칸(n=1) 경계와 정확히 일치시켜, "아이콘이 0칸으로 보이면
+    /// 곧 폭주"라는 시각적 신호가 실제 진입 조건과 어긋나지 않게 한다. PlayerHudUI의 저에너지
+    /// 경고색 문턱도 이 프로퍼티를 그대로 공유한다(값이 둘로 갈라지지 않도록).</summary>
+    public int RampageEnterEnergy =>
+        Mathf.Clamp(Mathf.CeilToInt(maxEnergy / 8f), 1, maxEnergy);
+
+    /// <summary>E홀드·일섬의 저에너지 게이팅 문턱 — RampageEnterEnergy보다 정확히 1 높다. 게이팅과
+    /// 폭주 자동 진입 문턱이 완전히 같으면 같은 프레임(또는 바로 다음 프레임)에 겹쳐서 "끊기지 않고
+    /// 바로 폭주로 넘어간다"는 체감으로 이어진다(사용자 리포트 2026-08-11) — 게이팅이 먼저 걸려
+    /// 에너지가 이 값에서 멈추면 RampageEnterEnergy보다 위라 폭주가 곧바로 따라오지 않는다. UI
+    /// 경고색·폭주 진입 자체는 여전히 정확히 RampageEnterEnergy(1/8)를 쓴다 — 그 둘만 사용자 지시
+    /// "1/8"과 정확히 일치해야 하고, 이 게이팅 문턱은 그보다 살짝 이른 별개의 값이다.</summary>
+    public int LightGateEnergy => RampageEnterEnergy + 1;
 
     // 자아는 폭주 중에만 닳는다. 정수 자원이라 1 미만의 소모분은 모았다가 한 번에 깎는다
     // (폭주 드레인·광원 소모가 쓰던 것과 같은 누적 패턴).
@@ -2590,7 +2687,7 @@ public class PlayerController : MonoBehaviour
     {
         // 낮은 에너지 경고 플래그는 방출 여부와 무관하게 매 프레임 갱신한다 — 전투로 회복해도
         // 다음 방출에서 경고가 다시 작동하게 하려면 필요하다.
-        if (currentEnergy > lightSpendLowWarnPercent * maxEnergy) lightSpendLowWarned = false;
+        if (currentEnergy > LightGateEnergy) lightSpendLowWarned = false;
 
         if (!isSpendingLight)
         {
@@ -2625,9 +2722,10 @@ public class PlayerController : MonoBehaviour
 
         if (currentEnergy <= 0) { EndLightSpend("energy_empty"); return; }
 
-        if (!lightSpendLowWarned && currentEnergy <= lightSpendLowWarnPercent * maxEnergy)
+        if (!lightSpendLowWarned && currentEnergy <= LightGateEnergy)
         {
             lightSpendLowWarned = true;
+            PlayerHudUI.Instance?.FlashEnergyBarRed(); // 일섬 게이팅과 같은 피드백(사용자 지시 2026-08-11: "마지막 1칸이 붉은색으로 바뀌며 막아줌")
             EndLightSpend("low_energy");
             return;
         }
@@ -3719,9 +3817,18 @@ public class PlayerController : MonoBehaviour
         f.Intensity = target;
     }
 
-    // 체크포인트(방 입구, RoomTrigger가 갱신)로 복귀 + 자원 복구. 페널티 없음(사용자 확정 2026-08-10):
-    // 체력 전부 회복, 자아는 폭주 유지 중이면 전부 회복(부활 직후 붕괴 데미지가 들어오지 않도록),
-    // 광원은 그대로 유지한다(폭주/초월 여부는 광원값에 따라 자연히 이어진다 — 별도 처리 불필요).
+    // 체크포인트(방 입구, RoomTrigger가 갱신)로 복귀 + 자원 복구. 체력 전부 회복, 광원은 그대로 유지한다
+    // (폭주/초월 여부는 광원값에 따라 자연히 이어진다 — 별도 처리 불필요).
+    // ⚠️ 사용자 지시(2026-08-11): 부활 순간 광원을 채워 폭주를 강제로 해제한다("부활시 광원을 줘서
+    //    폭주 해제"). RampageExitEnergy(기본 25%)까지 채우고 EndRampage를 직접 불러 그 프레임에
+    //    즉시 풀리게 한다(HandleRampage의 다음 프레임 판정을 기다리지 않음).
+    // ⚠️ 재수정(2026-08-11, 사용자 재리포트 "아직도 부활시 폭주가 해제되지 않음") — `isRampaging`
+    //    게이트가 죽은 코드였다: `DieRoutine()`이 사망 즉시(①단계, TakeDamage 호출 직후) 이미
+    //    `EndRampage("death")`를 불러 isRampaging을 꺼버리므로, 한참 뒤(Reconnect 클릭 시점)
+    //    이 함수가 실행될 땐 isRampaging이 항상 false다. 문제는 그 시점에 currentEnergy는
+    //    여전히 0(폭주 진입 조건 그대로)이라, 부활 다음 프레임 HandleRampage()가
+    //    `currentEnergy<=0`을 보고 즉시 StartRampage()를 다시 태워버렸다 — 그래서 "안 풀리는 것처럼"
+    //    보였다. isRampaging 여부와 무관하게 광원부터 채운다.
     void RespawnAtCheckpoint()
     {
         var progress = GameDataManager.Current.progress;
@@ -3731,7 +3838,8 @@ public class PlayerController : MonoBehaviour
         rb.linearVelocity = Vector2.zero;
 
         currentHealth = maxHealth;
-        if (isRampaging) currentEgo = maxEgo;
+        if (currentEnergy < RampageExitEnergy) currentEnergy = RampageExitEnergy;
+        if (isRampaging) EndRampage("respawn_light");
     }
 
     /// <summary>RoomTrigger가 새 방에 들어왔을 때 호출 — "다음 방에 도달"을 진행으로 보고 반복사망 카운터를 리셋한다.</summary>

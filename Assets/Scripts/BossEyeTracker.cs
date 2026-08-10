@@ -37,6 +37,12 @@ public class BossEyeTracker : MonoBehaviour
     // 있든 보스는 안 움직이고, 카메라(SectionCamera)가 구간을 넘어가며 실제로 이동할 때만 따라간다.
     [Header("Follow (플레이어가 아니라 카메라가 움직일 때만 같이 이동)")]
     public Transform trackedCamera; // 비워두면 Camera.main 자동 탐색
+    // trackedCamera가 SectionCamera라면 transform.position이 아니라 이 컴포넌트를 통해 basePos만
+    // 읽는다(사용자 리포트 2026-08-11 "E 홀드시 튜토리얼 보스가 움직이는 버그") — transform.position은
+    // 쉐이크·FocusPulse·SetSustainedFocus(E홀드 줌인 팬 등)의 오프셋까지 전부 합산된 값이라, 카메라가
+    // 실제로 구간을 넘어가지 않았는데도 이런 연출 흔들림만으로 보스가 화면 안에서 밀려 보였다.
+    SectionCamera trackedSectionCamera;
+    bool cameraTrackingInitialized; // lastCameraPosition의 첫 캡처를 첫 LateUpdate까지 미루는 플래그
     // 사용자 지시(2026-08-08): "너무 보스가 빨리 따라오는 문제 수정" — 카메라 델타를 즉시
     // 100% 반영하지 않고, 목표 지점(desiredPosition)을 향해 이 속도로 서서히 뒤쫓아간다.
     [Tooltip("카메라를 뒤쫓아가는 속도 — 작을수록 더 느긋하게(뒤늦게) 따라온다")]
@@ -51,13 +57,35 @@ public class BossEyeTracker : MonoBehaviour
     public Color beamColor = new Color(1f, 0.02f, 0.01f);
     public float beamIntensity = 3f;
     public float beamInnerAngle = 14f;
-    public float beamOuterAngle = 45f;
-    // 2026-08-10 후속: 25는 실제 보스룸(48x27) 기준 눈~최원거리 코너 실측 약 49유닛의 절반밖에 안 돼,
+    // 45 → 25(사용자 지시 2026-08-11 "걍 좁게 해주세요 지금보다") — 부채꼴 자체를 좁혀서 살짝만
+    // 옆으로 비켜도 각도상 밖으로 빠지기 쉽게 한다. Y축 추적 로직(chaseSpeed의 magnitude 기준)은
+    // 그대로 유지한 채 회피 난이도만 낮춘 상태(사용자 확정 2026-08-11).
+    public float beamOuterAngle = 25f;
+    // 2026-08-10: 25는 실제 보스룸(48x27) 기준 눈~최원거리 코너 실측 약 49유닛의 절반밖에 안 돼,
     // 플레이어가 방 반대쪽에 서 있으면(가만히 있어도) 빛이 아예 안 닿고 노출 판정(IsPlayerInBeam도
-    // 이 값을 그대로 씀)도 끊겼다 — 최원거리보다 넉넉히 큰 값으로 올림.
+    // 이 값을 그대로 씀)도 끊겨서 한 번 55로 올렸었다. 이후(2026-08-11) "충분히 멀어지면 확실히
+    // 안전"을 우선해 25로 다시 낮췄었으나, 그러면 맵 끝(방 구석)이 빔이 아예 안 닿는 영구 안전지대가
+    // 되어 "맵 끝에 있으면 레이저를 안 맞는다"는 사용자 리포트로 이어졌다. ⚠️ 재수정(2026-08-11) —
+    // 그 사이 exposureReacquireDelay(재포착 유예, 시간 기반)를 추가해 "이동하면 확실히 안전"이라는
+    // 요구는 이미 거리와 무관하게 충족되므로, beamRange를 낮출 이유가 사라졌다. 방 전체를 커버하도록
+    // 55로 되돌린다 — 회피는 이동(재포착 유예)으로, 도달 범위는 방 전체 커버로 역할을 분리한다.
     public float beamRange = 55f;
-    [Tooltip("빔이 플레이어를 순간적으로 스냅하지 않고 쫓아가는 느낌을 주는 회전 속도(도/초)")]
-    public float beamTrackSpeedDegPerSec = 180f;
+    // 180 → 35 → 20(사용자 지시 2026-08-11) — 부채꼴을 다 쓸어버리는 데 걸리는 시간을 늘려 방향을
+    // 꺾어 회전을 앞지르는(부채꼴 밖으로 빠지는) 여유를 준다.
+    // ⚠️ 사용자 지적(2026-08-11): "1자 평지 이동은 이 값을 아무리 낮춰도 결국 걸린다" — 정확하다.
+    // 각속도 dθ/dt = v·h/(h²+x²)로, 일정 속도로 직선 이동하면 거리가 늘수록 각속도가 0에
+    // 수렴하므로 고정된 추적 속도는 "충분히 오래 걷다 보면 반드시 다시 따라잡는다"는 구조적 한계가
+    // 있다. 그래서 이 숫자 하나로는 못 풀고, 아래 exposureReacquireDelay(재포착 유예)를 같이 둔다.
+    [Tooltip("빔이 플레이어를 순간적으로 스냅하지 않고 쫓아가는 느낌을 주는 회전 속도(도/초) — 너무 크면 사실상 항상 명중")]
+    public float beamTrackSpeedDegPerSec = 20f;
+    // 회전(beamTrackSpeedDegPerSec)엔 이미 속도 제한이 있었지만, 빔 길이(사거리)는 매 프레임
+    // 플레이어와의 실제 거리에 그대로 스냅돼(Mathf.Min) 늘어나는/줄어드는 데 아무 제한이 없었다
+    // — "직선으로 쫓아오는(커지는) 게 너무 빠르다"는 사용자 지시(2026-08-11)로, 이 길이 변화도
+    // 회전과 같은 방식(초당 최대 변화량)으로 속도를 제한한다.
+    [Tooltip("빔 길이(사거리)가 플레이어와의 실제 거리를 따라가는 속도(유닛/초) — 순간적으로 늘어나거나 줄지 않는다")]
+    public float beamLengthChangeSpeed = 20f;
+    float beamCurrentLength;          // 스무딩된 현재 빔 길이 — pointLightOuterRadius에 매 프레임 반영
+    bool beamLengthInitialized;       // 첫 프레임엔 스무딩 없이 실제 거리로 바로 맞춘다(0에서 안 자라나게)
     // 사용자 지시(2026-08-10): "거리가 멀수록 붉은 빔이 잘 안 보인다" — Light2D Point의 반경 감쇠
     // (pointLightOuterRadius=beamRange에 가까워질수록 자연히 어두워짐) 때문에 사거리 끝에서는
     // "지금 빔에 비춰지고 있다"는 게 잘 안 느껴졌다. 플레이어와의 실제 거리(0=바로 옆, beamRange=사거리
@@ -83,16 +111,15 @@ public class BossEyeTracker : MonoBehaviour
     // 플레이어가 실제로 보스 빛을 받게 한다. 이쪽은 볼류메트릭을 끈다 — 빔의 부채꼴 연출은 그대로
     // 두고 "조명"만 담당(안 그러면 화면 전체가 붉은 안개로 덮인다).
     // 사용자 지시(2026-08-09): "레이저 빔이 플레이어를 추격하는 형태(플레이어보다 약간 느림)".
-    // 각속도만으로 쫓으면 멀리 있을 때는 순식간에 따라붙고 가까이 붙으면 절대 못 따라잡는 —
-    // "추격"이 아니라 "조준"이 된다. 그래서 월드 공간의 조준점(beamAimPoint)이 플레이어를
-    // 이동속도 기준으로 뒤쫓게 하고, 빔은 그 점을 겨눈다. 플레이어보다 느리니 달아나면 벗어난다.
-    [Header("Beam Chase (조준점이 플레이어를 뒤쫓는 속도)")]
-    // 사용자 지시(2026-08-10): "빔 속도 1.2배" → 0.85 × 1.2 = 1.02는 1을 넘어 달려서 도망치는 루트가
-    // 통째로 막히므로, 체감은 그만큼 올리되 1 미만인 0.98로 잡았다(도망 루트 유지 + 훨씬 빡빡하게).
-    [Tooltip("플레이어 이동속도 대비 배율 — 1보다 작아야 도망칠 수 있다")]
-    public float beamChaseSpeedFactor = 0.98f;
-    [Tooltip("플레이어(PlayerController)를 못 찾았을 때 쓸 초당 이동 속도")]
-    public float beamChaseSpeedFallback = 4.5f;
+    // ⚠️ 재설계 2회(사용자 지시 2026-08-11) — ① 조준점(beamAimPoint)이 플레이어를 고정/가변
+    // 속도로 뒤쫓는 위치기반 방식이었는데, 플레이어보다 느린 추격점이 MoveTowards로 매 프레임
+    // "현재 위치"만 보고 다가가도 수학적으로 플레이어의 이동 경로를 따라가는 곡선(pursuit curve)을
+    // 그린다 — "추격이 아니라 경로를 따라오는 것 같다"는 정확한 지적을 받음. ② 그래서 위치기반
+    // 조준점을 완전히 없애고, 빔이 **항상 플레이어의 실제 현재 위치**를 직접 겨누게 하며, 지연은
+    // 오직 빔의 회전 속도(beamTrackSpeedDegPerSec, 아래 회전 로직 참고)만으로 만든다 — 원래
+    // "각속도만 쓰면 멀리서는 순식간에 붙고 가까이서는 못 따라잡는다"는 이유로 조준점 방식을
+    // 도입했었지만, 부채꼴 폭(beamOuterAngle)이 이미 여유를 주고 있어 이번엔 그 단점을 감수하고
+    // "경로를 따라오는" 느낌을 없애는 쪽을 사용자가 선택했다.
 
     // 사용자 지시(2026-08-10): "fan activ 뒤에 있으면 빔이 통과 못하고 응시도 적용 안 됨" — 이 레이어의
     // 콜라이더(FanActiv.cs가 자기 자신을 이 레이어로 강제함)가 눈과 플레이어 사이를 가로막으면
@@ -111,6 +138,15 @@ public class BossEyeTracker : MonoBehaviour
     public float exposureToBreakSeconds = 3f;
     public float exposureDamageInterval = 5f;
     public int exposureDamage = 1;
+    // 순수 프레임 단위 기하 판정(부채꼴 안/밖)만 쓰면, 추적 속도를 아무리 낮춰도 "1자로 충분히
+    // 오래 걸으면 각속도가 0에 수렴해 결국 다시 걸린다"는 구조적 한계가 있다(사용자 지적
+    // 2026-08-11, beamTrackSpeedDegPerSec 주석 참고). 그래서 노출이 한 번이라도 끊기면(부채꼴을
+    // 실제로 벗어나면) 그 뒤 이 시간 동안은 순수 각도 계산과 무관하게 무조건 노출 아님으로 친다 —
+    // "계속 움직인다"는 선택 자체가 확실히 보상받게 하는 시간 기반 유예. 유예가 끝났는데도 여전히
+    // 부채꼴 안이면(제자리에 서 있었다면) 그때부터 다시 정상적으로 노출 판정이 시작된다.
+    [Tooltip("노출이 한 번 끊기면 최소 이만큼(초)은 각도와 무관하게 다시 노출되지 않는다")]
+    public float exposureReacquireDelay = 1.5f;
+    float reacquireCooldown; // 노출이 방금 끊긴 뒤 남은 유예 시간(0이면 평소대로 판정)
 
     // 사용자 지시(2026-08-09): "보스로 인해 HP 깎일 때도 기존 피해 연출". 화면 쉐이크와 붉은 점멸은
     // PlayerController.TakeDamage 안에 있어 이미 타지만, 적 공격이 추가로 띄우는 **데미지 텍스트**는
@@ -134,7 +170,6 @@ public class BossEyeTracker : MonoBehaviour
 
     PlayerController playerController;
     Collider2D playerCollider;    // occluder 겹침 판정용(발밑 피벗 보정 — 몸통 중심을 쓴다)
-    Vector3 beamAimPoint;      // 플레이어를 뒤쫓는 월드 조준점 — 빔은 항상 이 점을 겨눈다
     float exposureTimer;       // 연속 노출 시간(끊기면 0)
     float exposureDamageTimer; // 디버프가 걸린 뒤 도는 피해 주기
     bool exposureBroken;       // 3초를 넘겨 노이즈·피해가 켜진 상태
@@ -166,17 +201,31 @@ public class BossEyeTracker : MonoBehaviour
             Camera cam = Camera.main;
             if (cam != null) trackedCamera = cam.transform;
         }
-        if (trackedCamera != null) lastCameraPosition = trackedCamera.position;
+        if (trackedCamera != null)
+        {
+            trackedSectionCamera = trackedCamera.GetComponent<SectionCamera>();
+            // ⚠️ 여기서 바로 TrackedCameraPosition()을 읽으면 안 된다(사용자 리포트 2026-08-11
+            // "보스가 겁나 위에 있음") — SectionCamera.BasePosition은 SectionCamera 자신의 Awake()가
+            // 돌아야 실제 카메라 위치로 채워지는데, Unity는 서로 다른 오브젝트의 Awake() 순서를
+            // 보장하지 않는다. 이 스크립트의 Awake()가 먼저 실행되면 아직 초기화 안 된 basePos(0,0,0)를
+            // 읽고, 다음 프레임에 SectionCamera가 실제 위치(예: y≈36)로 초기화되면 그 차이 전체가
+            // "카메라가 한 번에 움직인 델타"로 보스에 그대로 더해져 훅 튀어 오른다. 첫 LateUpdate까지
+            // 초기화를 미룬다(LateUpdate는 씬의 모든 Awake가 끝난 뒤에만 도므로 항상 안전하다).
+        }
         desiredPosition = transform.position;
 
         if (player != null)
         {
             playerController = player.GetComponent<PlayerController>();
-            beamAimPoint = player.position; // 시작할 땐 플레이어를 정확히 겨눈 상태
         }
 
         BuildBeamLight();
     }
+
+    /// <summary>trackedCamera가 SectionCamera면 흔들림·포커스 오프셋이 안 섞인 basePos만,
+    /// 아니면(다른 카메라·씬) 기존처럼 transform.position을 그대로 쓴다.</summary>
+    Vector3 TrackedCameraPosition() =>
+        trackedSectionCamera != null ? trackedSectionCamera.BasePosition : trackedCamera.position;
 
     void BuildBeamLight()
     {
@@ -251,10 +300,20 @@ public class BossEyeTracker : MonoBehaviour
         // 뒤쫓는다(즉시 100% 반영 X) — 위/아래 방향에 편향 없이 대칭적으로 동작한다.
         if (trackedCamera != null)
         {
-            Vector3 cameraDelta = trackedCamera.position - lastCameraPosition;
+            // 첫 LateUpdate에서만 lastCameraPosition을 캡처한다(Awake 실행 순서 경합 회피 —
+            // 위 Awake()의 주석 참고). LateUpdate는 씬의 모든 Awake가 끝난 뒤에만 돌므로 이 시점엔
+            // SectionCamera.BasePosition이 항상 진짜 값으로 채워져 있다.
+            if (!cameraTrackingInitialized)
+            {
+                lastCameraPosition = TrackedCameraPosition();
+                cameraTrackingInitialized = true;
+            }
+
+            Vector3 currentTrackedPos = TrackedCameraPosition();
+            Vector3 cameraDelta = currentTrackedPos - lastCameraPosition;
             cameraDelta.z = 0f;
             desiredPosition += cameraDelta;
-            lastCameraPosition = trackedCamera.position;
+            lastCameraPosition = currentTrackedPos;
 
             float followT = 1f - Mathf.Exp(-followSmoothSpeed * Time.deltaTime);
             transform.position = Vector3.Lerp(transform.position, desiredPosition, followT);
@@ -302,30 +361,32 @@ public class BossEyeTracker : MonoBehaviour
             glowLight.pointLightOuterRadius = glowOuterRadius;
         }
 
-        // ── 조준점이 플레이어를 "약간 느리게" 뒤쫓는다(사용자 지시 2026-08-09) ──
-        // 빔은 플레이어가 아니라 이 점을 겨눈다. 플레이어 이동속도보다 느리므로 계속 달리면
-        // 빔이 뒤로 처지다가 부채꼴 밖으로 빠진다(=노출 카운트가 끊긴다).
-        float chaseSpeed = (playerController != null ? playerController.moveSpeed : beamChaseSpeedFallback)
-                           * Mathf.Max(0f, beamChaseSpeedFactor);
+        // ── 빔은 항상 플레이어의 "실제 현재 위치"를 직접 겨눈다(사용자 지시 2026-08-11) — 위치
+        // 기반 조준점(beamAimPoint)을 없앴다. 지연은 오직 아래 회전 속도(beamTrackSpeedDegPerSec)
+        // 하나로만 만든다 — 조준점을 플레이어 속도로 뒤쫓는 이전 방식은 플레이어보다 느리기만 해도
+        // 수학적으로 플레이어의 이동 경로를 따라가는 곡선을 그려 "추격이 아니라 경로를 따라오는
+        // 것 같다"는 문제가 있었다.
         Vector3 playerFlat = new Vector3(player.position.x, player.position.y, eyeWorldNow.z);
-        beamAimPoint = Vector3.MoveTowards(beamAimPoint, playerFlat, chaseSpeed * Time.deltaTime);
 
-        // 실제 플레이어와의 거리로 감쇠를 보정한다(조준점이 아니라 플레이어 기준 — "내가 지금
-        // 비춰지고 있다"는 걸 알려주는 게 목적이므로).
+        // 실제 플레이어와의 거리로 감쇠를 보정한다.
         float distToPlayer = Vector3.Distance(eyeWorldNow, playerFlat);
         float distT = Mathf.Clamp01(distToPlayer / Mathf.Max(0.01f, beamRange));
         beamLight.intensity = beamIntensity * Mathf.Lerp(beamNearIntensityMultiplier, beamFarIntensityMultiplier, distT);
         // 사용자 지시(2026-08-10): "빔의 크기는 딱 플레이어와의 거리로" — 사거리(beamRange)를 항상
-        // 꽉 채우는 대신, 매 프레임 실제 거리만큼만 뻗는다(플레이어가 가까우면 짧게, 멀면 길게).
+        // 꽉 채우는 대신, 플레이어와의 실제 거리만큼만 뻗는다(플레이어가 가까우면 짧게, 멀면 길게).
         // beamRange는 그 위에 거는 최대 한도로만 남긴다(위 세기 보정의 정규화 기준값과도 공유).
-        beamLight.pointLightOuterRadius = Mathf.Min(distToPlayer, beamRange);
+        // ⚠️ 재수정(2026-08-11, 사용자 지시 "직선으로 쫓아오는(커지는) 것도 속도를 줄여줘요") — 예전엔
+        // 목표 길이로 매 프레임 순간 스냅(Mathf.Min)해서, 회전(beamTrackSpeedDegPerSec)엔 있던 속도
+        // 제한이 길이 쪽엔 전혀 없었다. beamLengthChangeSpeed로 초당 변화량을 제한한다.
+        float targetLength = Mathf.Min(distToPlayer, beamRange);
+        if (!beamLengthInitialized) { beamCurrentLength = targetLength; beamLengthInitialized = true; }
+        beamCurrentLength = Mathf.MoveTowards(beamCurrentLength, targetLength, beamLengthChangeSpeed * Time.deltaTime);
+        beamLight.pointLightOuterRadius = beamCurrentLength;
 
-        Vector3 aimDir = beamAimPoint - eyeWorldNow;
+        Vector3 aimDir = playerFlat - eyeWorldNow;
         aimDir.z = 0f;
         if (aimDir.sqrMagnitude > 0.0001f)
         {
-            // 순간 스냅 대신 각속도로도 한 번 더 눌러 준다 — 조준점이 눈 바로 옆을 스칠 때
-            // 각도가 순간적으로 튀는 것을 막는 안전장치다(평소엔 거의 걸리지 않는다).
             Quaternion targetAim = Quaternion.FromToRotation(beamAimLocalAxis.normalized, aimDir.normalized);
             beamLight.transform.rotation = Quaternion.RotateTowards(beamLight.transform.rotation, targetAim, beamTrackSpeedDegPerSec * Time.deltaTime);
         }
@@ -375,7 +436,17 @@ public class BossEyeTracker : MonoBehaviour
     // 노출이 한 프레임이라도 끊기면 카운트·노이즈·피해 주기가 전부 0으로 돌아간다.
     void UpdateExposure(Vector3 eyeWorld)
     {
-        IsPlayerExposed = IsPlayerInBeam(eyeWorld);
+        bool rawExposed = IsPlayerInBeam(eyeWorld);
+
+        // 재포착 유예 중엔(reacquireCooldown>0) 실제로 부채꼴 안에 들어와 있어도 노출로 치지 않는다.
+        bool exposed = rawExposed && reacquireCooldown <= 0f;
+
+        // 노출이 "방금" 끊긴 순간(직전 프레임엔 노출 중이었는데 지금은 아님)에만 유예를 새로 건다 —
+        // 유예 중에 rawExposed가 오락가락해도 매번 재설정되어 무한히 늘어지지 않게 한다.
+        if (!exposed && IsPlayerExposed) reacquireCooldown = exposureReacquireDelay;
+        if (reacquireCooldown > 0f) reacquireCooldown -= Time.deltaTime;
+
+        IsPlayerExposed = exposed;
 
         if (!IsPlayerExposed)
         {

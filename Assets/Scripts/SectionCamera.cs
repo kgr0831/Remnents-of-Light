@@ -231,6 +231,13 @@ public class SectionCamera : MonoBehaviour
 
     float baseOrthoSize; // FocusPulse가 줌을 되돌릴 기준값(구간 크기 auto-계산도 이 값으로 고정해 줌 중 흔들림 방지)
 
+    // 쉐이크·FocusPulse·SetSustainedFocus(E홀드 줌인 등)의 오프셋이 전혀 섞이지 않은 "진짜 구간
+    // 추적" 위치 — BossEyeTracker처럼 "카메라가 실제로(=레벨이 스크롤됐을 때만) 움직였는가"를
+    // 봐야 하는 쪽에서 transform.position 대신 이걸 본다(사용자 리포트 2026-08-11 "E 홀드시
+    // 튜토리얼 보스가 움직이는 버그" — transform.position은 sustainFocusOffset까지 합산된 값이라
+    // E홀드 줌인 팬만으로도 보스가 카메라를 따라 밀려났었다).
+    public Vector3 BasePosition => basePos;
+
     void Awake()
     {
         Instance = this;

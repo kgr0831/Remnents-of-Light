@@ -1,109 +1,109 @@
 fileFormatVersion: 2
-guid: d550dd1979ce51a4fb560f8b9de36f07
+guid: f83af1c4a2eb93d40ad028045ba189d3
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -3196842491924411789
-    second: Loading Sprite 04_0
+      213: -7299019242448032521
+    second: EnergyBarGlowMask_0
   - first:
-      213: -3189364408873761192
-    second: Loading Sprite 04_1
+      213: 5954269196790393861
+    second: EnergyBarGlowMask_1
   - first:
-      213: -731130367071824613
-    second: Loading Sprite 04_2
+      213: 1524899866125574389
+    second: EnergyBarGlowMask_2
   - first:
-      213: -3488479823783399099
-    second: Loading Sprite 04_3
+      213: -9062778940962780797
+    second: EnergyBarGlowMask_3
   - first:
-      213: -3766398989221718988
-    second: Loading Sprite 04_4
+      213: 7752705758224348416
+    second: EnergyBarGlowMask_4
   - first:
-      213: 287053434417723086
-    second: Loading Sprite 04_5
+      213: 4354205664736131289
+    second: EnergyBarGlowMask_5
   - first:
-      213: -2387240100019905212
-    second: Loading Sprite 04_6
+      213: -2391720349539474808
+    second: EnergyBarGlowMask_6
   - first:
-      213: -3587336431070082476
-    second: Loading Sprite 04_7
+      213: 7459397476762618046
+    second: EnergyBarGlowMask_7
   - first:
-      213: 6580217375606640031
-    second: Loading Sprite 04_8
+      213: 6332008712685648236
+    second: EnergyBarGlowMask_8
   - first:
-      213: 8983029850125483879
-    second: Loading Sprite 04_9
+      213: -3715317915257931859
+    second: EnergyBarGlowMask_9
   - first:
-      213: -7952768987956119236
-    second: Loading Sprite 04_10
+      213: -731549484298489343
+    second: EnergyBarGlowMask_10
   - first:
-      213: 1217875821904500358
-    second: Loading Sprite 04_11
+      213: -1801813698275815868
+    second: EnergyBarGlowMask_11
   - first:
-      213: 5636848647455687012
-    second: Loading Sprite 04_12
+      213: 4934119680752919376
+    second: EnergyBarGlowMask_12
   - first:
-      213: -150261587805064933
-    second: Loading Sprite 04_13
+      213: -5716376676314754340
+    second: EnergyBarGlowMask_13
   - first:
-      213: -190414999340934721
-    second: Loading Sprite 04_14
+      213: -4431704543504043998
+    second: EnergyBarGlowMask_14
   - first:
-      213: 9177100629367186153
-    second: Loading Sprite 04_15
+      213: -3337419886385067055
+    second: EnergyBarGlowMask_15
   - first:
-      213: 5753762572699718059
-    second: Loading Sprite 04_16
+      213: 6715576262501022982
+    second: EnergyBarGlowMask_16
   - first:
-      213: 3113391674188104732
-    second: Loading Sprite 04_17
+      213: -2702474737982734672
+    second: EnergyBarGlowMask_17
   - first:
-      213: -4451175284699759761
-    second: Loading Sprite 04_18
+      213: -133151737933752784
+    second: EnergyBarGlowMask_18
   - first:
-      213: -4035154285061843513
-    second: Loading Sprite 04_19
+      213: 300821089836201917
+    second: EnergyBarGlowMask_19
   - first:
-      213: -8553039383642231821
-    second: Loading Sprite 04_20
+      213: 618638097729793162
+    second: EnergyBarGlowMask_20
   - first:
-      213: 1414323050894734566
-    second: Loading Sprite 04_21
+      213: 4339354492018680153
+    second: EnergyBarGlowMask_21
   - first:
-      213: 4162133591995716516
-    second: Loading Sprite 04_22
+      213: -379393955316232336
+    second: EnergyBarGlowMask_22
   - first:
-      213: 2601898965339392441
-    second: Loading Sprite 04_23
+      213: 8093644549055994121
+    second: EnergyBarGlowMask_23
   - first:
-      213: 3288973108703198708
-    second: Loading Sprite 04_24
+      213: 6629305432244609015
+    second: EnergyBarGlowMask_24
   - first:
-      213: -3589609999875560016
-    second: Loading Sprite 04_25
+      213: -6395445912569393111
+    second: EnergyBarGlowMask_25
   - first:
-      213: 2623066163983954961
-    second: Loading Sprite 04_26
+      213: 4430713113942992954
+    second: EnergyBarGlowMask_26
   - first:
-      213: 770421208506143133
-    second: Loading Sprite 04_27
+      213: 1347710838788988955
+    second: EnergyBarGlowMask_27
   - first:
-      213: 4989637995115358798
-    second: Loading Sprite 04_28
+      213: 5346523057623428174
+    second: EnergyBarGlowMask_28
   - first:
-      213: 6718168144189223808
-    second: Loading Sprite 04_29
+      213: -279791327098316203
+    second: EnergyBarGlowMask_29
   - first:
-      213: 2102919959468090419
-    second: Loading Sprite 04_30
+      213: 8090615771598834925
+    second: EnergyBarGlowMask_30
   - first:
-      213: 7019391984240604817
-    second: Loading Sprite 04_31
+      213: -4881656411951634637
+    second: EnergyBarGlowMask_31
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
-    sRGBTexture: 1
+    sRGBTexture: 0
     linearTexture: 0
     fadeOut: 0
     borderMipMap: 0
@@ -148,9 +148,9 @@ TextureImporter:
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 0
   alphaUsage: 1
-  alphaIsTransparency: 1
+  alphaIsTransparency: 0
   spriteTessellationDetail: -1
-  textureType: 8
+  textureType: 0
   textureShape: 1
   singleChannelComponent: 0
   flipbookRows: 1
@@ -193,7 +193,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Loading Sprite 04_0
+      name: EnergyBarGlowMask_0
       rect:
         serializedVersion: 2
         x: 0
@@ -208,14 +208,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 37a88f1f0b882a3d0800000000000000
-      internalID: -3196842491924411789
+      spriteID: 7fce42dbbaca4ba90800000000000000
+      internalID: -7299019242448032521
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Loading Sprite 04_1
+      name: EnergyBarGlowMask_1
       rect:
         serializedVersion: 2
         x: 0
@@ -230,14 +230,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 8564ec5d7f91db3d0800000000000000
-      internalID: -3189364408873761192
+      spriteID: 50cedb39940d1a250800000000000000
+      internalID: 5954269196790393861
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Loading Sprite 04_2
+      name: EnergyBarGlowMask_2
       rect:
         serializedVersion: 2
         x: 9
@@ -252,14 +252,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: b15de2a0ec08ad5f0800000000000000
-      internalID: -731130367071824613
+      spriteID: 5f0a4765958892510800000000000000
+      internalID: 1524899866125574389
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Loading Sprite 04_3
+      name: EnergyBarGlowMask_3
       rect:
         serializedVersion: 2
         x: 9
@@ -274,14 +274,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 541f541451e669fc0800000000000000
-      internalID: -3488479823783399099
+      spriteID: 389c502e19a8a3280800000000000000
+      internalID: -9062778940962780797
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Loading Sprite 04_4
+      name: EnergyBarGlowMask_4
       rect:
         serializedVersion: 2
         x: 19
@@ -296,14 +296,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 4349c0513101bbbc0800000000000000
-      internalID: -3766398989221718988
+      spriteID: 005761fbfc4279b60800000000000000
+      internalID: 7752705758224348416
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Loading Sprite 04_5
+      name: EnergyBarGlowMask_5
       rect:
         serializedVersion: 2
         x: 19
@@ -318,14 +318,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: ec63606e391dbf300800000000000000
-      internalID: 287053434417723086
+      spriteID: 9d837958bfe3d6c30800000000000000
+      internalID: 4354205664736131289
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Loading Sprite 04_6
+      name: EnergyBarGlowMask_6
       rect:
         serializedVersion: 2
         x: 28
@@ -340,14 +340,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 44ddeb4f6c1deded0800000000000000
-      internalID: -2387240100019905212
+      spriteID: 88260a39307eeced0800000000000000
+      internalID: -2391720349539474808
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Loading Sprite 04_7
+      name: EnergyBarGlowMask_7
       rect:
         serializedVersion: 2
         x: 28
@@ -362,14 +362,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 45a0040c588373ec0800000000000000
-      internalID: -3587336431070082476
+      spriteID: eb881e8cb7a158760800000000000000
+      internalID: 7459397476762618046
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Loading Sprite 04_8
+      name: EnergyBarGlowMask_8
       rect:
         serializedVersion: 2
         x: 38
@@ -384,14 +384,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: f9d03e1f6d0a15b50800000000000000
-      internalID: 6580217375606640031
+      spriteID: c697e423060dfd750800000000000000
+      internalID: 6332008712685648236
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Loading Sprite 04_9
+      name: EnergyBarGlowMask_9
       rect:
         serializedVersion: 2
         x: 38
@@ -406,14 +406,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 76fb577fd022aac70800000000000000
-      internalID: 8983029850125483879
+      spriteID: da7f7696a0a807cc0800000000000000
+      internalID: -3715317915257931859
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Loading Sprite 04_10
+      name: EnergyBarGlowMask_10
       rect:
         serializedVersion: 2
         x: 47
@@ -428,14 +428,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: c39f124bdb612a190800000000000000
-      internalID: -7952768987956119236
+      spriteID: 102b4c4be9309d5f0800000000000000
+      internalID: -731549484298489343
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Loading Sprite 04_11
+      name: EnergyBarGlowMask_11
       rect:
         serializedVersion: 2
         x: 47
@@ -450,14 +450,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 68697218b93c6e010800000000000000
-      internalID: 1217875821904500358
+      spriteID: 44e46d2ecfbaef6e0800000000000000
+      internalID: -1801813698275815868
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Loading Sprite 04_12
+      name: EnergyBarGlowMask_12
       rect:
         serializedVersion: 2
         x: 57
@@ -472,14 +472,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 461cc34cafb1a3e40800000000000000
-      internalID: 5636848647455687012
+      spriteID: 053aa8225b3897440800000000000000
+      internalID: 4934119680752919376
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Loading Sprite 04_13
+      name: EnergyBarGlowMask_13
       rect:
         serializedVersion: 2
         x: 57
@@ -494,14 +494,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: b113e7bc1e92aedf0800000000000000
-      internalID: -150261587805064933
+      spriteID: cd25ee513b95ba0b0800000000000000
+      internalID: -5716376676314754340
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Loading Sprite 04_14
+      name: EnergyBarGlowMask_14
       rect:
         serializedVersion: 2
         x: 66
@@ -516,14 +516,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: fb9906421928b5df0800000000000000
-      internalID: -190414999340934721
+      spriteID: 220f4f6a23c6f72c0800000000000000
+      internalID: -4431704543504043998
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Loading Sprite 04_15
+      name: EnergyBarGlowMask_15
       rect:
         serializedVersion: 2
         x: 66
@@ -538,14 +538,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 9e2e179666c9b5f70800000000000000
-      internalID: 9177100629367186153
+      spriteID: 1db81b5bb4a1fa1d0800000000000000
+      internalID: -3337419886385067055
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Loading Sprite 04_16
+      name: EnergyBarGlowMask_16
       rect:
         serializedVersion: 2
         x: 76
@@ -560,14 +560,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: ba154bb339879df40800000000000000
-      internalID: 5753762572699718059
+      spriteID: 60d3b64b705823d50800000000000000
+      internalID: 6715576262501022982
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Loading Sprite 04_17
+      name: EnergyBarGlowMask_17
       rect:
         serializedVersion: 2
         x: 76
@@ -582,14 +582,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: c1404a27b3df43b20800000000000000
-      internalID: 3113391674188104732
+      spriteID: 0be721c4b81ee7ad0800000000000000
+      internalID: -2702474737982734672
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Loading Sprite 04_18
+      name: EnergyBarGlowMask_18
       rect:
         serializedVersion: 2
         x: 85
@@ -604,14 +604,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: f6bf87279af3a32c0800000000000000
-      internalID: -4451175284699759761
+      spriteID: 0369b372333f62ef0800000000000000
+      internalID: -133151737933752784
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Loading Sprite 04_19
+      name: EnergyBarGlowMask_19
       rect:
         serializedVersion: 2
         x: 85
@@ -626,14 +626,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 7c55ef09e804008c0800000000000000
-      internalID: -4035154285061843513
+      spriteID: db7f1a8ff2bbc2400800000000000000
+      internalID: 300821089836201917
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Loading Sprite 04_20
+      name: EnergyBarGlowMask_20
       rect:
         serializedVersion: 2
         x: 95
@@ -648,14 +648,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 3fb241c1fff7d4980800000000000000
-      internalID: -8553039383642231821
+      spriteID: a8c25bb7218d59800800000000000000
+      internalID: 618638097729793162
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Loading Sprite 04_21
+      name: EnergyBarGlowMask_21
       rect:
         serializedVersion: 2
         x: 95
@@ -670,14 +670,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 6e43a36425fa0a310800000000000000
-      internalID: 1414323050894734566
+      spriteID: 951e44b6beb783c30800000000000000
+      internalID: 4339354492018680153
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Loading Sprite 04_22
+      name: EnergyBarGlowMask_22
       rect:
         serializedVersion: 2
         x: 104
@@ -692,14 +692,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 4a310a2337ed2c930800000000000000
-      internalID: 4162133591995716516
+      spriteID: 07f027f253f1cbaf0800000000000000
+      internalID: -379393955316232336
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Loading Sprite 04_23
+      name: EnergyBarGlowMask_23
       rect:
         serializedVersion: 2
         x: 104
@@ -714,14 +714,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 9b9c282d25dcb1420800000000000000
-      internalID: 2601898965339392441
+      spriteID: 90952ccd5d6625070800000000000000
+      internalID: 8093644549055994121
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Loading Sprite 04_24
+      name: EnergyBarGlowMask_24
       rect:
         serializedVersion: 2
         x: 114
@@ -736,14 +736,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 4fdf01cdd97c4ad20800000000000000
-      internalID: 3288973108703198708
+      spriteID: 7ffd184ca26000c50800000000000000
+      internalID: 6629305432244609015
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Loading Sprite 04_25
+      name: EnergyBarGlowMask_25
       rect:
         serializedVersion: 2
         x: 114
@@ -758,14 +758,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 0bd2a3349b42f2ec0800000000000000
-      internalID: -3589609999875560016
+      spriteID: 920d319b3dfce37a0800000000000000
+      internalID: -6395445912569393111
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Loading Sprite 04_26
+      name: EnergyBarGlowMask_26
       rect:
         serializedVersion: 2
         x: 123
@@ -780,14 +780,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 1143c9e47c0076420800000000000000
-      internalID: 2623066163983954961
+      spriteID: a38ac3a2a1e0d7d30800000000000000
+      internalID: 4430713113942992954
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Loading Sprite 04_27
+      name: EnergyBarGlowMask_27
       rect:
         serializedVersion: 2
         x: 123
@@ -802,14 +802,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: d919f6cd10611ba00800000000000000
-      internalID: 770421208506143133
+      spriteID: b1026fd0ed704b210800000000000000
+      internalID: 1347710838788988955
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Loading Sprite 04_28
+      name: EnergyBarGlowMask_28
       rect:
         serializedVersion: 2
         x: 133
@@ -824,14 +824,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: e4aa4a00251ce3540800000000000000
-      internalID: 4989637995115358798
+      spriteID: e4c6411d46aa23a40800000000000000
+      internalID: 5346523057623428174
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Loading Sprite 04_29
+      name: EnergyBarGlowMask_29
       rect:
         serializedVersion: 2
         x: 133
@@ -846,14 +846,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 0837ebf255abb3d50800000000000000
-      internalID: 6718168144189223808
+      spriteID: 55ad119354bfd1cf0800000000000000
+      internalID: -279791327098316203
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Loading Sprite 04_30
+      name: EnergyBarGlowMask_30
       rect:
         serializedVersion: 2
         x: 142
@@ -868,14 +868,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 334ac27bf821f2d10800000000000000
-      internalID: 2102919959468090419
+      spriteID: dec4258ad24a74070800000000000000
+      internalID: 8090615771598834925
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Loading Sprite 04_31
+      name: EnergyBarGlowMask_31
       rect:
         serializedVersion: 2
         x: 142
@@ -890,8 +890,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 196b2efb1d3e96160800000000000000
-      internalID: 7019391984240604817
+      spriteID: 3376d128b5fd04cb0800000000000000
+      internalID: -4881656411951634637
       vertices: []
       indices: 
       edges: []
@@ -910,38 +910,38 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Loading Sprite 04_0: -3196842491924411789
-      Loading Sprite 04_1: -3189364408873761192
-      Loading Sprite 04_10: -7952768987956119236
-      Loading Sprite 04_11: 1217875821904500358
-      Loading Sprite 04_12: 5636848647455687012
-      Loading Sprite 04_13: -150261587805064933
-      Loading Sprite 04_14: -190414999340934721
-      Loading Sprite 04_15: 9177100629367186153
-      Loading Sprite 04_16: 5753762572699718059
-      Loading Sprite 04_17: 3113391674188104732
-      Loading Sprite 04_18: -4451175284699759761
-      Loading Sprite 04_19: -4035154285061843513
-      Loading Sprite 04_2: -731130367071824613
-      Loading Sprite 04_20: -8553039383642231821
-      Loading Sprite 04_21: 1414323050894734566
-      Loading Sprite 04_22: 4162133591995716516
-      Loading Sprite 04_23: 2601898965339392441
-      Loading Sprite 04_24: 3288973108703198708
-      Loading Sprite 04_25: -3589609999875560016
-      Loading Sprite 04_26: 2623066163983954961
-      Loading Sprite 04_27: 770421208506143133
-      Loading Sprite 04_28: 4989637995115358798
-      Loading Sprite 04_29: 6718168144189223808
-      Loading Sprite 04_3: -3488479823783399099
-      Loading Sprite 04_30: 2102919959468090419
-      Loading Sprite 04_31: 7019391984240604817
-      Loading Sprite 04_4: -3766398989221718988
-      Loading Sprite 04_5: 287053434417723086
-      Loading Sprite 04_6: -2387240100019905212
-      Loading Sprite 04_7: -3587336431070082476
-      Loading Sprite 04_8: 6580217375606640031
-      Loading Sprite 04_9: 8983029850125483879
+      EnergyBarGlowMask_0: -7299019242448032521
+      EnergyBarGlowMask_1: 5954269196790393861
+      EnergyBarGlowMask_10: -731549484298489343
+      EnergyBarGlowMask_11: -1801813698275815868
+      EnergyBarGlowMask_12: 4934119680752919376
+      EnergyBarGlowMask_13: -5716376676314754340
+      EnergyBarGlowMask_14: -4431704543504043998
+      EnergyBarGlowMask_15: -3337419886385067055
+      EnergyBarGlowMask_16: 6715576262501022982
+      EnergyBarGlowMask_17: -2702474737982734672
+      EnergyBarGlowMask_18: -133151737933752784
+      EnergyBarGlowMask_19: 300821089836201917
+      EnergyBarGlowMask_2: 1524899866125574389
+      EnergyBarGlowMask_20: 618638097729793162
+      EnergyBarGlowMask_21: 4339354492018680153
+      EnergyBarGlowMask_22: -379393955316232336
+      EnergyBarGlowMask_23: 8093644549055994121
+      EnergyBarGlowMask_24: 6629305432244609015
+      EnergyBarGlowMask_25: -6395445912569393111
+      EnergyBarGlowMask_26: 4430713113942992954
+      EnergyBarGlowMask_27: 1347710838788988955
+      EnergyBarGlowMask_28: 5346523057623428174
+      EnergyBarGlowMask_29: -279791327098316203
+      EnergyBarGlowMask_3: -9062778940962780797
+      EnergyBarGlowMask_30: 8090615771598834925
+      EnergyBarGlowMask_31: -4881656411951634637
+      EnergyBarGlowMask_4: 7752705758224348416
+      EnergyBarGlowMask_5: 4354205664736131289
+      EnergyBarGlowMask_6: -2391720349539474808
+      EnergyBarGlowMask_7: 7459397476762618046
+      EnergyBarGlowMask_8: 6332008712685648236
+      EnergyBarGlowMask_9: -3715317915257931859
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
