@@ -374,6 +374,26 @@ public class PlayTestRunner : MonoBehaviour
         runner.StartCoroutine(runner.TrapPressTest());
     }
 
+    [MenuItem("Tools/PlayTest/Death")]
+    private static void RunDeathTest()
+    {
+        if (!Application.isPlaying)
+        {
+            Debug.LogWarning("[PlayTestRunner] Enter Play mode first.");
+            return;
+        }
+
+        var runner = FindAnyObjectByType<PlayTestRunner>();
+        if (runner == null)
+        {
+            var go = new GameObject("PlayTestRunner_Temp");
+            runner = go.AddComponent<PlayTestRunner>();
+        }
+        InputInjector.Cleanup();
+        EnsureDeterministicInputSettings();
+        runner.StartCoroutine(runner.DeathTest());
+    }
+
     [MenuItem("Tools/PlayTest/Rampage")]
     private static void RunRampageTest()
     {
@@ -2542,6 +2562,127 @@ public class PlayTestRunner : MonoBehaviour
             cam.orthographicSize = camOrigOrtho;
         }
         Destroy(press.gameObject);
+    }
+
+    // 사망 로직·연출 검증(2026-08-10 신규). 녹화는 안 한다 — 영상 판정이 필요한 시각 연출 검증이
+    // 아니라 로직 계약(TakeDamage canKill / Die 진입 / 체크포인트 부활 / 반복사망 스트릭) 검증이라
+    // TestLog [ASSERT]만으로 충분하다.
+    public IEnumerator DeathTest()
+    {
+        const string channel = "player_death_test";
+        var player = FindAnyObjectByType<PlayerController>();
+        if (player == null)
+        {
+            TestLog.Assert(channel, false, "NOT_FOUND: no PlayerController in scene");
+            yield break;
+        }
+
+        int savedHealth = player.currentHealth;
+        int savedEnergy = player.currentEnergy;
+        Vector3 savedPos = player.transform.position;
+        InputInjector.SetMoveX(0f);
+        yield return new WaitForSeconds(0.3f);
+
+        // ── ① 낙사(canKill:false)는 절대 죽이지 않는다 — 최소 1칸 보장 ────────────────
+        player.currentHealth = 1;
+        player.TakeDamage(5, canKill: false);
+        yield return null;
+        bool fallNeverKills = player.currentHealth == 1 && !player.IsDead;
+        TestLog.Step(channel, $"fall_canKill_false hp={player.currentHealth} isDead={player.IsDead} pass={fallNeverKills}");
+
+        // ── ② 체크포인트를 현재 위치로 저장(RoomTrigger가 하는 일을 직접 호출) ─────────
+        player.NotifyRoomEntered(); // 스트릭을 0으로 확실히 리셋한 뒤 첫 사망을 재본다
+        string sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+        Vector2 checkpoint = player.transform.position;
+        GameDataManager.SaveCheckpoint(sceneName, checkpoint);
+        yield return null;
+
+        // ── ③ 치명타 → Die() 진입 즉시 확인(같은 프레임에 동기적으로 실행됨) ──────────
+        player.currentHealth = 1;
+        player.TakeDamage(1);
+        bool diedImmediately = player.IsDead;
+        int streak1 = player.DeathStreak;
+        TestLog.Step(channel, $"lethal_hit_1 isDead={player.IsDead} streak={streak1} pass={diedImmediately}");
+
+        // 히트스톱+슬로우모+픽셀흩어짐+암전+입력유예가 전부 끝날 때까지 실시간 대기(총 실시간 약 2.2s,
+        // 여유 있게 2.8s) 후 "아무 키나"(F1 — 게임 내 어떤 액션에도 안 묶인 키)를 반복 주입한다.
+        yield return new WaitForSecondsRealtime(2.8f);
+        float safety = 0f;
+        while (player.IsDead && safety < 5f)
+        {
+            InputInjector.PressKey(Key.F1);
+            yield return null;
+            InputInjector.ReleaseKey(Key.F1);
+            yield return null;
+            safety += 0.1f;
+        }
+
+        bool respawned1 = !player.IsDead;
+        // isDead는 페이드아웃이 끝나기 전에 false로 바뀐다(DieRoutine 참고) — 화면 알파를 재기 전에
+        // 페이드아웃이 마저 끝날 시간을 준다.
+        yield return new WaitForSecondsRealtime(player.deathFadeOutDuration + 0.2f);
+        bool hpFull = player.currentHealth == player.maxHealth;
+        bool posRestored = Vector2.Distance(player.transform.position, checkpoint) < 0.1f;
+        bool energyKept = player.currentEnergy == savedEnergy; // 광원 유지 정책(사용자 확정 2026-08-10)
+        bool timeScaleOk = Mathf.Approximately(Time.timeScale, 1f);
+        bool fadeCleared = ScreenFadeUI.Alpha <= 0.01f;
+        bool grayscaleCleared = GrayscaleRendererFeature.Instance == null || GrayscaleRendererFeature.Instance.Intensity <= 0.01f;
+        TestLog.Step(channel, $"respawn_1 respawned={respawned1} hp={player.currentHealth}/{player.maxHealth} " +
+            $"pos={player.transform.position} checkpoint={checkpoint} energy={player.currentEnergy}(want {savedEnergy}) " +
+            $"timeScale={Time.timeScale:F2} fadeAlpha={ScreenFadeUI.Alpha:F2} grayscale_cleared={grayscaleCleared}");
+
+        // ── ④ 같은 체크포인트에서 다음 방에 닿지 못한 채 재사망 → 스트릭 누적 확인 ────────
+        yield return new WaitForSeconds(0.3f);
+        player.currentHealth = 1;
+        player.TakeDamage(1);
+        int streak2 = player.DeathStreak;
+        TestLog.Step(channel, $"lethal_hit_2 streak={streak2}(want {streak1 + 1})");
+
+        yield return new WaitForSecondsRealtime(2.8f);
+        safety = 0f;
+        while (player.IsDead && safety < 5f)
+        {
+            InputInjector.PressKey(Key.F1);
+            yield return null;
+            InputInjector.ReleaseKey(Key.F1);
+            yield return null;
+            safety += 0.1f;
+        }
+        bool respawned2 = !player.IsDead;
+
+        // ── ⑤ 방에 도달(NotifyRoomEntered)하면 스트릭이 다시 리셋된다 ─────────────────
+        player.NotifyRoomEntered();
+        player.currentHealth = 1;
+        player.TakeDamage(1);
+        int streak3 = player.DeathStreak;
+        TestLog.Step(channel, $"lethal_hit_3_after_room_entered streak={streak3}(want 1)");
+        yield return new WaitForSecondsRealtime(2.8f);
+        safety = 0f;
+        while (player.IsDead && safety < 5f)
+        {
+            InputInjector.PressKey(Key.F1);
+            yield return null;
+            InputInjector.ReleaseKey(Key.F1);
+            yield return null;
+            safety += 0.1f;
+        }
+        bool respawned3 = !player.IsDead;
+
+        // 정리: 테스트 후 씬 상태를 원래대로 되돌린다(사용자가 이어서 플레이할 수 있도록).
+        player.currentHealth = savedHealth;
+        player.transform.position = savedPos;
+        var rb0 = player.GetComponent<Rigidbody2D>();
+        if (rb0 != null) rb0.linearVelocity = Vector2.zero;
+        InputInjector.Cleanup();
+
+        bool streakOk = streak1 == 1 && streak2 == streak1 + 1 && streak3 == 1;
+        bool pass = fallNeverKills && diedImmediately && respawned1 && hpFull && posRestored && energyKept
+                    && timeScaleOk && fadeCleared && grayscaleCleared && respawned2 && respawned3 && streakOk;
+        TestLog.Assert(channel, pass,
+            $"fall_no_kill={fallNeverKills} died={diedImmediately} respawned1={respawned1} hp_full={hpFull} " +
+            $"pos_restored={posRestored} energy_kept={energyKept} timescale_ok={timeScaleOk} fade_cleared={fadeCleared} " +
+            $"grayscale_cleared={grayscaleCleared} respawned2={respawned2} respawned3={respawned3} " +
+            $"streaks=({streak1},{streak2},{streak3}) streak_ok={streakOk}");
     }
 
     // 부서지는 바닥과 같은 이유로 검증용 프레스도 런타임에 만든다(씬/에셋 미변경, Play 종료와 함께 사라짐).

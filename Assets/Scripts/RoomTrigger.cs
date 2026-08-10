@@ -1,6 +1,9 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
-// 방 하나를 나타내는 트리거 볼륨. 플레이어가 들어오면 SectionCamera에 방 경계를 알린다.
+// 방 하나를 나타내는 트리거 볼륨. 플레이어가 들어오면 SectionCamera에 방 경계를 알리고, 그 지점을
+// 체크포인트로 자동 저장한다(기능_구현_명세서 1장 — 세이브 포인트 오브젝트 폐지, 방 진입마다 자동 저장,
+// 사망 시 그 방 입구에서 즉시 부활. 사용자 확정 2026-08-10).
 // (2026-08-03, 사용자 지시로 부활 — 원래는 RoomCamera를 불렀지만 그 컴포넌트는 Main Camera에
 // 붙어있지 않아 죽은 경로였다. SectionCamera.EnterRoom으로 로직을 이식해 실제로 동작하게 함.)
 [RequireComponent(typeof(BoxCollider2D))]
@@ -20,11 +23,14 @@ public class RoomTrigger : MonoBehaviour
 
     void Start()
     {
-        // 시작 시 플레이어가 이미 이 방 안에 있으면 즉시 프레임
+        // 시작 시 플레이어가 이미 이 방 안에 있으면 즉시 프레임 + 체크포인트 저장
         if (SectionCamera.Instance == null) return;
         var player = GameObject.FindGameObjectWithTag("Player");
         if (player != null && box.OverlapPoint(player.transform.position))
+        {
             SectionCamera.Instance.EnterRoom(box.bounds, useLetterbox);
+            SaveCheckpointFor(player);
+        }
     }
 
     void OnTriggerEnter2D(Collider2D other)
@@ -32,5 +38,12 @@ public class RoomTrigger : MonoBehaviour
         if (!other.CompareTag("Player")) return;
         if (SectionCamera.Instance != null)
             SectionCamera.Instance.EnterRoom(box.bounds, useLetterbox);
+        SaveCheckpointFor(other.gameObject);
+    }
+
+    void SaveCheckpointFor(GameObject player)
+    {
+        GameDataManager.SaveCheckpoint(SceneManager.GetActiveScene().name, player.transform.position);
+        player.GetComponentInParent<PlayerController>()?.NotifyRoomEntered();
     }
 }

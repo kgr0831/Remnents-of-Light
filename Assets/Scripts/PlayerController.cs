@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(BoxCollider2D))]
@@ -140,6 +141,52 @@ public class PlayerController : MonoBehaviour
     [Tooltip("완전 암전 상태로 머무는 시간(이 사이에 복귀·피해가 처리된다)")]
     public float fallBlackHoldDuration = 0.18f;
     public float fallFadeOutDuration = 0.32f;
+
+    // 사망 연출·로직(사용자 확정 2026-08-10, 세부 플로우 재지시로 전면 재설계). 페널티 없음 — 부활 시
+    // 체력 전부/자아(폭주 유지 시) 전부 회복, 광원은 그대로 유지. 부활 지점은 RoomTrigger가 갱신하는
+    // 체크포인트(GameDataManager.Current.progress.checkpointPosition) — 방 입구 자동 저장.
+    //
+    // 흐름(사용자 재지시로 순서 확정 2026-08-10): HP 0 → 카메라 줌인("페이드 인")+심한 슬로우모션+모든
+    // 판정/VFX 해제 → Death 애니(언스케일 재생, 블룸) → 0.5초 대기 → 흑백 쉐이더가 점점 생기고 그때부터
+    // 노이즈 시작 → 검은 화면 점점 페이드인 → (완전히 검게 덮인 뒤) 흑백 쉐이더가 풀리면서 SIGNAL LOST +
+    // Reconnect/Exit 버튼이 페이드인 → Reconnect: 지지직+페이드아웃 후 체크포인트 부활(줌아웃+노이즈) /
+    // Exit: 지지직+페이드아웃 후 타이틀 씬 이동.
+    // ⚠️ ScreenGlitchFeature의 NoiseAmount/ScanlineJitter/ScanlineDensity는 보스 응시 노이즈(BossEyeTracker)
+    //    등 다른 기능과 공유하는 값이라 절대 직접 덮어쓰지 않는다(실측 버그: 죽었다 살아나면 보스 노이즈가
+    //    영구히 강해짐) — 세기는 Intensity(셰이더가 그 값을 Noise/Jitter에 곱함)만으로 조절한다.
+    [Header("Death (사망)")]
+    [Tooltip("HP 0 도달 즉시 걸리는 슬로우모션 배율(\"매우 심하게\")")]
+    [Range(0.001f, 1f)] public float deathSlowMoScale = 0.04f;
+    public float deathCameraZoomMultiplier = 1.35f;
+    public float deathCameraRampIn = 0.25f;
+    [Tooltip("Death 애니메이션 클립 이름 — Awake에서 실제 길이를 읽어 언스케일 재생 시간의 기준으로 쓴다")]
+    public string deathClipName = "Glitch Samurai-Death";
+    [Tooltip("Death 애니메이션 재생이 끝난 뒤, 흑백/노이즈가 시작되기 전 대기 시간")]
+    public float deathPostAnimDelay = 0.5f;
+
+    [Header("Death - 흑백/글리치/암전")]
+    [Tooltip("흑백 쉐이더가 0에서 점점 생기는 시간(이 순간부터 노이즈도 같이 시작)")]
+    public float deathGrayscaleRampInDuration = 0.4f;
+    [Tooltip("검은 화면이 점점 완전히 덮이는 시간")]
+    public float deathBlackFadeInDuration = 0.6f;
+    [Tooltip("검은 화면이 다 덮인 뒤 흑백이 풀리면서 UI(SIGNAL LOST·버튼)가 페이드인하는 시간")]
+    public float deathGrayscaleRampOutDuration = 0.5f;
+    [Tooltip("Reconnect/Exit 확정 시 지지직 펄스 횟수")]
+    public int deathGlitchPulseCount = 3;
+    public float deathGlitchPulseOnDuration = 0.05f;
+    public float deathGlitchPulseOffDuration = 0.07f;
+    [Tooltip("Reconnect/Exit 확정 시 화면이 완전히 넘어가기 전 암전 유지+지지직 시간")]
+    public float deathConfirmGlitchDuration = 0.3f;
+
+    [Header("Death - 부활 연출")]
+    [Tooltip("부활 순간 카메라가 줌인 상태에서 원래대로 줌아웃되는 시간")]
+    public float respawnZoomOutDuration = 0.9f;
+    [Tooltip("부활 시 노이즈가 몇 번 더 튀는 펄스 횟수")]
+    public int respawnGlitchPulseCount = 3;
+    public float deathFadeOutDuration = 0.5f;
+
+    [Tooltip("타이틀 씬 이름(Exit 버튼)")]
+    public string titleSceneName = "TitleScene";
 
     // 기능_구현_명세서: 일섬은 빛 에너지를 소모하고, 패링 성공 시 크게 충전되며, 처형 성공 시 체력/에너지를
     // 회복한다. ★ 지금은 에너지가 부족해도 일섬을 막지 않는다 — "쓰려면 얼마가 필요한가"는 밸런스 결정이라
@@ -548,10 +595,14 @@ public class PlayerController : MonoBehaviour
 
     Vector3 lastGroundedPosition;  // 낙사 복귀 지점 — 접지 중에는 매 프레임 갱신된다
     bool isFallRespawning;         // 낙사 연출(멈춤+암전) 진행 중 — 입력·물리·시간 조작을 전부 막는다
+    bool isDead;                   // 사망 연출·부활 대기 진행 중 — 입력·물리·시간 조작을 전부 막는다(isFallRespawning과 동일 원칙)
+    int deathStreak;               // 같은 체크포인트에서 연속 사망한 횟수(RoomTrigger 진입 시 0으로 리셋) — 슬로우모션 단축 판정용
 
     // [ASSERT] 판독구
     public Vector3 LastGroundedPosition => lastGroundedPosition;
     public bool IsFallRespawning => isFallRespawning;
+    public bool IsDead => isDead;
+    public int DeathStreak => deathStreak;
 
     float wallJumpLockCounter;
     bool wasGrounded;
@@ -577,6 +628,7 @@ public class PlayerController : MonoBehaviour
     // 잠금 시간)은 이보다 의도적으로 길게 잡혀 있어서(사용자 확인 2026-08-05), 애니메이터 파라미터를
     // 가리는 창은 "잠금 시간"이 아니라 "클립이 실제로 재생되는 시간"이어야 한다(UpdateAnimations 참고).
     float jumpAttackAnimLength = 0.3333f;
+    float deathClipLength = 1f; // Awake에서 실제 클립 길이로 갱신(jumpAttackAnimLength와 동일 패턴)
     int attackStage = 1; // 현재(공격 중) 또는 다음(대기 중) 발동될 콤보 타수 — 공격 종료 시 다음 타수로 순환됨
     float attackTimer;
     bool attackHitDone;
@@ -674,6 +726,8 @@ public class PlayerController : MonoBehaviour
         {
             foreach (var clip in anim.runtimeAnimatorController.animationClips)
                 if (clip != null && clip.name == jumpAttackClipName) { jumpAttackAnimLength = clip.length; break; }
+            foreach (var clip in anim.runtimeAnimatorController.animationClips)
+                if (clip != null && clip.name == deathClipName) { deathClipLength = clip.length; break; }
         }
 
         attackBox1R = transform.Find("1_R")?.GetComponent<BoxCollider2D>();
@@ -727,10 +781,26 @@ public class PlayerController : MonoBehaviour
             Time.timeScale = 1f;
             ScreenFadeUI.ClearImmediate();
         }
+        // 사망 연출 도중에 멈춰도 같은 문제(암전+정지 고착)가 나서 같은 방식으로 되돌린다.
+        if (isDead)
+        {
+            isDead = false;
+            Time.timeScale = 1f;
+            ScreenFadeUI.ClearImmediate();
+            DeathScreenUI.ClearImmediate();
+            if (GrayscaleRendererFeature.Instance != null) GrayscaleRendererFeature.Instance.Intensity = 0f;
+            ScreenGlitchFx.EndAll();
+            if (invincibleLayer != -1) gameObject.layer = normalLayer;
+            if (anim != null) anim.updateMode = AnimatorUpdateMode.Normal;
+            PlayerHudUI.Instance?.SetVisible(true);
+            if (sectionCamera != null) sectionCamera.ClearSustainedFocus(0f);
+        }
     }
 
     void Update()
     {
+        // 사망 연출·부활 대기 중엔 아무것도 굴리지 않는다(낙사와 같은 이유로 최우선 차단).
+        if (isDead) return;
         // 낙사 연출 중엔 아무것도 굴리지 않는다. ⚠️ 특히 HandleTimeAccel보다 먼저 빠져야 한다 —
         // 그쪽이 Time.timeScale을 자기 값으로 덮어써서 "게임 멈춤"이 풀려 버린다.
         if (isFallRespawning) return;
@@ -888,6 +958,10 @@ public class PlayerController : MonoBehaviour
             // 벽 꼭대기 올라타기는 LedgeClimbRoutine이 transform.position을 직접 보간한다 — 같은 이유로 고정.
             rb.linearVelocity = Vector2.zero;
         }
+        else if (isDead)
+        {
+            // DieRoutine이 넉백 속도를 직접 준 뒤 물리(중력)에 맡긴다 — HandleMovement만 건너뛴다.
+        }
         else
         {
             HandleMovement();
@@ -961,6 +1035,8 @@ public class PlayerController : MonoBehaviour
         StartCoroutine(FallRespawnRoutine());
     }
 
+    // 낙사는 "구덩이에 빠짐"이지 사망이 아니다 — 최소 1칸은 반드시 남긴다(canKill:false, TakeDamage 참고).
+
     // 게임 멈춤 → 암전(페이드 인) → 복귀 + 체력 한 칸 → 페이드 아웃 → 재개.
     // 전부 unscaled로 돈다 — 멈춘(timeScale=0) 상태에서 진행되는 연출이라 스케일 시간으로 재면 영원히 안 끝난다.
     System.Collections.IEnumerator FallRespawnRoutine()
@@ -975,7 +1051,7 @@ public class PlayerController : MonoBehaviour
         // 완전 암전 상태에서 복귀시킨다 — 순간이동이 화면에 보이지 않게.
         transform.position = lastGroundedPosition;
         rb.linearVelocity = Vector2.zero;
-        TakeDamage(fallDeathDamage);
+        TakeDamage(fallDeathDamage, canKill: false);
         TestLog.Event("fall_death", $"respawned hp={currentHealth}/{maxHealth}");
 
         yield return new WaitForSecondsRealtime(fallBlackHoldDuration);
@@ -2837,7 +2913,7 @@ public class PlayerController : MonoBehaviour
     }
 
     // 물리 무적(i-frame): 대시는 실제 지속시간 그대로(1주차 스펙 불변), 일섬/처형은 발동 시퀀스 전체.
-    public bool IsInvincible => isDashing || ilseomActive || isExecuting;
+    public bool IsInvincible => isDashing || ilseomActive || isExecuting || isDead;
 
     // DummyEnemy.CheckThrustHit가 찌르기가 실제로 닿는 순간 호출한다. 닷지 트리거는 dodgeCounterGraceTimer로
     // 판정 — 대시가 물리적으로 끝난 뒤에도 유예 시간 동안은 여전히 닷지로 잡아준다(타이밍 완화, 사용자 피드백).
@@ -3421,9 +3497,10 @@ public class PlayerController : MonoBehaviour
 
     // 적 공격에 맞았을 때 호출됨(예: DummyEnemy 창 찌르기). damage 단위는 체력 "칸" 수다.
     // 화면 표시는 PlayerHudUI가 이 값을 읽어 칸으로 그린다.
-    public void TakeDamage(int damage)
+    public void TakeDamage(int damage, bool canKill = true)
     {
         if (damage <= 0) return;
+        if (isDead) return; // 이미 사망 처리 중이면 추가 피해를 받지 않는다
 
         // 광원 소모(E 홀드) 중 피격 시 즉시 중단(스펙 6) — 재개하려면 E를 다시 눌러야 한다.
         if (isSpendingLight) EndLightSpend("hit");
@@ -3452,12 +3529,215 @@ public class PlayerController : MonoBehaviour
         //    `rampageHitEnergyLoss` 필드는 씬에 직렬화돼 있어 남겨 뒀다(삭제는 별도 승인).
 
         // 체력이 칸이 된 뒤로 음수가 되면 HUD가 그릴 칸이 없다(예전엔 -3 같은 값이 그대로 남았다).
-        currentHealth = Mathf.Max(0, currentHealth - damage);
+        // canKill=false(낙사 등)면 0까지 깎이지 않고 최소 1칸은 남는다 — 그 경로는 사망이 아니다.
+        int newHealth = currentHealth - damage;
+        if (!canKill) newHealth = Mathf.Max(1, newHealth);
+        currentHealth = Mathf.Max(0, newHealth);
         TestLog.Event("player_damage", $"hp={currentHealth}/{maxHealth} dmg={damage}");
 
         // 피격 연출(쉐이크 + 붉은 점멸) — 공격 쉐이크(0.12s/0.15)보다 크게(맞은 쪽이 더 아파야 한다).
         if (sectionCamera != null) sectionCamera.Shake(0.18f, 0.22f);
         PlayerDamageFlashUI.Flash();
+
+        if (canKill && currentHealth <= 0) Die();
+    }
+
+    // ── 사망 ────────────────────────────────────────────────────────────────────────────────
+    // 흐름 전면 재설계(사용자 지시 2026-08-10): HP 0 → 즉시 심한 슬로우모션+흑백+모든 판정/VFX 해제 →
+    // Death 애니(언스케일 재생, 블룸) → 노이즈 지지직 → 암전(UI도 노이즈 유지) → SIGNAL LOST +
+    // Reconnect/Exit 버튼 → 선택에 따라 부활(줌아웃+노이즈+흑백 점차 해제) 또는 타이틀 이동.
+    void Die()
+    {
+        if (isDead) return;
+        StartCoroutine(DieRoutine());
+    }
+
+    System.Collections.IEnumerator DieRoutine()
+    {
+        isDead = true;
+        deathStreak++;
+        TestLog.Event("player_death", $"triggered pos={transform.position} streak={deathStreak}");
+
+        // ── 1. 사망 순간 활성 상태·이펙트·판정을 전부 즉시 해제("모든 영향 판정 해제") ────────
+        isDashing = false; isCharging = false; isSpendingLight = false; isDodgeCountering = false;
+        if (isRampaging) EndRampage("death");
+        if (isTranscending) EndTranscend("death");
+        EndTimeAccel("death");
+        ScreenGlitchFx.EndAll(); // 자아 고갈·폭주 하트비트·보스 빔 등 원인 불문 즉시 해제
+        rb.linearVelocity = Vector2.zero;
+        // 무적 레이어로 전환 — 대시/일섬/처형과 같은 장치. IsInvincible도 isDead를 보므로(위 프로퍼티)
+        // 컴포넌트 기준으로 판별하는 PressTrap 등도 이중으로 막힌다.
+        if (invincibleLayer != -1) gameObject.layer = invincibleLayer;
+
+        if (anim != null)
+        {
+            anim.ResetTrigger("Land");
+            anim.ResetTrigger("Attack1");
+            anim.ResetTrigger("Attack2");
+            anim.ResetTrigger("JumpAttack");
+            anim.SetBool("isWallSliding", false);
+        }
+
+        // ── 2. 카메라가 플레이어에게 줌인("페이드 인") + 즉시 심한 슬로우모션 + HUD 숨김 ─────────
+        // ⚠️ 흑백은 여기서 걸지 않는다 — 사용자 지시(2026-08-10 재수정): 애니메이션이 다 끝나고
+        //    0.5초 뒤부터 점점 생겨야 한다(아래 4번).
+        Time.timeScale = deathSlowMoScale;
+        if (sectionCamera != null) sectionCamera.SetSustainedFocus(transform, 1f, deathCameraZoomMultiplier, deathCameraRampIn, 1f);
+        PlayerHudUI.Instance?.SetVisible(false);
+
+        // ── 3. Death 애니메이션 — 슬로우모션 영향 안 받고 언스케일로 재생 + 블룸(기존 마스크 재사용) ──
+        PlayerBloomFx deathBloomFx = null;
+        if (anim != null)
+        {
+            anim.updateMode = AnimatorUpdateMode.UnscaledTime;
+            anim.SetBool("isDead", true); // AnyState → Death(신규 전이, isDead==true)
+            deathBloomFx = PlayerBloomFx.AttachWithShader(transform, "Custom/PlayerMaskEmissive", playerBloomSortingOffset);
+            if (deathBloomFx != null)
+            {
+                deathBloomFx.SetColor(CurrentPixelTint);
+                deathBloomFx.SetBoost(5f);
+                deathBloomFx.SetMaskFloor(0f);
+                deathBloomFx.SetBrightEmission(1f, CurrentPixelTint);
+                deathBloomFx.SetIntensityRaw(1f);
+            }
+        }
+        yield return new WaitForSecondsRealtime(deathClipLength);
+        if (deathBloomFx != null) deathBloomFx.FadeOut(0.2f);
+
+        // ── 4. 애니메이션 끝나고 0.5초 뒤부터 흑백이 점점 생기고, 그때부터 노이즈 시작 ──────────────
+        yield return new WaitForSecondsRealtime(deathPostAnimDelay);
+
+        StartCoroutine(GrayscaleRampOverTime(1f, deathGrayscaleRampInDuration));
+        // ⚠️ ScreenGlitchFeature의 NoiseAmount 등 공유 필드는 절대 안 건드린다(위 헤더 주석 참고) —
+        //    Intensity만 최대로 올려서 세기를 낸다. ScreenGlitchFx.Begin이 부드럽게 0→1로 올린다.
+        ScreenGlitchFx.Begin(ScreenGlitchFx.Source.Death);
+
+        // ── 5. 검은 화면이 점점 완전히 덮인다 ─────────────────────────────────────────────
+        // ⚠️ DeathScreenUI는 Screen Space - Overlay라 카메라·조명·렌더러 피처가 뭘 그리든 물리적으로
+        //    가려진다(실측으로 세 가지 경로 — sortingOrder, 별도 카메라, Light2D, 정적 텍스처 렌더러
+        //    피처 — 가 차례로 뚫려서 개별 차단 대신 이 방식으로 전환, DeathScreenUI.cs 헤더 주석 참고).
+        DeathScreenUI.FadeInBlack(deathBlackFadeInDuration);
+        yield return new WaitForSecondsRealtime(deathBlackFadeInDuration);
+
+        // ── 6. 완전 정지 + 화면이 검은 뒤에서 체크포인트로 이동(순간이동이 안 보이게) ─────────────
+        Time.timeScale = 0f;
+        RespawnAtCheckpoint();
+        if (anim != null) anim.updateMode = AnimatorUpdateMode.Normal;
+
+        // ── 7. 흑백이 풀리면서(1→0) SIGNAL LOST + Reconnect/Exit 버튼이 페이드인 — 노이즈는 계속 유지 ──
+        // 흑백이 켜진 채로 UI가 나타나면 붉은 텍스트·버튼 색이 전부 회색으로 찍힌다(실측 버그) — 반드시
+        // UI가 페이드인하기 전에 흑백을 빼기 시작한다(같은 duration으로 동시 진행).
+        StartCoroutine(GrayscaleRampOverTime(0f, deathGrayscaleRampOutDuration));
+        DeathScreenUI.ShowMenuFaded(deathGrayscaleRampOutDuration);
+        yield return new WaitForSecondsRealtime(deathGrayscaleRampOutDuration);
+
+        var choice = DeathScreenUI.ButtonResult.None;
+        while (choice == DeathScreenUI.ButtonResult.None)
+        {
+            choice = DeathScreenUI.Consume();
+            yield return null;
+        }
+        DeathScreenUI.HideMenu();
+
+        // ── 8. 확정 지지직 ──────────────────────────────────────────────────────────────
+        yield return GlitchPulses(deathGlitchPulseCount, deathGlitchPulseOnDuration, deathGlitchPulseOffDuration);
+        yield return new WaitForSecondsRealtime(deathConfirmGlitchDuration);
+        ScreenGlitchFx.EndAll();
+
+        if (choice == DeathScreenUI.ButtonResult.Exit)
+        {
+            DeathScreenUI.FadeOutBlack(deathFadeOutDuration);
+            yield return new WaitForSecondsRealtime(deathFadeOutDuration);
+            Time.timeScale = 1f;
+            if (invincibleLayer != -1) gameObject.layer = normalLayer;
+            PlayerHudUI.Instance?.SetVisible(true);
+            isDead = false;
+            TestLog.Event("player_death", "exit_to_title");
+            SceneManager.LoadScene(titleSceneName);
+            yield break;
+        }
+
+        // ── Reconnect: 줌인 상태에서 줌아웃 + 노이즈 몇 번 더 튀며 부활(흑백은 이미 0) ───────────────
+        Time.timeScale = BaseTimeScale;
+        isDead = false;
+        if (invincibleLayer != -1) gameObject.layer = normalLayer;
+        if (anim != null)
+        {
+            anim.SetBool("isDead", false);
+            anim.Play("Glitch Samurai-Idle", 0, 0f); // Death는 종단 상태(자체 전이 없음) — 되돌아갈 상태를 직접 지정
+        }
+
+        PlayerHudUI.Instance?.SetVisible(true);
+        DeathScreenUI.FadeOutBlack(deathFadeOutDuration);
+        if (sectionCamera != null) sectionCamera.ClearSustainedFocus(respawnZoomOutDuration);
+        yield return GlitchPulses(respawnGlitchPulseCount, deathGlitchPulseOnDuration, deathGlitchPulseOffDuration * 1.5f);
+
+        TestLog.Event("player_death", $"respawned hp={currentHealth}/{maxHealth} pos={transform.position}");
+    }
+
+    // ScreenGlitchFeature를 직접 몇 번 켰다 껐다 한다("노이즈 몇 번 지지직") — ScreenGlitchFx의 부드러운
+    // 페이드와 달리 뚝뚝 끊기는 아날로그 신호 느낌. 호출 시점엔 ScreenGlitchFx 인스턴스가 없다는 전제
+    // (EndAll 이후 페이드아웃돼 스스로 파괴된 상태)라 Intensity를 직접 몰아도 서로 안 부딪힌다.
+    // ⚠️ NoiseAmount/ScanlineJitter/ScanlineDensity는 절대 안 건드린다 — 보스 응시 노이즈 등 다른 기능과
+    //    공유하는 값이다(위 Death 헤더 주석 참고).
+    System.Collections.IEnumerator GlitchPulses(int count, float onDuration, float offDuration)
+    {
+        var f = ScreenGlitchFeature.Instance;
+        if (f == null) yield break;
+        for (int i = 0; i < count; i++)
+        {
+            f.Intensity = 1f;
+            f.Seed = Random.Range(0f, 1000f);
+            yield return new WaitForSecondsRealtime(onDuration);
+            f.Intensity = 0f;
+            yield return new WaitForSecondsRealtime(offDuration);
+        }
+    }
+
+    // 흑백을 target(0 또는 1)까지 duration에 걸쳐 램프한다(SetDodgeGrayscale은 반경까지 만지는 즉시 적용
+    // 헬퍼라 여기엔 안 맞음 — Center는 여기서 한 번만 잡고 Intensity만 서서히 움직인다).
+    System.Collections.IEnumerator GrayscaleRampOverTime(float target, float duration)
+    {
+        var f = GrayscaleRendererFeature.Instance;
+        if (f == null) yield break;
+        var cam = Camera.main;
+        if (cam != null)
+        {
+            Vector3 vp = cam.WorldToViewportPoint(transform.position + Vector3.up * 0.6f);
+            f.Center = new Vector2(vp.x, vp.y);
+        }
+        f.Radius = dodgeGrayscaleMaxRadius;
+        float from = f.Intensity;
+        float t = 0f;
+        duration = Mathf.Max(0.0001f, duration);
+        while (t < duration)
+        {
+            t += Time.unscaledDeltaTime;
+            f.Intensity = Mathf.Lerp(from, target, Mathf.Clamp01(t / duration));
+            yield return null;
+        }
+        f.Intensity = target;
+    }
+
+    // 체크포인트(방 입구, RoomTrigger가 갱신)로 복귀 + 자원 복구. 페널티 없음(사용자 확정 2026-08-10):
+    // 체력 전부 회복, 자아는 폭주 유지 중이면 전부 회복(부활 직후 붕괴 데미지가 들어오지 않도록),
+    // 광원은 그대로 유지한다(폭주/초월 여부는 광원값에 따라 자연히 이어진다 — 별도 처리 불필요).
+    void RespawnAtCheckpoint()
+    {
+        var progress = GameDataManager.Current.progress;
+        Vector2 pos = progress.hasCheckpoint ? progress.checkpointPosition : (Vector2)transform.position;
+        transform.position = pos;
+        lastGroundedPosition = pos;
+        rb.linearVelocity = Vector2.zero;
+
+        currentHealth = maxHealth;
+        if (isRampaging) currentEgo = maxEgo;
+    }
+
+    /// <summary>RoomTrigger가 새 방에 들어왔을 때 호출 — "다음 방에 도달"을 진행으로 보고 반복사망 카운터를 리셋한다.</summary>
+    public void NotifyRoomEntered()
+    {
+        deathStreak = 0;
     }
 
     /// <summary>함정 등 외부에서 플레이어를 밀어낸다. lockDuration 동안 수평 입력을 잠가
@@ -3523,7 +3803,7 @@ public class PlayerController : MonoBehaviour
         // 이 함수의 flipX 갱신(moveInput.x 기준)은 별개 경로라 안 막혀 있었다 — 실제로는 제자리에
         // 묶여 있는데 A/D를 누르면 스프라이트만 방향을 바꾸는 버그(사용자 리포트). CounterRush가
         // 끝에서 enemyFacing 기준으로 flipX를 다시 확정하므로, 그 사이엔 아예 안 건드리는 게 맞다.
-        if (isCharging || ilseomActive || isExecuting || isSpendingLight || isLedgeClimbing || isDodgeCountering) return;
+        if (isCharging || ilseomActive || isExecuting || isSpendingLight || isLedgeClimbing || isDodgeCountering || isDead) return;
 
         if (anim != null) {
             // 공격속도 버프에 맞춰 공격 애니메이션도 빨라진다(사용자 지시). 대시 프리즈는 anim.enabled=false로

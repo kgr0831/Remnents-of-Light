@@ -17,7 +17,7 @@ public class ScreenGlitchFx : MonoBehaviour
     /// (2026-08-09: 보스 레이저 노출이 세 번째 원인으로 들어오면서 필요해졌다. 그전까지는
     ///  자아 고갈과 폭주 심박이 서로의 End에 꺼지는 잠재 버그가 있었다.)</summary>
     [System.Flags]
-    public enum Source { Ego = 1, Heartbeat = 2, BossBeam = 4 }
+    public enum Source { Ego = 1, Heartbeat = 2, BossBeam = 4, Death = 8 }
 
     static int activeSources;
 
@@ -42,6 +42,14 @@ public class ScreenGlitchFx : MonoBehaviour
     {
         activeSources &= ~(int)source;
         if (activeSources != 0) return;
+        if (Instance != null) Instance.ending = true;
+    }
+
+    /// <summary>원인과 무관하게 즉시 전부 끈다(사망 진입처럼 "다른 이유로 켜져 있던 것도 포함해 전부
+    /// 해제"가 필요한 경우 전용). 일반적인 종료는 End(source)를 쓴다.</summary>
+    public static void EndAll()
+    {
+        activeSources = 0;
         if (Instance != null) Instance.ending = true;
     }
 

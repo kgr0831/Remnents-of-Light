@@ -135,6 +135,15 @@ public class PlayerHudUI : MonoBehaviour
     /// <summary>에너지 바를 잠깐 붉게 점멸시킨다(일섬 게이팅 실패 등 1회성 경고 피드백).</summary>
     public void FlashEnergyBarRed(float duration = 0.24f) => _energyFlashTimer = duration;
 
+    bool _hidden; // SetVisible(false)로 강제 숨김 중(사망 연출) — Update의 자동 재활성화를 막는다
+
+    /// <summary>사망 연출 등에서 HUD를 강제로 숨기거나 되돌린다(_player 존재 여부와 별개 스위치).</summary>
+    public void SetVisible(bool visible)
+    {
+        _hidden = !visible;
+        if (_root != null) _root.SetActive(visible && _player != null);
+    }
+
     // 씬에 배치하지 않아도 항상 뜨게 한다(씬 편집 없이 HUD가 붙는 유일한 방법).
     // 플레이어가 없는 씬(VfxSandbox 등)에서는 아래 Update가 HUD를 숨긴다.
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
@@ -297,7 +306,8 @@ public class PlayerHudUI : MonoBehaviour
             }
         }
 
-        if (_root != null && _root.activeSelf != (_player != null)) _root.SetActive(_player != null);
+        bool shouldShow = _player != null && !_hidden;
+        if (_root != null && _root.activeSelf != shouldShow) _root.SetActive(shouldShow);
         if (_player == null) return;
 
         // 최대 칸 수는 세이브 불러오기로도 바뀔 수 있다 → 바뀌면 줄을 다시 만든다.

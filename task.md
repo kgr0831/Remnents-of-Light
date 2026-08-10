@@ -1,8 +1,185 @@
 # Remnents of Light — 작업 진행 추적 (task.md)
 
-> 최종 업데이트: 2026-08-03(이동·벽타기 애니메이션 속도 연동까지) · 스테이지1 버티컬 슬라이스(5주 마스터플랜) 기준
+> 최종 업데이트: 2026-08-10(사망 화면 텍스트 글리치 — ScreenGlitch.shader 스캔라인 밴드 로직을 정점 공간에 이식) · 스테이지1 버티컬 슬라이스(5주 마스터플랜) 기준
 
 ## 📍 현재 위치
+- **2026-08-10: 사망 UI 실측 버그 6건 수정 완료(사용자가 실제 플레이 스크린샷으로 리포트).**
+  ① **게임 요소가 검은 화면 위로 비침** — 원인이 두 겹이었다. 먼저 `DeathScreenUI` Canvas의
+  `sortingOrder`(10)가 월드 스프라이트(LightPixelFx 등 order 15)보다 낮아 뒤로 깔렸던 것을 500으로
+  올려 해결. 그런데도 빨간 빔이 남아 재조사 — `BossPixelCamera`(Main Camera와 별개의 독립 Base
+  카메라, cullingMask로 자기 레이어만 직접 그려 화면에 얹음)와 `BossEyeGlowLight`/`BossEyeBeamLight`
+  (Light2D, 카메라 On/Off와 무관하게 URP 2D 라이트 텍스처 합성 단계에서 그려짐이라 카메라를 꺼도
+  안 사라짐) 둘 다가 원인이었음을 실측으로 확인. `SetOtherCamerasEnabled`/`SetSceneLightsEnabled`
+  신규 — 사망 암전 구간엔 Main Camera 하나만 남기고 다른 카메라·비-Global Light2D를 전부 끈다
+  (Reconnect/Exit/OnDisable 세 지점 모두 복구 보장). 실제 플레이에서도 이 보스 근처 체크포인트에서
+  죽으면 재현되는 문제였다.
+  ② **Reconnect/Exit 호버가 두 번째 죽음에서 이전 상태를 그대로 가짐** — Unity가 GameObject
+  비활성화 시 `OnPointerExit`를 보장하지 않는다는 게 원인(호버된 채로 메뉴가 꺼지면 색이 그대로
+  남음). `DeathMenuButtonHover.ResetVisual()` 신규, 메뉴를 다시 켤 때마다(`ShowMenuFaded`) 두 버튼
+  전부 강제로 기본 상태로 되돌림.
+  ③ **호버 시 붉은색이 아니라 회색으로 보임 + SIGNAL LOST가 작고 붉지 않음** — 같은 근본 원인:
+  `GrayscaleRendererFeature`가 켜진 채로 UI가 나타나서 UI 자체(같은 Main Camera 화면에 속함)까지
+  흑백으로 찍히고 있었다. 사용자가 재지시한 순서(④ 참고)가 정확히 이 버그의 해결책이라 그대로
+  구현 — 흑백이 완전히 풀린 뒤에야 UI가 페이드인하므로 색이 항상 정상으로 보인다.
+  ④ **연출 순서 전면 재조정**(사용자 지시): 카메라 줌인("페이드인")+심한 슬로우모션+VFX 해제(동시,
+  즉시) → Death 애니메이션(언스케일) → **0.5초 대기** → 그때부터 흑백이 점점 생기며 노이즈 시작 →
+  검은 화면 페이드인 → (완전 암전 후) **흑백이 풀리면서 SIGNAL LOST/버튼이 같이 페이드인**
+  (`DeathScreenUI.ShowMenuFaded` 신규 — `CanvasGroup.alpha` 0→1). `deathPostAnimDelay`/
+  `deathGrayscaleRampInDuration`/`deathGrayscaleRampOutDuration` 신규 필드, 기존
+  `respawnGrayscaleFadeOutDuration`은 그레이스케일이 UI 표시 시점에 이미 0이라 로직상 중복이 되어
+  제거(사용된 적 없는 채로 남기지 않음).
+  ⑤ **보스 응시 노이즈가 죽었다 살아나면 영구히 강해짐** — 원인은 `ScreenGlitchFeature.NoiseAmount`/
+  `ScanlineJitter`/`ScanlineDensity`가 보스 응시 글리치(`BossEyeTracker`, `Source.BossBeam`)와
+  **공유하는 필드**인데 사망 연출이 이 값을 직접 덮어썼다가 되돌리는 구조였던 것 — 세이브/복원
+  타이밍이 어긋나거나 중간에 값이 새는 경로가 있었다. 공유 필드는 아예 건드리지 않도록 제거,
+  `Intensity`(0~1, 셰이더가 Noise/Jitter에 곱하는 값)만으로 세기를 낸다 — 구조적으로 다른 기능과
+  절대 안 부딪히게 됨.
+  ⑥ **사망 UI 전체 크기 확대** — SIGNAL LOST 72→120, 버튼 42→58, 버튼 박스 400×80→560×110.
+  **MCP Play모드 실측**(`manage_camera` screenshot 액션으로 실제 렌더링 스크린샷까지 확인, 상태
+  폴링만으로는 못 잡는 시각적 버그라 이번엔 스크린샷이 결정적이었다): 수정 전/후 스크린샷 대조로
+  ①③ 확인, `OnPointerEnter`/`Exit` 직접 호출로 ②(3연속 사망 재현) 확인. 컴파일 에러 0.
+  **후속(같은 날, 사용자가 자기 화면에서 직접 찍은 스크린샷으로 재리포트)**: ①이 완전히 안 고쳐졌음을
+  실제 플레이 스크린샷으로 지적받음 — 카메라·조명은 확실히 껐는데도 보스 실루엣과 겹치는 지형에
+  흰색 아웃라인이 그대로 비쳤다. 세 번째 원인을 찾음 — `BossOverlapOutlineFeature`(보스와 화면상
+  겹치는 요소에 흰 테두리를 그리는 렌더러 피처)가 `BossPixelResolutionController`가 준
+  **정적(static) Texture 참조**만으로 그리는 구조라, 카메라를 꺼도(`SetOtherCamerasEnabled`) 렌더
+  대상 자체가 사라지는 게 아니라서 전혀 안 멈췄다. 마침 이 피처는 이미 폭주 중엔 건너뛰는 로직이
+  있어(2026-08-10 앞선 실측 기록, `RampageVisionFeature.Instance.Intensity` 체크) 같은 자리에 같은
+  방식으로 `BossOverlapOutlineFeature.SuppressForDeathScreen`(신규 static bool) 체크를 추가하고,
+  `DieRoutine`이 암전 시작/해제 시점에 켜고 끄도록 배선(OnDisable 안전망 포함). **이번엔 보스
+  카메라·조명을 하나도 안 끈 채로**(코드 수정 단독으로) 재검증 — 스크린샷으로 완전히 깨끗함을 확인.
+
+  **후속 2(같은 날, 사용자 재지시: "블룸 같은게 남아있는 것 같다, 그냥 아예 패널로 다 안보이게")**:
+  카메라·조명·정적 텍스처 렌더러 피처까지 세 개를 막았는데도 또 다른 렌더 경로(블룸으로 추정)가
+  뚫린 걸 보고, 하나씩 막는 방식 자체를 포기하고 근본적으로 뚫릴 수 없는 구조로 전환.
+  `DeathScreenUI`를 Screen Space - **Camera에서 Screen Space - Overlay로 전환**(`ScreenFadeUI`와
+  동일 원리 — 카메라 렌더 패스가 전부 끝난 뒤 완전히 분리된 합성 단계에서 그려지므로 카메라·조명·
+  렌더러 피처가 무엇을 하든 물리적으로 못 뚫는다). 대신 카메라 쪽 `ScreenGlitchFeature`가 이 UI까지
+  건드릴 수 없어져서, 신규 `Custom/UINoiseOverlay` 셰이더(`Assets/Shaders/UINoiseOverlay.shader`)를
+  만들어 노이즈를 UI 자체에 내장 — `ScreenGlitch.shader`와 같은 Hash 노이즈 공식을 UGUI Image
+  프래그먼트 셰이더로 옮겼다. `DeathScreenUI.Update()`가 배경 알파에 따라 `_NoiseIntensity`를 매
+  프레임 갱신하고 시드를 초당 20회 계단식으로 돌려(ScreenGlitchFx와 같은 아날로그 느낌) 검은 화면이
+  보이는 동안 항상 지지직거린다. 이제 안 필요해진 카메라/조명 강제 On-Off 헬퍼
+  (`SetOtherCamerasEnabled`/`SetSceneLightsEnabled`)와 `BossOverlapOutlineFeature.
+  SuppressForDeathScreen`은 전부 제거(죽은 코드 방지) — Overlay 자체가 이미 완전한 해결책이라 개별
+  차단이 전부 불필요해졌다. MCP 재검증: 보스 카메라·조명·아웃라인을 **하나도 안 끈 채로** 죽어도
+  화면이 완전히 깨끗한 노이즈 배경 + SIGNAL LOST/버튼만 나오는 것을 스크린샷으로 확인, Reconnect
+  전체 사이클(부활→hp 5/5→정상 레이어→timeScale 1→배경 알파 0)도 재확인. 컴파일 에러 0.
+
+  **후속 3(같은 날, 사용자 리포트: "이제 UI에 노이즈가 안 떠요")**: `Custom/UINoiseOverlay` 셰이더
+  버그 2건을 연달아 실측으로 잡음. ① `ComputeScreenPos`는 카메라 투영(원근분할) 기준인데 Screen
+  Space - Overlay 캔버스는 연결된 카메라가 없어 `screenPos.w`가 기대한 값이 아니었다 — 노이즈가
+  거의 안 보임. `IN.texcoord`(이 배경 이미지 자체의 0~1 UV, 전체 화면을 덮으므로 정규화 스크린
+  좌표와 동일)로 교체. ② 그렇게 고치자 이번엔 대각선 헤링본 줄무늬가 나옴 — `frac(sin(dot(p,...))
+  *큰수)` 해시 함수에 **실제 픽셀 좌표(최대 1920 안팎)를 그대로** 넣어서 `sin()`이 GPU에서 정밀도를
+  잃고 반복 패턴을 낸 것(잘 알려진 함정). 이미 검증된 `ScreenGlitch.shader`와 똑같이 **0~1 정규화
+  좌표 × 512**로 되돌려 해결 — MCP 스크린샷으로 진짜 랜덤 TV 스태틱 노이즈가 뜨는 것까지 확인.
+  컴파일 에러 0.
+
+  **후속 4(같은 날, 사용자 재지시 3라운드 — 텍스트 자체의 글리치 품질)**: "쉐이더를 새로 만들지 말고
+  패널로 채우기 전과 같은 쉐이더 쓰면 안돼요?" 질문에 구조적으로 불가능함을 설명(Overlay는 카메라
+  렌더 패스가 전부 끝난 뒤 별도 합성 단계라 카메라 쪽 `ScreenGlitchFeature`가 원천적으로 못 닿음) —
+  `AskUserQuestion`으로 트레이드오프 제시, 사용자가 Overlay 유지로 확정. 이어서 "노이즈 자체는 뜨는데
+  텍스트(SIGNAL LOST·버튼)엔 이전처럼 안 먹는다"는 지적 — TMP는 SDF라 배경과 같은 셰이더를 그대로
+  못 씌우므로 1차로 단순 좌우 흔들림을 넣었으나, 사용자가 "단순 흔들림 아니죠?"로 즉시 확인 질문 →
+  실제로 그 구현이었음을 인정하고 RGB 채널 분리(빨강/청록 반투명 고스트 복제, `GlitchGroup`/
+  `CreateGhost`)로 교체. 그런데도 "기존과 같이 일부분이 막 깨지고 옆으로 움직이는 진짜 글리치
+  느낌"이 아니라는 재지시 — 고스트 복제 방식을 전부 걷어내고 TMP 공식 예제(VertexJitter.cs)와 같은
+  **문자 단위 정점 조작**으로 최종 교체(`DeathScreenUI.ApplyCharacterGlitch`: 매 노이즈 시드 스텝마다
+  `ForceMeshUpdate()`로 깨끗한 레이아웃부터 시작 → 글자마다 18% 확률로 정점 4개를 가로 ±7px 밀고
+  `UpdateGeometry`로 반영). 통짜로 흔들리거나 고스트가 겹쳐 보이는 게 아니라 매 스텝 몇 글자만
+  무작위로 끊어져 옆으로 튀어 "일부분만 깨지는" 모습이 된다. `GlitchGroup`/`MakeGlitchGroup`/
+  `CreateGhost`/`SetGhostVisible`/`ResetGlitchPositions` 전부 제거, `_glitchTexts` 배열 +
+  `ApplyCharacterGlitch`/`ResetTextGlitch`로 단순화(죽은 코드 없음, grep으로 확인). MCP Play모드
+  실측: `TakeDamage(99999)`로 즉사 트리거 → 메뉴 표시 후 스크린샷 3연속 — 한 장에서 "Reconnect"가
+  "Reconne ct"로, "Exit"가 "E xit"로 글자 사이가 벌어져 끊기는 게 명확히 보임(의도한 효과 확인).
+  컴파일 에러 0, Play 세션 중 콘솔 에러 0.
+
+  **후속 5(같은 날, 사용자 재지시: "아니 글자가 움직이는것만 있잖아요. 기존과 같아야한다니까요")**:
+  문자 단위 정점 오프셋도 결국 "글자가 통째로 이동"으로 읽힌다는 지적 — 이번엔 추측하지 않고
+  "기존"이 정확히 가리키는 `Assets/Shaders/ScreenGlitch.shader`(자아 고갈 화면 글리치, 보스 응시
+  등에 쓰는 그 카메라 렌더러 피처)를 직접 읽어 실제 알고리즘을 확인했다: 화면을 가로 밴드
+  `ScanlineDensity`개로 쪼개고, 밴드별로 `Hash(lineId, seed)`가 상위 15%에 들 때만 그 밴드를
+  `ScanlineJitter`만큼 옆으로 미는 방식(`uv.x += jitter*active`) — 즉 "이동"이 아니라 "밴드 단위
+  절단"이 핵심이었다. `DeathScreenUI.ApplyScanlineGlitch`로 전면 재작성: 같은
+  `Hash(x,y)=frac(sin(dot(12.9898,78.233))*43758.5453)` 공식을 C#으로 그대로 이식해 각 정점의
+  **y좌표**로 밴드(`GlitchBandHeight=10px`)를 매기고, 밴드가 활성(상위 18%)이면 그 정점만
+  `GlitchBandJitterX=±14px`만큼 옆으로 민다 — 밴드 하나가 글자 높이(50~120px)보다 훨씬 작아서 같은
+  글자의 위/아래 정점이 서로 다른 밴드에 걸려 다르게 밀리고, 그래서 "글자가 옮겨감"이 아니라 "글자
+  중간이 끊어짐"으로 보인다. 배경 노이즈와 텍스트가 같은 스텝의 같은 `seed`를 공유하도록
+  `StepTextGlitch(seed)`로 배선해 "하나의 글리치 사건"처럼 묶었다. `GlitchCharChance`/
+  `GlitchCharOffsetX`/`ApplyCharacterGlitch`(직전 라운드의 문자-이동 버전) 전부 제거, grep으로 죽은
+  참조 없음 확인. MCP Play모드 실측: `TakeDamage(99999)` 즉사 → 스크린샷 4연속 중 2장에서 "SIGNAL"의
+  "A"가 위/아래로 쪼개져 서로 다른 위치로 어긋난 것을 확인(글자 이동이 아니라 글자 내부 절단 —
+  요구한 "일부분이 깨지는" 모습과 정확히 일치). 컴파일 에러 0, Play 세션 중 콘솔 에러 0.
+- **2026-08-10: 사망 연출 전면 재설계(사용자가 훨씬 구체적인 플로우 재지시) + MCP Play모드로 전 구간 실측.**
+  바로 아래 절의 1차 구현(히트스톱+넉백+빛픽셀산란+"아무 키나")을 걷어내고 새 플로우로 교체:
+  HP 0 → **즉시 매우 심한 슬로우모션**(`deathSlowMoScale=0.04`) + 흑백 즉시 최대 + **활성 상태 전부 즉시
+  해제**(폭주/초월/시간가속 End, `ScreenGlitchFx.EndAll()`신규로 자아고갈·하트비트·보스빔 노이즈 원인
+  불문 차단, 무적 레이어(`PlayerInvincible`)로 전환 — `IsInvincible`에 `isDead` 추가) → **Death 애니메이션을
+  언스케일로 재생**(`Animator.updateMode=UnscaledTime`, 슬로우모션 영향 안 받음) + 블룸(이미 있던
+  `Glitch Samurai-Death` 마스크를 `PlayerBloomFx`가 텍스처명으로 자동 매칭 — 신규 에셋 작업 0) → 재생
+  끝나면 `ScreenGlitchFeature` 강도를 대폭 올려(`NoiseAmount 0.06→0.35` 등, 종료 후 원상복구) 몇 번
+  지지직(펄스) → 검은 화면 페이드인 → **SIGNAL LOST + Reconnect/Exit 메뉴**.
+  UI 자체에도 노이즈가 먹여야 해서(`ScreenGlitchFeature`는 Overlay 카메라를 건너뛰는 기존 가드 때문에
+  `ScreenSpaceOverlay` 캔버스엔 안 먹음을 실측 확인) `DeathScreenUI`를 `ScreenSpaceCamera`(Main Camera에
+  연결)로 전면 재작성 — 검은 배경도 이 캔버스 소속이라 노이즈가 같이 먹는다. 폰트는 프로젝트에 이미
+  있던 "Silver SDF"(그동안 어떤 씬에도 안 쓰이고 있었음) — `Resources.Load` 빌드 호환을 위해
+  `Assets/Fonts/Silver SDF.asset`을 `Assets/Fonts/Resources/`로 이동(MCP `manage_asset` move, GUID 보존).
+  버튼은 `Button`(클릭) + 커스텀 `DeathMenuButtonHover`(호버 시 TMP 텍스트 색 흰→붉은 + `outlineWidth`로
+  흰색 아웃라인, Button의 기본 Transition으로는 아웃라인을 못 다뤄 직접 구현) 조합.
+  Reconnect 클릭 → 확정 지지직 → 체크포인트 부활 상태로 페이드아웃하며 **카메라 줌아웃**
+  (`SetSustainedFocus`→`ClearSustainedFocus`) + 노이즈 펄스 몇 번 + 흑백을 `respawnGrayscaleFadeOutDuration`
+  에 걸쳐 서서히 제거. Exit 클릭 → 같은 확정 지지직 후 `SceneManager.LoadScene("TitleScene")`(빌드
+  세팅에 이미 등록돼 있음, 확인 완료).
+  **MCP Play모드 실측**: Reconnect/Exit 양쪽 다 버튼 컴포넌트의 `onClick.Invoke()`를 직접 호출해 검증
+  (호버는 `IPointerEnterHandler`를 직접 호출해 색·아웃라인 변화 확인) — timeScale 시퀀스(0.04→0→1),
+  레이어 전환·복귀, 글리치/그레이스케일 강도 저장·복원, Exit 시 `editor_state.active_scene`이 실제로
+  "TitleScene"으로 바뀌는 것까지 전부 확인. 컴파일 에러 0.
+  **부수 발견(코드 버그 아님, 설계 확인)**: 반복 테스트 중 부활 직후 자꾸 다시 죽던 원인을 이번엔
+  정확히 특정 — `BossEyeTracker.UpdateExposure`(응시 노출 데미지)가 `LaserDoor`와 같은 이유로
+  `IsInvincible`을 일부러 안 본다(주석: "대시/일섬/처형으로도 못 뚫는다"). 사망 연출 **중**엔
+  `TakeDamage`자체의 `isDead` 가드가 이미 막아 안전하지만, 부활 **직후** 체크포인트가 보스 응시 범위
+  안이면 또 맞을 수 있음 — 이 테스트 맵(Map-test.unity)의 체크포인트 배치 문제.
+
+- **2026-08-10(1차 구현, 위 재설계로 대체됨): 플레이어 사망 시스템 최초 구현(연출+로직) + MCP Play모드 실측 검증.** 그동안 HP가
+  0이 돼도 아무 일도 안 일어나던 것(죽음 자체가 미구현)을 처음부터 설계·구현. 사용자 확정(2026-08-10):
+  **페널티 없음**(부활 시 체력/자아 전부 회복, 광원은 유지) + **부활 지점은 RoomTrigger 진입 시 자동 저장하는
+  방 입구**(기능_구현_명세서 1장 "세이브 포인트 오브젝트 폐지" 정책 그대로) + **사망 화면에서 아무 키나
+  눌러야 부활**.
+  ① `PlayerController.Die()/DieRoutine()` 신규: 히트스톱(0.2s, 평소의 ~4배) → 넉백+슬로우모션(0.15배)
+  +그레이스케일 확산(기존 회피-카운터의 `SetDodgeGrayscale`/`SectionCamera.SetSustainedFocus` 재사용,
+  신규 셰이더/VFX 코드 0)+Death 애니메이션 → 몸에서 빛 픽셀 14개가 흩어짐(`LightPixelFx.SpawnRiseOne`
+  재사용, `CurrentPixelTint`로 폭주 중이면 붉게) → 글리치 파열(`ScreenGlitchFx`에 `Source.Death` 플래그
+  추가) + 암전(`ScreenFadeUI`) → 완전 정지 상태에서 체크포인트로 순간이동+체력/자아 회복
+  (`RespawnAtCheckpoint()`) → `DeathScreenUI`(신규, "SIGNAL LOST" 텍스트, 프리팹 의존 0 절차 생성) 표시
+  → 0.5s 입력유예 후 아무 키나 감지되면 페이드아웃 후 재개.
+  ② `TakeDamage(int damage, bool canKill=true)`로 시그니처 확장 — 기존 호출부 전부 무변경(디폴트 true로
+  하위호환). 낙사(`FallRespawnRoutine`)만 `canKill:false`로 넘겨 **낙사로는 절대 죽지 않고 최소 1칸
+  보장**(구덩이에 빠짐이지 사망이 아니라는 설계 결정). 압사(PressTrap instantKill)·자아 붕괴 피해는 둘 다
+  같은 `TakeDamage(canKill:true 기본값)` 경로를 그대로 타므로 별도 분기 없이 자동으로 사망 처리됨.
+  ③ **Animator Controller 직접 편집**(사용자 승인 후 진행, `execute_code`로 AnimatorController API 실측
+  기반 안전 편집): 신규 Bool 파라미터 `isDead` 추가, 기존 AnyState→Jump/Fall 전이 2곳에 `isDead==false`
+  가드 추가(넉백으로 붕 떴다가 떨어지는 동안 Death 포즈가 Jump/Fall로 가로채이는 걸 방지 — 지난번 Wall
+  Slide 깜빡임 버그와 정확히 같은 원인 클래스, 사전에 실측으로 전이 8개 중 진짜 위험한 건 이 2개뿐임을
+  확인하고 최소 범위로 수정), 신규 AnyState→"Glitch Samurai-Death" 전이 추가(`isDead==true`,
+  hasExitTime=false, canTransitionToSelf=false). 나머지 4개 트리거 기반 전이(Land/Attack1/Attack2/
+  JumpAttack)는 `Die()`에서 `ResetTrigger`로 방어.
+  ④ `RoomTrigger.cs`에 체크포인트 자동 저장 훅 추가(`GameDataManager.SaveCheckpoint` + 신규
+  `PlayerController.NotifyRoomEntered()` 호출) — 씬 배치 변경 없이 기존 방 진입 로직에 붙임.
+  ⑤ **MCP Play모드 실측으로 전체 검증**: `PlayTestRunner.DeathTest()` 신규 시나리오(Tools/PlayTest/Death)
+  작성 후 실행 — `[ASSERT] player_death_test: PASS`(낙사 불사·치명타 사망 진입·체크포인트 부활·체력/위치/
+  광원 복원·timeScale/화면 복귀·자아붕괴 스트릭 누적(1→2)과 방 진입 후 리셋(→1) 전부 확인) 2회 재현.
+  과정에서 버그 하나 수정 — 사망 화면의 "아무 키나" 감지가 `Keyboard.anyKey`(합성 컨트롤)로는
+  `InputInjector`의 가상 입력을 못 잡아서, `KeyPressedThisFrame`과 같은 방식(개별 키 컨트롤 직접 순회)
+  으로 교체. 별개로 MCP 자동화 테스트 환경 자체의 함정(Unity 창이 OS 포커스가 없으면
+  `InputSystem.settings.backgroundBehavior` 기본값이 가상 입력 장치를 비활성화시킴, `read_console`은
+  이 프로젝트에서 Log 타입을 못 읽음)을 실측으로 확정해 메모리에 별도 기록
+  (`reference-unity-mcp-playmode-input-injection.md`).
+  ⚠️ 테스트 중 발견한 별개 사항(코드 버그 아님): Map-test.unity의 자동 저장 체크포인트가
+  `BossRoomTrigger` 구역 안에 위치해, 그 근처 적/기믹이 부활 직후 플레이어를 다시 때리는 경우가 관측됨
+  — 실제 레벨 디자인에서 체크포인트/방 입구를 위험 지대와 겹치지 않게 배치할 때 참고.
+
 - **2026-08-05: 점프 공격 판정프레임 프리즈로 축소 + 히트 시 보너스 점프 + 초월 예고 페이드 버그 수정
   (게헨나 포식견 MCP 실측 포함).** 사용자 리포트 3건 처리.
   ① 점프 공격이 `isAttacking` 전체 구간(윈드업~회수) 동안 y를 고정해서 "애니메이션이 끊기거나
@@ -4856,3 +5033,37 @@ beamOccluderMask)`. 피벗이 발밑이라 `transform.position`이 아니라 **�
 
 ⚠️ **방법론 반성**: "그림자가 보인다"를 저해상도 스크린샷의 명암 차이로 3번 연속 오판했다. 앞으로
 렌더링 결과는 **한 변수만 바꾼 A/B 스크린샷**으로 검증한다(이번에 z만 바꾼 비교로 5분 만에 확정).
+
+---
+
+## 2026-08-10 — 사망 연출 버그 2건: 줌인 Y축 고정 + HUD 안 사라짐 (사용자 리포트)
+
+**버그 1: 사망 줌인이 X만 플레이어를 따라가고 Y는 방 중심에 고정.** `DieRoutine()`의
+`sectionCamera.SetSustainedFocus(transform, 1f, deathCameraZoomMultiplier, deathCameraRampIn)`가
+5번째 인자 `maxPanDown`을 안 넘겨 기본값 0 → `SectionCamera.SustainedFocusRampCo`의
+`if (sustainFocusMaxPanDown > 0f)` 게이트에 걸려 Y팬이 통째로 꺼져 있었다. 같은 날 E홀드(광원 소모)
+카메라에서 겪은 것과 동일한 버그(그쪽은 이미 고쳐짐, PlayerController.cs:187-199 주석 참고)인데
+사망 쪽 호출엔 반영이 안 됐던 것.
+
+**실측(Play 모드, MCP, 리플렉션으로 SectionCamera 내부 필드 직접 읽음)**: 수정 전
+`basePos=(9.00, 36.80)` vs `player.position=(0.00, 25.36)` — Y차 11.44유닛인데
+`sustainFocusOffset=(-9.00, 0.00, 0)`로 Y는 0. 화면은 줌인(orthoSize 13.5→10)되지만 카메라가
+플레이어보다 11유닛 위쪽 허공을 보고 있어 "줌인은 되는데 플레이어 대신 맵 요소가 보이는" 증상.
+
+**수정**: 호출에 `maxPanDown=1f` 추가(값 자체는 이제 게이트일 뿐 크기 의미 없음, 광원소모 쪽
+`lightSpendCamPanDownMax`와 같은 패턴). 재검증 결과 `sustainFocusMaxPanDown=1`,
+`sustainFocusOffset.y`가 플레이어 쪽으로 정상 수렴.
+
+**버그 2: `PlayerHudUI`가 사망 중에도 안 사라짐.** 애초에 사망 상태를 확인하는 코드가 없었다(신규
+기능 누락, 회귀 아님). `PlayerHudUI`에 `SetVisible(bool)` 추가(내부 `_hidden` 플래그로 기존
+`_player != null` 자동 표시 로직과 독립적으로 게이트) — `DieRoutine()` 사망 진입 시 `false`,
+Reconnect(부활) 분기에서 `true`. Exit-to-title 분기는 씬 자체가 갈리므로(HUD가
+`DontDestroyOnLoad` 아님) 별도 처리 불요.
+
+**실측(Play 모드, MCP)**: 리플렉션으로 `_root`(HUD를 담는 실제 GameObject — 스크립트가 붙은
+GameObject 자체와는 다름, 처음엔 이걸 헷갈려 오검증할 뻔함) `activeInHierarchy`가 사망 직후
+`False`, `SetVisible(true)` 후 정상 복귀 확인.
+
+**검증 후 원복**: `TimeScale=1`, `GrayscaleRendererFeature.Instance.Intensity=0`으로 클린 상태 확인
+(이 값들이 ScriptableObject 에셋이라 Play 모드 종료해도 자동 복구가 안 될 수 있다는 걸 이번 세션
+초반의 "기본적으로 흑백" 버그로 이미 겪어서, 이번에도 명시적으로 재확인함).
