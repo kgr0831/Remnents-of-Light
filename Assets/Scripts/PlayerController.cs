@@ -292,6 +292,9 @@ public class PlayerController : MonoBehaviour
     // 적이 플레이어 공격에 맞으면 "플레이어가 공격 시 전진하는 거리 × 이 배율"만큼 밀려난다(사용자 스펙).
     public float enemyKnockbackMultiplier = 1.5f;
     public LayerMask enemyLayer;
+    // 문/스위치 기믹의 DoorSwitch 전용 레이어("Switch") — enemyLayer와 분리해 자아 게이지 회복(적 타격
+    // 전용) 로직에 안 걸리게 한다. 물리 통과는 enemyLayer와 동일 원리(rb.excludeLayers)로 처리.
+    public LayerMask switchLayer;
 
     [Header("Attack VFX")]
     public bool attackHitstop = true;
@@ -694,13 +697,15 @@ public class PlayerController : MonoBehaviour
         // GameDataManager.LoadGame()을 부른 쪽만 — Play할 때마다 자동 복원되면 매 판 상태가 달라진다.
         GameDataManager.Bind(this);
         if (enemyLayer.value == 0) enemyLayer = LayerMask.GetMask("Enemy");
+        if (switchLayer.value == 0) switchLayer = LayerMask.GetMask("Switch");
         if (climbWallLayer.value == 0) climbWallLayer = LayerMask.GetMask("Wall");
         // 적 몸체와의 물리 충돌을 항상 제외한다. 예전엔 대시 중에만 제외했는데, 평상시 이동에서 적에게
         // 밀착하면 서로 밀어내느라 수평 속도가 죽어(실측: 5u/s → 0.96u/s, 약 80% 감소) 사용자가 본
         // "이동 중 갑자기 특정 방향으로 못 감(애니·flipX는 정상)" 증상이 발생했다 — moveInput은 정상
         // 수신되니 애니/flip은 그대로 돌고 좌표만 거의 안 변하는 정확한 시그니처. 전투 판정은 전부
         // Overlap 쿼리(excludeLayers 영향 없음)라 이 제외로 잃는 기능이 없다.
-        rb.excludeLayers = rb.excludeLayers.value | enemyLayer.value;
+        // 스위치(DoorSwitch)도 같은 이유로 통과 — LightObject/DummyEnemy와 동일 원리.
+        rb.excludeLayers = rb.excludeLayers.value | enemyLayer.value | switchLayer.value;
         if (Camera.main != null) sectionCamera = Camera.main.GetComponent<SectionCamera>();
 
         var playerInput = GetComponent<PlayerInput>();
@@ -2585,7 +2590,7 @@ public class PlayerController : MonoBehaviour
         if (sectionCamera != null)
         {
             sectionCamera.SetSustainedFocus(transform, lightSpendCamPan, lightSpendZoomTarget, lightSpendZoomRampIn,
-                lightSpendCamPanDownMax, GetFloorY());
+                lightSpendCamPanDownMax);
             sectionCamera.SetSustainedShake(lightSpendSustainedShake);
         }
 
@@ -3348,6 +3353,9 @@ public class PlayerController : MonoBehaviour
         float knockback = facing.x * attackLungeDistance * enemyKnockbackMultiplier
             * (isRampaging ? rampageKnockbackMultiplier : 1f);
         int hitCount = 0;
+        // 적/LightObject 타격만 자아를 회복시킨다 — 스위치는 hitCount에는 잡히지만(히트스톱·쉐이크는
+        // 그대로 느껴지게) 자아 게이지는 안 채운다(2026-08-10 사용자 지시).
+        bool restoreEgo = false;
         for (int i = 0; i < hits.Length; i++)
         {
             DummyEnemy enemy = hits[i].GetComponent<DummyEnemy>();
@@ -3356,6 +3364,7 @@ public class PlayerController : MonoBehaviour
                 // 넉백: 플레이어가 바라보는 방향으로 attackLungeDistance × 배율(기본 1.5)만큼 밀어냄
                 bool killed = enemy.TakeDamage(damage, knockback);
                 hitCount++;
+                restoreEgo = true;
                 SpawnHitFeedback(hits[i].transform.position, facing, damage, crit ? HitTier.Critical : HitTier.Normal);
 
                 // C-1: 적 타격 +3 / 처치 +10(합산) — 처형·회피-카운터는 각자 보상(+30 등)이 있어
@@ -3369,14 +3378,27 @@ public class PlayerController : MonoBehaviour
             if (lightObj != null && lightObj.TryHit())
             {
                 hitCount++;
+                restoreEgo = true;
                 int chargeAmount = Mathf.RoundToInt(maxEnergy * lightObj.energyChargePercent);
                 LightPixelFx.SpawnAbsorb(hits[i].transform.position, transform, chargeAmount, AddEnergy, hits[i].bounds.extents.magnitude, lightPixelPivotOffset, CurrentPixelTint);
             }
         }
 
+        // 스위치는 별도 레이어(enemyLayer와 분리) — 문/스위치 기믹, 자아 게이지 회복 대상이 아니다.
+        Collider2D[] switchHits = Physics2D.OverlapBoxAll(center, size, angle, switchLayer);
+        for (int i = 0; i < switchHits.Length; i++)
+        {
+            DoorSwitch doorSwitch = switchHits[i].GetComponent<DoorSwitch>();
+            if (doorSwitch != null)
+            {
+                doorSwitch.Toggle();
+                hitCount++;
+            }
+        }
+
         if (hitCount > 0)
         {
-            RestoreEgo(); // 폭주 중 자아 회복 — 적중 1회당 1번(여러 적을 동시에 맞혀도 중첩 없음)
+            if (restoreEgo) RestoreEgo(); // 폭주 중 자아 회복 — 적중 1회당 1번(여러 적을 동시에 맞혀도 중첩 없음)
             // 점프 공격이 무언가를 맞히면 공중 점프 1회 재충전(사용자 지시 2026-08-05, 저글링 리셋).
             if (isJumpAttacking && jumpAttackBonusJumpEnabled) hasJumpAttackBonusJump = true;
             TestLog.Event("player_attack", $"stage={attackStage} dmg={damage} hits={hitCount} crit={crit} rampage={isRampaging}");

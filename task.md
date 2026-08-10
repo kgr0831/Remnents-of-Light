@@ -4583,3 +4583,276 @@ Wall·Enemy)를 마스크 머티리얼로 한 번 더 그려 요소 실루엣을
 프리팹은 인스펙터에서 안 꽂아도 되게 씬의 아무 적에게서 한 번 빌려 캐시한다(`ResolveDamageTextPrefab`)
 — 보스는 씬 오브젝트라 참조를 새로 꽂으려면 씬을 저장해야 하는데 그걸 피하기 위한 선택이다.
 실측: `prefabResolved=DmgText`, 피해 틱 직후 `liveDamageTexts=1` 확인.
+
+---
+
+## 2026-08-09 — 빌드에서만 깨지던 문제 2종 (셰이더 스트립 · 레터박스 미클리어)
+
+사용자 리포트: "빌드하면 컬링마스크·쉐이더가 전부 적용 안 되고, 게임이 앞 뒤 프레임을 반복하면서 깨진다".
+
+**1. 커스텀 셰이더가 빌드에서 통째로 스트립됨** — `Shader.Find` / `CoreUtils.CreateEngineMaterial`로만
+잡는 셰이더는 씬·에셋 어디에서도 참조되지 않아 빌드에 포함되지 않는다. `m_AlwaysIncludedShaders`에는
+Unity 내장만 있고 프로젝트 커스텀은 **하나도** 없었다 → 화면 이펙트가 전부 조용히 사라진다
+(`CreateEngineMaterial`은 못 찾으면 null을 반환하고, 호출부가 전부 null 가드라 에러도 안 뜬다).
+Graphics Settings에 12개 추가: `Hidden/BossOverlap{Mask,Outline}` · `Hidden/Screen{Darkness,Glitch,Grayscale}` ·
+`Custom/{EnemyExecutionGlow,IlseomChargePixels,IlseomSlashStreak,ParryShield,PlayerBloomOverlay,RampageOutline}` ·
+`Universal Render Pipeline/2D/Sprite-Unlit-Default`.
+⚠️ 앞으로 `Shader.Find`로 셰이더를 새로 쓰면 **여기에도 같이 등록**해야 한다.
+
+**2. 레터박스 바깥이 안 지워져 이전 프레임이 남음** — `SectionCamera.ApplyLetterbox`가 `cam.rect`를
+줄여 검은 바를 만드는데, "뷰포트 밖은 아무도 안 그리니 검게 남는다"는 **에디터 게임 뷰에서만** 맞다.
+게임 뷰는 매 프레임 타깃을 지우지만 빌드 백버퍼는 아무도 안 지우면 이전 내용이 그대로 남고,
+더블/트리플 버퍼링이라 옛 프레임 두세 장이 번갈아 보이면서 "앞뒤 프레임이 반복되며 깨지는" 것처럼
+된다. 레터박스가 걸린 동안 화면 전체를 검게 지우기만 하는 카메라(cullingMask=0, depth=메인-100)를
+런타임에 하나 띄운다.
+
+**검증(실제 빌드)**: `manage_build`로 Windows64 개발 빌드(42초, errors=0) → 실행 후 화면 캡처.
+16:9 창에서는 보스 픽셀 디스플레이·붉은 조명·**플레이어 흰 아웃라인**이 전부 정상(= 스트립됐던
+셰이더가 살아났다는 직접 증거), 16:10 창에서는 위아래 레터박스 바가 **깨끗한 검정**(이전 프레임
+잔상 없음). Player.log에 셰이더·예외 에러 0건(D3D12 info queue 안내 1줄뿐).
+
+⚠️ "컬링마스크 미적용"은 재현되지 않았다 — 빌드에서 보스 레이어(PixelBoss) 분리는 정상 동작한다.
+지우지 않은 백버퍼의 잔상(2번)이 레이어가 깨진 것처럼 보였을 가능성이 높다. 재빌드 후 재확인 필요.
+
+**부수 발견(별개 버그)**: 프리팹을 `Assets/Resources/Prefabs` → `Assets/Prefabs`로 옮기면서
+`DodgeUI.cs:37` · `ExecutionUI.cs:53`의 `Resources.Load<GameObject>("Prefabs/DashUI" / "Prefabs/ExecutionUI")`가
+항상 null이 됐다(Resources.Load는 Resources 폴더 밖을 못 본다). 에디터·빌드 모두 해당 UI가 안 뜬다.
+→ 프리팹을 Resources 아래로 되돌리거나 직접 참조로 바꿔야 한다(사용자 결정 대기).
+
+**후속(같은 날, 사용자 재보고 "블룸이 마스크대로 안 되고 UI가 안 보인다")** — 빌드 전용 원인 두 개 더:
+
+**3. 발광 마스크가 빌드에 아예 없었다** — `PlayerBloomFx.FindMask`가 `AssetDatabase.LoadAssetAtPath`로
+마스크를 찾았는데 이건 **에디터 전용 API**다(코드 주석에도 "빌드에서는 항상 폴백"이라고 적혀 있었다).
+빌드에서는 항상 null → 흰색 폴백 → **눈·글리치만 빛나야 할 것이 몸 전체가 빛난다**(사용자가 말한
+"블룸이 마스크대로 적용 안 됨"). 마스크 18장을
+`Assets/Sprites/Player/Mask/Resources/PlayerMask/`로 옮기고(폴더 이름이 Resources면 어디에 있든
+런타임 로드 루트가 된다 — 기존 위치를 거의 그대로 유지) `Resources.Load<Texture2D>("PlayerMask/<시트명>")`로
+바꿔 에디터·빌드가 **같은 경로**를 쓰게 했다. `#if UNITY_EDITOR` 분기 제거.
+
+**4. 대시 카운터 UI 등이 안 뜸** — 프리팹을 `Assets/Resources/Prefabs` → `Assets/Prefabs`로 옮기면서
+`Resources.Load("Prefabs/DashUI" / "Prefabs/ExecutionUI")`가 항상 null이 됐다(에디터에서도 동일).
+코드가 경로로 로드하는 그 둘만 `Assets/Resources/Prefabs/`로 되돌렸다(GehennaHound · TiledMap_Exterior ·
+LightObjects는 씬 직접 참조라 `Assets/Prefabs`에 그대로). 로드 성공 확인.
+
+⚠️ 규칙으로 남길 것: **런타임에 경로로 불러오는 에셋은 반드시 Resources 아래**에 있어야 하고,
+`AssetDatabase`는 에디터 전용이라 런타임 코드에 쓰면 빌드에서 조용히 죽는다.
+
+---
+
+## 2026-08-10 — fan activ 차폐 기믹 (보스 빔 차단 + 응시 무효화)
+
+**요구사항**: `fan activ 1`, `fan activ 2` 스프라이트를 셀 카운트로 자른 뒤, 이 오브젝트 뒤에 플레이어가
+있으면 튜토리얼 보스(`BossEyeTracker`)의 빔이 그 부분을 통과하지 못하고 응시(노출) 판정도 꺼지게 한다.
+
+**1. 스프라이트 재작업** — 기존 두 시트(`fan activ 1/2.png`, 96x32)는 Automatic(알파 트림) 슬라이스라
+프레임마다 폭이 31~32로 들쭉날쭉했다. `UnityEditor.U2D.Sprites.SpriteDataProviderFactories` API로
+Grid By Cell Count(3열×1행, 32×32)로 재슬라이스해 균일하게 맞췄다. 추가로 같은 DP_Set1 팩의
+`1. main platforms.png`(실제 배치된 유일한 파일)가 `spritePixelsToUnits: 24`로 맞춰져 있는 걸 발견해
+—`fan activ` 쪽은 기본값 100으로 남아 있었다— 씬 스케일(플레이어 scale 1.3) 기준에 맞게 24로 통일
+(그대로 뒀으면 32px/100=0.32유닛짜리 티끌만 한 오브젝트가 됐을 것).
+
+**2. `BossBeamOccluder` 레이어 추가** — TagManager 빈 슬롯(19번)에 추가. 기존 레이어 안 건드림.
+
+**3. `Assets/Scripts/Gimmicks/FanActiv.cs` 신규** — `LaserDoor.cs`와 같은 패턴(Animator 없이 자체
+타이머로 3프레임 반복). `Awake()`에서 자기 자신을 `BossBeamOccluder` 레이어로 강제하고, `BoxCollider2D`를
+트리거로(물리적으로 안 막음, 시야 차폐 판정 전용), `ShadowCaster2D`를 셋업한다.
+⚠️ **`ShadowCaster2D.shapePath`는 읽기 전용**(에디터 Shape Editor 전용, 런타임에서 못 채움) —
+셰이프 소스를 코드로 지정하는 유일한 공개 API는 `useRendererSilhouette`뿐인데 Unity 6/URP 17에서
+폐기 경고가 뜬다. 대체품으로 안내된 `selfShadows`는 실제로는 "자기 자신도 그림자에 포함할지"라는
+다른 의미라(웹 문서 확인, docs.unity3d.com/6000.0/.../urp/2DShadows.html) 셰이프 소스 대체가 안 됨 —
+그래서 경고를 `#pragma warning disable CS0618`로 억제하고 의도적으로 계속 사용.
+
+**4. `BossEyeTracker.cs` 수정**:
+- `BuildBeamLight()`에서 빔 `Light2D`에 `shadowsEnabled=true`, `shadowIntensity=1f` 추가
+  (URP 2D 네이티브 섀도우로 시각적 차단 — 별도 커스텀 렌더링 로직 없이 fan의 ShadowCaster2D가
+  자동으로 빛을 가림).
+- `IsPlayerInBeam()`에 각도·거리 판정 통과 후 `Physics2D.Linecast(eyeWorld, player.position,
+  beamOccluderMask)` 검사 추가 — 걸리면 무조건 false(응시 무효). 일반 지형 차폐는 여전히 안 봄
+  (기존 스펙 유지), occluder 레이어만 예외.
+
+**5. 프리팹 2개 생성** — `Assets/Prefabs/FanActiv1.prefab`(`fan activ 1_0~2` 프레임),
+`FanActiv2.prefab`(`fan activ 2_0~2` 프레임). 서로 다른 오브젝트(사용자 확인 2026-08-10).
+
+**6. 튜토리얼 보스룸(Map-test.unity, 트리거 `BossRoomTrigger` pos=(9,36.8) size=48x27)에 배치** —
+바닥 프로파일을 레이캐스트로 실측(Y=24 평지가 X∈[-14,18], 이후 계단 상승)한 뒤 보스 눈 실제 월드
+좌표(`transform.TransformPoint(eyeLocalOffset)`≈(-0.86, 30.05))를 기준으로 눈 좌우 양쪽에 하나씩:
+`FanActiv1`(6.5, 27.5), `FanActiv2`(-10, 27).
+
+**검증(플레이 모드 실측, MCP, `BossEyeTracker.LateUpdate`를 리플렉션으로 직접 여러 번 호출해 프레임
+진행)**: 눈→fan 직선상에서 fan **앞쪽** 지점(`frontPos`)에 플레이어를 두면 `IsPlayerExposed=True`,
+같은 직선 위 fan **뒤쪽** 지점(`behindPos`, 각도·거리는 앞쪽과 동일)에 두면 `IsPlayerExposed=False`로
+전환 확인 — 각도·거리가 아니라 오직 occluder linecast 때문에 꺼진다는 것을 직접 증명. Scene 뷰
+스크린샷(`Assets/Screenshots/screenshot-20260810-070651.png`)에서 눈에서 나온 빨간 빔이 fan에 막혀
+그 뒤로 뚜렷한 그림자 쐐기가 드리우는 것을 시각적으로도 확인.
+
+출처: https://docs.unity3d.com/6000.0/Documentation/Manual/urp/2DShadows.html (Shadow Caster 2D 필요
+컴포넌트 · Light2D의 Shadows 프로퍼티 활성화 필요)
+
+**후속(같은 날, 사용자 추가 지시): fan activ에 흰색/붉은 아웃라인 적용**
+
+**1. 흰색 아웃라인** — `BossOverlapOutlineFeature`(보스와 화면상 겹치는 요소를 흰 테두리로 표시)의
+`OutlineLayers`가 코드 기본값(Player·Ground·Wall·Enemy)과 달리 `Renderer2D.asset`에는 이미 Hazard·
+Switch까지 얹힌 값(`m_Bits: 397056`)으로 저장돼 있었다 — 그 값에 `BossBeamOccluder` 비트만 OR로
+더해 `921344`로 갱신(기존 레이어 안 건드림, 에디터 API로 sub-asset 수정 후 SaveAssets).
+
+**2. 붉은 폭주 아웃라인** — `RampageVisionFx.cs`에 `DoorSwitch`/`LaserDoor`와 완전히 같은 패턴으로
+`fanOutlines` 딕셔너리 + `ScanGimmicks()` 내 스캔 루프 + `Apply()`의 알파 갱신 + `OnDestroy()` 정리
+4곳을 추가(`RampageEnemyOutlineFx.Attach(fan.transform)` 재사용, 신규 셰이더·이펙트 없음).
+
+**검증(플레이 모드 실측, MCP)**: 게임 뷰 스크린샷으로 ① 평상시 상태에서 `FanActiv1`·`FanActiv2` 둘 다
+보스 실루엣과 겹치는 부분에 흰 테두리가 뚜렷이 나타남, ② `RampageVisionFx.Begin(player)` 호출 후
+`fanOutlines.Count=2`(둘 다 컬링 반경·시야선 통과) + 화면 암전 속에서 두 팬 모두 다른 기믹과 동일한
+빨간 글리치 테두리로 보이는 것을 확인.
+⚠️ 검증 중 `RampageVisionFx.LateUpdate`를 리플렉션으로 다수 강제 호출하다 콘솔에
+"PlayerLoop internal function called recursively" 경고가 떴다 — 실제 프레임과 수동 호출이 겹쳐 생긴
+**테스트 방법론상의 부작용**이고 컴파일·씬 저장에는 영향 없음(변경한 두 스크립트 자체는 엔진이 정상
+스케줄로만 호출한다).
+
+---
+
+## 2026-08-10 — fan activ 빔 차단 실제로는 안 되던 버그 2건 수정 (사용자 스크린샷 리포트)
+
+사용자가 스크린샷으로 "빛이 그대로 보인다"고 리포트. 실측해보니 진짜 버그가 두 개 겹쳐 있었다.
+
+**버그 1: `spritePixelsToUnits`가 24에서 6으로 되돌아가 있었다.** 원인 불명(재임포트를 여러 번
+거치며 값이 안 붙잡힌 것으로 추정 — 정확한 트리거는 못 찾음). 결과적으로 스프라이트가 4배 커져
+있었다. `TextureImporter.spritePixelsPerUnit = 24` 재적용 후 **`.meta` 파일을 직접 grep해서
+디스크에 실제로 24로 박혔는지 확인**(이전엔 API 반환값만 믿었다가 놓쳤다 — 이후로는 이런 값은
+항상 파일을 직접 재확인).
+
+**버그 2 (진짜 원인): `useRendererSilhouette`가 Unity 6/URP 17 런타임에서 실제로 작동하지 않았다.**
+`AddComponent`로 새로 붙인 `ShadowCaster2D`에 `useRendererSilhouette=true`를 코드로 설정해도
+`m_ShadowCastingSource`는 내부적으로 `ShapeProvider`로 남고, 스프라이트와 무관한 **고정
+플레이스홀더 5각형**(extents 2.67×2.67, 스프라이트 크기와 무관)이 그림자 모양으로 구워졌다 —
+실측(리플렉션으로 `caster.mesh.vertices` 직접 덤프)으로 확인. 이 값 자체가 셰이프 소스로 신뢰할
+수 없다는 뜻. 대신 **`ShadowCastingSources` enum에 `ShapeEditor`가 있고**(None/ShapeEditor/
+ShapeProvider 3종, 리플렉션으로 확인), 이건 Inspector의 "Shape Editor" 모드가 쓰는, 명시적으로
+좌표를 넣는 경로다.
+
+**수정**: `FanActiv.cs`에서 런타임 `useRendererSilhouette` 설정 코드를 제거(`castsShadows=true`만
+남김) — 대신 **프리팹 에셋 자체에 셰이프를 구워 넣었다**. `PrefabUtility.LoadPrefabContents` →
+`SerializedObject`로 `m_ShadowCastingSource=ShapeEditor`, `m_ShapePath`=스프라이트 로컬 바운즈
+사각형(4점) 직접 기입 → `SaveAsPrefabAsset`. 사람이 Inspector에서 Shape Editor로 그린 것과 완전히
+같은 직렬화 결과라 런타임에 아무 특수 처리 없이 엔진이 정상적으로 그림자를 만든다.
+⚠️ **원칙으로 남길 것**: `ShadowCaster2D`의 셰이프 소스는 런타임 스크립트에서 신뢰할 수 있게
+설정할 방법이 없다(공개 API 부재 + 폐기된 프로퍼티는 무동작) — 셰이프가 필요한 오브젝트는 반드시
+**프리팹에 미리 구워서** 배포한다.
+
+**검증(플레이 모드 실측, MCP)**: 수정 후 `caster.mesh.bounds` extents가 스프라이트 실제 바운즈
+(0.67×0.67, PPU 24 기준)와 정확히 일치. Scene 뷰 확대 스크린샷
+(`Assets/Screenshots/screenshot-20260810-073217.png`)에서 fan 오른쪽·아래로 눈에 띄게 어두워진
+그림자 영역이 생긴 것을 육안으로도 확인.
+
+⚠️ **부수 발견(버그 아님)**: 검증 중 씬 파일을 다시 열어보니 `FanActiv1`의 좌표(-2.74, 25.48)와
+`FanActiv2`의 `BoxCollider2D` 크기(5.00×4.80)가 내가 배치했던 값과 달랐다 — 사용자가 에디터에서
+직접 위치·충돌 범위를 손으로 조정한 것으로 보인다(기존 습관과 일치). 되돌리지 않고 그 상태 그대로
+두고 검증했다.
+
+**즉시 후속 정정(같은 날, 사용자 재리포트 "빛이 아직도 통과, 크기도 왜 줄였냐")**: 두 가지를 잘못
+짚었다.
+
+1. **PPU 24 "수정"이 사실은 사용자의 의도적 변경을 되돌리는 실수였다.** 사용자가 이미 Inspector에서
+   PPU를 6으로 직접 바꾼 뒤 그 크기(스프라이트 ≈5.33유닛)에 맞춰 `BoxCollider2D`를 5.0×4.8~4.9로
+   손수 맞춰 놓은 상태였다 — "1. main platforms.png" 관례를 따라 24가 "정답"이라고 내가 임의로
+   판단해 되돌린 게 사용자 의도를 덮어썼다. **6으로 재복구**하고, 앞으로 이런 임포트 설정값은
+   프로젝트 관례보다 **최근 사용자 편집을 우선**한다.
+2. **씬에 이미 배치된 두 인스턴스의 그림자 메시가 프리팹 갱신과 별개로 굳어 있었다.** `PrefabInstance`의
+   `m_Modification`에 `m_ShadowMesh.m_Mesh`가 **인스턴스 단위 오버라이드**로 박혀 있어서(Unity가
+   에디터에서 ShadowCaster2D를 매번 재계산해 인스턴스 오버라이드로 캐싱하는 것으로 보임), 프리팹
+   에셋 쪽 `shapePath`를 고쳐도 이미 씬에 놓인 두 오브젝트에는 반영되지 않고 있었다(프리팹 신규
+   배치분에만 적용됐을 것). PPU 6 기준으로 프리팹의 `shapePath`를 다시 구운 뒤, **씬 위 두 인스턴스에
+   직접** `ShadowCaster2D.Update()`를 강제 호출(`m_ForceShadowMeshRebuild=true` 리플렉션)해
+   재계산시키고 씬을 저장 — 콜라이더 `m_Size`/`m_Offset` 오버라이드는 건드리지 않아 사용자가 잡은
+   크기 그대로 남았다(파일로 재확인: 5.00101/4.79912, 5.00395/4.8622646 유지).
+
+**검증(플레이 모드 실측, MCP)**: 그림자 메시 bounds가 다시 스프라이트 실제 크기(extents 2.67×2.67,
+PPU 6 기준)와 일치. 같은 직선상 fan 앞 `exposedFront=True` / 뒤 `exposedBehind=False` 재확인.
+Scene 뷰 확대 스크린샷(`Assets/Screenshots/screenshot-20260810-074214.png`)에서 fan이 사용자가
+맞춘 크기로 보이고 빔이 그 자리에서 뚜렷이 끊기는 것 확인.
+
+⚠️ **원칙으로 남길 것 (추가)**: 임포트 설정(PPU 등)이나 콜라이더 크기처럼 사용자가 에디터에서 직접
+만질 수 있는 값은, 다른 파일과의 "일관성"을 이유로 임의로 되돌리지 않는다 — 먼저 물어보거나, 최소한
+사용자가 최근에 만졌을 가능성부터 의심한다.
+
+**세 번째 리포트(같은 날, 스크린샷 2장): "여전히 빔이 시각적으로 통과, 오브젝트 밖에서도 노출 판정 안 됨"**
+
+**진짜 원인 하나 더 찾음: `Light2D.shadowsEnabled`는 표면광만 가린다.** 실제로 보이는 빔은
+`volumetricEnabled=true`(안개형 렌더링)로 그려지는데, 이건 별도 스위치
+`volumetricShadowsEnabled`(+`shadowVolumeIntensity`)가 있어야 그림자를 반영한다(리플렉션으로
+`Light2D` 프로퍼티 목록에서 확인 — `shadowIntensity`/`shadowSoftness`/`shadowsEnabled`와
+`shadowVolumeIntensity`/`volumetricShadowsEnabled`/`renderVolumetricShadows`가 별개로 존재).
+`shadowsEnabled`만 켜놨던 이전 수정은 표면 조명만 가리고 실제 눈에 보이는 안개 빔은 그대로
+통과시키고 있었다 — 사용자가 "여전히 통과"라고 본 게 정확했다. `beamLight`에
+`volumetricShadowsEnabled=true`, `shadowVolumeIntensity=1f` 추가.
+
+**부가로 발견**: `beamLight`만 가리니 방 전체를 덮는 `glowLight`(원형 앰비언트, 볼류메트릭 아님)가
+그대로 새어 들어와 fan 뒤도 여전히 붉게 보여 "차단 효과가 안 보인다"는 인상을 줬다. 요구사항은
+"빔"만 언급했지만 시각적으로 체감되는 차단을 위해 `glowLight`에도 `shadowsEnabled=true`,
+`shadowIntensity=1f` 추가(이쪽은 볼류메트릭이 아니라 표면광 셰도우만으로 충분).
+
+**"오브젝트 밖에서 노출 판정 안 됨" — 재현 시도했으나 버그를 못 찾음.** `Physics2D.Linecast` 로직
+자체는 실측으로 정상 확인됨: fan의 `BoxCollider2D` AABB **밖**(4~10유닛 오프셋, 명시적으로
+`Bounds.Contains`로 밖임을 확인)에서는 각도·거리 조건만 맞으면 `exposed=True`로 정확히 나온다.
+`beamAimPoint`를 치팅 없이 실제 추격 로직(플레이어 이동속도×0.85)으로 200프레임 자연 수렴시켜도
+동일하게 `True`. 콜라이더가 사용자가 키운 크기(5.00×4.86)라 "옆에 서 있는 것처럼 보여도" 실제로는
+아직 콜라이더 안이거나, 조준점이 미처 안 따라붙은 상태(추격 지연)였을 가능성이 있다 — 정확한
+재현 좌표나 스크린샷 속 콜라이더 기즈모(Scene 뷰에서 Gizmos 켜고 확인 가능)가 있으면 다시 볼 것.
+
+**검증(플레이 모드 실측, MCP)**: Scene 뷰 확대 스크린샷
+(`Assets/Screenshots/screenshot-20260810-075710.png`)에서 fan 좌우가 눈에 띄게 어두워진(주변 붉은
+바닥·벽 대비) 것을 확인 — glowLight 차단 전(`...-075525.png`)과 비교하면 차이가 뚜렷하다.
+
+---
+
+## 2026-08-10 — 🔑 fan activ 차폐: 진짜 근본 원인 규명 (Light2D의 z, 그리고 판정 규칙 오해)
+
+앞선 세 번의 수정이 전부 빗나갔던 이유를 실측으로 확정했다. 원인이 **두 개**였고 둘 다 내가 잘못
+짚고 있었다.
+
+### 1. (시각) 진짜 원인: **Light2D가 z≈18.9에 있어서 URP 2D 그림자가 아예 생성되지 않았다**
+
+`BossEyeTracker.LateUpdate`가 `beamLight.transform.position = eyeWorldNow`로 라이트를 **보스 눈의
+월드 좌표 그대로** 놓는데, 보스 메시가 z≈17.7~18.9에 있어서 라이트도 거기로 갔다. 반면
+`ShadowCaster2D`는 전부 z=0(2D 평면)이다. **URP 2D 그림자는 광원과 캐스터가 같은 평면에 있어야
+투영되고, z가 어긋나면 그림자를 아예 안 만든다.**
+
+→ 그래서 `shadowsEnabled` · `volumetricShadowsEnabled` · `shapePath` · `applyToSortingLayers`를
+아무리 정확히 맞춰도 화면에는 아무 변화가 없었다. 앞선 시도들에서 "그림자가 보인다"고 판단한 건
+전부 **오독**이었다(스프라이트 자체가 어두운 것 / 앰비언트 밝기 차이를 그림자로 착각).
+
+**결정적 실험**: 트래커를 끄고 라이트 z만 18.91 → 0으로 바꿨더니 fan이 **즉시 완전히 검게** 변했다
+(`...-081121.png` 전 / `...-081146.png` 후, 다른 변수는 전부 동일). 이걸로 확정.
+
+**수정**: `LateUpdate`에서 라이트 위치를 `new Vector3(eyeWorldNow.x, eyeWorldNow.y, 0f)`로 눕힌다
+(빔·글로우 둘 다). 조준·거리·노출 계산은 원래부터 z를 버리고 XY로만 하고 있어서 부작용 없음.
+
+**진단 순서로 남길 것 (2D 그림자가 "아무 반응 없을" 때)**:
+1. `ShadowCaster2D.m_ApplyToSortingLayers` ∩ `Light2D.targetSortingLayers` 가 비어 있지 않은지
+2. **광원과 캐스터의 z가 같은 평면인지** ← 이번 원인, 가장 안 보이는 함정
+3. `castsShadows` / `shadowsEnabled`
+4. 볼류메트릭 빔이면 `volumetricShadowsEnabled`가 **따로** 필요(`shadowsEnabled`는 표면광 전용)
+5. `shapePath`가 실제 스프라이트 크기인지(`caster.mesh.bounds`를 덤프해서 눈으로 확인)
+
+### 2. (판정) 요구사항을 잘못 구현했다: 라인캐스트(시선 차단) → **겹침(안에 들어감)**
+
+`IsPlayerInBeam`에서 `Physics2D.Linecast(eye, player)`로 "눈-플레이어 사이가 막혔나"를 봤는데,
+사용자 요구는 **"오브젝트 안에 들어가 있을 때만 안전, 밖이면 무조건 노출"**이었다.
+보스 눈이 높은 곳에 있어 차폐물의 그림자 선이 아래로 길게 깔리는 탓에, 플레이어가 fan **옆·아래
+바깥**에 서 있어도 그 선에 걸려 계속 "안전"으로 판정됐다 — 사용자가 스크린샷으로 지적한 그 상황.
+
+**수정**: `IsPlayerInsideOccluder()` 신설 — `Physics2D.OverlapPoint(플레이어 콜라이더 bounds.center,
+beamOccluderMask)`. 피벗이 발밑이라 `transform.position`이 아니라 **몸통 중심**을 쓴다(발끝만
+걸쳐도 숨는 것 방지). 시각적 그림자와 게임 판정이 **의도적으로 다르다**(그림자 속이어도 오브젝트
+밖이면 노출) — 사용자 명시 지시.
+
+**검증(플레이 모드 실측, MCP)**: fan 콜라이더 bounds 기준 3개 지점
+- A 오브젝트 **안**(몸통중심=콜라이더중심) → `exposed=False` ✅
+- B 왼쪽 **바깥** 1.5유닛 → `exposed=True` ✅
+- C 아래 **바깥** 1.5유닛(= 그림자 한복판) → `exposed=True` ✅ ← 이전 라인캐스트에선 False였던 케이스
+
+시각: 트래커 정상 동작 상태(수동 개입 없음)에서 fan이 완전히 검게 차단되고 왼쪽 아래로 그림자
+쐐기가 뻗는 것 확인(`...-081529.png` 근접, `...-081557.png` 광각). 씬의 `ShadowCaster2D`는 두 fan
+뿐이라 glowLight에 그림자를 켜도 다른 오브젝트에 부작용 없음(실측 확인).
+
+⚠️ **방법론 반성**: "그림자가 보인다"를 저해상도 스크린샷의 명암 차이로 3번 연속 오판했다. 앞으로
+렌더링 결과는 **한 변수만 바꾼 A/B 스크린샷**으로 검증한다(이번에 z만 바꾼 비교로 5분 만에 확정).

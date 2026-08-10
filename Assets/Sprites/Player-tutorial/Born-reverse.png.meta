@@ -1,0 +1,2249 @@
+fileFormatVersion: 2
+guid: f592075094786014c8742d71c8dd83d7
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 7033121763058193864
+    second: Born-reverse_0
+  - first:
+      213: 3785674352904316731
+    second: Born-reverse_1
+  - first:
+      213: -6518622014833469797
+    second: Born-reverse_2
+  - first:
+      213: 5914499702037539373
+    second: Born-reverse_3
+  - first:
+      213: -2168796799557077433
+    second: Born-reverse_4
+  - first:
+      213: -6696968145416042774
+    second: Born-reverse_5
+  - first:
+      213: -2314150676691336677
+    second: Born-reverse_6
+  - first:
+      213: 3559281048542594658
+    second: Born-reverse_7
+  - first:
+      213: -8129666616674806649
+    second: Born-reverse_8
+  - first:
+      213: 8074736141365327651
+    second: Born-reverse_9
+  - first:
+      213: -7103175603345689862
+    second: Born-reverse_10
+  - first:
+      213: -3630465111401149626
+    second: Born-reverse_11
+  - first:
+      213: 5631591892617946178
+    second: Born-reverse_12
+  - first:
+      213: 8077823429721273532
+    second: Born-reverse_13
+  - first:
+      213: -2146036248192932692
+    second: Born-reverse_14
+  - first:
+      213: 6588266869611595851
+    second: Born-reverse_15
+  - first:
+      213: -6250059649955812534
+    second: Born-reverse_16
+  - first:
+      213: -5096691254071397369
+    second: Born-reverse_17
+  - first:
+      213: -8104431637354868136
+    second: Born-reverse_18
+  - first:
+      213: 7898729784110458852
+    second: Born-reverse_19
+  - first:
+      213: 6437655444209844141
+    second: Born-reverse_20
+  - first:
+      213: -201086652391948410
+    second: Born-reverse_21
+  - first:
+      213: 3242932621153565718
+    second: Born-reverse_22
+  - first:
+      213: 3198321746882694752
+    second: Born-reverse_23
+  - first:
+      213: 1618760374307047813
+    second: Born-reverse_24
+  - first:
+      213: 7605725009321788627
+    second: Born-reverse_25
+  - first:
+      213: 4188046128791520093
+    second: Born-reverse_26
+  - first:
+      213: -3854566561944583770
+    second: Born-reverse_27
+  - first:
+      213: 9207014373154153948
+    second: Born-reverse_28
+  - first:
+      213: -4270027184998344319
+    second: Born-reverse_29
+  - first:
+      213: 3298586719806195939
+    second: Born-reverse_30
+  - first:
+      213: 2607571284220021597
+    second: Born-reverse_31
+  - first:
+      213: -2689824382949462560
+    second: Born-reverse_32
+  - first:
+      213: 5795201691238520018
+    second: Born-reverse_33
+  - first:
+      213: -9062347127631870821
+    second: Born-reverse_34
+  - first:
+      213: -1270050424351280644
+    second: Born-reverse_35
+  - first:
+      213: -3441442815467021302
+    second: Born-reverse_36
+  - first:
+      213: 7855054329688456378
+    second: Born-reverse_37
+  - first:
+      213: 538854929716922904
+    second: Born-reverse_38
+  - first:
+      213: -5673950047830870207
+    second: Born-reverse_39
+  - first:
+      213: 5037575359733014903
+    second: Born-reverse_40
+  - first:
+      213: -2377338972892659565
+    second: Born-reverse_41
+  - first:
+      213: -1899746307262198599
+    second: Born-reverse_42
+  - first:
+      213: -764849283444532023
+    second: Born-reverse_43
+  - first:
+      213: 8140530947359140971
+    second: Born-reverse_44
+  - first:
+      213: -4531289205115281406
+    second: Born-reverse_45
+  - first:
+      213: -5232352821722496237
+    second: Born-reverse_46
+  - first:
+      213: 3745645141079538283
+    second: Born-reverse_47
+  - first:
+      213: 3965724027556786685
+    second: Born-reverse_48
+  - first:
+      213: -5591517094046715185
+    second: Born-reverse_49
+  - first:
+      213: 4915651068341080296
+    second: Born-reverse_50
+  - first:
+      213: -6968645077511875746
+    second: Born-reverse_51
+  - first:
+      213: -3991489777500166188
+    second: Born-reverse_52
+  - first:
+      213: -8465877950938127460
+    second: Born-reverse_53
+  - first:
+      213: -2894056585908943865
+    second: Born-reverse_54
+  - first:
+      213: -5264572770262822669
+    second: Born-reverse_55
+  - first:
+      213: 2797779267693364645
+    second: Born-reverse_56
+  - first:
+      213: -4433499812503682413
+    second: Born-reverse_57
+  - first:
+      213: -8955351621383699664
+    second: Born-reverse_58
+  - first:
+      213: 3031179652864430726
+    second: Born-reverse_59
+  - first:
+      213: 8398555396520375992
+    second: Born-reverse_60
+  - first:
+      213: -1666601625734119138
+    second: Born-reverse_61
+  - first:
+      213: 7379135460314307833
+    second: Born-reverse_62
+  - first:
+      213: 626112179514380740
+    second: Born-reverse_63
+  - first:
+      213: 5698546804510490618
+    second: Born-reverse_64
+  - first:
+      213: 2429303825910558888
+    second: Born-reverse_65
+  - first:
+      213: -3516795906722583196
+    second: Born-reverse_66
+  - first:
+      213: 4298642055198061349
+    second: Born-reverse_67
+  - first:
+      213: -8836325778384631356
+    second: Born-reverse_68
+  - first:
+      213: 5726803442521561814
+    second: Born-reverse_69
+  - first:
+      213: 4350832285054740443
+    second: Born-reverse_70
+  - first:
+      213: -332452782017918205
+    second: Born-reverse_71
+  - first:
+      213: 7132492117109752240
+    second: Born-reverse_72
+  - first:
+      213: 1275035153552072387
+    second: Born-reverse_73
+  - first:
+      213: 6928054259005444071
+    second: Born-reverse_74
+  - first:
+      213: -5244122965327051927
+    second: Born-reverse_75
+  - first:
+      213: 3352237560060569449
+    second: Born-reverse_76
+  - first:
+      213: -4379571777302513250
+    second: Born-reverse_77
+  - first:
+      213: 703658313871701192
+    second: Born-reverse_78
+  - first:
+      213: 625755116259769126
+    second: Born-reverse_79
+  - first:
+      213: 6580930521464969406
+    second: Born-reverse_80
+  - first:
+      213: 2639142609390763177
+    second: Born-reverse_81
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 0
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Born-reverse_0
+      rect:
+        serializedVersion: 2
+        x: 365
+        y: 3671
+        width: 68
+        height: 116
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8c5172dfafaaa9160800000000000000
+      internalID: 7033121763058193864
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Born-reverse_1
+      rect:
+        serializedVersion: 2
+        x: 437
+        y: 3761
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b372b2044ca698430800000000000000
+      internalID: 3785674352904316731
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Born-reverse_2
+      rect:
+        serializedVersion: 2
+        x: 1517
+        y: 3671
+        width: 68
+        height: 116
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b965fcc80d33985a0800000000000000
+      internalID: -6518622014833469797
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Born-reverse_3
+      rect:
+        serializedVersion: 2
+        x: 1589
+        y: 3761
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d2ae9148426841250800000000000000
+      internalID: 5914499702037539373
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Born-reverse_4
+      rect:
+        serializedVersion: 2
+        x: 2613
+        y: 3671
+        width: 214
+        height: 122
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 74675643dc2e6e1e0800000000000000
+      internalID: -2168796799557077433
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Born-reverse_5
+      rect:
+        serializedVersion: 2
+        x: 3785
+        y: 3737
+        width: 62
+        height: 56
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ae6ce5c24f69f03a0800000000000000
+      internalID: -6696968145416042774
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Born-reverse_6
+      rect:
+        serializedVersion: 2
+        x: 3797
+        y: 3677
+        width: 146
+        height: 98
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b12451f683c72efd0800000000000000
+      internalID: -2314150676691336677
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Born-reverse_7
+      rect:
+        serializedVersion: 2
+        x: 3851
+        y: 3767
+        width: 50
+        height: 38
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 266492a714b156130800000000000000
+      internalID: 3559281048542594658
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Born-reverse_8
+      rect:
+        serializedVersion: 2
+        x: 3977
+        y: 3731
+        width: 6
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7841fb2f84f9d2f80800000000000000
+      internalID: -8129666616674806649
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Born-reverse_9
+      rect:
+        serializedVersion: 2
+        x: 3977
+        y: 3683
+        width: 6
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 327b6112db93f0070800000000000000
+      internalID: 8074736141365327651
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Born-reverse_10
+      rect:
+        serializedVersion: 2
+        x: 347
+        y: 2633
+        width: 20
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: af2fb594c637c6d90800000000000000
+      internalID: -7103175603345689862
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Born-reverse_11
+      rect:
+        serializedVersion: 2
+        x: 377
+        y: 2639
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 64b4c79573ffd9dc0800000000000000
+      internalID: -3630465111401149626
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Born-reverse_12
+      rect:
+        serializedVersion: 2
+        x: 407
+        y: 2639
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 24466772dfe672e40800000000000000
+      internalID: 5631591892617946178
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Born-reverse_13
+      rect:
+        serializedVersion: 2
+        x: 419
+        y: 2627
+        width: 32
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cb43dd67c913a1070800000000000000
+      internalID: 8077823429721273532
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Born-reverse_14
+      rect:
+        serializedVersion: 2
+        x: 1493
+        y: 2633
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ca42957076fb732e0800000000000000
+      internalID: -2146036248192932692
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Born-reverse_15
+      rect:
+        serializedVersion: 2
+        x: 1529
+        y: 2645
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b488ca0dfc93e6b50800000000000000
+      internalID: 6588266869611595851
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Born-reverse_16
+      rect:
+        serializedVersion: 2
+        x: 1577
+        y: 2645
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a4ba163dcd35349a0800000000000000
+      internalID: -6250059649955812534
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Born-reverse_17
+      rect:
+        serializedVersion: 2
+        x: 2645
+        y: 2639
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 704fb3fce4ae449b0800000000000000
+      internalID: -5096691254071397369
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Born-reverse_18
+      rect:
+        serializedVersion: 2
+        x: 3791
+        y: 2639
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 852960d6d56478f80800000000000000
+      internalID: -8104431637354868136
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Born-reverse_19
+      rect:
+        serializedVersion: 2
+        x: 1595
+        y: 2633
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4e7a3bea3eced9d60800000000000000
+      internalID: 7898729784110458852
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Born-reverse_20
+      rect:
+        serializedVersion: 2
+        x: 2753
+        y: 2633
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dafbc72b485275950800000000000000
+      internalID: 6437655444209844141
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Born-reverse_21
+      rect:
+        serializedVersion: 2
+        x: 329
+        y: 2609
+        width: 32
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 68ffa1b41c8953df0800000000000000
+      internalID: -201086652391948410
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Born-reverse_22
+      rect:
+        serializedVersion: 2
+        x: 467
+        y: 2579
+        width: 26
+        height: 50
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 61c72628906310d20800000000000000
+      internalID: 3242932621153565718
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Born-reverse_23
+      rect:
+        serializedVersion: 2
+        x: 1475
+        y: 2609
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 06e8950fea8b26c20800000000000000
+      internalID: 3198321746882694752
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Born-reverse_24
+      rect:
+        serializedVersion: 2
+        x: 1631
+        y: 2615
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 589cc0fdbfdf67610800000000000000
+      internalID: 1618760374307047813
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Born-reverse_25
+      rect:
+        serializedVersion: 2
+        x: 2789
+        y: 2621
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3d40eef5996fc8960800000000000000
+      internalID: 7605725009321788627
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Born-reverse_26
+      rect:
+        serializedVersion: 2
+        x: 3947
+        y: 2621
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d538191d3cdee1a30800000000000000
+      internalID: 4188046128791520093
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Born-reverse_27
+      rect:
+        serializedVersion: 2
+        x: 371
+        y: 2597
+        width: 20
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6a1c1306224d18ac0800000000000000
+      internalID: -3854566561944583770
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Born-reverse_28
+      rect:
+        serializedVersion: 2
+        x: 431
+        y: 2597
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cd5e4c1aac2e5cf70800000000000000
+      internalID: 9207014373154153948
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Born-reverse_29
+      rect:
+        serializedVersion: 2
+        x: 1517
+        y: 2603
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 18999e816e0ddb4c0800000000000000
+      internalID: -4270027184998344319
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Born-reverse_30
+      rect:
+        serializedVersion: 2
+        x: 1589
+        y: 2603
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3e88ede152fe6cd20800000000000000
+      internalID: 3298586719806195939
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Born-reverse_31
+      rect:
+        serializedVersion: 2
+        x: 2627
+        y: 2609
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d5b817a7444ff2420800000000000000
+      internalID: 2607571284220021597
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Born-reverse_32
+      rect:
+        serializedVersion: 2
+        x: 323
+        y: 2585
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0edec1a99f2dbaad0800000000000000
+      internalID: -2689824382949462560
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Born-reverse_33
+      rect:
+        serializedVersion: 2
+        x: 335
+        y: 2591
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2d4d300eb31bc6050800000000000000
+      internalID: 5795201691238520018
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Born-reverse_34
+      rect:
+        serializedVersion: 2
+        x: 1469
+        y: 2585
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b9488324d431c3280800000000000000
+      internalID: -9062347127631870821
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Born-reverse_35
+      rect:
+        serializedVersion: 2
+        x: 1637
+        y: 2585
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cf135b93edfdf5ee0800000000000000
+      internalID: -1270050424351280644
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Born-reverse_36
+      rect:
+        serializedVersion: 2
+        x: 2615
+        y: 2585
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a0c944d2ef98d30d0800000000000000
+      internalID: -3441442815467021302
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Born-reverse_37
+      rect:
+        serializedVersion: 2
+        x: 359
+        y: 2579
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: abc79748b42c20d60800000000000000
+      internalID: 7855054329688456378
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Born-reverse_38
+      rect:
+        serializedVersion: 2
+        x: 1625
+        y: 2579
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 81ace3f14b56a7700800000000000000
+      internalID: 538854929716922904
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Born-reverse_39
+      rect:
+        serializedVersion: 2
+        x: 1643
+        y: 2567
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 147fabd4e741241b0800000000000000
+      internalID: -5673950047830870207
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Born-reverse_40
+      rect:
+        serializedVersion: 2
+        x: 2801
+        y: 2573
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 771a526791019e540800000000000000
+      internalID: 5037575359733014903
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Born-reverse_41
+      rect:
+        serializedVersion: 2
+        x: 2825
+        y: 2579
+        width: 6
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3908a02cccef10fd0800000000000000
+      internalID: -2377338972892659565
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Born-reverse_42
+      rect:
+        serializedVersion: 2
+        x: 3977
+        y: 2573
+        width: 6
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9bcc6408cceb2a5e0800000000000000
+      internalID: -1899746307262198599
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Born-reverse_43
+      rect:
+        serializedVersion: 2
+        x: 329
+        y: 2537
+        width: 32
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9cc939901a5b265f0800000000000000
+      internalID: -764849283444532023
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Born-reverse_44
+      rect:
+        serializedVersion: 2
+        x: 365
+        y: 2555
+        width: 20
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b6c6a6824c9f8f070800000000000000
+      internalID: 8140530947359140971
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Born-reverse_45
+      rect:
+        serializedVersion: 2
+        x: 389
+        y: 2549
+        width: 38
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 200aa8ac970ad11c0800000000000000
+      internalID: -4531289205115281406
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Born-reverse_46
+      rect:
+        serializedVersion: 2
+        x: 473
+        y: 2549
+        width: 14
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 313c7b1b4d2f267b0800000000000000
+      internalID: -5232352821722496237
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Born-reverse_47
+      rect:
+        serializedVersion: 2
+        x: 485
+        y: 2549
+        width: 20
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b6ab6b819643bf330800000000000000
+      internalID: 3745645141079538283
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Born-reverse_48
+      rect:
+        serializedVersion: 2
+        x: 1481
+        y: 2549
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: df1f0c3edf4190730800000000000000
+      internalID: 3965724027556786685
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Born-reverse_49
+      rect:
+        serializedVersion: 2
+        x: 1517
+        y: 2555
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fc232ddf3d0f662b0800000000000000
+      internalID: -5591517094046715185
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Born-reverse_50
+      rect:
+        serializedVersion: 2
+        x: 1571
+        y: 2549
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8e05d383a96e73440800000000000000
+      internalID: 4915651068341080296
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Born-reverse_51
+      rect:
+        serializedVersion: 2
+        x: 1631
+        y: 2549
+        width: 14
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e53512539366a4f90800000000000000
+      internalID: -6968645077511875746
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Born-reverse_52
+      rect:
+        serializedVersion: 2
+        x: 2633
+        y: 2549
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4d7ef77f1316b98c0800000000000000
+      internalID: -3991489777500166188
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Born-reverse_53
+      rect:
+        serializedVersion: 2
+        x: 2789
+        y: 2549
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c9365869bd8238a80800000000000000
+      internalID: -8465877950938127460
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Born-reverse_54
+      rect:
+        serializedVersion: 2
+        x: 359
+        y: 2531
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 70484055ede36d7d0800000000000000
+      internalID: -2894056585908943865
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Born-reverse_55
+      rect:
+        serializedVersion: 2
+        x: 449
+        y: 2525
+        width: 20
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3f05a4655fa70f6b0800000000000000
+      internalID: -5264572770262822669
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Born-reverse_56
+      rect:
+        serializedVersion: 2
+        x: 503
+        y: 2537
+        width: 24
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5a5c0d2bb65b3d620800000000000000
+      internalID: 2797779267693364645
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Born-reverse_57
+      rect:
+        serializedVersion: 2
+        x: 1461
+        y: 2531
+        width: 28
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 39205f3096b0972c0800000000000000
+      internalID: -4433499812503682413
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Born-reverse_58
+      rect:
+        serializedVersion: 2
+        x: 1505
+        y: 2525
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 033c4b8d52338b380800000000000000
+      internalID: -8955351621383699664
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Born-reverse_59
+      rect:
+        serializedVersion: 2
+        x: 1613
+        y: 2525
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 682506b95d9e01a20800000000000000
+      internalID: 3031179652864430726
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Born-reverse_60
+      rect:
+        serializedVersion: 2
+        x: 1649
+        y: 2537
+        width: 14
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8b6790cb2a9ad8470800000000000000
+      internalID: 8398555396520375992
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Born-reverse_61
+      rect:
+        serializedVersion: 2
+        x: 1673
+        y: 2531
+        width: 6
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e118704c6aa0fd8e0800000000000000
+      internalID: -1666601625734119138
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Born-reverse_62
+      rect:
+        serializedVersion: 2
+        x: 2615
+        y: 2537
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9fcd585da94f76660800000000000000
+      internalID: 7379135460314307833
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Born-reverse_63
+      rect:
+        serializedVersion: 2
+        x: 2627
+        y: 2531
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4c11081c5b560b800800000000000000
+      internalID: 626112179514380740
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Born-reverse_64
+      rect:
+        serializedVersion: 2
+        x: 2795
+        y: 2537
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: afff8c2602e451f40800000000000000
+      internalID: 5698546804510490618
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Born-reverse_65
+      rect:
+        serializedVersion: 2
+        x: 2819
+        y: 2531
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8a075ea65fe96b120800000000000000
+      internalID: 2429303825910558888
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Born-reverse_66
+      rect:
+        serializedVersion: 2
+        x: 3575
+        y: 2537
+        width: 206
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 46da04071c4d13fc0800000000000000
+      internalID: -3516795906722583196
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Born-reverse_67
+      rect:
+        serializedVersion: 2
+        x: 3941
+        y: 2537
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 523b2ac8c28d7ab30800000000000000
+      internalID: 4298642055198061349
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Born-reverse_68
+      rect:
+        serializedVersion: 2
+        x: 3965
+        y: 2531
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4c9c1cb75801f5580800000000000000
+      internalID: -8836325778384631356
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Born-reverse_69
+      rect:
+        serializedVersion: 2
+        x: 2657
+        y: 2525
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6da5bf99361b97f40800000000000000
+      internalID: 5726803442521561814
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Born-reverse_70
+      rect:
+        serializedVersion: 2
+        x: 2771
+        y: 2525
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bd72dfb59e2416c30800000000000000
+      internalID: 4350832285054740443
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Born-reverse_71
+      rect:
+        serializedVersion: 2
+        x: 3929
+        y: 2525
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 30b4b37c4f3e26bf0800000000000000
+      internalID: -332452782017918205
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Born-reverse_72
+      rect:
+        serializedVersion: 2
+        x: 521
+        y: 2513
+        width: 6
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0b1c99b7ac3bbf260800000000000000
+      internalID: 7132492117109752240
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Born-reverse_73
+      rect:
+        serializedVersion: 2
+        x: 1655
+        y: 2501
+        width: 24
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3ce5b9b77b5d1b110800000000000000
+      internalID: 1275035153552072387
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Born-reverse_74
+      rect:
+        serializedVersion: 2
+        x: 2795
+        y: 2501
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7efc6a464a4652060800000000000000
+      internalID: 6928054259005444071
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Born-reverse_75
+      rect:
+        serializedVersion: 2
+        x: 3947
+        y: 2501
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 963863592f12937b0800000000000000
+      internalID: -5244122965327051927
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Born-reverse_76
+      rect:
+        serializedVersion: 2
+        x: 497
+        y: 1469
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 967e12acc4a858e20800000000000000
+      internalID: 3352237560060569449
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Born-reverse_77
+      rect:
+        serializedVersion: 2
+        x: 509
+        y: 1415
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e99be892ca2a833c0800000000000000
+      internalID: -4379571777302513250
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Born-reverse_78
+      rect:
+        serializedVersion: 2
+        x: 1667
+        y: 1421
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8c4b2912285e3c900800000000000000
+      internalID: 703658313871701192
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Born-reverse_79
+      rect:
+        serializedVersion: 2
+        x: 317
+        y: 1379
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 62bfb0d76f02fa800800000000000000
+      internalID: 625755116259769126
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Born-reverse_80
+      rect:
+        serializedVersion: 2
+        x: 503
+        y: 1379
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: eb812772179245b50800000000000000
+      internalID: 6580930521464969406
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Born-reverse_81
+      rect:
+        serializedVersion: 2
+        x: 485
+        y: 1349
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9ac7550783e10a420800000000000000
+      internalID: 2639142609390763177
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Born-reverse_0: 7033121763058193864
+      Born-reverse_1: 3785674352904316731
+      Born-reverse_10: -7103175603345689862
+      Born-reverse_11: -3630465111401149626
+      Born-reverse_12: 5631591892617946178
+      Born-reverse_13: 8077823429721273532
+      Born-reverse_14: -2146036248192932692
+      Born-reverse_15: 6588266869611595851
+      Born-reverse_16: -6250059649955812534
+      Born-reverse_17: -5096691254071397369
+      Born-reverse_18: -8104431637354868136
+      Born-reverse_19: 7898729784110458852
+      Born-reverse_2: -6518622014833469797
+      Born-reverse_20: 6437655444209844141
+      Born-reverse_21: -201086652391948410
+      Born-reverse_22: 3242932621153565718
+      Born-reverse_23: 3198321746882694752
+      Born-reverse_24: 1618760374307047813
+      Born-reverse_25: 7605725009321788627
+      Born-reverse_26: 4188046128791520093
+      Born-reverse_27: -3854566561944583770
+      Born-reverse_28: 9207014373154153948
+      Born-reverse_29: -4270027184998344319
+      Born-reverse_3: 5914499702037539373
+      Born-reverse_30: 3298586719806195939
+      Born-reverse_31: 2607571284220021597
+      Born-reverse_32: -2689824382949462560
+      Born-reverse_33: 5795201691238520018
+      Born-reverse_34: -9062347127631870821
+      Born-reverse_35: -1270050424351280644
+      Born-reverse_36: -3441442815467021302
+      Born-reverse_37: 7855054329688456378
+      Born-reverse_38: 538854929716922904
+      Born-reverse_39: -5673950047830870207
+      Born-reverse_4: -2168796799557077433
+      Born-reverse_40: 5037575359733014903
+      Born-reverse_41: -2377338972892659565
+      Born-reverse_42: -1899746307262198599
+      Born-reverse_43: -764849283444532023
+      Born-reverse_44: 8140530947359140971
+      Born-reverse_45: -4531289205115281406
+      Born-reverse_46: -5232352821722496237
+      Born-reverse_47: 3745645141079538283
+      Born-reverse_48: 3965724027556786685
+      Born-reverse_49: -5591517094046715185
+      Born-reverse_5: -6696968145416042774
+      Born-reverse_50: 4915651068341080296
+      Born-reverse_51: -6968645077511875746
+      Born-reverse_52: -3991489777500166188
+      Born-reverse_53: -8465877950938127460
+      Born-reverse_54: -2894056585908943865
+      Born-reverse_55: -5264572770262822669
+      Born-reverse_56: 2797779267693364645
+      Born-reverse_57: -4433499812503682413
+      Born-reverse_58: -8955351621383699664
+      Born-reverse_59: 3031179652864430726
+      Born-reverse_6: -2314150676691336677
+      Born-reverse_60: 8398555396520375992
+      Born-reverse_61: -1666601625734119138
+      Born-reverse_62: 7379135460314307833
+      Born-reverse_63: 626112179514380740
+      Born-reverse_64: 5698546804510490618
+      Born-reverse_65: 2429303825910558888
+      Born-reverse_66: -3516795906722583196
+      Born-reverse_67: 4298642055198061349
+      Born-reverse_68: -8836325778384631356
+      Born-reverse_69: 5726803442521561814
+      Born-reverse_7: 3559281048542594658
+      Born-reverse_70: 4350832285054740443
+      Born-reverse_71: -332452782017918205
+      Born-reverse_72: 7132492117109752240
+      Born-reverse_73: 1275035153552072387
+      Born-reverse_74: 6928054259005444071
+      Born-reverse_75: -5244122965327051927
+      Born-reverse_76: 3352237560060569449
+      Born-reverse_77: -4379571777302513250
+      Born-reverse_78: 703658313871701192
+      Born-reverse_79: 625755116259769126
+      Born-reverse_8: -8129666616674806649
+      Born-reverse_80: 6580930521464969406
+      Born-reverse_81: 2639142609390763177
+      Born-reverse_9: 8074736141365327651
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

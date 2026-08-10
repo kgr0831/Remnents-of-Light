@@ -52,9 +52,21 @@ public class BossEyeTracker : MonoBehaviour
     public float beamIntensity = 3f;
     public float beamInnerAngle = 14f;
     public float beamOuterAngle = 45f;
-    public float beamRange = 25f;
+    // 2026-08-10 후속: 25는 실제 보스룸(48x27) 기준 눈~최원거리 코너 실측 약 49유닛의 절반밖에 안 돼,
+    // 플레이어가 방 반대쪽에 서 있으면(가만히 있어도) 빛이 아예 안 닿고 노출 판정(IsPlayerInBeam도
+    // 이 값을 그대로 씀)도 끊겼다 — 최원거리보다 넉넉히 큰 값으로 올림.
+    public float beamRange = 55f;
     [Tooltip("빔이 플레이어를 순간적으로 스냅하지 않고 쫓아가는 느낌을 주는 회전 속도(도/초)")]
     public float beamTrackSpeedDegPerSec = 180f;
+    // 사용자 지시(2026-08-10): "거리가 멀수록 붉은 빔이 잘 안 보인다" — Light2D Point의 반경 감쇠
+    // (pointLightOuterRadius=beamRange에 가까워질수록 자연히 어두워짐) 때문에 사거리 끝에서는
+    // "지금 빔에 비춰지고 있다"는 게 잘 안 느껴졌다. 플레이어와의 실제 거리(0=바로 옆, beamRange=사거리
+    // 끝)에 따라 세기를 보간해서, 멀어질수록 오히려 더 쨍하게 밝혀 항상 눈에 띄게 한다.
+    [Header("Beam Distance Compensation (멀수록 더 밝게 — 감쇠 보정)")]
+    [Tooltip("플레이어가 눈 바로 옆(거리 0)에 있을 때의 세기 배율 — 1이면 beamIntensity 그대로")]
+    public float beamNearIntensityMultiplier = 1f;
+    [Tooltip("플레이어가 사거리(beamRange) 끝에 있을 때의 세기 배율 — 1보다 크면 멀어질수록 더 밝아짐")]
+    public float beamFarIntensityMultiplier = 2.5f;
     // Light2D의 Point(=인스펙터상 Spot) 타입 콘이 실제로 어느 로컬 축을 향해 뻗는지 불확실해
     // 노출해둠 — 빔이 눈 방향과 90도 어긋나 보이면 이 값을 Vector3.right 등으로 바꾼다.
     public Vector3 beamAimLocalAxis = Vector3.up;
@@ -75,10 +87,20 @@ public class BossEyeTracker : MonoBehaviour
     // "추격"이 아니라 "조준"이 된다. 그래서 월드 공간의 조준점(beamAimPoint)이 플레이어를
     // 이동속도 기준으로 뒤쫓게 하고, 빔은 그 점을 겨눈다. 플레이어보다 느리니 달아나면 벗어난다.
     [Header("Beam Chase (조준점이 플레이어를 뒤쫓는 속도)")]
+    // 사용자 지시(2026-08-10): "빔 속도 1.2배" → 0.85 × 1.2 = 1.02는 1을 넘어 달려서 도망치는 루트가
+    // 통째로 막히므로, 체감은 그만큼 올리되 1 미만인 0.98로 잡았다(도망 루트 유지 + 훨씬 빡빡하게).
     [Tooltip("플레이어 이동속도 대비 배율 — 1보다 작아야 도망칠 수 있다")]
-    public float beamChaseSpeedFactor = 0.85f;
+    public float beamChaseSpeedFactor = 0.98f;
     [Tooltip("플레이어(PlayerController)를 못 찾았을 때 쓸 초당 이동 속도")]
     public float beamChaseSpeedFallback = 4.5f;
+
+    // 사용자 지시(2026-08-10): "fan activ 뒤에 있으면 빔이 통과 못하고 응시도 적용 안 됨" — 이 레이어의
+    // 콜라이더(FanActiv.cs가 자기 자신을 이 레이어로 강제함)가 눈과 플레이어 사이를 가로막으면
+    // 노출 판정을 끈다. 시각적으로 빔 자체가 안 보이는 건 별개 경로(ShadowCaster2D + beamLight의
+    // shadowsEnabled)로 처리되므로, 이 마스크와 그 오브젝트들의 레이어가 항상 일치해야 한다.
+    [Header("Beam Occlusion (이 레이어가 눈-플레이어 사이를 가리면 노출 무효)")]
+    public string beamOccluderLayerName = "BossBeamOccluder";
+    int beamOccluderMask;
 
     // 사용자 지시(2026-08-09): 빔에 3초 이상 계속 노출되면 자아 고갈과 같은 화면 노이즈가 걸리고
     // 5초에 한 칸씩 체력이 깎인다. 노출이 끊기면 카운트도 노이즈도 즉시 0으로 돌아간다.
@@ -111,6 +133,7 @@ public class BossEyeTracker : MonoBehaviour
     Light2D glowLight;
 
     PlayerController playerController;
+    Collider2D playerCollider;    // occluder 겹침 판정용(발밑 피벗 보정 — 몸통 중심을 쓴다)
     Vector3 beamAimPoint;      // 플레이어를 뒤쫓는 월드 조준점 — 빔은 항상 이 점을 겨눈다
     float exposureTimer;       // 연속 노출 시간(끊기면 0)
     float exposureDamageTimer; // 디버프가 걸린 뒤 도는 피해 주기
@@ -123,6 +146,8 @@ public class BossEyeTracker : MonoBehaviour
 
     void Awake()
     {
+        beamOccluderMask = LayerMask.GetMask(beamOccluderLayerName);
+
         if (player == null)
         {
             GameObject p = GameObject.FindGameObjectWithTag("Player");
@@ -169,6 +194,16 @@ public class BossEyeTracker : MonoBehaviour
         beamLight.volumeIntensity = 1f;
         // 기본값이 false라 이게 없으면 라이트 자체가 화면에 전혀 안 보인다(볼류메트릭 시각화 스위치).
         beamLight.volumetricEnabled = true;
+        // fan activ 같은 ShadowCaster2D 오브젝트가 실제로 빔을 가리게 한다(사용자 지시 2026-08-10).
+        // shadowIntensity=1이면 그림자 영역을 완전히 차단(부분 투과 없음).
+        beamLight.shadowsEnabled = true;
+        beamLight.shadowIntensity = 1f;
+        // ⚠️ shadowsEnabled는 라이트의 "표면 밝기" 기여만 가린다 — 실제 눈에 보이는 붉은 빔은
+        // volumetricEnabled(안개형 렌더링)로 그려지는데 이쪽은 별도 스위치(volumetricShadowsEnabled)가
+        // 있어야 그림자를 반영한다. 이걸 빠뜨리면 표면 조명은 막히는데 안개 빔은 그대로 뚫고 지나가
+        // "시각적으로 여전히 통과한다"로 보인다(사용자 리포트 2026-08-10 스크린샷으로 확인).
+        beamLight.volumetricShadowsEnabled = true;
+        beamLight.shadowVolumeIntensity = 1f;
         ApplyToAllSortingLayers(beamLight);
 
         // 넓은 원형 조명 — 각도 360이면 부채꼴이 아니라 완전한 원이 된다.
@@ -183,6 +218,12 @@ public class BossEyeTracker : MonoBehaviour
         glowLight.pointLightInnerRadius = glowInnerRadius;
         glowLight.pointLightOuterRadius = glowOuterRadius;
         glowLight.volumetricEnabled = false; // 조명만 — 안개(볼류메트릭)는 빔 쪽에만 남긴다
+        // 사용자 리포트(2026-08-10): 빔만 가려도 방 전체를 채우는 이 원형 조명이 그대로 새어 들어와
+        // fan 뒤가 여전히 붉게 보이고 "빛이 안 막힌 것"처럼 느껴졌다 — 같은 차폐물이 빔뿐 아니라
+        // 보스의 빛 전체를 막아야 눈에 띄게 어두워진다. volumetricShadows는 이 라이트가
+        // volumetricEnabled=false라 필요 없다.
+        glowLight.shadowsEnabled = true;
+        glowLight.shadowIntensity = 1f;
         ApplyToAllSortingLayers(glowLight);
     }
 
@@ -243,13 +284,18 @@ public class BossEyeTracker : MonoBehaviour
         // 다르면(원근 없는 직교 카메라라도) 빛의 부채꼴이 화면 밖으로 기울어져 투영된 크기가 계속
         // 달라 보이는 문제가 있었다(사용자 리포트: "빛이 자꾸 크기가 바뀜").
         Vector3 eyeWorldNow = transform.TransformPoint(eyeLocalOffset);
-        beamLight.transform.position = eyeWorldNow;
+        // ⚠️ 라이트는 반드시 z=0 평면에 둔다(2026-08-10 실측으로 잡은 버그). 보스 메시가 z≈18에
+        // 있어 눈 위치를 그대로 쓰면 라이트도 z≈18로 가는데, URP 2D 그림자는 광원과
+        // ShadowCaster2D(전부 z=0)가 같은 평면에 있어야 투영된다 — z가 어긋나면 그림자가 아예
+        // 생성되지 않아 "차폐물을 빛이 그대로 통과"한다(셰이더·레이어를 다 맞춰도 안 됐던 진짜 원인).
+        Vector3 lightPos = new Vector3(eyeWorldNow.x, eyeWorldNow.y, 0f);
+        beamLight.transform.position = lightPos;
 
         // 넓은 조명은 눈 위치만 따라가면 된다(방향 없음). 플레이 모드에서 인스펙터로 세기·반경을
         // 바로 굴려볼 수 있도록 값도 매 프레임 반영한다.
         if (glowLight != null)
         {
-            glowLight.transform.position = eyeWorldNow;
+            glowLight.transform.position = lightPos;
             glowLight.color = glowColor;
             glowLight.intensity = glowIntensity;
             glowLight.pointLightInnerRadius = glowInnerRadius;
@@ -264,6 +310,16 @@ public class BossEyeTracker : MonoBehaviour
         Vector3 playerFlat = new Vector3(player.position.x, player.position.y, eyeWorldNow.z);
         beamAimPoint = Vector3.MoveTowards(beamAimPoint, playerFlat, chaseSpeed * Time.deltaTime);
 
+        // 실제 플레이어와의 거리로 감쇠를 보정한다(조준점이 아니라 플레이어 기준 — "내가 지금
+        // 비춰지고 있다"는 걸 알려주는 게 목적이므로).
+        float distToPlayer = Vector3.Distance(eyeWorldNow, playerFlat);
+        float distT = Mathf.Clamp01(distToPlayer / Mathf.Max(0.01f, beamRange));
+        beamLight.intensity = beamIntensity * Mathf.Lerp(beamNearIntensityMultiplier, beamFarIntensityMultiplier, distT);
+        // 사용자 지시(2026-08-10): "빔의 크기는 딱 플레이어와의 거리로" — 사거리(beamRange)를 항상
+        // 꽉 채우는 대신, 매 프레임 실제 거리만큼만 뻗는다(플레이어가 가까우면 짧게, 멀면 길게).
+        // beamRange는 그 위에 거는 최대 한도로만 남긴다(위 세기 보정의 정규화 기준값과도 공유).
+        beamLight.pointLightOuterRadius = Mathf.Min(distToPlayer, beamRange);
+
         Vector3 aimDir = beamAimPoint - eyeWorldNow;
         aimDir.z = 0f;
         if (aimDir.sqrMagnitude > 0.0001f)
@@ -277,8 +333,12 @@ public class BossEyeTracker : MonoBehaviour
         UpdateExposure(eyeWorldNow);
     }
 
-    /// <summary>플레이어가 빔 부채꼴 안에 있는지 — 사거리(beamRange)와 외곽각(beamOuterAngle, 전체각)으로만
-    /// 판정한다. 지형 차폐는 보지 않는다(요구사항 밖 · 2D 부채꼴 빛 자체도 벽을 무시한다).</summary>
+    /// <summary>플레이어가 빔 부채꼴 안에 있는지 — 사거리(beamRange)와 외곽각(beamOuterAngle, 전체각)으로
+    /// 1차 판정한 뒤, 플레이어가 occluder(fan activ 등) **안에 들어가 있으면** 최종적으로 false로 뒤집는다.
+    /// ⚠️ 시선 차단(눈→플레이어 라인캐스트)이 아니라 **겹침** 판정이다(사용자 지시 2026-08-10):
+    /// "오브젝트 안에 들어가 있을 때만 안전, 밖에 있으면 노출". 라인캐스트로 하면 보스 눈이 높이
+    /// 있어 차폐물의 그림자가 아래로 길게 깔리고, 플레이어가 오브젝트 옆(밖)에 서 있어도 그 그림자
+    /// 선에 걸려 계속 안전해지는 문제가 있었다. 시각적 그림자와 판정이 일부러 다르다.</summary>
     bool IsPlayerInBeam(Vector3 eyeWorld)
     {
         Vector3 toPlayer = player.position - eyeWorld;
@@ -292,7 +352,23 @@ public class BossEyeTracker : MonoBehaviour
         if (beamDir.sqrMagnitude < 0.0001f) return false;
 
         // Light2D의 pointLightOuterAngle은 부채꼴 "전체" 각이라 반각과 비교한다.
-        return Vector3.Angle(beamDir, toPlayer) <= beamOuterAngle * 0.5f;
+        if (Vector3.Angle(beamDir, toPlayer) > beamOuterAngle * 0.5f) return false;
+
+        if (IsPlayerInsideOccluder()) return false;
+
+        return true;
+    }
+
+    /// <summary>플레이어 몸통 중심이 occluder 콜라이더 안에 들어가 있는지. 피벗이 발밑이라
+    /// transform.position을 그대로 쓰면 발끝만 걸쳐도 숨은 것으로 쳐지므로 콜라이더 중심을 쓴다.</summary>
+    bool IsPlayerInsideOccluder()
+    {
+        if (beamOccluderMask == 0) return false;
+
+        if (playerCollider == null) playerCollider = player.GetComponentInChildren<Collider2D>();
+        Vector2 probe = playerCollider != null ? (Vector2)playerCollider.bounds.center : (Vector2)player.position;
+
+        return Physics2D.OverlapPoint(probe, beamOccluderMask) != null;
     }
 
     // 3초 이상 연속 노출 → 자아 고갈과 같은 화면 노이즈 + 5초마다 체력 한 칸(사용자 지시 2026-08-09).

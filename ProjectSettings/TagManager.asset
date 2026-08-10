@@ -22,9 +22,9 @@ TagManager:
   - PlayerInvincible
   - VFXNoGrayscale
   - PixelBoss
-  - 
-  - 
-  - 
+  - Hazard
+  - Switch
+  - BossBeamOccluder
   - 
   - 
   - 

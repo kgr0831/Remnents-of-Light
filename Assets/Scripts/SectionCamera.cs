@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 // 화면(구간) 단위 카메라. 플레이어가 속한 구간을 프레임하고, 다른 구간으로 넘어가면 부드럽게 슬라이드.
 // 구간 안에서는 카메라가 고정되므로 걷는 동안 타일 이음새 흔들림이 없다.
@@ -32,8 +33,7 @@ public class SectionCamera : MonoBehaviour
     Transform sustainFocusTarget;
     float sustainFocusPan;
     int sustainFocusToken;
-    float sustainFocusMaxPanDown; // Y로 내려갈 수 있는 최대 거리(월드 유닛) — 0이면 Y는 안 움직인다
-    float sustainFocusFloorY = float.NegativeInfinity; // 이 아래로는 카메라 하단이 못 내려간다
+    float sustainFocusMaxPanDown; // 0이면 Y는 안 움직인다, 0보다 크면 Y도 플레이어를 따라간다(게이트 전용, 크기는 안 씀)
 
     // 룸 트리거 기반 전환(2026-08-03, 사용자 지시로 부활) — RoomTrigger가 EnterRoom을 부르면 그 순간부터
     // 그리드 자동분할 대신 룸 경계에 맞춘 프레이밍을 쓴다(옛 RoomCamera와 같은 "방 전체를 화면에 맞춤"
@@ -153,16 +153,16 @@ public class SectionCamera : MonoBehaviour
     // pan: 0~1 블렌드 계수(1이면 target이 화면 정중앙에 오도록 완전히 센터링). FocusPulse의 pan은
     // "살짝 다가감"용 고정 월드 거리였지만, 광원 소모는 정지 상태로 오래 유지되므로 완전 센터링이 맞다
     // (사용자 확정: "줌인이 플레이어 중심에 되어야") — 이건 X에만 적용된다.
-    // maxPanDown/floorY(둘 다 선택, 기본값이면 Y는 전혀 안 움직임— 사용자 지시 2026-08-02: "E 차징
-    // 중 y 좌표는 그대로"가 기본, 이후 "바닥은 보여도 되니 조금 더 아래로"로 완화): Y는 X와 별개로
-    // maxPanDown만큼만 아래로 내려가되, 카메라 하단이 floorY 아래로 넘어가지 않게 매 프레임 클램프한다.
+    // maxPanDown(선택, 기본값 0이면 Y는 전혀 안 움직임 — 사용자 지시 2026-08-02: "E 차징 중 y 좌표는
+    // 그대로"가 기본): 0보다 크면 Y도 X와 완전히 같은 방식(dir.y*pan)으로 target을 따라간다(단
+    // "위로는 안 올라간다" — target이 basePos보다 위일 때는 안 끌어옴). 값 자체의 크기는 더 이상
+    // 상한으로 쓰이지 않는다 — 켤지 말지 게이트일 뿐(2026-08-10 후속, floorY 상한 제거 참고).
     public void SetSustainedFocus(Transform target, float pan, float zoomMultiplier, float rampIn,
-        float maxPanDown = 0f, float floorY = float.NegativeInfinity)
+        float maxPanDown = 0f)
     {
         sustainFocusTarget = target;
         sustainFocusPan = pan;
         sustainFocusMaxPanDown = maxPanDown;
-        sustainFocusFloorY = floorY;
         StartCoroutine(SustainedFocusRampCo(++sustainFocusToken, zoomMultiplier, rampIn));
     }
 
@@ -186,11 +186,17 @@ public class SectionCamera : MonoBehaviour
 
             if (sustainFocusMaxPanDown > 0f)
             {
-                // 카메라 하단(basePos.y + offsetY - targetOrthoSize)이 floorY 아래로 내려가지 않는
-                // 한도 안에서만 내려간다. maxPanDown이 더 커도 바닥이 먼저 걸리면 거기서 멈춘다.
-                float floorLimit = sustainFocusFloorY - basePos.y + targetOrthoSize;
-                float offsetY = Mathf.Max(-sustainFocusMaxPanDown, floorLimit);
-                targetOffset.y = Mathf.Min(offsetY, 0f); // 위로는 안 올라간다 — 내려가는 쪽만 허용
+                // ⚠️ 버그 수정(2026-08-10, 사용자 리포트 "줌인이 플레이어가 아니라 위쪽을 향함").
+                //    1차 수정(dir.y*pan을 floorLimit/maxPanDown로 클램프)은 방향은 맞았지만
+                //    Play Mode 실측 결과 보스룸처럼 세로로 긴 방에서는 바닥 안전장치(floorLimit)가
+                //    방-플레이어 Y격차(실측 12.75유닛)보다 훨씬 타이트(실측 1.09유닛)하게 걸려
+                //    사실상 거의 못 내려갔다 — 여전히 위쪽에 남아 보이는 원인이 이거였다.
+                //    사용자 확정(2026-08-10): "바닥 아래가 보이더라도 플레이어 중앙 정렬 우선".
+                //    그래서 바닥 클램프·maxPanDown 상한을 버리고 X와 완전히 같은 방식(dir.y*pan)으로
+                //    풀어준다 — "위로는 안 올라간다"(플레이어가 basePos보다 위일 때 억지로 안 끌어옴)
+                //    원래 규칙만 유지. maxPanDown>0은 여전히 "Y를 따라갈지 말지" 게이트로만 쓰인다
+                //    (이 함수를 다른 용도로 호출할 때 0을 넘기면 기존처럼 Y 고정 유지).
+                targetOffset.y = Mathf.Min(dir.y * sustainFocusPan, 0f);
             }
 
             sustainFocusOffset = Vector3.Lerp(fromOffset, targetOffset, k);
@@ -280,13 +286,21 @@ public class SectionCamera : MonoBehaviour
     }
 
     // hasRoom && roomLetterbox일 때만 카메라 뷰포트(cam.rect)를 룸 비율에 맞춰 줄이고, 남는 공간은
-    // 검은 바로 남긴다(뷰포트 밖은 아무 카메라도 안 그리므로 기본적으로 검게 남는다). 그 외의 모든
-    // 경우(레터박스 안 쓰는 룸, 그리드 모드)는 항상 풀스크린으로 되돌려 기존 동작을 지킨다.
+    // 검은 바로 남긴다. 그 외의 모든 경우(레터박스 안 쓰는 룸, 그리드 모드)는 항상 풀스크린으로
+    // 되돌려 기존 동작을 지킨다.
+    //
+    // ⚠️ 빌드 전용 버그(사용자 리포트 2026-08-09: "게임이 앞 뒤 프레임을 반복하면서 깨진다"):
+    //    "뷰포트 밖은 아무 카메라도 안 그리니 검게 남는다"는 **에디터 게임 뷰에서만** 맞는 말이다.
+    //    게임 뷰는 매 프레임 렌더 타깃을 지워 주지만, 빌드의 백버퍼는 아무도 안 지우면 이전 내용이
+    //    그대로 남는다. 더블/트리플 버퍼링이라 서로 다른 옛 프레임 두세 장이 번갈아 보이면서
+    //    "앞뒤 프레임이 반복되며 깨지는" 것처럼 된다. 그래서 레터박스가 걸린 동안에는 화면 전체를
+    //    검게 지우기만 하는 카메라를 메인보다 먼저 한 번 돌린다.
     void ApplyLetterbox()
     {
         if (!hasRoom || !roomLetterbox)
         {
             if (cam.rect != new Rect(0f, 0f, 1f, 1f)) cam.rect = new Rect(0f, 0f, 1f, 1f);
+            SetLetterboxClearEnabled(false);
             return;
         }
 
@@ -305,5 +319,52 @@ public class SectionCamera : MonoBehaviour
             r = new Rect((1f - w) * 0.5f, 0f, w, 1f);
         }
         cam.rect = r;
+        SetLetterboxClearEnabled(true);
+    }
+
+    // 화면 전체를 검게 지우기만 하는 보조 카메라(그리는 것은 없다 — cullingMask=0).
+    // 씬에 오브젝트를 새로 두지 않고 필요할 때 런타임에 한 번 만든다.
+    Camera letterboxClearCam;
+
+    void SetLetterboxClearEnabled(bool enabled)
+    {
+        if (!enabled)
+        {
+            if (letterboxClearCam != null) letterboxClearCam.enabled = false;
+            return;
+        }
+
+        if (letterboxClearCam == null)
+        {
+            var go = new GameObject("LetterboxClearCamera");
+            go.transform.SetParent(transform, false);
+
+            letterboxClearCam = go.AddComponent<Camera>();
+            letterboxClearCam.clearFlags = CameraClearFlags.SolidColor;
+            letterboxClearCam.backgroundColor = Color.black;
+            letterboxClearCam.cullingMask = 0;      // 아무것도 안 그린다 — 지우기 전용
+            letterboxClearCam.orthographic = true;
+            letterboxClearCam.orthographicSize = 1f;
+            letterboxClearCam.nearClipPlane = 0.1f;
+            letterboxClearCam.farClipPlane = 1f;
+            letterboxClearCam.rect = new Rect(0f, 0f, 1f, 1f); // 항상 화면 전체
+            letterboxClearCam.useOcclusionCulling = false;
+            letterboxClearCam.allowHDR = false;
+            letterboxClearCam.allowMSAA = false;
+
+            var data = letterboxClearCam.GetUniversalAdditionalCameraData();
+            if (data != null)
+            {
+                data.renderType = CameraRenderType.Base;
+                data.renderPostProcessing = false;
+                data.renderShadows = false;
+                data.requiresColorOption = CameraOverrideOption.Off;
+                data.requiresDepthOption = CameraOverrideOption.Off;
+            }
+        }
+
+        // 메인 카메라보다 확실히 먼저 그려져야 한다(이 카메라가 지운 뒤 그 위에 본 화면이 얹힌다).
+        letterboxClearCam.depth = cam.depth - 100f;
+        letterboxClearCam.enabled = true;
     }
 }
