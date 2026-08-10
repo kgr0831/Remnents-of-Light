@@ -1,44 +1,62 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 
 /// <summary>
-/// 플레이어 HUD — 체력 칸(갯수) + 빛 에너지 게이지
+/// 플레이어 HUD — 체력 아이콘(스프라이트 스왑) + 빛 에너지 게이지
 /// (기능_구현_명세서 5장 "게임 UI (HUD): 플레이어 체력바, 빛 에너지 게이지").
 ///
-/// 체력은 수치가 아니라 <b>갯수</b>라서 바가 아니라 칸을 그린다 — 맞는 순간 "칸 하나가 꺼진다"가
-/// 보여야 하므로, 잃은 칸은 즉시 사라지지 않고 줄어들며 흐려진다(일정표 1주차의 Lerp 스무딩은
-/// 바 길이가 아니라 칸의 크기·투명도에 그대로 적용된다). 빛 에너지는 조금씩 차고 닳는 자원이라
-/// 지금처럼 연속 게이지로 둔다.
+/// 체력은 더 이상 칸을 늘어놓지 않는다(2026-08-10 사용자 지시) — Assets/Resources/UI/HpBar.png
+/// 한 장(8프레임, HP1~8)과 Hp_Zero.png(HP0) 사이를 스프라이트째로 스왑하는 아이콘 하나가 전부다.
+/// 프레임은 왼쪽부터 x좌표 순으로 HP1..HP8이며(실측: 프레임마다 밝은 빨강 픽셀 수가
+/// 30,60,90,120,128,136,144,152로 단조 증가 — 이름이 아니라 rect.x로 정렬해야 안전하다),
+/// 낮은 프레임일수록 어두운 적갈색(142,0,0) 칸이 많고 높은 프레임일수록 밝은 빨강(237,0,0) 칸이
+/// 많다. 두 프레임 사이를 그냥 스냅하면 "칸이 갑자기 사라진다"만 보이므로, 옛 칩/예고 바 관습(에너지
+/// 게이지의 EnergyLoss/EnergyGain)을 그대로 가져와 두 스프라이트를 겹쳐 알파로 크로스페이드한다
+/// (ApplyHpIcon 참고) — 위 프레임 스프라이트가 서로 "빨간 칸의 초집합/부분집합" 관계라, 알파만
+/// 바꿔도 자연히 "칸이 빨강→검정(또는 반대)으로 전환되는" 것처럼 보인다. 한 번에 여러 칸이 바뀌어도
+/// (사용자 지시: "2,3개씩 줄거나 늘 수도 있다") 프레임을 하나씩 훑고 지나가는 연속값이라 그대로 대응된다.
 ///
-/// DodgeUI/ExecutionUI와 같은 자가완결 방식 — 씬에 활성 Overlay Canvas가 없으면 런타임에 만든다.
-/// 다만 저 둘은 프리팹(Resources/Prefabs/*)을 쓰는 반면 HUD용 아트 에셋은 아직 없어서, 칸과 바를
-/// 단색 Image로 절차적으로 만든다(프리팹·텍스처 의존 0 → 씬/에셋 변경 없이 코드만으로 동작).
+/// 유닛별 스무딩 배열(_pipDisplay)은 예전 "칸 5개" 구조 그대로 남겨뒀다 — PlayTestRunner가
+/// PipCount/LitPipCount/PipDisplay(i)로 화면에 그려지는 값을 직접 검증하기 때문에, 렌더링 방식만
+/// 바꾸고 그 밑의 유닛별 지연·스무딩 로직(맞은 순간의 pipLossDelay 등)은 그대로 재사용한다.
+///
+/// 폭주 중 자아 고갈 회색 오버레이도 예전엔 칸마다 하나씩(5개) 채웠지만, 이제 아이콘이 하나뿐이라
+/// 오버레이도 하나로 통합했다(사용자 지시: "회색 HP 셀 전환 효과는 UI 전체에 한번에 적용").
+///
+/// 빨간 칸만 블룸시키는 것(사용자 지시 2026-08-10)은 Screen Space Overlay 캔버스가 URP
+/// 포스트프로세싱을 아예 안 받는다는 제약 때문에 별도 파이프라인이 필요하다 — 전용 레이어(HPBloom)
+/// + 그 레이어만 컬링하는 Overlay 카메라(메인 카메라 스택에 추가) + 그 카메라의 Volume Mask에만
+/// 걸리는 전용 Bloom 볼륨을 코드로 만든다(BuildHpBloomPipeline). 전역 DefaultVolumeProfile은
+/// 건드리지 않는다 — 이미 threshold=0.9/intensity=0으로 다른 용도(플레이어 블룸)를 위해 대기 중인
+/// 설정이라, 만졌다간 게임 전체 밝은 픽셀이 다 번진다. 아이콘 위 "빨간 칸"만 골라내는 것도 카메라
+/// 컬링마스크가 아니라(그건 오브젝트 단위 필터일 뿐 픽셀 단위가 아니다) 마스크 텍스처
+/// (HpBarGlowMask.png, PlayerMaskEmissive.shader와 같은 기법)로 한다 — 흰=빨간 칸, 검=그 외.
+///
+/// DodgeUI/ExecutionUI와 같은 자가완결 방식 — 씬에 배치하지 않고 런타임에 전부 코드로 만든다.
+/// 블룸 카메라·볼륨·글로우 캔버스까지 전부 이 안에서 만들어지므로, 이 스크립트가 붙는 씬이라면
+/// (map-test든 UISandbox든) 별도 씬 작업 없이 그대로 동작한다.
 /// </summary>
+[ExecuteAlways]
 public class PlayerHudUI : MonoBehaviour
 {
     [Header("Layout (CanvasScaler 1920x1080 기준 px, 좌상단 원점)")]
     public Vector2 origin = new Vector2(56f, -52f);
-    // 칸 5개 줄(5*64 + 4*12 = 368px)이 아래 에너지 게이지(460px)와 비슷한 폭이 되게 잡았다 —
-    // 처음 46px로 만들었더니 줄 전체가 262px이라 게이지보다 한참 작아 주 자원처럼 안 보였다.
-    public Vector2 pipSize = new Vector2(64f, 64f);
-    public float pipGap = 12f;
-    public float pipInset = 8f;          // 칸 테두리와 안쪽 채움 사이 여백
+    public Vector2 hpIconSize = new Vector2(96f, 96f);
     public Vector2 energyBarSize = new Vector2(460f, 20f);
     public float barGap = 14f;
     public float border = 3f;
 
     [Header("Lerp 스무딩")]
-    public float pipLerpSpeed = 8f;      // 잃은/얻은 칸이 사라지고 나타나는 속도
-    public float pipLossDelay = 0.18f;   // 맞은 직후 칸이 잠깐 그대로 남아 있는 시간
+    public float hpLerpSpeed = 8f;       // 유닛별 스무딩 배열이 목표로 접근하는 속도(기존 pipLerpSpeed)
+    public float hpLossDelay = 0.18f;    // 맞은 직후 그 유닛이 잠깐 그대로 남아 있는 시간(기존 pipLossDelay)
     public float energyLerpSpeed = 10f;
-    [Range(0f, 1f)] public float pipMinScale = 0.35f; // 꺼지는 칸이 줄어드는 최소 크기
     // 원격/비포커스 에디터는 프레임이 길게 튀는데(수백 ms), 그대로 쓰면 한 프레임에 목표까지
     // 도달해 "스무딩"이 사라진다. UI 보간에서 흔한 방어로 dt에 상한을 둔다.
     public float maxSmoothDelta = 0.05f;
 
     [Header("색")]
-    public Color pipColor = new Color(0.95f, 0.30f, 0.34f);
-    public Color pipEmptyColor = new Color(0.16f, 0.09f, 0.11f, 0.9f);
     // 광원바 색(2026-08-02 사용자 지시: "픽셀 이팩트 폭주=붉은, 초월=흰, 둘다 아니면 흰"과 통일):
     // 평상시·초월 둘 다 흰색이라 energyColor/transcendColor가 사실상 같은 값이지만, 상태별로
     // 독립 튜닝할 수 있도록 필드는 그대로 분리해 둔다(폭주만 rampageColor로 붉게 갈린다).
@@ -55,10 +73,6 @@ public class PlayerHudUI : MonoBehaviour
     // 서서히 따라 내려오고, 늘어난 만큼은 밝은 예고 구간으로 먼저 보인 뒤 채움이 그 안으로 자란다.
     // 둘 다 채움(EnergyFill) "뒤"에 깔기만 하면 되므로 좌표 계산이 필요 없다 —
     // 더 긴 쪽이 채움 밖으로 삐져나온 부분만 보이고, 감소/증가는 동시에 일어나지 않는다.
-    // 2026-08-02 사용자 지시: 채움 자체가 이제 상태별로 흰색/붉은색(위 energyColor·transcendColor·
-    // rampageColor)으로 바뀌는데, 기존 변화량 색이 그중 하나와 겹쳐 안 보였다 — 얻은 구간(0.88,1,1)은
-    // 흰색 채움(평상시·초월)에, 잃은 구간(0.95,0.35,0.30)은 붉은 채움(폭주)에 각각 파묻힘. 두 채움
-    // 색 다 채도·명도가 뚜렷이 갈리는 색으로 교체해 항상(세 상태 전부) 대비가 유지되게 했다.
     public Color energyLossColor = new Color(0.20f, 0.16f, 0.38f, 0.95f);  // 잃은 구간(칩) — 짙은 남보라
     public Color energyGainColor = new Color(1f, 0.82f, 0.20f, 0.95f);    // 얻은 구간(예고) — 밝은 금색
     public float energyLossDelay = 0.25f;            // 줄어든 직후 고스트가 그대로 멈춰 있는 시간
@@ -70,27 +84,44 @@ public class PlayerHudUI : MonoBehaviour
     public Color borderColor = new Color(0.82f, 0.87f, 0.95f, 0.55f);
 
     // 자아 바를 따로 그리지 않고(사용자 지시 2026-08-01: "더이상 자아 게이지가 바로 표시되지 않고"),
-    // HP 칸 자체가 자아 상태를 대신 표시한다 — 전부 폭주 중에만 켜진다(자아는 폭주 중에만 의미 있는 값).
-    //   · 자아가 줄어드는 만큼 칸 위에 회색이 위→아래로 차올라 자아 0에서 완전한 회색이 된다(칸마다
-    //     PipEgoGray 오버레이, Image.Filled/Vertical/origin=Top의 fillAmount = 1-자아비율). 처음엔
-    //     깜빡임(알파 점멸)이었는데 "깜빡이는 대신 Fill Amount로"라는 사용자 지시(2026-08-02)로 교체.
+    // HP 아이콘 자체가 자아 상태를 대신 표시한다 — 전부 폭주 중에만 켜진다(자아는 폭주 중에만 의미 있는 값).
+    //   · 자아가 줄어드는 만큼 아이콘 위에 회색이 위→아래로 차올라 자아 0에서 완전한 회색이 된다
+    //     (아이콘 전체를 덮는 EgoGray 오버레이 하나, Image.Filled/Vertical/origin=Top의
+    //     fillAmount = 1-자아비율 — 2026-08-10 사용자 지시로 칸마다 하나였던 걸 하나로 통합).
     //   · 자아가 0이 되면 화면 전체에 글리치(ScreenGlitchFx)가 걸린다
-    //   · 자아 0 상태에서 도는 5초 붕괴 타이머(PlayerController.EgoDepletedProgress) 동안, 마지막 칸이
-    //     원래 "칸이 꺼질 때" 쓰는 축소+페이드 연출(_pipDisplay 기반, ApplyPips 참고) 그대로 5초에 걸쳐
-    //     천천히 재생된다(사용자 지시 2026-08-02: "기존 사라지는 이펙트를 재활용해서 5초짜리로"). 새 셰이더나
-    //     별도 오버레이 없이 Update()에서 그 칸의 _pipDisplay 값을 붕괴 진행률로 직접 덮어쓰기만 하면 된다.
+    //   · 자아 0 상태에서 도는 5초 붕괴 타이머(PlayerController.EgoDepletedProgress) 동안, 마지막
+    //     유닛이 원래 "칸이 꺼질 때" 쓰는 스무딩(_pipDisplay 기반)을 그대로 5초에 걸쳐 재생한다 —
+    //     아이콘 프레임이 그 5초 동안 서서히 낮아지는 것으로 자연히 드러난다.
     //   · 자아가 다시 차면(0이 아니게 되면) 두 효과 전부 즉시 사라진다
-    [Header("자아 고갈 연출 (HP 칸에 표시 — 폭주 중에만)")]
+    [Header("자아 고갈 연출 (HP 아이콘에 표시 — 폭주 중에만)")]
     public Color pipDepletedColor = new Color(0.55f, 0.56f, 0.60f); // 자아가 줄어들며 차오르는 회색(오버레이 색)
+
+    [Header("HP 블룸 (빨간 칸만, 2026-08-10 사용자 지시)")]
+    public bool hpGlowEnabled = true;
+    public Color hpGlowColor = new Color(1f, 0.16f, 0.08f, 1f);
+    [Range(1f, 8f)] public float hpGlowBoost = 4f;
+    [Range(0f, 1f)] public float hpGlowIntensity = 1f;
+
+    // Outline 컴포넌트는 원본 텍스처 색(빨강/적갈색)을 그대로 복제해 effectColor를 곱하기 때문에
+    // 흰색을 넣어도 살짝 물든 빨간 테두리가 된다(사용자 실측 2026-08-10) — 그래서 알파 경계만 보고
+    // 순수 흰색을 칠하는 전용 셰이더(Custom/UISilhouetteOutline)를 쓴다. 프레임마다 실루엣이
+    // 미묘하게 달라(HP1~8 실측 확인) 정적 마스크로는 못 만들고, Base와 같은 스프라이트를 매 프레임
+    // 동기화해서 그 알파 경계를 실시간으로 검사한다.
+    [Header("HP 아웃라인 (흰색, 2026-08-10 사용자 지시)")]
+    public bool hpOutlineEnabled = true;
+    public Color hpOutlineColor = Color.white;
 
     static PlayerHudUI _instance;
     public static PlayerHudUI Instance => _instance;
 
     PlayerController _player;
-    GameObject _root, _pipRow;
+    GameObject _root;
     RectTransform _energyFill, _energyLoss, _energyGain;
-    Image[] _pipFills;
-    Image[] _pipEgoOverlays; // 자아가 줄어드는 만큼 위→아래로 차오르는 회색(칸마다 1개)
+
+    // HP 아이콘 — 낮은 프레임(Base, 항상 불투명)과 다음 프레임(Ghost, 알파=frac)을 겹쳐 크로스페이드한다.
+    GameObject _hpIconGO;
+    Image _hpIconBase, _hpIconGhost, _hpEgoOverlay, _hpIconOutline;
+    Material _hpOutlineMat, _hpEgoMat, _hpBaseMat, _hpGhostMat;
     float[] _pipDisplay;
     float _lossHoldTimer, _energyDisplay, _findTimer;
     float _energyColorLerp, _energyFlashTimer, _transcendColorLerp, _rampageColorLerp;
@@ -99,7 +130,19 @@ public class PlayerHudUI : MonoBehaviour
     // 광원 변경치(격투게임 바) 상태
     float _energyGhost, _energyGainDisplay, _energyLossTimer, _energyGainTimer, _prevEnergyTarget = -1f;
 
+    // HP 블룸 파이프라인(전용 카메라·볼륨·글로우 캔버스)
+    Camera _hpBloomCamera;
+    Image _hpGlowIcon;
+    Material _hpGlowMat;
+
+    // 프로젝트 전역에서 한 번만 로드하면 되는 리소스 — Awake마다 다시 조회하지 않는다.
+    static Sprite[] _hpSpriteCache;   // 0=HP1 .. 7=HP8 (x좌표 순 정렬)
+    static Sprite _hpZeroSpriteCache; // HP0
+    static Texture2D _hpGlowMaskCache;
+
     // 테스트(PlayTestRunner)에서 "실제 수치"가 아니라 "화면에 그려지는 값"을 검증하기 위한 판독구.
+    // 아이콘이 하나뿐이어도 내부적으로는 예전과 같은 유닛별 스무딩 배열(_pipDisplay)을 그대로 쓰므로
+    // 아래 판독구들의 의미(칸 수/켜진 칸 수/칸별 표시값)는 예전과 동일하다.
     public int PipCount => _pipDisplay != null ? _pipDisplay.Length : 0;
     public float PipDisplay(int index) =>
         _pipDisplay != null && index >= 0 && index < _pipDisplay.Length ? _pipDisplay[index] : 0f;
@@ -157,17 +200,51 @@ public class PlayerHudUI : MonoBehaviour
 
     void Awake()
     {
-        if (_instance != null && _instance != this) { Destroy(gameObject); return; }
+        if (_instance != null && _instance != this)
+        {
+            if (Application.isPlaying) Destroy(gameObject); else DestroyImmediate(gameObject);
+            return;
+        }
         _instance = this;
         _player = FindFirstObjectByType<PlayerController>();
         Build();
-        SnapToPlayer();
+        if (_player != null) SnapToPlayer();
+        else if (!Application.isPlaying) SnapToFullPreview(); // 에디터 프리뷰(플레이어 없는 씬): 풀피/풀에너지로 보여준다
     }
+
+    void OnDestroy()
+    {
+        if (_instance == this) _instance = null;
+    }
+
+#if UNITY_EDITOR
+    // Edit 모드 실시간 프리뷰 — Inspector에서 레이아웃 값(origin·hpIconSize 등)을 바꾸면 즉시 다시 그린다.
+    void OnValidate()
+    {
+        if (Application.isPlaying || _root == null) return;
+        UnityEditor.EditorApplication.delayCall += () =>
+        {
+            if (this == null) return;
+            Build();
+            if (_player != null) SnapToPlayer();
+            else SnapToFullPreview();
+        };
+    }
+#endif
 
     void Build()
     {
         Canvas canvas = FindOverlayCanvas();
         if (canvas == null) canvas = CreateOverlayCanvas();
+
+        // 이름으로 찾아서 지운다 — _root는 private 필드라 도메인 리로드(Play 진입·스크립트 컴파일)마다
+        // null로 초기화되지만, 이미 만들어둔 자식 오브젝트는 씬에 그대로 남아있어 필드 체크만으론
+        // 못 잡는다(ExecuteAlways 프리뷰에서 실측 — 리로드마다 중복 생성됨).
+        var existing = canvas.transform.Find("PlayerHud");
+        if (existing != null)
+        {
+            if (Application.isPlaying) Destroy(existing.gameObject); else DestroyImmediate(existing.gameObject);
+        }
 
         _root = new GameObject("PlayerHud", typeof(RectTransform));
         var rt = (RectTransform)_root.transform;
@@ -178,68 +255,194 @@ public class PlayerHudUI : MonoBehaviour
         // 회피/처형 프롬프트가 HUD 위에 그려지도록 맨 뒤로 보낸다(같은 캔버스를 공유할 수 있다).
         rt.SetAsFirstSibling();
 
-        BuildPipRow(_player != null ? _player.maxHealth : 5);
+        BuildHpIcon(_player != null ? _player.maxHealth : 5);
         BuildEnergyBar();
+        BuildHpBloomPipeline();
     }
 
-    /// <summary>체력 칸 줄을 만든다. 최대 칸 수가 바뀌면(세이브 로드 등) 통째로 다시 만든다.</summary>
-    void BuildPipRow(int count)
+    /// <summary>
+    /// 체력 아이콘을 만든다. 최대 칸 수가 바뀌면(세이브 로드 등) 통째로 다시 만든다 — 시각적으로는
+    /// 칸이 없어졌지만, "몇 유닛짜리 스무딩 배열을 쓸지"는 그대로 maxHealth를 따른다.
+    /// </summary>
+    void BuildHpIcon(int count)
     {
         count = Mathf.Max(1, count);
-        if (_pipRow != null) Destroy(_pipRow);
+        if (_hpIconGO != null) { if (Application.isPlaying) Destroy(_hpIconGO); else DestroyImmediate(_hpIconGO); }
+        if (_hpOutlineMat != null) { if (Application.isPlaying) Destroy(_hpOutlineMat); else DestroyImmediate(_hpOutlineMat); _hpOutlineMat = null; }
+        if (_hpEgoMat != null) { if (Application.isPlaying) Destroy(_hpEgoMat); else DestroyImmediate(_hpEgoMat); _hpEgoMat = null; }
+        if (_hpBaseMat != null) { if (Application.isPlaying) Destroy(_hpBaseMat); else DestroyImmediate(_hpBaseMat); _hpBaseMat = null; }
+        if (_hpGhostMat != null) { if (Application.isPlaying) Destroy(_hpGhostMat); else DestroyImmediate(_hpGhostMat); _hpGhostMat = null; }
 
-        _pipRow = new GameObject("HealthPips", typeof(RectTransform));
-        var rowRt = (RectTransform)_pipRow.transform;
-        rowRt.SetParent(_root.transform, false);
-        rowRt.anchorMin = rowRt.anchorMax = rowRt.pivot = new Vector2(0f, 1f);
-        rowRt.anchoredPosition = Vector2.zero;
-        rowRt.sizeDelta = Vector2.zero;
+        LoadHpAssets();
 
-        _pipFills = new Image[count];
-        _pipEgoOverlays = new Image[count];
+        _hpIconGO = new GameObject("HpIcon", typeof(RectTransform));
+        var iconRt = (RectTransform)_hpIconGO.transform;
+        iconRt.SetParent(_root.transform, false);
+        iconRt.anchorMin = iconRt.anchorMax = iconRt.pivot = new Vector2(0f, 1f);
+        iconRt.anchoredPosition = Vector2.zero;
+        iconRt.sizeDelta = hpIconSize;
+
+        // 실루엣 밖 1px 링에만 흰색을 칠하는 아웃라인 — 맨 뒤에 그려 넣는다(실루엣 안쪽은 셰이더가
+        // 투명으로 비워서 Base/Ghost와 겹치지 않는다, 그리기 순서는 상관없지만 관례상 맨 뒤).
+        var outlineImg = AddImage(_hpIconGO.transform, "Outline", hpIconSize, Vector2.zero, Color.white);
+        _hpIconOutline = outlineImg.GetComponent<Image>();
+        Shader outlineShader = Shader.Find("Custom/UISilhouetteOutline");
+        if (outlineShader != null)
+        {
+            _hpOutlineMat = new Material(outlineShader);
+            _hpOutlineMat.SetColor("_OutlineColor", hpOutlineColor);
+            _hpIconOutline.material = _hpOutlineMat;
+        }
+        _hpIconOutline.enabled = false;
+
+        // 세 레이어가 전부 같은 자리·크기로 완전히 겹친다(순서 = 그리기 순서). Base/Ghost는 전용
+        // 셰이더(Custom/UIHpIconBody)를 쓴다 — 평소엔 UI/Default와 동일하게 그리지만, 자아 0으로
+        // HP가 깎일 때만(_HideUnlit) 이미 깎인 칸은 투명, 아직 남은 칸은 회색으로 바뀐다(사용자
+        // 지시 2026-08-11 — 처음엔 남은 칸도 원래 빨강 그대로 뒀다가, "아직 남아있는 HP 부분은
+        // 회색으로" 피드백을 받아 _GrayTint를 추가했다).
+        Shader bodyShader = Shader.Find("Custom/UIHpIconBody");
+
+        var baseImg = AddImage(_hpIconGO.transform, "Base", hpIconSize, Vector2.zero, Color.white);
+        _hpIconBase = baseImg.GetComponent<Image>();
+        _hpIconBase.sprite = _hpZeroSpriteCache;
+        if (bodyShader != null)
+        {
+            _hpBaseMat = new Material(bodyShader);
+            _hpBaseMat.SetColor("_GrayTint", pipDepletedColor);
+            _hpIconBase.material = _hpBaseMat;
+        }
+
+        var ghostImg = AddImage(_hpIconGO.transform, "Ghost", hpIconSize, Vector2.zero, Color.white);
+        _hpIconGhost = ghostImg.GetComponent<Image>();
+        _hpIconGhost.enabled = false;
+        if (bodyShader != null)
+        {
+            _hpGhostMat = new Material(bodyShader);
+            _hpGhostMat.SetColor("_GrayTint", pipDepletedColor);
+            _hpIconGhost.material = _hpGhostMat;
+        }
+
+        // ⚠️ Image.Type.Filled + 흰색 사각형 스프라이트(WhiteSprite)를 썼던 예전 방식은 "칸 5개"
+        // 시절엔 칸 자체가 정사각형이라 문제가 없었지만, 지금은 아이콘이 꽃 모양이라 사각형 Fill이
+        // 실루엣을 무시하고 네모난 회색 막대로 덮어버렸다(사용자 스크린샷 2026-08-10). 아이콘의
+        // 실제 알파를 실루엣 마스크로 쓰는 전용 셰이더(Custom/UISilhouetteFill)로 바꾼다 — Base와
+        // 같은 스프라이트를 매 프레임 동기화하고, Fill 진행도는 셰이더의 _FillAmount로 넘긴다.
+        var egoImg = AddImage(_hpIconGO.transform, "EgoGray", hpIconSize, Vector2.zero, Color.white);
+        _hpEgoOverlay = egoImg.GetComponent<Image>();
+        Shader egoShader = Shader.Find("Custom/UISilhouetteFill");
+        if (egoShader != null)
+        {
+            _hpEgoMat = new Material(egoShader);
+            _hpEgoMat.SetColor("_Color", pipDepletedColor);
+            _hpEgoMat.SetFloat("_FillAmount", 0f);
+            _hpEgoOverlay.material = _hpEgoMat;
+        }
+        _hpEgoOverlay.enabled = false;
+
+        // 칸 수만 바뀌었을 땐 남아 있던 표시값을 이어받아 화면이 튀지 않게 한다.
         var previous = _pipDisplay;
         _pipDisplay = new float[count];
-
         for (int i = 0; i < count; i++)
-        {
-            float x = i * (pipSize.x + pipGap);
-            AddImage(_pipRow.transform, "PipBorder" + i, pipSize + Vector2.one * (border * 2f),
-                     new Vector2(x - border, border), borderColor);
-            AddImage(_pipRow.transform, "PipEmpty" + i, pipSize, new Vector2(x, 0f), pipEmptyColor);
-
-            // 채움만 중앙 피봇 — 칸이 꺼질 때 가운데를 기준으로 줄어들어야 자연스럽다.
-            var fill = AddImage(_pipRow.transform, "PipFill" + i, pipSize - Vector2.one * (pipInset * 2f),
-                                Vector2.zero, pipColor);
-            fill.pivot = new Vector2(0.5f, 0.5f);
-            fill.anchoredPosition = new Vector2(x + pipSize.x * 0.5f, -pipSize.y * 0.5f);
-            _pipFills[i] = fill.GetComponent<Image>();
-
-            // 자아 고갈 회색 오버레이 — 채움 바로 위, 같은 자리·같은 크기. 자아가 줄어드는 만큼
-            // 위(origin=Top)에서부터 fillAmount만큼 회색이 차오른다. ⚠️ Unity Image는 sprite가 없으면
-            // Type=Filled를 통째로 무시하고 항상 꽉 찬 사각형만 그린다(fillAmount는 정상 저장되지만
-            // 실제 메시엔 반영 안 됨 — HP 칸 드레인 연출에서 실측으로 확인한 UGUI의 잘 알려진 함정,
-            // 2026-08-02). 그래서 WhiteSprite()로 스프라이트를 반드시 물린다.
-            var egoOverlay = AddImage(_pipRow.transform, "PipEgoGray" + i, pipSize - Vector2.one * (pipInset * 2f),
-                                      Vector2.zero, pipDepletedColor);
-            egoOverlay.pivot = new Vector2(0.5f, 0.5f);
-            egoOverlay.anchoredPosition = new Vector2(x + pipSize.x * 0.5f, -pipSize.y * 0.5f);
-            _pipEgoOverlays[i] = egoOverlay.GetComponent<Image>();
-            _pipEgoOverlays[i].sprite = WhiteSprite();
-            _pipEgoOverlays[i].type = Image.Type.Filled;
-            _pipEgoOverlays[i].fillMethod = Image.FillMethod.Vertical;
-            _pipEgoOverlays[i].fillOrigin = (int)Image.OriginVertical.Top;
-            _pipEgoOverlays[i].fillAmount = 0f;
-
-            // 칸 수만 바뀌었을 땐 남아 있던 표시값을 이어받아 화면이 튀지 않게 한다.
             _pipDisplay[i] = previous != null && i < previous.Length ? previous[i] : 0f;
-        }
 
         _builtPipCount = count;
     }
 
+    /// <summary>
+    /// 빨간 칸만 블룸시키는 전용 파이프라인 — 전용 레이어(HPBloom)만 컬링하는 Overlay 카메라를
+    /// 메인 카메라 스택에 추가하고, 그 카메라의 Volume Mask에만 걸리는 전용 Bloom 볼륨을 단다.
+    /// Screen Space Overlay 캔버스(HUD 본체)는 URP 포스트프로세싱을 안 받으므로, 글로우만 별도
+    /// Screen Space - Camera 캔버스(같은 좌표계·같은 origin)로 그 카메라에 붙인다.
+    /// </summary>
+    void BuildHpBloomPipeline()
+    {
+        _hpBloomCamera = null;
+        _hpGlowIcon = null;
+        if (_hpGlowMat != null) { if (Application.isPlaying) Destroy(_hpGlowMat); else DestroyImmediate(_hpGlowMat); _hpGlowMat = null; }
+        if (!hpGlowEnabled) return;
+
+        int layer = LayerMask.NameToLayer("HPBloom");
+        if (layer < 0) return; // 레이어가 없는 프로젝트에서도 HP 아이콘 자체는 정상 동작해야 한다
+
+        Camera baseCam = Camera.main;
+        if (baseCam == null) return; // 붙일 메인 카메라가 없으면 블룸을 걸 대상이 없다
+
+        var baseData = baseCam.GetUniversalAdditionalCameraData();
+        // Build()가 반복 호출될 때마다(에디터 프리뷰 등) 이전 회차의 카메라가 파괴되며 남긴
+        // null 항목을 정리한다 — 안 지우면 스택이 매 리빌드마다 하나씩 늘어난다.
+        baseData.cameraStack.RemoveAll(c => c == null);
+
+        var camGO = new GameObject("HpBloomCamera", typeof(Camera));
+        camGO.transform.SetParent(_root.transform, false);
+        camGO.layer = layer;
+        _hpBloomCamera = camGO.GetComponent<Camera>();
+        _hpBloomCamera.clearFlags = CameraClearFlags.Depth;
+        _hpBloomCamera.cullingMask = 1 << layer;
+        _hpBloomCamera.orthographic = true;
+        _hpBloomCamera.nearClipPlane = 0.1f;
+        _hpBloomCamera.farClipPlane = 500f;
+
+        var hpData = _hpBloomCamera.GetUniversalAdditionalCameraData();
+        hpData.renderType = CameraRenderType.Overlay;
+        hpData.renderPostProcessing = true;
+        hpData.volumeLayerMask = 1 << layer;
+        baseData.cameraStack.Add(_hpBloomCamera);
+
+        // 전용 Bloom 볼륨 — 전역 DefaultVolumeProfile은 건드리지 않는다(그건 다른 용도로 대기 중).
+        // 이 볼륨의 오브젝트 레이어가 HpBloomCamera의 Volume Mask와 일치할 때만 영향을 준다.
+        var profile = Resources.Load<VolumeProfile>("VFX/HpBarBloomProfile");
+        if (profile != null)
+        {
+            var volGO = new GameObject("HpBloomVolume", typeof(Volume));
+            volGO.transform.SetParent(_root.transform, false);
+            volGO.layer = layer;
+            var vol = volGO.GetComponent<Volume>();
+            vol.isGlobal = true;
+            vol.weight = 1f;
+            vol.sharedProfile = profile;
+        }
+
+        // ⚠️ 씬 루트에 독립 캔버스로 만든다 — 절대 _root(HUD 본체가 붙어있는 기존 Overlay 캔버스)
+        // 밑에 중첩시키면 안 된다. Unity의 Nested Canvas는 renderMode·worldCamera가 자식 것이 아니라
+        // "루트 캔버스"에 적용된다(실측: 중첩시켰더니 씬의 기존 Overlay 캔버스 자체가 통째로
+        // ScreenSpaceCamera로 바뀌어 worldCamera가 이 카메라를 가리키게 되면서 HUD 전체가 사라졌다).
+        var existingGlow = GameObject.Find("HpGlowCanvas");
+        if (existingGlow != null) { if (Application.isPlaying) Destroy(existingGlow); else DestroyImmediate(existingGlow); }
+        var glowCanvasGO = new GameObject("HpGlowCanvas", typeof(RectTransform));
+        glowCanvasGO.layer = layer;
+        var glowCanvas = glowCanvasGO.AddComponent<Canvas>();
+        glowCanvas.renderMode = RenderMode.ScreenSpaceCamera;
+        glowCanvas.worldCamera = _hpBloomCamera;
+        glowCanvas.planeDistance = 100f;
+        var glowScaler = glowCanvasGO.AddComponent<CanvasScaler>();
+        glowScaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+        glowScaler.referenceResolution = new Vector2(1920, 1080);
+
+        var glowIconGO = new GameObject("HpGlowIcon", typeof(RectTransform), typeof(Image));
+        glowIconGO.layer = layer;
+        var glowRt = (RectTransform)glowIconGO.transform;
+        glowRt.SetParent(glowCanvasGO.transform, false);
+        glowRt.anchorMin = glowRt.anchorMax = glowRt.pivot = new Vector2(0f, 1f);
+        glowRt.anchoredPosition = origin; // 본체 HUD와 같은 원점 → 화면상 같은 자리에 겹친다
+        glowRt.sizeDelta = hpIconSize;
+        _hpGlowIcon = glowIconGO.GetComponent<Image>();
+        _hpGlowIcon.raycastTarget = false;
+
+        Shader glowShader = Shader.Find("Custom/UIHpGlow");
+        if (glowShader != null)
+        {
+            _hpGlowMat = new Material(glowShader);
+            _hpGlowIcon.material = _hpGlowMat;
+            if (_hpGlowMaskCache != null) _hpGlowMat.SetTexture("_EmissionMask", _hpGlowMaskCache);
+            _hpGlowMat.SetColor("_Color", hpGlowColor);
+            _hpGlowMat.SetFloat("_BloomBoost", hpGlowBoost);
+            _hpGlowMat.SetFloat("_Intensity", hpGlowIntensity);
+        }
+    }
+
     void BuildEnergyBar()
     {
-        float top = -(pipSize.y + barGap);
+        float top = -(hpIconSize.y + barGap);
         AddImage(_root.transform, "EnergyBorder", energyBarSize + Vector2.one * (border * 2f),
                  new Vector2(-border, top + border), borderColor);
         AddImage(_root.transform, "EnergyBack", energyBarSize, new Vector2(0f, top), backColor);
@@ -292,6 +495,8 @@ public class PlayerHudUI : MonoBehaviour
 
     void Update()
     {
+        if (!Application.isPlaying) return; // 에디터 프리뷰는 정적 배치만 보여준다(애니메이션은 Play 모드 전용)
+
         // 히트스톱(timeScale=0)·회피 슬로우모션 중에도 게이지는 정상 속도로 움직여야 하므로 unscaled.
         float dt = Mathf.Min(Time.unscaledDeltaTime, maxSmoothDelta);
 
@@ -311,12 +516,12 @@ public class PlayerHudUI : MonoBehaviour
         if (_player == null) return;
 
         // 최대 칸 수는 세이브 불러오기로도 바뀔 수 있다 → 바뀌면 줄을 다시 만든다.
-        if (_player.maxHealth != _builtPipCount) BuildPipRow(_player.maxHealth);
+        if (_player.maxHealth != _builtPipCount) BuildHpIcon(_player.maxHealth);
 
         int lit = Mathf.Clamp(_player.currentHealth, 0, _pipDisplay.Length);
 
         // 칸을 잃은 "그 순간"에만 지연을 건다(꺼지는 중인 상태를 조건으로 삼으면 지연이 영원히 갱신된다).
-        if (_prevLit >= 0 && lit < _prevLit) _lossHoldTimer = pipLossDelay;
+        if (_prevLit >= 0 && lit < _prevLit) _lossHoldTimer = hpLossDelay;
         _prevLit = lit;
         if (_lossHoldTimer > 0f) _lossHoldTimer -= dt;
 
@@ -325,7 +530,7 @@ public class PlayerHudUI : MonoBehaviour
             float target = i < lit ? 1f : 0f;
             // 회복(꺼진 칸이 켜지는 것)은 지연 없이 바로 차오른다.
             if (target < _pipDisplay[i] && _lossHoldTimer > 0f) continue;
-            _pipDisplay[i] = Smooth(_pipDisplay[i], target, pipLerpSpeed, dt);
+            _pipDisplay[i] = Smooth(_pipDisplay[i], target, hpLerpSpeed, dt);
         }
 
         bool rampaging = _player.IsRampaging;
@@ -358,29 +563,24 @@ public class PlayerHudUI : MonoBehaviour
             _energyFillImage.color = Color.Lerp(blended, rampageColor, _rampageColorLerp);
         }
 
-        // 자아 상태 → HP 칸 연출(자아는 폭주 중에만 의미 있는 값이라 전부 폭주 게이트를 공유한다).
+        // 자아 상태 → HP 아이콘 연출(자아는 폭주 중에만 의미 있는 값이라 전부 폭주 게이트를 공유한다).
         bool egoDepleted = rampaging && _player.currentEgo <= 0;
         float egoRatio = rampaging ? Ratio(_player.currentEgo, _player.maxEgo) : 1f;
-        // 자아가 줄어드는 만큼 칸 위에 회색이 위→아래로 차오른다(사용자 지시 2026-08-02: 깜빡임 대신
-        // Fill Amount로). egoRatio가 폭주 아닐 때 1로 고정되므로 별도 게이트 없이도 0이 나온다.
+        // 자아가 줄어드는 만큼 아이콘 위에 회색이 위→아래로 차오른다. egoRatio가 폭주 아닐 때 1로
+        // 고정되므로 별도 게이트 없이도 0이 나온다.
         float grayFill = Mathf.Clamp01(1f - egoRatio);
 
-        // 자아 0 붕괴 — 마지막 칸의 표시값을 5초 붕괴 진행률로 직접 덮어써서, 원래 "칸이 꺼질 때" 쓰는
-        // 축소+페이드 연출(ApplyPips가 _pipDisplay로 그리는 그 연출)을 5초짜리로 늘려 재생한다(사용자
-        // 지시 2026-08-02: "기존 사라지는 이펙트를 재활용해서 5초짜리로"). 이 칸은 아직 살아 있어 위
-        // 스무딩 루프가 target=1로 계속 끌어올리려 하므로, 그 다음에 값을 덮어써야 한다 — 새 칸이 드레인
-        // 대상이 될 때도 그 칸은 원래 1이었으므로(1 - 진행률≈0 = 1) 이어서 자연스럽고, 틱이 나간 직후
-        // 칸은 이 덮어쓰기에서 빠지고 원래 스무딩(_pipDisplay가 이미 0에 가까움)으로 넘어가 꽉 찬 채로
-        // 되돌아가는 깜빡임도 없다.
+        // 자아 0 붕괴 — 마지막 유닛의 표시값을 5초 붕괴 진행률로 직접 덮어써서, 원래 "칸이 꺼질 때" 쓰는
+        // 스무딩(ApplyHpIcon이 _pipDisplay 합으로 그리는 그 연출)을 5초짜리로 늘려 재생한다. 이 유닛은
+        // 아직 살아 있어 위 스무딩 루프가 target=1로 계속 끌어올리려 하므로, 그 다음에 값을 덮어써야 한다.
         // ⚠️ 여기에 Smooth()를 한 번 얹었다가 되돌렸다(사용자 피드백 2026-08-02) — EgoDepletedProgress는
         // PlayerController가 실시간(uncapped) deltaTime으로 이미 선형으로 채운 값인데, Smooth()를 쓰면
         // 이 파일의 dt가 maxSmoothDelta(0.05s)에 상한 걸려 있어(위 주석 참고) 실제 프레임 간격이 그보다
         // 크면 목표를 못 따라잡고 계속 뒤처지다가 틱이 나갈 때 "덜 줄어든 채로 갑자기 사라지는" 것처럼
-        // 보였다(실측: progress 0.87일 때 표시값이 0.71로 남음). 원본 값 자체가 이미 매끈한 선형이라
-        // 그대로 대입하면 충분하다.
+        // 보였다. 원본 값 자체가 이미 매끈한 선형이라 그대로 대입하면 충분하다.
         if (egoDepleted && lit > 0) _pipDisplay[lit - 1] = 1f - _player.EgoDepletedProgress;
 
-        ApplyPips(grayFill);
+        ApplyHpIcon(grayFill);
         ApplyBar(_energyLoss, energyBarSize, _energyGhost);
         ApplyBar(_energyGain, energyBarSize, _energyGainDisplay);
         ApplyBar(_energyFill, energyBarSize, _energyDisplay);
@@ -419,7 +619,7 @@ public class PlayerHudUI : MonoBehaviour
     public void SnapToPlayer()
     {
         if (_player == null || _pipDisplay == null) return;
-        if (_player.maxHealth != _builtPipCount) BuildPipRow(_player.maxHealth);
+        if (_player.maxHealth != _builtPipCount) BuildHpIcon(_player.maxHealth);
 
         int lit = Mathf.Clamp(_player.currentHealth, 0, _pipDisplay.Length);
         for (int i = 0; i < _pipDisplay.Length; i++) _pipDisplay[i] = i < lit ? 1f : 0f;
@@ -445,38 +645,106 @@ public class PlayerHudUI : MonoBehaviour
         _energyGhost = _energyGainDisplay = _prevEnergyTarget = _energyDisplay;
         _energyLossTimer = _energyGainTimer = 0f;
 
-        ApplyPips(0f);
+        ApplyHpIcon(0f);
+        ApplyBar(_energyLoss, energyBarSize, _energyGhost);
+        ApplyBar(_energyGain, energyBarSize, _energyGainDisplay);
+        ApplyBar(_energyFill, energyBarSize, _energyDisplay);
+    }
+
+    /// <summary>에디터 프리뷰용(UISandbox 등 플레이어 없는 씬) — 칸·에너지를 꽉 찬 상태로 보여준다.</summary>
+    void SnapToFullPreview()
+    {
+        if (_pipDisplay == null) return;
+        for (int i = 0; i < _pipDisplay.Length; i++) _pipDisplay[i] = 1f;
+        _energyGhost = _energyGainDisplay = _prevEnergyTarget = _energyDisplay = 1f;
+        if (_energyFillImage != null) _energyFillImage.color = energyColor;
+        ApplyHpIcon(0f);
         ApplyBar(_energyLoss, energyBarSize, _energyGhost);
         ApplyBar(_energyGain, energyBarSize, _energyGainDisplay);
         ApplyBar(_energyFill, energyBarSize, _energyDisplay);
     }
 
     /// <summary>
-    /// grayFill: 자아가 줄어든 만큼(0~1) 칸 위에 회색이 위→아래로 차오르는 비율 — 자아 0에서 1(칸 전체가
-    /// 회색)이 된다. 칸 자체는 그저 _pipDisplay[i](0~1)를 그대로 그린다 — 자아 0 붕괴 중 마지막 칸이
-    /// 5초짜리로 줄어들어 보이는 것도 Update()가 그 값을 직접 덮어쓴 결과일 뿐, 여기선 다르게 다룰 게 없다.
+    /// _pipDisplay 합(유닛별 스무딩 값의 총합, 0~칸 수)을 프레임 인덱스로 바꿔 그린다.
+    /// floor(sum) = Base 프레임(더 어두운 쪽, 항상 불투명), floor+1 = Ghost 프레임(더 밝은 쪽,
+    /// 알파=소수부). 예: sum이 4.9→4.0으로 줄어드는 동안 Base=HP4·Ghost=HP5(알파 0.9→0)로
+    /// 서서히 옅어져 "칸이 빨강에서 검정으로 전환"되는 것처럼 보이고, 반대로 늘어나는 동안엔
+    /// Ghost(더 밝은 프레임)가 0→1로 짙어지며 "칸이 채워지는" 것처럼 보인다. 한 프레임짜리
+    /// 크로스페이드라 sum이 여러 정수를 연속으로 가로질러도(한 번에 2~3칸) 자연히 프레임을
+    /// 훑고 지나간다.
     /// </summary>
-    void ApplyPips(float grayFill)
+    void ApplyHpIcon(float grayFill)
     {
-        for (int i = 0; i < _pipFills.Length; i++)
+        if (_hpIconBase == null || _pipDisplay == null) return;
+
+        float sum = 0f;
+        for (int i = 0; i < _pipDisplay.Length; i++) sum += _pipDisplay[i];
+        float hp = Mathf.Clamp(sum, 0f, _pipDisplay.Length);
+        int floorHp = Mathf.Clamp(Mathf.FloorToInt(hp), 0, 8);
+        float frac = floorHp >= 8 ? 0f : hp - floorHp;
+
+        Sprite baseSprite = floorHp <= 0 ? _hpZeroSpriteCache : GetHpSprite(floorHp - 1);
+        Sprite ghostSprite = frac > 0.001f ? GetHpSprite(floorHp) : null;
+
+        _hpIconBase.sprite = baseSprite;
+
+        // 자아가 0이 되어 HP가 깎일 때만 "꺼진 칸"을 투명하게 비운다(사용자 지시 2026-08-11) —
+        // 평소(폭주 아님 또는 자아 남아있음) 깎이는 칸은 원래대로 어두운 적갈색으로 보인다.
+        bool hideUnlit = _player != null && _player.IsRampaging && _player.currentEgo <= 0;
+        if (_hpBaseMat != null) _hpBaseMat.SetFloat("_HideUnlit", hideUnlit ? 1f : 0f);
+        if (_hpGhostMat != null) _hpGhostMat.SetFloat("_HideUnlit", hideUnlit ? 1f : 0f);
+
+        if (_hpIconOutline != null)
         {
-            if (_pipFills[i] == null) continue;
-            float d = _pipDisplay[i];
-            float scale = Mathf.Lerp(pipMinScale, 1f, d);
+            bool showOutline = hpOutlineEnabled && baseSprite != null;
+            _hpIconOutline.enabled = showOutline;
+            if (showOutline)
+            {
+                _hpIconOutline.sprite = baseSprite;
+                // ⚠️ CanvasRenderer는 SpriteRenderer와 달리 _MainTex_TexelSize를 자동으로 채우지
+                // 않는다(실측 2026-08-10: 152x19 텍스처인데도 기본값 (1,1,1,1)로 고정돼 있었다) —
+                // 셰이더의 이웃 텍셀 오프셋이 통째로 어긋나 아웃라인이 전혀 안 그려졌다. 직접 채운다.
+                if (_hpOutlineMat != null && baseSprite.texture != null)
+                {
+                    var tex = baseSprite.texture;
+                    _hpOutlineMat.SetVector("_MainTex_TexelSize",
+                        new Vector4(1f / tex.width, 1f / tex.height, tex.width, tex.height));
+                }
+            }
+        }
 
-            _pipFills[i].rectTransform.localScale = Vector3.one * scale;
-            var c = pipColor;
-            c.a = pipColor.a * d;
-            _pipFills[i].color = c;
+        if (_hpIconGhost != null)
+        {
+            _hpIconGhost.enabled = ghostSprite != null;
+            if (ghostSprite != null)
+            {
+                _hpIconGhost.sprite = ghostSprite;
+                var c = Color.white;
+                c.a = frac;
+                _hpIconGhost.color = c;
+            }
+        }
 
-            if (_pipEgoOverlays[i] == null) continue;
-            // 회색 오버레이도 칸과 같은 축소+페이드를 따라간다 — 칸이 통째로 사라질 때 회색만 남아
-            // 어색하게 떠 있지 않도록.
-            _pipEgoOverlays[i].rectTransform.localScale = Vector3.one * scale;
-            _pipEgoOverlays[i].fillAmount = grayFill;
-            var gc = pipDepletedColor;
-            gc.a = pipDepletedColor.a * d;
-            _pipEgoOverlays[i].color = gc;
+        if (_hpEgoOverlay != null)
+        {
+            // 자아가 0이 되면 grayFill이 늘 1(전체 덮음)로 고정된다 — 그 상태로 계속 켜 두면 이
+            // 불투명한 회색이 Base/Ghost보다 위에 그려져 hideUnlit로 비워낸 "꺼진 칸" 투명 처리가
+            // 화면에 전혀 안 보인다(사용자 스크린샷 2026-08-11 "그대로입니다"). 자아 0 붕괴 구간
+            // (hideUnlit)에서는 회색 오버레이 자체를 끄고 Base/Ghost의 투명 처리가 그대로 보이게 한다.
+            bool showEgo = grayFill > 0.0001f && hp > 0.0001f && baseSprite != null && !hideUnlit;
+            _hpEgoOverlay.enabled = showEgo;
+            if (showEgo && _hpEgoMat != null)
+            {
+                _hpEgoOverlay.sprite = baseSprite; // 아이콘 실루엣과 같은 스프라이트를 셰이더가 알파 마스크로 쓴다
+                _hpEgoMat.SetFloat("_FillAmount", grayFill);
+            }
+        }
+
+        if (_hpGlowIcon != null)
+        {
+            bool showGlow = baseSprite != null && baseSprite != _hpZeroSpriteCache;
+            _hpGlowIcon.enabled = showGlow;
+            if (showGlow) _hpGlowIcon.sprite = baseSprite;
         }
     }
 
@@ -491,17 +759,27 @@ public class PlayerHudUI : MonoBehaviour
     static float Smooth(float current, float target, float speed, float dt)
         => Mathf.Lerp(current, target, 1f - Mathf.Exp(-speed * dt));
 
-    static Sprite _whiteSprite;
-    // Image.Type.Filled가 실제로 동작하려면 sprite가 있어야 한다(PipEgoGray 오버레이 참고 — sprite
-    // 없이는 UGUI가 Filled 자체를 무시하고 항상 꽉 찬 사각형만 그린다). 에셋 의존을 피하려고 Unity
-    // 내장 흰 텍스처로 1회만 스프라이트를 만들어 재사용한다.
-    static Sprite WhiteSprite()
+    /// <summary>HP1~8/Hp_Zero 스프라이트와 빨간 칸 글로우 마스크를 한 번만 로드해 캐싱한다.</summary>
+    static void LoadHpAssets()
     {
-        if (_whiteSprite == null)
+        if (_hpSpriteCache != null) return;
+
+        var all = Resources.LoadAll<Sprite>("UI/HpBar");
+        if (all == null || all.Length == 0)
         {
-            var tex = Texture2D.whiteTexture;
-            _whiteSprite = Sprite.Create(tex, new Rect(0f, 0f, tex.width, tex.height), new Vector2(0.5f, 0.5f));
+            Debug.LogWarning("[PlayerHudUI] Resources/UI/HpBar 스프라이트를 찾을 수 없습니다.");
+            return;
         }
-        return _whiteSprite;
+        // 이름이 아니라 아틀라스 내 x좌표로 정렬한다 — HP1..HP8이 왼쪽→오른쪽 순으로 슬라이스돼
+        // 있음을 실측(밝은 빨강 픽셀 수 30→152 단조 증가)으로 확인했다. 이름은 재슬라이스되면
+        // 바뀔 수 있지만 rect.x 순서는 그대로다.
+        System.Array.Sort(all, (a, b) => a.rect.x.CompareTo(b.rect.x));
+        _hpSpriteCache = all;
+        _hpZeroSpriteCache = Resources.Load<Sprite>("UI/Hp_Zero");
+        _hpGlowMaskCache = Resources.Load<Texture2D>("UI/HpBarGlowMask");
     }
+
+    static Sprite GetHpSprite(int index) =>
+        _hpSpriteCache != null && index >= 0 && index < _hpSpriteCache.Length ? _hpSpriteCache[index] : null;
+
 }

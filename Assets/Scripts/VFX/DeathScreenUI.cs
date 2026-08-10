@@ -19,12 +19,23 @@ using TMPro;
 //
 // PlayerDamageFlashUI 등과 같은 런타임 절차 생성 패턴(프리팹 의존 0, 씬 미저장). 폰트는
 // Resources.Load(빌드 호환 — AssetDatabase는 에디터 전용이라 안 됨, PlayerBloomFx 마스크 로드와 동일 원칙).
+[ExecuteAlways]
 public class DeathScreenUI : MonoBehaviour
 {
     public enum ButtonResult { None, Reconnect, Exit }
 
+    [Header("레이아웃 (UISandbox에서 조절 가능)")]
+    public Vector2 menuSize = new Vector2(1200f, 700f);
+    public Vector2 labelSize = new Vector2(1180f, 160f);
+    public float labelFontSize = 120f;
+    public Vector2 labelPosition = new Vector2(0f, 200f);
+    public Vector2 buttonSize = new Vector2(560f, 110f);
+    public float buttonFontSize = 58f;
+    public Vector2 reconnectButtonPosition = new Vector2(0f, -20f);
+    public Vector2 exitButtonPosition = new Vector2(0f, -170f);
+
     const int SortingOrder = 5100; // ScreenFadeUI(5000)보다 위 — Overlay끼리는 sortingOrder로만 겨룬다
-    const string FontResourceName = "Silver SDF"; // Assets/Fonts/Resources/Silver SDF.asset
+    const string FontResourceName = "Silver Bitmap"; // Assets/Fonts/Resources/Silver Bitmap.asset (도트 폰트라 SDF 대신 Raster/Bitmap — 2026-08-10)
     const string NoiseShaderName = "Custom/UINoiseOverlay";
     const float NoiseSeedStepRate = 20f; // ScreenGlitchFx와 같은 "초당 20회 계단식" 아날로그 느낌
     static readonly Color RedTint = new Color(0.85f, 0.12f, 0.14f);
@@ -96,14 +107,49 @@ public class DeathScreenUI : MonoBehaviour
 
     void Awake()
     {
-        if (_instance != null && _instance != this) { Destroy(gameObject); return; }
+        if (_instance != null && _instance != this)
+        {
+            if (Application.isPlaying) Destroy(gameObject); else DestroyImmediate(gameObject);
+            return;
+        }
         _instance = this;
         _font = Resources.Load<TMP_FontAsset>(FontResourceName);
         Build();
+        if (!Application.isPlaying) ShowMenuForPreview();
+    }
+
+#if UNITY_EDITOR
+    // Edit 모드 실시간 프리뷰 — Inspector에서 레이아웃 값을 바꾸면 즉시 다시 그린다.
+    void OnValidate()
+    {
+        if (Application.isPlaying || _canvasGo == null) return;
+        UnityEditor.EditorApplication.delayCall += () =>
+        {
+            if (this == null) return;
+            Build();
+            ShowMenuForPreview();
+        };
+    }
+#endif
+
+    /// <summary>에디터 프리뷰용 — 배경은 투명(다른 UI가 가려지지 않게) 유지, 메뉴(문구·버튼)만 바로 보여준다.</summary>
+    void ShowMenuForPreview()
+    {
+        if (_menuGroup == null || _menuRoot == null) return;
+        _menuGroup.alpha = 1f;
+        _menuRoot.SetActive(true);
     }
 
     void Build()
     {
+        // 이름으로 찾아서 지운다 — _canvasGo는 private 필드라 도메인 리로드마다 null로 초기화되지만
+        // 이미 만든 자식은 씬에 남아있어 필드 체크만으론 못 잡는다(PlayerHudUI.Build 참고).
+        var existing = transform.Find("DeathScreenCanvas");
+        if (existing != null)
+        {
+            if (Application.isPlaying) Destroy(existing.gameObject); else DestroyImmediate(existing.gameObject);
+        }
+
         EnsureEventSystem();
 
         _canvasGo = new GameObject("DeathScreenCanvas");
@@ -143,13 +189,13 @@ public class DeathScreenUI : MonoBehaviour
         menuRt.anchorMin = new Vector2(0.5f, 0.5f);
         menuRt.anchorMax = new Vector2(0.5f, 0.5f);
         menuRt.anchoredPosition = Vector2.zero;
-        menuRt.sizeDelta = new Vector2(1200f, 700f);
+        menuRt.sizeDelta = menuSize;
         _menuGroup = _menuRoot.AddComponent<CanvasGroup>();
         _menuGroup.alpha = 0f;
 
-        var label = CreateLabel("SignalLost", "SIGNAL LOST", 120f, RedTint, new Vector2(0f, 200f));
-        var reconnectHover = CreateButton("ReconnectButton", "Reconnect", new Vector2(0f, -20f), () => Click(ButtonResult.Reconnect));
-        var exitHover = CreateButton("ExitButton", "Exit", new Vector2(0f, -170f), () => Click(ButtonResult.Exit));
+        var label = CreateLabel("SignalLost", "SIGNAL LOST", labelFontSize, RedTint, labelPosition);
+        var reconnectHover = CreateButton("ReconnectButton", "Reconnect", reconnectButtonPosition, () => Click(ButtonResult.Reconnect));
+        var exitHover = CreateButton("ExitButton", "Exit", exitButtonPosition, () => Click(ButtonResult.Exit));
         _hoverButtons = new[] { reconnectHover, exitHover };
 
         _glitchTexts = new[]
@@ -168,6 +214,7 @@ public class DeathScreenUI : MonoBehaviour
     // 같은 시드를 공유해야 "하나의 글리치 사건"처럼 보인다(따로 놀면 어색하다).
     void Update()
     {
+        if (!Application.isPlaying) return; // 에디터 프리뷰는 정적 배치만 보여준다(글리치·페이드는 Play 모드 전용)
         if (_bgMat == null || _bg == null) return;
         float alpha = _bg.color.a;
         _bgMat.SetFloat(IdNoiseIntensity, alpha);
@@ -261,7 +308,7 @@ public class DeathScreenUI : MonoBehaviour
         rt.SetParent(_menuRoot.transform, false);
         rt.anchorMin = new Vector2(0.5f, 0.5f);
         rt.anchorMax = new Vector2(0.5f, 0.5f);
-        rt.sizeDelta = new Vector2(1180f, 160f);
+        rt.sizeDelta = labelSize;
         rt.anchoredPosition = pos;
 
         var tmp = go.AddComponent<TextMeshProUGUI>();
@@ -281,13 +328,13 @@ public class DeathScreenUI : MonoBehaviour
         rt.SetParent(_menuRoot.transform, false);
         rt.anchorMin = new Vector2(0.5f, 0.5f);
         rt.anchorMax = new Vector2(0.5f, 0.5f);
-        rt.sizeDelta = new Vector2(560f, 110f);
+        rt.sizeDelta = buttonSize;
         rt.anchoredPosition = pos;
 
         var tmp = go.AddComponent<TextMeshProUGUI>();
         if (_font != null) tmp.font = _font;
         tmp.text = label;
-        tmp.fontSize = 58f;
+        tmp.fontSize = buttonFontSize;
         tmp.alignment = TextAlignmentOptions.Center;
         tmp.color = WhiteTint;
         tmp.outlineWidth = 0f;
@@ -305,7 +352,9 @@ public class DeathScreenUI : MonoBehaviour
     // 씬에 EventSystem이 없으면(포인터 이벤트가 아예 안 들어옴) 새 Input System용으로 하나 만든다.
     static void EnsureEventSystem()
     {
-        if (EventSystem.current != null) return;
+        // EventSystem.current는 "현재 활성" 포인터라 ExecuteAlways 리빌드·도메인 리로드 타이밍에 따라
+        // 아직 null일 수 있다(실측: 중복 EventSystem 4개 생성됨) — 존재 자체를 직접 찾는 편이 안전하다.
+        if (FindFirstObjectByType<EventSystem>(FindObjectsInactive.Include) != null) return;
         var go = new GameObject("EventSystem");
         go.AddComponent<EventSystem>();
         go.AddComponent<UnityEngine.InputSystem.UI.InputSystemUIInputModule>();
@@ -367,7 +416,8 @@ public class DeathScreenUI : MonoBehaviour
 
     void OnDestroy()
     {
-        if (_bgMat != null) Destroy(_bgMat);
+        if (_bgMat != null) { if (Application.isPlaying) Destroy(_bgMat); else DestroyImmediate(_bgMat); }
+        if (_instance == this) _instance = null;
     }
 }
 

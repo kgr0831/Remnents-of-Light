@@ -1,0 +1,949 @@
+fileFormatVersion: 2
+guid: d550dd1979ce51a4fb560f8b9de36f07
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -3196842491924411789
+    second: Loading Sprite 04_0
+  - first:
+      213: -3189364408873761192
+    second: Loading Sprite 04_1
+  - first:
+      213: -731130367071824613
+    second: Loading Sprite 04_2
+  - first:
+      213: -3488479823783399099
+    second: Loading Sprite 04_3
+  - first:
+      213: -3766398989221718988
+    second: Loading Sprite 04_4
+  - first:
+      213: 287053434417723086
+    second: Loading Sprite 04_5
+  - first:
+      213: -2387240100019905212
+    second: Loading Sprite 04_6
+  - first:
+      213: -3587336431070082476
+    second: Loading Sprite 04_7
+  - first:
+      213: 6580217375606640031
+    second: Loading Sprite 04_8
+  - first:
+      213: 8983029850125483879
+    second: Loading Sprite 04_9
+  - first:
+      213: -7952768987956119236
+    second: Loading Sprite 04_10
+  - first:
+      213: 1217875821904500358
+    second: Loading Sprite 04_11
+  - first:
+      213: 5636848647455687012
+    second: Loading Sprite 04_12
+  - first:
+      213: -150261587805064933
+    second: Loading Sprite 04_13
+  - first:
+      213: -190414999340934721
+    second: Loading Sprite 04_14
+  - first:
+      213: 9177100629367186153
+    second: Loading Sprite 04_15
+  - first:
+      213: 5753762572699718059
+    second: Loading Sprite 04_16
+  - first:
+      213: 3113391674188104732
+    second: Loading Sprite 04_17
+  - first:
+      213: -4451175284699759761
+    second: Loading Sprite 04_18
+  - first:
+      213: -4035154285061843513
+    second: Loading Sprite 04_19
+  - first:
+      213: -8553039383642231821
+    second: Loading Sprite 04_20
+  - first:
+      213: 1414323050894734566
+    second: Loading Sprite 04_21
+  - first:
+      213: 4162133591995716516
+    second: Loading Sprite 04_22
+  - first:
+      213: 2601898965339392441
+    second: Loading Sprite 04_23
+  - first:
+      213: 3288973108703198708
+    second: Loading Sprite 04_24
+  - first:
+      213: -3589609999875560016
+    second: Loading Sprite 04_25
+  - first:
+      213: 2623066163983954961
+    second: Loading Sprite 04_26
+  - first:
+      213: 770421208506143133
+    second: Loading Sprite 04_27
+  - first:
+      213: 4989637995115358798
+    second: Loading Sprite 04_28
+  - first:
+      213: 6718168144189223808
+    second: Loading Sprite 04_29
+  - first:
+      213: 2102919959468090419
+    second: Loading Sprite 04_30
+  - first:
+      213: 7019391984240604817
+    second: Loading Sprite 04_31
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 0
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Loading Sprite 04_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 9
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 37a88f1f0b882a3d0800000000000000
+      internalID: -3196842491924411789
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Loading Sprite 04_1
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8564ec5d7f91db3d0800000000000000
+      internalID: -3189364408873761192
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Loading Sprite 04_2
+      rect:
+        serializedVersion: 2
+        x: 9
+        y: 9
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b15de2a0ec08ad5f0800000000000000
+      internalID: -731130367071824613
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Loading Sprite 04_3
+      rect:
+        serializedVersion: 2
+        x: 9
+        y: 0
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 541f541451e669fc0800000000000000
+      internalID: -3488479823783399099
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Loading Sprite 04_4
+      rect:
+        serializedVersion: 2
+        x: 19
+        y: 9
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4349c0513101bbbc0800000000000000
+      internalID: -3766398989221718988
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Loading Sprite 04_5
+      rect:
+        serializedVersion: 2
+        x: 19
+        y: 0
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ec63606e391dbf300800000000000000
+      internalID: 287053434417723086
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Loading Sprite 04_6
+      rect:
+        serializedVersion: 2
+        x: 28
+        y: 9
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 44ddeb4f6c1deded0800000000000000
+      internalID: -2387240100019905212
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Loading Sprite 04_7
+      rect:
+        serializedVersion: 2
+        x: 28
+        y: 0
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 45a0040c588373ec0800000000000000
+      internalID: -3587336431070082476
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Loading Sprite 04_8
+      rect:
+        serializedVersion: 2
+        x: 38
+        y: 9
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f9d03e1f6d0a15b50800000000000000
+      internalID: 6580217375606640031
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Loading Sprite 04_9
+      rect:
+        serializedVersion: 2
+        x: 38
+        y: 0
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 76fb577fd022aac70800000000000000
+      internalID: 8983029850125483879
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Loading Sprite 04_10
+      rect:
+        serializedVersion: 2
+        x: 47
+        y: 9
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c39f124bdb612a190800000000000000
+      internalID: -7952768987956119236
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Loading Sprite 04_11
+      rect:
+        serializedVersion: 2
+        x: 47
+        y: 0
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 68697218b93c6e010800000000000000
+      internalID: 1217875821904500358
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Loading Sprite 04_12
+      rect:
+        serializedVersion: 2
+        x: 57
+        y: 9
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 461cc34cafb1a3e40800000000000000
+      internalID: 5636848647455687012
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Loading Sprite 04_13
+      rect:
+        serializedVersion: 2
+        x: 57
+        y: 0
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b113e7bc1e92aedf0800000000000000
+      internalID: -150261587805064933
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Loading Sprite 04_14
+      rect:
+        serializedVersion: 2
+        x: 66
+        y: 9
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fb9906421928b5df0800000000000000
+      internalID: -190414999340934721
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Loading Sprite 04_15
+      rect:
+        serializedVersion: 2
+        x: 66
+        y: 0
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9e2e179666c9b5f70800000000000000
+      internalID: 9177100629367186153
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Loading Sprite 04_16
+      rect:
+        serializedVersion: 2
+        x: 76
+        y: 9
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ba154bb339879df40800000000000000
+      internalID: 5753762572699718059
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Loading Sprite 04_17
+      rect:
+        serializedVersion: 2
+        x: 76
+        y: 0
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c1404a27b3df43b20800000000000000
+      internalID: 3113391674188104732
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Loading Sprite 04_18
+      rect:
+        serializedVersion: 2
+        x: 85
+        y: 9
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f6bf87279af3a32c0800000000000000
+      internalID: -4451175284699759761
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Loading Sprite 04_19
+      rect:
+        serializedVersion: 2
+        x: 85
+        y: 0
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7c55ef09e804008c0800000000000000
+      internalID: -4035154285061843513
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Loading Sprite 04_20
+      rect:
+        serializedVersion: 2
+        x: 95
+        y: 9
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3fb241c1fff7d4980800000000000000
+      internalID: -8553039383642231821
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Loading Sprite 04_21
+      rect:
+        serializedVersion: 2
+        x: 95
+        y: 0
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6e43a36425fa0a310800000000000000
+      internalID: 1414323050894734566
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Loading Sprite 04_22
+      rect:
+        serializedVersion: 2
+        x: 104
+        y: 9
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4a310a2337ed2c930800000000000000
+      internalID: 4162133591995716516
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Loading Sprite 04_23
+      rect:
+        serializedVersion: 2
+        x: 104
+        y: 0
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9b9c282d25dcb1420800000000000000
+      internalID: 2601898965339392441
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Loading Sprite 04_24
+      rect:
+        serializedVersion: 2
+        x: 114
+        y: 9
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4fdf01cdd97c4ad20800000000000000
+      internalID: 3288973108703198708
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Loading Sprite 04_25
+      rect:
+        serializedVersion: 2
+        x: 114
+        y: 0
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0bd2a3349b42f2ec0800000000000000
+      internalID: -3589609999875560016
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Loading Sprite 04_26
+      rect:
+        serializedVersion: 2
+        x: 123
+        y: 9
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1143c9e47c0076420800000000000000
+      internalID: 2623066163983954961
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Loading Sprite 04_27
+      rect:
+        serializedVersion: 2
+        x: 123
+        y: 0
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d919f6cd10611ba00800000000000000
+      internalID: 770421208506143133
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Loading Sprite 04_28
+      rect:
+        serializedVersion: 2
+        x: 133
+        y: 9
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e4aa4a00251ce3540800000000000000
+      internalID: 4989637995115358798
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Loading Sprite 04_29
+      rect:
+        serializedVersion: 2
+        x: 133
+        y: 0
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0837ebf255abb3d50800000000000000
+      internalID: 6718168144189223808
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Loading Sprite 04_30
+      rect:
+        serializedVersion: 2
+        x: 142
+        y: 9
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 334ac27bf821f2d10800000000000000
+      internalID: 2102919959468090419
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Loading Sprite 04_31
+      rect:
+        serializedVersion: 2
+        x: 142
+        y: 0
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 196b2efb1d3e96160800000000000000
+      internalID: 7019391984240604817
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Loading Sprite 04_0: -3196842491924411789
+      Loading Sprite 04_1: -3189364408873761192
+      Loading Sprite 04_10: -7952768987956119236
+      Loading Sprite 04_11: 1217875821904500358
+      Loading Sprite 04_12: 5636848647455687012
+      Loading Sprite 04_13: -150261587805064933
+      Loading Sprite 04_14: -190414999340934721
+      Loading Sprite 04_15: 9177100629367186153
+      Loading Sprite 04_16: 5753762572699718059
+      Loading Sprite 04_17: 3113391674188104732
+      Loading Sprite 04_18: -4451175284699759761
+      Loading Sprite 04_19: -4035154285061843513
+      Loading Sprite 04_2: -731130367071824613
+      Loading Sprite 04_20: -8553039383642231821
+      Loading Sprite 04_21: 1414323050894734566
+      Loading Sprite 04_22: 4162133591995716516
+      Loading Sprite 04_23: 2601898965339392441
+      Loading Sprite 04_24: 3288973108703198708
+      Loading Sprite 04_25: -3589609999875560016
+      Loading Sprite 04_26: 2623066163983954961
+      Loading Sprite 04_27: 770421208506143133
+      Loading Sprite 04_28: 4989637995115358798
+      Loading Sprite 04_29: 6718168144189223808
+      Loading Sprite 04_3: -3488479823783399099
+      Loading Sprite 04_30: 2102919959468090419
+      Loading Sprite 04_31: 7019391984240604817
+      Loading Sprite 04_4: -3766398989221718988
+      Loading Sprite 04_5: 287053434417723086
+      Loading Sprite 04_6: -2387240100019905212
+      Loading Sprite 04_7: -3587336431070082476
+      Loading Sprite 04_8: 6580217375606640031
+      Loading Sprite 04_9: 8983029850125483879
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

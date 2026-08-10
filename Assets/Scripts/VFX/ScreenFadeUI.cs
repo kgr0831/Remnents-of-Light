@@ -11,12 +11,14 @@ using UnityEngine.UI;
 //  2) HUD보다 위에 그려야 한다 — 암전인데 체력칸이 그 위에 떠 있으면 안 되므로, 기존 오버레이
 //     캔버스에 얹지 않고 sortingOrder를 크게 준 전용 캔버스를 따로 만든다
 //     (PlayerDamageFlashUI는 반대로 HUD 아래에 깔려야 해서 기존 캔버스의 맨 뒤로 들어간다).
+[ExecuteAlways]
 public class ScreenFadeUI : MonoBehaviour
 {
     const int SortingOrder = 5000;
 
     static ScreenFadeUI _instance;
 
+    GameObject _canvasGo;
     Image _img;
     float _alpha;
     float _target;
@@ -51,25 +53,37 @@ public class ScreenFadeUI : MonoBehaviour
 
     void Awake()
     {
-        if (_instance != null && _instance != this) { Destroy(gameObject); return; }
+        if (_instance != null && _instance != this)
+        {
+            if (Application.isPlaying) Destroy(gameObject); else DestroyImmediate(gameObject);
+            return;
+        }
         _instance = this;
         Build();
     }
 
     void Build()
     {
-        var canvasGo = new GameObject("ScreenFadeCanvas");
-        canvasGo.transform.SetParent(transform, false);
-        var canvas = canvasGo.AddComponent<Canvas>();
+        // 이름으로 찾아서 지운다 — _canvasGo는 private 필드라 도메인 리로드마다 null로 초기화되지만
+        // 이미 만든 자식은 씬에 남아있어 필드 체크만으론 못 잡는다(PlayerHudUI.Build 참고).
+        var existing = transform.Find("ScreenFadeCanvas");
+        if (existing != null)
+        {
+            if (Application.isPlaying) Destroy(existing.gameObject); else DestroyImmediate(existing.gameObject);
+        }
+
+        _canvasGo = new GameObject("ScreenFadeCanvas");
+        _canvasGo.transform.SetParent(transform, false);
+        var canvas = _canvasGo.AddComponent<Canvas>();
         canvas.renderMode = RenderMode.ScreenSpaceOverlay;
         canvas.sortingOrder = SortingOrder;
-        var scaler = canvasGo.AddComponent<CanvasScaler>();
+        var scaler = _canvasGo.AddComponent<CanvasScaler>();
         scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
         scaler.referenceResolution = new Vector2(1920, 1080);
 
         var go = new GameObject("Fade", typeof(RectTransform), typeof(Image));
         var rt = (RectTransform)go.transform;
-        rt.SetParent(canvasGo.transform, false);
+        rt.SetParent(_canvasGo.transform, false);
         rt.anchorMin = Vector2.zero;
         rt.anchorMax = Vector2.one;
         rt.offsetMin = Vector2.zero;
@@ -82,6 +96,7 @@ public class ScreenFadeUI : MonoBehaviour
 
     void Update()
     {
+        if (!Application.isPlaying) return;
         if (_alpha == _target) return;
         _alpha = Mathf.MoveTowards(_alpha, _target, _speed * Time.unscaledDeltaTime);
         Apply();

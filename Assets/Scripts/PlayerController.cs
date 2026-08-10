@@ -121,7 +121,7 @@ public class PlayerController : MonoBehaviour
     // ★ 필드명을 maxHp/currentHp에서 바꾼 이유는 의미가 달라졌기 때문이고, 덤으로 씬에 직렬화돼
     //   있던 옛 100 스케일 값(maxHp=100)이 버려지고 아래 기본값이 실제로 적용된다.
     [Header("Health (갯수)")]
-    public int maxHealth = 5;
+    public int maxHealth = 8;
     public int currentHealth;
 
     // 사용자 지시(2026-08-09): 허공으로 많이 떨어지면 체력 한 칸을 잃고 마지막으로 서 있던 발판으로

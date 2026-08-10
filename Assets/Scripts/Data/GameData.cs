@@ -32,8 +32,8 @@ public class GameData
 [Serializable]
 public class PlayerData
 {
-    public int maxHealth = 5;
-    public int currentHealth = 5;
+    public int maxHealth = 8;
+    public int currentHealth = 8;
 
     public int maxEnergy = 100;
     public int currentEnergy = 50;

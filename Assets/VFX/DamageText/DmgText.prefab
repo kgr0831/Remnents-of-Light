@@ -63,7 +63,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -4539622699426536934, guid: 0c96d30dd3b80f04cb89ca56d575ddc5, type: 2}
+  - {fileID: -852697896351907660, guid: d332c4b980e7e1048902081adb6d97f3, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -109,8 +109,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 9999
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 0c96d30dd3b80f04cb89ca56d575ddc5, type: 2}
-  m_sharedMaterial: {fileID: -4539622699426536934, guid: 0c96d30dd3b80f04cb89ca56d575ddc5, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: d332c4b980e7e1048902081adb6d97f3, type: 2}
+  m_sharedMaterial: {fileID: -852697896351907660, guid: d332c4b980e7e1048902081adb6d97f3, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -199,3 +199,5 @@ MonoBehaviour:
   randomScatter: {x: 0.5, y: 0.5, z: 0}
   outlineColor: {r: 0, g: 0, b: 0, a: 1}
   outlineWidth: 0.12
+  emphasizedScale: 2
+  emphasizedSuffix: '!!!'

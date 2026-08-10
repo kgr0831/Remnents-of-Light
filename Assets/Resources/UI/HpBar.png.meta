@@ -1,0 +1,399 @@
+fileFormatVersion: 2
+guid: 16c64541262f81f46855b9fb4769d443
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 7973466550857779991
+    second: Loading Sprite 04-red_0
+  - first:
+      213: 258030203187084098
+    second: Loading Sprite 04-red_1
+  - first:
+      213: -8164902299068032524
+    second: Loading Sprite 04-red_2
+  - first:
+      213: -8189376798337187848
+    second: Loading Sprite 04-red_3
+  - first:
+      213: -5751656320411574661
+    second: Loading Sprite 04-red_4
+  - first:
+      213: -3984771866473887543
+    second: Loading Sprite 04-red_5
+  - first:
+      213: -5326466428966863632
+    second: Loading Sprite 04-red_6
+  - first:
+      213: 2157480789312274652
+    second: Loading Sprite 04-red_7
+  - first:
+      213: -6632943660550024649
+    second: Loading Sprite 04-red_8
+  - first:
+      213: -2167935555660500601
+    second: Loading Sprite 04-red_9
+  - first:
+      213: -3351840392192175142
+    second: Loading Sprite 04-red_10
+  - first:
+      213: 2012400189632911212
+    second: Loading Sprite 04-red_11
+  - first:
+      213: -2541820165551529814
+    second: Loading Sprite 04-red_12
+  - first:
+      213: 7393209938363448944
+    second: Loading Sprite 04-red_13
+  - first:
+      213: 4409409059564921493
+    second: Loading Sprite 04-red_14
+  - first:
+      213: 7029376708760649768
+    second: Loading Sprite 04-red_15
+  - first:
+      213: 1087598227740242325
+    second: Loading Sprite 04-red_16
+  - first:
+      213: -7318185841828847057
+    second: Loading Sprite 04-red_17
+  - first:
+      213: 8181826763762904895
+    second: Loading Sprite 04-red_18
+  - first:
+      213: -1228506898356481514
+    second: Loading Sprite 04-red_19
+  - first:
+      213: 7253991595604562299
+    second: Loading Sprite 04-red_20
+  - first:
+      213: 6283571928080378176
+    second: Loading Sprite 04-red_21
+  - first:
+      213: 2400098974617018492
+    second: Loading Sprite 04-red_22
+  - first:
+      213: -6539915536620877880
+    second: Loading Sprite 04-red_23
+  - first:
+      213: 5377004660997190334
+    second: Loading Sprite 04-red_24
+  - first:
+      213: -2448530784621278112
+    second: Loading Sprite 04-red_25
+  - first:
+      213: -2305581313809983133
+    second: Loading Sprite 04-red_26
+  - first:
+      213: 653953662062731236
+    second: Loading Sprite 04-red_27
+  - first:
+      213: -4233524832874423467
+    second: Loading Sprite 04-red_28
+  - first:
+      213: 7917830059385257299
+    second: Loading Sprite 04-red_29
+  - first:
+      213: 4433671199291725547
+    second: Loading Sprite 04-red_30
+  - first:
+      213: -6124269053409239120
+    second: Loading Sprite 04-red_31
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 0
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Loading Sprite 04-red_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 19
+        height: 19
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 71b4650359177ae60800000000000000
+      internalID: 7973466550857779991
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Loading Sprite 04-red_1
+      rect:
+        serializedVersion: 2
+        x: 19
+        y: 0
+        width: 19
+        height: 19
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 24bb94a4a15b49300800000000000000
+      internalID: 258030203187084098
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Loading Sprite 04-red_2
+      rect:
+        serializedVersion: 2
+        x: 38
+        y: 0
+        width: 19
+        height: 19
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4f997465e9070be80800000000000000
+      internalID: -8164902299068032524
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Loading Sprite 04-red_3
+      rect:
+        serializedVersion: 2
+        x: 57
+        y: 0
+        width: 19
+        height: 19
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8ff394be03d795e80800000000000000
+      internalID: -8189376798337187848
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Loading Sprite 04-red_4
+      rect:
+        serializedVersion: 2
+        x: 76
+        y: 0
+        width: 19
+        height: 19
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b7edcb7dc030e20b0800000000000000
+      internalID: -5751656320411574661
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Loading Sprite 04-red_5
+      rect:
+        serializedVersion: 2
+        x: 95
+        y: 0
+        width: 19
+        height: 19
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9c88ad3891f33b8c0800000000000000
+      internalID: -3984771866473887543
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Loading Sprite 04-red_6
+      rect:
+        serializedVersion: 2
+        x: 114
+        y: 0
+        width: 19
+        height: 19
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0fcf261f0079416b0800000000000000
+      internalID: -5326466428966863632
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Loading Sprite 04-red_7
+      rect:
+        serializedVersion: 2
+        x: 133
+        y: 0
+        width: 19
+        height: 19
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cd000b8d859e0fd10800000000000000
+      internalID: 2157480789312274652
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: fb7840696f0a01c459d7fcef40f027a7
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":8.0,"y":1.0},"gridSpriteSize":{"x":19.0,"y":19.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":2,"keepEmptyRects":false,"isAlternate":false}'
+    nameFileIdTable:
+      Loading Sprite 04-red_0: 7973466550857779991
+      Loading Sprite 04-red_1: 258030203187084098
+      Loading Sprite 04-red_2: -8164902299068032524
+      Loading Sprite 04-red_3: -8189376798337187848
+      Loading Sprite 04-red_4: -5751656320411574661
+      Loading Sprite 04-red_5: -3984771866473887543
+      Loading Sprite 04-red_6: -5326466428966863632
+      Loading Sprite 04-red_7: 2157480789312274652
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

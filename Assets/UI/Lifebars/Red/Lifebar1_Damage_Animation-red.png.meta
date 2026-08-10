@@ -1,0 +1,429 @@
+fileFormatVersion: 2
+guid: 6c3fd82c692e75a4eb989a0ec7dea787
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 5963297026265501641
+    second: Lifebar1_Damage_Animation-red_0
+  - first:
+      213: -3199151202156704570
+    second: Lifebar1_Damage_Animation-red_1
+  - first:
+      213: -2542323592137702454
+    second: Lifebar1_Damage_Animation-red_2
+  - first:
+      213: 3036598981029972281
+    second: Lifebar1_Damage_Animation-red_3
+  - first:
+      213: -692111920464748441
+    second: Lifebar1_Damage_Animation-red_4
+  - first:
+      213: -5869779587341007063
+    second: Lifebar1_Damage_Animation-red_5
+  - first:
+      213: -1732757746800703515
+    second: Lifebar1_Damage_Animation-red_6
+  - first:
+      213: 8830856259255504669
+    second: Lifebar1_Damage_Animation-red_7
+  - first:
+      213: 2742409863788174953
+    second: Lifebar1_Damage_Animation-red_8
+  - first:
+      213: 7854248577751273166
+    second: Lifebar1_Damage_Animation-red_9
+  - first:
+      213: -2601521841669099804
+    second: Lifebar1_Damage_Animation-red_10
+  - first:
+      213: 4031744373252725091
+    second: Lifebar1_Damage_Animation-red_11
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 0
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Lifebar1_Damage_Animation-red_0
+      rect:
+        serializedVersion: 2
+        x: 2
+        y: 3
+        width: 42
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9cfc2bcec03e1c250800000000000000
+      internalID: 5963297026265501641
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lifebar1_Damage_Animation-red_1
+      rect:
+        serializedVersion: 2
+        x: 30
+        y: 8
+        width: 59
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6cc8fa47ee45a93d0800000000000000
+      internalID: -3199151202156704570
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lifebar1_Damage_Animation-red_2
+      rect:
+        serializedVersion: 2
+        x: 89
+        y: 3
+        width: 46
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ac3898aa92ad7bcd0800000000000000
+      internalID: -2542323592137702454
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lifebar1_Damage_Animation-red_3
+      rect:
+        serializedVersion: 2
+        x: 122
+        y: 8
+        width: 57
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 939ca954faa242a20800000000000000
+      internalID: 3036598981029972281
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lifebar1_Damage_Animation-red_4
+      rect:
+        serializedVersion: 2
+        x: 182
+        y: 6
+        width: 50
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 760a2e310ef1566f0800000000000000
+      internalID: -692111920464748441
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lifebar1_Damage_Animation-red_5
+      rect:
+        serializedVersion: 2
+        x: 215
+        y: 8
+        width: 56
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 92743b2909a5a8ea0800000000000000
+      internalID: -5869779587341007063
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lifebar1_Damage_Animation-red_6
+      rect:
+        serializedVersion: 2
+        x: 270
+        y: 0
+        width: 51
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5e74324820204f7e0800000000000000
+      internalID: -1732757746800703515
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lifebar1_Damage_Animation-red_7
+      rect:
+        serializedVersion: 2
+        x: 300
+        y: 24
+        width: 42
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d1f857bdaf08d8a70800000000000000
+      internalID: 8830856259255504669
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lifebar1_Damage_Animation-red_8
+      rect:
+        serializedVersion: 2
+        x: 340
+        y: 24
+        width: 13
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 96e1f9fbd3ffe0620800000000000000
+      internalID: 2742409863788174953
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lifebar1_Damage_Animation-red_9
+      rect:
+        serializedVersion: 2
+        x: 340
+        y: 11
+        width: 19
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ece4b76c775effc60800000000000000
+      internalID: 7854248577751273166
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lifebar1_Damage_Animation-red_10
+      rect:
+        serializedVersion: 2
+        x: 133
+        y: 5
+        width: 20
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4eea4ef1ba985ebd0800000000000000
+      internalID: -2601521841669099804
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lifebar1_Damage_Animation-red_11
+      rect:
+        serializedVersion: 2
+        x: 319
+        y: 4
+        width: 23
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 36998e87522a3f730800000000000000
+      internalID: 4031744373252725091
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Lifebar1_Damage_Animation-red_0: 5963297026265501641
+      Lifebar1_Damage_Animation-red_1: -3199151202156704570
+      Lifebar1_Damage_Animation-red_10: -2601521841669099804
+      Lifebar1_Damage_Animation-red_11: 4031744373252725091
+      Lifebar1_Damage_Animation-red_2: -2542323592137702454
+      Lifebar1_Damage_Animation-red_3: 3036598981029972281
+      Lifebar1_Damage_Animation-red_4: -692111920464748441
+      Lifebar1_Damage_Animation-red_5: -5869779587341007063
+      Lifebar1_Damage_Animation-red_6: -1732757746800703515
+      Lifebar1_Damage_Animation-red_7: 8830856259255504669
+      Lifebar1_Damage_Animation-red_8: 2742409863788174953
+      Lifebar1_Damage_Animation-red_9: 7854248577751273166
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
