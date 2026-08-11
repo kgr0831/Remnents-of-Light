@@ -73,7 +73,17 @@ public class RampageEnemyOutlineFx : MonoBehaviour
 
         var go = new GameObject("RampageEnemyOutlineFx");
         go.transform.SetParent(owner, false);
-        int protectedLayer = LayerMask.NameToLayer("VFXNoGrayscale");
+        // ⚠️ VFXNoGrayscale이 아니라 전용 레이어(RampageOutline)에 올린다 — 폭주 보호 패스가
+        // "Universal2D 리스트 → SRPDefaultUnlit 리스트" 순으로 그리는데 sortingOrder는 리스트
+        // **안에서만** 적용된다. 이 아웃라인은 LightMode 태그가 없는 Custom/RampageOutline이라
+        // 언릿 리스트로 가고, 플레이어 스프라이트(Sprite-Lit-Default = Universal2D)는 앞 리스트로
+        // 가서, order가 2 대 10인데도 코어(거의 검정·불투명한 owner 실루엣)가 플레이어를 덮었다
+        // (사용자 리포트 2026-08-11 "팬이 플레이어보다 앞에 렌더링되어 플레이어가 안 보임").
+        // 전용 레이어로 갈라야 RampageVisionFeature가 이 그룹만 맨 먼저 그릴 수 있다.
+        // owner 본체(적 11 · 팬 19)는 애초에 보호 대상이 아니라 덧그려지지 않으므로, 먼저 그려도
+        // 자기 본체에 가려질 일은 없다.
+        int protectedLayer = LayerMask.NameToLayer("RampageOutline");
+        if (protectedLayer < 0) protectedLayer = LayerMask.NameToLayer("VFXNoGrayscale"); // 레이어 없는 프로젝트 대비
         if (protectedLayer >= 0) go.layer = protectedLayer;
 
         var fx = go.AddComponent<RampageEnemyOutlineFx>();

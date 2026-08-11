@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
+using UnityEngine.SceneManagement;
 
 /// <summary>
 /// 플레이어 HUD — 체력 아이콘(스프라이트 스왑) + 빛 에너지 게이지
@@ -261,8 +262,27 @@ public class PlayerHudUI : MonoBehaviour
 
     // 씬에 배치하지 않아도 항상 뜨게 한다(씬 편집 없이 HUD가 붙는 유일한 방법).
     // 플레이어가 없는 씬(VfxSandbox 등)에서는 아래 Update가 HUD를 숨긴다.
+    //
+    // ⚠️ RuntimeInitializeOnLoadMethod는 "런타임이 시작되며 **첫 씬**을 로드할 때" 딱 한 번만 불린다
+    // (공식 문서: https://docs.unity3d.com/ScriptReference/RuntimeInitializeOnLoadMethodAttribute.html).
+    // 에디터에서 Map-test를 직접 Play하면 첫 씬이 곧 Map-test라 티가 안 나지만, 빌드는 TitleScene에서
+    // 시작하므로 HUD가 TitleScene에 만들어졌다가 TitleEvent의 LoadScene("Map-test")에서 씬과 함께
+    // 파괴되고 다시는 만들어지지 않았다(이 오브젝트는 DontDestroyOnLoad가 아니다) — 빌드에서만
+    // HUD가 갱신되지 않던 원인(사용자 리포트 2026-08-11). 그래서 씬이 바뀔 때마다 다시 만든다.
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
-    static void AutoCreate() { GetOrCreate(); }
+    static void AutoCreate()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded; // 에디터 도메인 리로드 비활성 시 중복 구독 방지
+        SceneManager.sceneLoaded += OnSceneLoaded;
+        GetOrCreate();
+    }
+
+    // Additive 로드는 기존 씬(과 그 HUD)이 그대로 살아 있으므로 손대지 않는다 — Single 로드일 때만
+    // 이전 HUD가 파괴된 상태라 다시 만들어야 한다(GetOrCreate가 _instance 생존 여부로 알아서 거른다).
+    static void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (mode == LoadSceneMode.Single) GetOrCreate();
+    }
 
     public static PlayerHudUI GetOrCreate()
     {
@@ -304,10 +324,81 @@ public class PlayerHudUI : MonoBehaviour
     }
 #endif
 
+    /// <summary>
+    /// 에디트 모드 프리뷰로 만든 오브젝트가 씬 파일에 저장되지 않게 막는다.
+    /// [ExecuteAlways]라 에디트 모드에서도 Build()가 도는데, 그 결과물(PlayerHud 하위 전체·
+    /// HpGlowCanvas·런타임 생성 머티리얼)이 전부 진짜 씬 오브젝트라 씬을 저장하면 통째로 구워졌다.
+    /// 그렇게 구워진 잔재는 스크립트가 안 붙어 있어 값이 변해도 갱신되지 않는 "박제된 HUD"가 되고,
+    /// 빌드에서 그게 그대로 보였다(사용자 리포트 2026-08-11 — Map-test.unity에 8/11 수정 이전
+    /// 머티리얼 값 그대로 저장돼 있었다: EnergyGlow _BloomBoost 4/_Intensity 1, _LitTint 흰색).
+    /// 플레이 모드에서는 씬 저장 자체가 불가능하므로 에디트 모드에서만 건다.
+    /// </summary>
+    static void MarkDontSaveInEditor(GameObject go)
+    {
+        if (go == null || Application.isPlaying) return;
+        foreach (var t in go.GetComponentsInChildren<Transform>(true))
+            t.gameObject.hideFlags |= HideFlags.DontSaveInEditor;
+    }
+
+#if UNITY_EDITOR
+    // hideFlags는 "우리가 만든 오브젝트"만 저장에서 뺄 수 있다 — 메인 카메라(씬에 원래 있는 진짜
+    // 오브젝트)의 cameraStack에 얹어둔 블룸 카메라 참조까지는 못 막아서, 그대로 저장하면 그 자리에
+    // {fileID: 0} 즉 null 항목이 씬 파일에 박힌다(실측 2026-08-11 UISandbox.unity). URP는 스택의
+    // null을 매 프레임 건너뛰어야 하고, 런타임 Build()가 청소하기 전까지 남는다.
+    // 저장 직전에 빼고 저장 직후에 되돌려, 에디트 모드 블룸 프리뷰는 그대로 두고 파일만 깨끗하게 한다.
+    [UnityEditor.InitializeOnLoadMethod]
+    static void HookSceneSave()
+    {
+        UnityEditor.SceneManagement.EditorSceneManager.sceneSaving -= OnSceneSaving;
+        UnityEditor.SceneManagement.EditorSceneManager.sceneSaving += OnSceneSaving;
+        UnityEditor.SceneManagement.EditorSceneManager.sceneSaved -= OnSceneSaved;
+        UnityEditor.SceneManagement.EditorSceneManager.sceneSaved += OnSceneSaved;
+    }
+
+    // _instance에 기대지 않고 씬을 훑는다 — 에디트 모드에서는 도메인 리로드 후 Awake가 돌지 않아
+    // _instance가 null인 채로 프리뷰 오브젝트만 남아 있는 상태가 실제로 나온다(실측 2026-08-11).
+    static readonly System.Collections.Generic.List<UniversalAdditionalCameraData> _stashedOwners = new System.Collections.Generic.List<UniversalAdditionalCameraData>();
+    static readonly System.Collections.Generic.List<Camera> _stashedCams = new System.Collections.Generic.List<Camera>();
+
+    static void OnSceneSaving(Scene scene, string path)
+    {
+        if (Application.isPlaying) return;
+        _stashedOwners.Clear();
+        _stashedCams.Clear();
+        foreach (var cam in FindObjectsByType<Camera>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+        {
+            // GetUniversalAdditionalCameraData()는 없으면 컴포넌트를 붙여버린다 — 저장 훅에서 그런
+            // 부수효과를 내면 안 되므로 이미 붙어 있는 것만 본다.
+            var data = cam.GetComponent<UniversalAdditionalCameraData>();
+            if (data == null) continue;
+            for (int i = data.cameraStack.Count - 1; i >= 0; i--)
+            {
+                var c = data.cameraStack[i];
+                bool isPreview = c != null && (c.gameObject.hideFlags & HideFlags.DontSaveInEditor) != 0;
+                if (c != null && !isPreview) continue; // 사용자가 직접 얹은 카메라는 건드리지 않는다
+                if (isPreview) { _stashedOwners.Add(data); _stashedCams.Add(c); }
+                data.cameraStack.RemoveAt(i); // null 항목은 되돌리지 않고 그냥 버린다(스택에 null은 언제나 오류)
+            }
+        }
+    }
+
+    static void OnSceneSaved(Scene scene)
+    {
+        for (int i = 0; i < _stashedCams.Count; i++)
+            if (_stashedCams[i] != null && _stashedOwners[i] != null && !_stashedOwners[i].cameraStack.Contains(_stashedCams[i]))
+                _stashedOwners[i].cameraStack.Add(_stashedCams[i]);
+        _stashedOwners.Clear();
+        _stashedCams.Clear();
+    }
+#endif
+
     void Build()
     {
         Canvas canvas = FindOverlayCanvas();
-        if (canvas == null) canvas = CreateOverlayCanvas();
+        // 우리가 만든 캔버스만 "저장 금지"로 찍는다 — 씬에 원래 있던 캔버스를 재사용한 경우에
+        // 그걸 찍으면 사용자가 배치한 진짜 UI가 씬에서 통째로 사라진다.
+        bool createdCanvas = canvas == null;
+        if (createdCanvas) canvas = CreateOverlayCanvas();
 
         // 이름으로 찾아서 지운다 — _root는 private 필드라 도메인 리로드(Play 진입·스크립트 컴파일)마다
         // null로 초기화되지만, 이미 만들어둔 자식 오브젝트는 씬에 그대로 남아있어 필드 체크만으론
@@ -330,6 +421,10 @@ public class PlayerHudUI : MonoBehaviour
         BuildHpIcon(_player != null ? _player.maxHealth : 5);
         BuildEnergyIcon();
         BuildBloomPipeline();
+
+        // 자식이 전부 만들어진 뒤에 찍는다(하위를 훑어 내려가므로 순서가 중요하다).
+        if (createdCanvas) MarkDontSaveInEditor(canvas.gameObject);
+        MarkDontSaveInEditor(_root);
     }
 
     /// <summary>
@@ -544,6 +639,8 @@ public class PlayerHudUI : MonoBehaviour
                 _energyGlowMat.SetFloat("_Intensity", energyGlowIntensity);
             }
         }
+
+        MarkDontSaveInEditor(glowCanvasGO); // 씬 루트에 만든 캔버스라 그대로 두면 씬에 저장된다
     }
 
     /// <summary>

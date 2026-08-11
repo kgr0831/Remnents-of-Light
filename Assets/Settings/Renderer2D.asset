@@ -14,13 +14,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RampageVisionFeature
   m_Active: 1
   Intensity: 0
-  Center: {x: 0.30994833, y: 0.049979925}
+  Center: {x: 0.2618791, y: 0.14737558}
   Radius: -1
   Softness: 0.0001
   Darkness: 1
   ProtectedLayerMask:
     serializedVersion: 2
-    m_Bits: 49408
+    m_Bits: 2146560
+  OutlineFirstLayerMask:
+    serializedVersion: 2
+    m_Bits: 2097152
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -114,7 +117,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GrayscaleRendererFeature
   m_Active: 1
   Intensity: 0
-  Center: {x: 0.6436291, y: 0.15339957}
+  Center: {x: 0.20431262, y: 0.078166485}
   Radius: 1.8
   Softness: 0.35
   FocusCenter: {x: 0.5, y: 0.5}
@@ -122,7 +125,7 @@ MonoBehaviour:
   FocusSoftness: 0.04
   ProtectedLayerMask:
     serializedVersion: 2
-    m_Bits: 49408
+    m_Bits: 2146560
 --- !u!114 &4967651120529689474
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -137,7 +140,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ScreenGlitchFeature
   m_Active: 1
   Intensity: 0
-  Seed: 2727
-  ScanlineDensity: 90
-  ScanlineJitter: 0.02
-  NoiseAmount: 0.06
+  Seed: 1598
+  ScanlineDensity: 140
+  ScanlineJitter: 0.09
+  NoiseAmount: 0.35
