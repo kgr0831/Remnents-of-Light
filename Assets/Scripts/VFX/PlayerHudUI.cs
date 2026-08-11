@@ -144,12 +144,19 @@ public class PlayerHudUI : MonoBehaviour
     // HP와 같은 파이프라인(BuildBloomPipeline이 카메라·볼륨·글로우 캔버스를 공유)이지만 색은
     // 다르게(사용자 지시 2026-08-11) — 평상시엔 아이콘 원래 색(청록)에 가깝게, 폭주 중엔 HP 블룸과
     // 같은 계열의 빨강으로 갈린다.
+    // ⚠️ 재수정(2026-08-11, 사용자 지적 "저게 정상으로 보여?") — EnergyBar 프레임이 8/8(만충전)일 땐
+    // 마스크가 아이콘 전체를 덮는다(HpBar와 달리 "켜진 칸"이 아이콘 전부라 마스크 면적이 훨씬 큼).
+    // 거기에 색까지 흰색에 가까워(0.2,0.92,1) boost=4/intensity=1이면 블룸 블러가 아이콘 전체를
+    // 뭉개 톱니 모양 실루엣(4방향 갈퀴+내부 홈, EnergyBar 원본 실측)이 매끈한 원으로 뭉개져
+    // 보였다 — 셰이더가 안 먹은 게 아니라 블룸 자체가 너무 강해 디테일을 삼킨 것. HP는 같은
+    // boost/intensity를 써도 글로우 색이 채도 높은 빨강/금색이라 덜 뭉개지고, "켜진 칸"만 덮는
+    // 경우가 많아 마스크 면적도 작다 — 광원 쪽만 세기를 크게 낮춘다.
     [Header("광원 블룸 (2026-08-11 사용자 지시 — HP와 같은 방식, 색은 다르게)")]
     public bool energyGlowEnabled = true;
     public Color energyGlowColor = new Color(0.20f, 0.92f, 1f, 1f);
     public Color energyRampageGlowColor = new Color(1f, 0.16f, 0.08f, 1f);
-    [Range(1f, 8f)] public float energyGlowBoost = 4f;
-    [Range(0f, 1f)] public float energyGlowIntensity = 1f;
+    [Range(1f, 8f)] public float energyGlowBoost = 1.5f;
+    [Range(0f, 1f)] public float energyGlowIntensity = 0.4f;
     // 폭주 중엔 블룸이 하트비트처럼 빠르게 페이드 인/아웃을 반복한다(사용자 지시 2026-08-11,
     // RampageHeartbeatFx.cs의 lub 박동 리듬(상승 0.05s/하강 0.10s)을 참고한 빠른 삼각파 펄스 —
     // 화면 전체가 아니라 이 블룸 하나에만 건다).
