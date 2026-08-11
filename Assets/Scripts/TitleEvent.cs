@@ -14,6 +14,9 @@ public class TitleEvent : MonoBehaviour
     [Header("Press Any Key UI")]
     [SerializeField] Text _pressAnyKeyText; // "Press Any Key" 안내 텍스트
 
+    [Header("BGM")]
+    [SerializeField] AudioSource _bgm; // 암전과 같은 속도로 같이 잦아든다 (비워두면 무시)
+
     Coroutine _titleCo = null;
     Coroutine _anyKeyCo = null;
     bool _canAnyKey = false;
@@ -108,17 +111,22 @@ public class TitleEvent : MonoBehaviour
         Color panelColor = _teamPanel.color;
         float al = 0f;
 
+        // BGM도 같은 루프에서 같이 줄인다 — 별도 코루틴을 돌리면 암전과 미묘하게 어긋난다.
+        float bgmVolume = _bgm != null ? _bgm.volume : 0f;
+
         // 화면을 다시 검은색으로 페이드 인 (0 -> 1)
         while (al < 1f)
         {
             al += Time.unscaledDeltaTime;
             panelColor.a = al;
             _teamPanel.color = panelColor;
+            if (_bgm != null) _bgm.volume = bgmVolume * (1f - al);
             yield return null;
         }
 
         panelColor.a = 1f;
         _teamPanel.color = panelColor;
+        if (_bgm != null) _bgm.volume = 0f;
 
         _anyKeyCo = null;
 

@@ -13,6 +13,13 @@ using UnityEngine.UI;
 [RequireComponent(typeof(Canvas))]
 public class ScreenBlackout : MonoBehaviour
 {
+    // ⚠️ Time.unscaledDeltaTime은 Time.maximumDeltaTime(기본 0.333)으로 클램프되지 **않는다**.
+    //    씬 로드·도메인 리로드 직후 첫 프레임은 실측 1초 이상 찍히는 경우가 있어, 그대로 누적하면
+    //    1.2초 페이드가 한 프레임에 끝나 페이드가 아예 안 보인다
+    //    (2026-08-12 사용자 리포트 "처음에 페이드 아웃이 안되는거 같음"의 원인 — 실측으로 확정).
+    //    ScreenGlitchFx · RampageVisionFx · PlayerHudUI의 MaxSmoothDelta와 같은 선례.
+    const float MaxStep = 0.05f;
+
     Image panel;
 
     void Awake()
@@ -48,7 +55,7 @@ public class ScreenBlackout : MonoBehaviour
         float t = 0f;
         while (t < duration)
         {
-            t += Time.unscaledDeltaTime;
+            t += Mathf.Min(Time.unscaledDeltaTime, MaxStep);
             panel.color = new Color(0f, 0f, 0f, Mathf.Lerp(from, target, Mathf.Clamp01(t / duration)));
             yield return null;
         }

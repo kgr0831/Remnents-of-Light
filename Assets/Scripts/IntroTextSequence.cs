@@ -38,6 +38,12 @@ public class IntroTextSequence : MonoBehaviour
     [Header("페이드")]
     public float textFadeOut = 0.35f;
 
+    [Header("타이핑 사운드")]
+    [Tooltip("타이핑 · 패널 효과음 공용 소스. playOnAwake는 꺼둔다")]
+    public AudioSource sfxSource;
+    [Tooltip("타이핑이 도는 동안 깔리는 소리")]
+    public AudioClip typingSfx;
+
     /// <summary>대사가 떠 있는 동안 true — 다른 연출이 같은 UI를 겹쳐 쓰는 걸 막는다.</summary>
     public bool Busy { get; private set; }
 
@@ -94,11 +100,13 @@ public class IntroTextSequence : MonoBehaviour
         textGroup.alpha = 1f;
         mainText.text = string.Empty;
         mainText.gameObject.SetActive(true);
+        BeginTypingSfx();
         for (int i = 1; i <= message.Length; i++)
         {
             mainText.text = message.Substring(0, i);
             yield return new WaitForSecondsRealtime(charInterval);
         }
+        EndTypingSfx();
 
         promptGroup.alpha = 0f;      // 안 보이는 데서 페이드 인으로 시작
         promptText.gameObject.SetActive(true);
@@ -123,6 +131,29 @@ public class IntroTextSequence : MonoBehaviour
         promptText.gameObject.SetActive(false);
 
         Busy = false;
+    }
+
+    // ── 타이핑 사운드 ────────────────────────────────────────────────────────────────────────
+    // textSfx는 1.07초짜리 연속음이라 글자마다(0.06초 간격) 재생하면 18겹이 된다. 타이핑이 도는 동안
+    // 루프로 깔고 끝나면 멈춘다 — 문구가 클립보다 짧아도 소리가 뒤로 새지 않는다.
+    // SwordPickupSequence의 text-action 타이핑도 같은 소리를 써야 해서 public으로 뺐다.
+
+    /// <summary>타이핑이 시작될 때 호출 — 소리를 루프로 깐다.</summary>
+    public void BeginTypingSfx()
+    {
+        if (sfxSource == null || typingSfx == null) return;
+        sfxSource.clip = typingSfx;
+        sfxSource.loop = true;
+        sfxSource.Play();
+    }
+
+    /// <summary>타이핑이 끝날 때 호출 — 반드시 짝을 맞춘다. 안 부르면 소리가 계속 돈다.</summary>
+    public void EndTypingSfx()
+    {
+        if (sfxSource == null) return;
+        sfxSource.Stop();
+        sfxSource.loop = false;
+        sfxSource.clip = null;
     }
 
     // 페이드 인 → 잠시 유지 → 페이드 아웃 → 잠시 대기를 반복한다.
@@ -164,5 +195,6 @@ public class IntroTextSequence : MonoBehaviour
     void OnDisable()
     {
         if (Busy) TutorialMover.InputLocked = false;
+        EndTypingSfx();   // 타이핑 도중에 꺼지면 루프가 계속 돈다
     }
 }

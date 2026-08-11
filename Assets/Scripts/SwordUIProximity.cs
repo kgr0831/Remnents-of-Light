@@ -13,6 +13,10 @@ public class SwordUIProximity : MonoBehaviour
     public GameObject swordUI;
     public float fadeDuration = 0.25f;
 
+    /// <summary>UI가 떠 있는가(페이드 인 시작 ~ 페이드 아웃 시작). SwordPickupSequence가 F 입력을
+    /// 받아도 되는지 판단하는 데 쓴다 — 사라지는 중에 누른 F는 안 먹어야 한다.</summary>
+    public bool Shown { get; private set; }
+
     CanvasGroup group;
     Coroutine fade;
 
@@ -33,6 +37,7 @@ public class SwordUIProximity : MonoBehaviour
 
     void FadeTo(float target)
     {
+        Shown = target > 0f;
         if (fade != null) StopCoroutine(fade);
         // 알파만 올려서는 안 된다 — 오브젝트가 꺼져 있으면 CanvasGroup을 아무리 건드려도 안 보인다.
         // 켤 때는 먼저 활성화하고, 끌 때는 페이드가 끝난 뒤에 비활성화한다.

@@ -80,9 +80,11 @@ public class CinematicLetterbox : MonoBehaviour
         float from = top.sizeDelta.y;
         float t = 0f;
         // 컷신 중 timeScale이 흔들려도(히트스톱·시간가속) 연출 속도가 일정하도록 unscaled를 쓴다.
+        // 단 unscaledDeltaTime은 maximumDeltaTime으로 클램프되지 않아 씬 로드 직후 첫 프레임이 1초를
+        // 넘길 수 있다 — 그대로 두면 바가 자라는 게 한 프레임에 끝난다(ScreenBlackout 주석 참고).
         while (t < duration)
         {
-            t += Time.unscaledDeltaTime;
+            t += Mathf.Min(Time.unscaledDeltaTime, 0.05f);
             SetHeight(Mathf.Lerp(from, target, Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(t / duration))));
             yield return null;
         }
