@@ -365,6 +365,153 @@ TextureImporter:
   - first:
       213: -8349527729014626604
     second: Player-Tutorial_120
+  - first:
+      213: 4723107735738678597
+    second: Idle_0
+  - first:
+      213: -7385789195546760866
+    second: Idle_1
+  - first:
+      213: 3234629978573100161
+    second: Idle_2
+  - first:
+      213: 6373048116405451881
+    second: Idle_3
+  - first:
+      213: 7264182050183361747
+    second: Idle_4
+  - first:
+      213: -2834552850196481573
+    second: Idle_5
+  - first:
+      213: 3278449094680734212
+    second: Idle_6
+  - first:
+      213: 3384493420599841878
+    second: Idle_7
+  - first:
+      213: -2331352242086191015
+    second: Idle_8
+  - first:
+      213: -3914248031228685145
+    second: Idle_9
+  - first:
+      213: 7132915409514813599
+    second: Idle_10
+  - first:
+      213: -2055793278435719954
+    second: Idle_11
+  - first:
+      213: -1133706752296058015
+    second: Idle_12
+  - first:
+      213: 4944230376442633554
+    second: Run_0
+  - first:
+      213: -2274363484027164459
+    second: Run_1
+  - first:
+      213: 8284087734974297348
+    second: Run_2
+  - first:
+      213: 5304202850863732263
+    second: Run_3
+  - first:
+      213: 2833043080597125133
+    second: Run_4
+  - first:
+      213: -2217414122262695004
+    second: Run_5
+  - first:
+      213: -4440497016933152808
+    second: Run_6
+  - first:
+      213: 8676454946275842879
+    second: Run_7
+  - first:
+      213: -6351944509545543589
+    second: Run_8
+  - first:
+      213: 2158891789428380870
+    second: Run_9
+  - first:
+      213: 9151066736925549315
+    second: Run_10
+  - first:
+      213: -7266845314124737194
+    second: Run_11
+  - first:
+      213: -5168576596277122810
+    second: Run_12
+  - first:
+      213: -224255142843906860
+    second: Grab_0
+  - first:
+      213: -5883350367517167650
+    second: Grab_1
+  - first:
+      213: -7806333298255021245
+    second: Grab_2
+  - first:
+      213: 1246945922709491994
+    second: Grab_3
+  - first:
+      213: 5819661159441211927
+    second: Grab_4
+  - first:
+      213: 4996659400846918229
+    second: Grab_5
+  - first:
+      213: -6859424180663443922
+    second: Grab_6
+  - first:
+      213: -6842909119263109435
+    second: Grab_7
+  - first:
+      213: -3228032989793910493
+    second: Grab_8
+  - first:
+      213: 923374690896055745
+    second: Grab_9
+  - first:
+      213: 3874132127545004130
+    second: Grab_10
+  - first:
+      213: 5181630716902482286
+    second: Grab_11
+  - first:
+      213: -3878805461526139618
+    second: Grab_12
+  - first:
+      213: 7033121763058193864
+    second: Born-reverse_0
+  - first:
+      213: 3785674352904316731
+    second: Born-reverse_1
+  - first:
+      213: -6518622014833469797
+    second: Born-reverse_2
+  - first:
+      213: 5914499702037539373
+    second: Born-reverse_3
+  - first:
+      213: -2168796799557077433
+    second: Born-reverse_4
+  - first:
+      213: -6696968145416042774
+    second: Born-reverse_5
+  - first:
+      213: -2314150676691336677
+    second: Born-reverse_6
+  - first:
+      213: 3559281048542594658
+    second: Born-reverse_7
+  - first:
+      213: -8129666616674806649
+    second: Born-reverse_8
+  - first:
+      213: 8074736141365327651
+    second: Born-reverse_9
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -432,7 +579,7 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 2048
+    maxTextureSize: 8192
     resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 0
@@ -460,2663 +607,1079 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Player-Tutorial_0
+      name: Idle_0
       rect:
         serializedVersion: 2
-        x: 371
-        y: 4283
-        width: 86
-        height: 116
+        x: 0
+        y: 4224
+        width: 1152
+        height: 192
       alignment: 9
-      pivot: {x: 0.3805, y: 0.724}
+      pivot: {x: 0.3576389, y: 0.344}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 20249a8b911c5a910800000000000000
-      internalID: 1848095538321900034
+      spriteID: 54d7a982679db8140800000000000000
+      internalID: 4723107735738678597
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Player-Tutorial_1
+      name: Idle_1
       rect:
         serializedVersion: 2
-        x: 1523
-        y: 4283
-        width: 86
-        height: 116
+        x: 1152
+        y: 4224
+        width: 1152
+        height: 192
       alignment: 9
-      pivot: {x: 0.3805, y: 0.724}
+      pivot: {x: 0.3576389, y: 0.344}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 2bd4dc9c4e91bcd30800000000000000
-      internalID: 4452681127014780338
+      spriteID: e596485bbd7608990800000000000000
+      internalID: -7385789195546760866
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Player-Tutorial_2
+      name: Idle_2
       rect:
         serializedVersion: 2
-        x: 2675
-        y: 4283
-        width: 86
-        height: 122
+        x: 2304
+        y: 4224
+        width: 1152
+        height: 192
       alignment: 9
-      pivot: {x: 0.3805, y: 0.724}
+      pivot: {x: 0.3576389, y: 0.344}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 081fdad27d05a24a0800000000000000
-      internalID: -6617387817352957568
+      spriteID: 184dda4e3d6b3ec20800000000000000
+      internalID: 3234629978573100161
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Player-Tutorial_3
+      name: Idle_3
       rect:
         serializedVersion: 2
-        x: 3827
-        y: 4283
-        width: 86
-        height: 122
+        x: 3456
+        y: 4224
+        width: 1152
+        height: 192
       alignment: 9
-      pivot: {x: 0.3805, y: 0.724}
+      pivot: {x: 0.3576389, y: 0.344}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: f92825baf6c991020800000000000000
-      internalID: 2313051887061074591
+      spriteID: 96cb1dafe7d917850800000000000000
+      internalID: 6373048116405451881
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Player-Tutorial_4
+      name: Idle_4
       rect:
         serializedVersion: 2
-        x: 371
-        y: 4067
-        width: 86
-        height: 98
+        x: 0
+        y: 3072
+        width: 1152
+        height: 192
       alignment: 9
-      pivot: {x: 0.3805, y: 0.536}
+      pivot: {x: 0.3576389, y: 0.344}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 713e4f4a6a20f5c30800000000000000
-      internalID: 4350198679818527511
+      spriteID: 3d4b2fc561f8fc460800000000000000
+      internalID: 7264182050183361747
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Player-Tutorial_5
+      name: Idle_5
       rect:
         serializedVersion: 2
-        x: 1517
-        y: 4067
-        width: 92
-        height: 110
+        x: 1152
+        y: 3072
+        width: 1152
+        height: 192
       alignment: 9
-      pivot: {x: 0.3805, y: 0.536}
+      pivot: {x: 0.3576389, y: 0.344}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 22f190410724bc2b0800000000000000
-      internalID: -5563279865546203358
+      spriteID: bd9b7fa6335a9a8d0800000000000000
+      internalID: -2834552850196481573
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Player-Tutorial_6
+      name: Idle_6
       rect:
         serializedVersion: 2
-        x: 2675
-        y: 4073
-        width: 86
-        height: 116
+        x: 2304
+        y: 3072
+        width: 1152
+        height: 192
       alignment: 9
-      pivot: {x: 0.3805, y: 0.536}
+      pivot: {x: 0.3576389, y: 0.344}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 9e2cf83e6faae7860800000000000000
-      internalID: 7529643604366574313
+      spriteID: 40a65a6e4146f7d20800000000000000
+      internalID: 3278449094680734212
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Player-Tutorial_7
+      name: Idle_7
       rect:
         serializedVersion: 2
-        x: 3827
-        y: 4073
-        width: 86
-        height: 110
+        x: 3456
+        y: 3072
+        width: 1152
+        height: 192
       alignment: 9
-      pivot: {x: 0.3805, y: 0.536}
+      pivot: {x: 0.3576389, y: 0.344}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 5eda511bfc66ac320800000000000000
-      internalID: 2578986778838281701
+      spriteID: 654108f85d228fe20800000000000000
+      internalID: 3384493420599841878
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Player-Tutorial_8
+      name: Idle_8
       rect:
         serializedVersion: 2
-        x: 365
-        y: 3863
-        width: 86
-        height: 116
+        x: 0
+        y: 1920
+        width: 1152
+        height: 192
       alignment: 9
-      pivot: {x: 0.375, y: 0.359}
+      pivot: {x: 0.3576389, y: 0.344}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: fc888234ab492fd20800000000000000
-      internalID: 3310872203782293711
+      spriteID: 9506424ec7f55afd0800000000000000
+      internalID: -2331352242086191015
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Player-Tutorial_9
+      name: Idle_9
       rect:
         serializedVersion: 2
-        x: 1517
-        y: 3863
-        width: 80
-        height: 116
+        x: 1152
+        y: 1920
+        width: 1152
+        height: 192
       alignment: 9
-      pivot: {x: 0.375, y: 0.359}
+      pivot: {x: 0.3576389, y: 0.344}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: d18f7b394db129230800000000000000
-      internalID: 3644005648321476637
+      spriteID: 7a497d7772ccda9c0800000000000000
+      internalID: -3914248031228685145
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Player-Tutorial_10
+      name: Idle_10
       rect:
         serializedVersion: 2
-        x: 2669
-        y: 3863
-        width: 74
-        height: 116
+        x: 2304
+        y: 1920
+        width: 1152
+        height: 192
       alignment: 9
-      pivot: {x: 0.375, y: 0.359}
+      pivot: {x: 0.3576389, y: 0.344}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 0ce2cb778297da9a0800000000000000
-      internalID: -6220182295614312768
+      spriteID: f985a0de5c43df260800000000000000
+      internalID: 7132915409514813599
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Player-Tutorial_11
+      name: Idle_11
       rect:
         serializedVersion: 2
-        x: 3803
-        y: 3863
-        width: 86
-        height: 110
+        x: 3456
+        y: 1920
+        width: 1152
+        height: 192
       alignment: 9
-      pivot: {x: 0.375, y: 0.359}
+      pivot: {x: 0.3576389, y: 0.344}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: fddb6d4df67ddc020800000000000000
-      internalID: 2363782254751563231
+      spriteID: ee40433c7ea5873e0800000000000000
+      internalID: -2055793278435719954
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Player-Tutorial_12
+      name: Idle_12
       rect:
         serializedVersion: 2
-        x: 365
-        y: 3671
-        width: 68
-        height: 116
+        x: 0
+        y: 768
+        width: 1152
+        height: 192
       alignment: 9
-      pivot: {x: 0.37, y: 0.187}
+      pivot: {x: 0.3576389, y: 0.344}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: e83225412856f5e10800000000000000
-      internalID: 2188579553286431630
+      spriteID: 1638ee527b34440f0800000000000000
+      internalID: -1133706752296058015
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Player-Tutorial_13
+      name: Run_0
       rect:
         serializedVersion: 2
-        x: 437
-        y: 3761
-        width: 8
-        height: 8
+        x: 0
+        y: 4032
+        width: 1152
+        height: 192
       alignment: 9
-      pivot: {x: 0.37, y: 0.187}
+      pivot: {x: 0.3576389, y: 0.216}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 056445e543bee8280800000000000000
-      internalID: -9039028791932598704
+      spriteID: 25d1f8be45f6d9440800000000000000
+      internalID: 4944230376442633554
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Player-Tutorial_14
+      name: Run_1
       rect:
         serializedVersion: 2
-        x: 1517
-        y: 3671
-        width: 68
-        height: 116
+        x: 1152
+        y: 4032
+        width: 1152
+        height: 192
       alignment: 9
-      pivot: {x: 0.37, y: 0.187}
+      pivot: {x: 0.3576389, y: 0.216}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 5b3e22ccc087e40b0800000000000000
-      internalID: -5742520478491024459
+      spriteID: 5d8e07c1676df60e0800000000000000
+      internalID: -2274363484027164459
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Player-Tutorial_15
+      name: Run_2
       rect:
         serializedVersion: 2
-        x: 1589
-        y: 3761
-        width: 8
-        height: 8
+        x: 2304
+        y: 4032
+        width: 1152
+        height: 192
       alignment: 9
-      pivot: {x: 0.37, y: 0.187}
+      pivot: {x: 0.3576389, y: 0.216}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 924e72617b8e08c30800000000000000
-      internalID: 4359740312343012393
+      spriteID: 405305b67edf6f270800000000000000
+      internalID: 8284087734974297348
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Player-Tutorial_16
+      name: Run_3
       rect:
         serializedVersion: 2
-        x: 2613
-        y: 3671
-        width: 214
-        height: 122
+        x: 3456
+        y: 4032
+        width: 1152
+        height: 192
       alignment: 9
-      pivot: {x: 0.37, y: 0.187}
+      pivot: {x: 0.3576389, y: 0.216}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 1ba72dfbe32583690800000000000000
-      internalID: -7622251939864872271
+      spriteID: 726d856d3605c9940800000000000000
+      internalID: 5304202850863732263
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Player-Tutorial_17
+      name: Run_4
       rect:
         serializedVersion: 2
-        x: 3785
-        y: 3737
-        width: 62
-        height: 56
+        x: 0
+        y: 2880
+        width: 1152
+        height: 192
       alignment: 9
-      pivot: {x: 0.37, y: 0.187}
+      pivot: {x: 0.3576389, y: 0.216}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 49027dbd2400b5940800000000000000
-      internalID: 5285818874805559444
+      spriteID: d08be54fbadf05720800000000000000
+      internalID: 2833043080597125133
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Player-Tutorial_18
+      name: Run_5
       rect:
         serializedVersion: 2
-        x: 3797
-        y: 3677
-        width: 146
-        height: 98
+        x: 1152
+        y: 2880
+        width: 1152
+        height: 192
       alignment: 9
-      pivot: {x: 0.37, y: 0.187}
+      pivot: {x: 0.3576389, y: 0.216}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 5cdce9d9add2d9a20800000000000000
-      internalID: 3070660937907097029
+      spriteID: 4a3f89aaa992a31e0800000000000000
+      internalID: -2217414122262695004
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Player-Tutorial_19
+      name: Run_6
       rect:
         serializedVersion: 2
-        x: 3851
-        y: 3767
-        width: 50
-        height: 38
+        x: 2304
+        y: 2880
+        width: 1152
+        height: 192
       alignment: 9
-      pivot: {x: 0.37, y: 0.187}
+      pivot: {x: 0.3576389, y: 0.216}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 27487d8eda4343800800000000000000
-      internalID: 591155372632802418
+      spriteID: 8d784876d7f2062c0800000000000000
+      internalID: -4440497016933152808
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Player-Tutorial_20
+      name: Run_7
       rect:
         serializedVersion: 2
-        x: 3977
-        y: 3731
-        width: 6
-        height: 14
+        x: 3456
+        y: 2880
+        width: 1152
+        height: 192
       alignment: 9
-      pivot: {x: 0.37, y: 0.187}
+      pivot: {x: 0.3576389, y: 0.216}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 4c9d55fe3dca42f30800000000000000
-      internalID: 4549951549804501444
+      spriteID: f3bd376cdc5f86870800000000000000
+      internalID: 8676454946275842879
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Player-Tutorial_21
+      name: Run_8
       rect:
         serializedVersion: 2
-        x: 3977
-        y: 3683
-        width: 6
-        height: 8
+        x: 0
+        y: 1728
+        width: 1152
+        height: 192
       alignment: 9
-      pivot: {x: 0.37, y: 0.187}
+      pivot: {x: 0.3576389, y: 0.216}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 5d7f7d54db1325d30800000000000000
-      internalID: 4418648873394239445
+      spriteID: b588b836f1c59d7a0800000000000000
+      internalID: -6351944509545543589
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Player-Tutorial_22
+      name: Run_9
       rect:
         serializedVersion: 2
-        x: 371
-        y: 3131
-        width: 86
-        height: 110
+        x: 1152
+        y: 1728
+        width: 1152
+        height: 192
       alignment: 9
-      pivot: {x: 0.3805, y: 0.724}
+      pivot: {x: 0.3576389, y: 0.216}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 6958cf62448911e10800000000000000
-      internalID: 2166680314221200790
+      spriteID: 6c4d269e4ace5fd10800000000000000
+      internalID: 2158891789428380870
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Player-Tutorial_23
+      name: Run_10
       rect:
         serializedVersion: 2
-        x: 1523
-        y: 3131
-        width: 86
-        height: 104
+        x: 2304
+        y: 1728
+        width: 1152
+        height: 192
       alignment: 9
-      pivot: {x: 0.3805, y: 0.724}
+      pivot: {x: 0.3576389, y: 0.216}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 039b5fc03192c17a0800000000000000
-      internalID: -6405199408229140176
+      spriteID: 303275a76be1ffe70800000000000000
+      internalID: 9151066736925549315
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Player-Tutorial_24
+      name: Run_11
       rect:
         serializedVersion: 2
-        x: 2675
-        y: 3131
-        width: 86
-        height: 116
+        x: 3456
+        y: 1728
+        width: 1152
+        height: 192
       alignment: 9
-      pivot: {x: 0.3805, y: 0.724}
+      pivot: {x: 0.3576389, y: 0.216}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 4c4bc908ffd4199a0800000000000000
-      internalID: -6228111049906932540
+      spriteID: 65512ed20baf62b90800000000000000
+      internalID: -7266845314124737194
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Player-Tutorial_25
+      name: Run_12
       rect:
         serializedVersion: 2
-        x: 3827
-        y: 3131
-        width: 86
-        height: 116
+        x: 0
+        y: 576
+        width: 1152
+        height: 192
       alignment: 9
-      pivot: {x: 0.3805, y: 0.724}
+      pivot: {x: 0.3576389, y: 0.216}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: f9a01ecf1a3eac3f0800000000000000
-      internalID: -879640492325664097
+      spriteID: 609218058f68548b0800000000000000
+      internalID: -5168576596277122810
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Player-Tutorial_26
+      name: Grab_0
       rect:
         serializedVersion: 2
-        x: 371
-        y: 2921
-        width: 86
-        height: 104
+        x: 0
+        y: 3840
+        width: 1152
+        height: 192
       alignment: 9
-      pivot: {x: 0.3805, y: 0.536}
+      pivot: {x: 0.3576389, y: 0.154}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: d7acac2c557e7f160800000000000000
-      internalID: 7059365296452848253
+      spriteID: 4d40cbfb22943ecf0800000000000000
+      internalID: -224255142843906860
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Player-Tutorial_27
+      name: Grab_1
       rect:
         serializedVersion: 2
-        x: 1523
-        y: 2915
-        width: 86
-        height: 98
+        x: 1152
+        y: 3840
+        width: 1152
+        height: 192
       alignment: 9
-      pivot: {x: 0.3805, y: 0.536}
+      pivot: {x: 0.3576389, y: 0.154}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 021ed216ea543a8a0800000000000000
-      internalID: -6295111238876798688
+      spriteID: edfa9f613042a5ea0800000000000000
+      internalID: -5883350367517167650
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Player-Tutorial_28
+      name: Grab_2
       rect:
         serializedVersion: 2
-        x: 2675
-        y: 2915
-        width: 86
-        height: 98
+        x: 2304
+        y: 3840
+        width: 1152
+        height: 192
       alignment: 9
-      pivot: {x: 0.3805, y: 0.536}
+      pivot: {x: 0.3576389, y: 0.154}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: bd6016d9e56c6a410800000000000000
-      internalID: 1488094836562134747
+      spriteID: 34bb43799355aa390800000000000000
+      internalID: -7806333298255021245
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Player-Tutorial_29
+      name: Grab_3
       rect:
         serializedVersion: 2
-        x: 3821
-        y: 2915
-        width: 92
-        height: 110
+        x: 3456
+        y: 3840
+        width: 1152
+        height: 192
       alignment: 9
-      pivot: {x: 0.3805, y: 0.536}
+      pivot: {x: 0.3576389, y: 0.154}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 55e104b77ae985530800000000000000
-      internalID: 3843996724125245013
+      spriteID: a119839c5ba0e4110800000000000000
+      internalID: 1246945922709491994
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Player-Tutorial_30
+      name: Grab_4
       rect:
         serializedVersion: 2
-        x: 341
-        y: 2711
-        width: 92
-        height: 110
+        x: 0
+        y: 2688
+        width: 1152
+        height: 192
       alignment: 9
-      pivot: {x: 0.375, y: 0.359}
+      pivot: {x: 0.3576389, y: 0.154}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 9babfc8d8a7960ad0800000000000000
-      internalID: -2736332972133205319
+      spriteID: 712a1a99df693c050800000000000000
+      internalID: 5819661159441211927
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Player-Tutorial_31
+      name: Grab_5
       rect:
         serializedVersion: 2
-        x: 1505
-        y: 2711
-        width: 92
-        height: 68
+        x: 1152
+        y: 2688
+        width: 1152
+        height: 192
       alignment: 9
-      pivot: {x: 0.375, y: 0.359}
+      pivot: {x: 0.3576389, y: 0.154}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: a13176dab32d4c160800000000000000
-      internalID: 7044986870868415258
+      spriteID: 552c81b6043b75540800000000000000
+      internalID: 4996659400846918229
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Player-Tutorial_32
+      name: Grab_6
       rect:
         serializedVersion: 2
-        x: 2657
-        y: 2711
-        width: 92
-        height: 68
+        x: 2304
+        y: 2688
+        width: 1152
+        height: 192
       alignment: 9
-      pivot: {x: 0.375, y: 0.359}
+      pivot: {x: 0.3576389, y: 0.154}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 10d15545f2031b1e0800000000000000
-      internalID: -2183911364461519615
+      spriteID: e2e94dbec0e6ec0a0800000000000000
+      internalID: -6859424180663443922
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Player-Tutorial_33
+      name: Grab_7
       rect:
         serializedVersion: 2
-        x: 3809
-        y: 2711
-        width: 92
-        height: 68
+        x: 3456
+        y: 2688
+        width: 1152
+        height: 192
       alignment: 9
-      pivot: {x: 0.375, y: 0.359}
+      pivot: {x: 0.3576389, y: 0.154}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: ea677070573d27be0800000000000000
-      internalID: -1480888827868907858
+      spriteID: 5ce8a0c496a1901a0800000000000000
+      internalID: -6842909119263109435
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Player-Tutorial_34
+      name: Grab_8
       rect:
         serializedVersion: 2
-        x: 347
-        y: 2633
-        width: 20
-        height: 14
+        x: 0
+        y: 1536
+        width: 1152
+        height: 192
       alignment: 9
-      pivot: {x: 0.37, y: 0.187}
+      pivot: {x: 0.3576389, y: 0.154}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 9e08216b909ccd570800000000000000
-      internalID: 8492884040860467433
+      spriteID: 32187104919b333d0800000000000000
+      internalID: -3228032989793910493
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Player-Tutorial_35
+      name: Grab_9
       rect:
         serializedVersion: 2
-        x: 377
-        y: 2639
-        width: 14
-        height: 14
+        x: 1152
+        y: 1536
+        width: 1152
+        height: 192
       alignment: 9
-      pivot: {x: 0.37, y: 0.187}
+      pivot: {x: 0.3576389, y: 0.154}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 3cb2b398116932ac0800000000000000
-      internalID: -3881093451802268733
+      spriteID: 1cd027d936c70dc00800000000000000
+      internalID: 923374690896055745
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Player-Tutorial_36
+      name: Grab_10
       rect:
         serializedVersion: 2
-        x: 407
-        y: 2639
-        width: 8
-        height: 8
+        x: 2304
+        y: 1536
+        width: 1152
+        height: 192
       alignment: 9
-      pivot: {x: 0.37, y: 0.187}
+      pivot: {x: 0.3576389, y: 0.154}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 4a6d11a1629159c00800000000000000
-      internalID: 906658551421851300
+      spriteID: 2609f3bd4aea3c530800000000000000
+      internalID: 3874132127545004130
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Player-Tutorial_37
+      name: Grab_11
       rect:
         serializedVersion: 2
-        x: 419
-        y: 2627
-        width: 32
-        height: 26
+        x: 3456
+        y: 1536
+        width: 1152
+        height: 192
       alignment: 9
-      pivot: {x: 0.37, y: 0.187}
+      pivot: {x: 0.3576389, y: 0.154}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 09b1d9a237440b2d0800000000000000
-      internalID: -3265034468416742512
+      spriteID: e61a93efea9d8e740800000000000000
+      internalID: 5181630716902482286
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Player-Tutorial_38
+      name: Grab_12
       rect:
         serializedVersion: 2
-        x: 1493
-        y: 2633
-        width: 14
-        height: 14
+        x: 0
+        y: 384
+        width: 1152
+        height: 192
       alignment: 9
-      pivot: {x: 0.37, y: 0.187}
+      pivot: {x: 0.3576389, y: 0.154}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 1f77e8236604f98b0800000000000000
-      internalID: -5143321441754777615
+      spriteID: e1da3e8cbf6bb2ac0800000000000000
+      internalID: -3878805461526139618
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Player-Tutorial_39
+      name: Born-reverse_0
       rect:
         serializedVersion: 2
-        x: 1529
-        y: 2645
-        width: 8
-        height: 8
+        x: 0
+        y: 3648
+        width: 1152
+        height: 192
       alignment: 9
-      pivot: {x: 0.37, y: 0.187}
+      pivot: {x: 0.3576389, y: 0.122}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: d96daccd0734f85f0800000000000000
-      internalID: -752308460727904611
+      spriteID: 8c5172dfafaaa9160800000000000000
+      internalID: 7033121763058193864
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Player-Tutorial_40
+      name: Born-reverse_1
       rect:
         serializedVersion: 2
-        x: 1577
-        y: 2645
-        width: 8
-        height: 8
+        x: 1152
+        y: 3648
+        width: 1152
+        height: 192
       alignment: 9
-      pivot: {x: 0.37, y: 0.187}
+      pivot: {x: 0.3576389, y: 0.122}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: fdccb761ad4876020800000000000000
-      internalID: 2334981004029840607
+      spriteID: b372b2044ca698430800000000000000
+      internalID: 3785674352904316731
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Player-Tutorial_41
+      name: Born-reverse_2
       rect:
         serializedVersion: 2
-        x: 2645
-        y: 2639
-        width: 8
-        height: 8
+        x: 2304
+        y: 3648
+        width: 1152
+        height: 192
       alignment: 9
-      pivot: {x: 0.37, y: 0.187}
+      pivot: {x: 0.3576389, y: 0.122}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: a653726741cf587c0800000000000000
-      internalID: -4069569523447548566
+      spriteID: b965fcc80d33985a0800000000000000
+      internalID: -6518622014833469797
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Player-Tutorial_42
+      name: Born-reverse_3
       rect:
         serializedVersion: 2
-        x: 3791
-        y: 2639
-        width: 8
-        height: 8
+        x: 3456
+        y: 3648
+        width: 1152
+        height: 192
       alignment: 9
-      pivot: {x: 0.37, y: 0.187}
+      pivot: {x: 0.3576389, y: 0.122}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: b40c5b83e08bc5af0800000000000000
-      internalID: -406247495149698997
+      spriteID: d2ae9148426841250800000000000000
+      internalID: 5914499702037539373
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Player-Tutorial_43
+      name: Born-reverse_4
       rect:
         serializedVersion: 2
-        x: 1595
-        y: 2633
-        width: 8
-        height: 8
+        x: 0
+        y: 2496
+        width: 1152
+        height: 192
       alignment: 9
-      pivot: {x: 0.37, y: 0.187}
+      pivot: {x: 0.3576389, y: 0.122}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 917805ff358930ae0800000000000000
-      internalID: -1584255157371107559
+      spriteID: 74675643dc2e6e1e0800000000000000
+      internalID: -2168796799557077433
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Player-Tutorial_44
+      name: Born-reverse_5
       rect:
         serializedVersion: 2
-        x: 2753
-        y: 2633
-        width: 8
-        height: 8
+        x: 1152
+        y: 2496
+        width: 1152
+        height: 192
       alignment: 9
-      pivot: {x: 0.37, y: 0.187}
+      pivot: {x: 0.3576389, y: 0.122}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 7a00ffd4fb133ff40800000000000000
-      internalID: 5761003046054068391
+      spriteID: ae6ce5c24f69f03a0800000000000000
+      internalID: -6696968145416042774
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Player-Tutorial_45
+      name: Born-reverse_6
       rect:
         serializedVersion: 2
-        x: 329
-        y: 2609
-        width: 32
-        height: 20
+        x: 2304
+        y: 2496
+        width: 1152
+        height: 192
       alignment: 9
-      pivot: {x: 0.37, y: 0.187}
+      pivot: {x: 0.3576389, y: 0.122}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: e6183056dabc03510800000000000000
-      internalID: 1526944219263107438
+      spriteID: b12451f683c72efd0800000000000000
+      internalID: -2314150676691336677
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Player-Tutorial_46
+      name: Born-reverse_7
       rect:
         serializedVersion: 2
-        x: 467
-        y: 2579
-        width: 26
-        height: 50
+        x: 3456
+        y: 2496
+        width: 1152
+        height: 192
       alignment: 9
-      pivot: {x: 0.37, y: 0.187}
+      pivot: {x: 0.3576389, y: 0.122}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 68982402bfc9e84e0800000000000000
-      internalID: -1977470583977113210
+      spriteID: 266492a714b156130800000000000000
+      internalID: 3559281048542594658
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Player-Tutorial_47
+      name: Born-reverse_8
       rect:
         serializedVersion: 2
-        x: 1475
-        y: 2609
-        width: 14
-        height: 14
+        x: 0
+        y: 1344
+        width: 1152
+        height: 192
       alignment: 9
-      pivot: {x: 0.37, y: 0.187}
+      pivot: {x: 0.3576389, y: 0.122}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 83e15ad5e6a6c6340800000000000000
-      internalID: 4858375120275971640
+      spriteID: 7841fb2f84f9d2f80800000000000000
+      internalID: -8129666616674806649
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Player-Tutorial_48
+      name: Born-reverse_9
       rect:
         serializedVersion: 2
-        x: 1631
-        y: 2615
-        width: 14
-        height: 14
+        x: 1152
+        y: 1344
+        width: 1152
+        height: 192
       alignment: 9
-      pivot: {x: 0.37, y: 0.187}
+      pivot: {x: 0.3576389, y: 0.122}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: a4da63b65e7eb1300800000000000000
-      internalID: 224027579017243978
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player-Tutorial_49
-      rect:
-        serializedVersion: 2
-        x: 2789
-        y: 2621
-        width: 8
-        height: 8
-      alignment: 9
-      pivot: {x: 0.37, y: 0.187}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 66c0daac971509650800000000000000
-      internalID: 6237575067441368166
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player-Tutorial_50
-      rect:
-        serializedVersion: 2
-        x: 3947
-        y: 2621
-        width: 8
-        height: 8
-      alignment: 9
-      pivot: {x: 0.37, y: 0.187}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 326cfd7959770ea90800000000000000
-      internalID: -7286692712703605213
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player-Tutorial_51
-      rect:
-        serializedVersion: 2
-        x: 371
-        y: 2597
-        width: 20
-        height: 20
-      alignment: 9
-      pivot: {x: 0.37, y: 0.187}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 2d19cd37fc9b214e0800000000000000
-      internalID: -2012341782827986478
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player-Tutorial_52
-      rect:
-        serializedVersion: 2
-        x: 431
-        y: 2597
-        width: 14
-        height: 14
-      alignment: 9
-      pivot: {x: 0.37, y: 0.187}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 5a5cd1780495f7860800000000000000
-      internalID: 7529835235666412965
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player-Tutorial_53
-      rect:
-        serializedVersion: 2
-        x: 1517
-        y: 2603
-        width: 14
-        height: 14
-      alignment: 9
-      pivot: {x: 0.37, y: 0.187}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: e8f406b51caee91f0800000000000000
-      internalID: -1036132748066009202
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player-Tutorial_54
-      rect:
-        serializedVersion: 2
-        x: 1589
-        y: 2603
-        width: 8
-        height: 8
-      alignment: 9
-      pivot: {x: 0.37, y: 0.187}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: db8bf275c7e25f0b0800000000000000
-      internalID: -5695595042166556483
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player-Tutorial_55
-      rect:
-        serializedVersion: 2
-        x: 2627
-        y: 2609
-        width: 8
-        height: 8
-      alignment: 9
-      pivot: {x: 0.37, y: 0.187}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 27f612fc870b2ce70800000000000000
-      internalID: 9134057027178426226
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player-Tutorial_56
-      rect:
-        serializedVersion: 2
-        x: 323
-        y: 2585
-        width: 8
-        height: 8
-      alignment: 9
-      pivot: {x: 0.37, y: 0.187}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: aadb32f1633ab5750800000000000000
-      internalID: 6294804357026397610
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player-Tutorial_57
-      rect:
-        serializedVersion: 2
-        x: 335
-        y: 2591
-        width: 8
-        height: 8
-      alignment: 9
-      pivot: {x: 0.37, y: 0.187}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 3d8f263c44266e180800000000000000
-      internalID: -9086467150698055469
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player-Tutorial_58
-      rect:
-        serializedVersion: 2
-        x: 1469
-        y: 2585
-        width: 8
-        height: 8
-      alignment: 9
-      pivot: {x: 0.37, y: 0.187}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 7901602ebdf138fb0800000000000000
-      internalID: -4646835361265872745
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player-Tutorial_59
-      rect:
-        serializedVersion: 2
-        x: 1637
-        y: 2585
-        width: 8
-        height: 8
-      alignment: 9
-      pivot: {x: 0.37, y: 0.187}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: c1cd4d88bc8d94200800000000000000
-      internalID: 164901230061345820
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player-Tutorial_60
-      rect:
-        serializedVersion: 2
-        x: 2615
-        y: 2585
-        width: 8
-        height: 8
-      alignment: 9
-      pivot: {x: 0.37, y: 0.187}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 0ff356e145c006240800000000000000
-      internalID: 4782836359694204912
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player-Tutorial_61
-      rect:
-        serializedVersion: 2
-        x: 359
-        y: 2579
-        width: 8
-        height: 8
-      alignment: 9
-      pivot: {x: 0.37, y: 0.187}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: c5cd9e734eff6a910800000000000000
-      internalID: 1848446052737866844
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player-Tutorial_62
-      rect:
-        serializedVersion: 2
-        x: 1625
-        y: 2579
-        width: 8
-        height: 8
-      alignment: 9
-      pivot: {x: 0.37, y: 0.187}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 01c2189b62ee78940800000000000000
-      internalID: 5298465336713096208
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player-Tutorial_63
-      rect:
-        serializedVersion: 2
-        x: 1643
-        y: 2567
-        width: 14
-        height: 14
-      alignment: 9
-      pivot: {x: 0.37, y: 0.187}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 25d397c8fcdb11d20800000000000000
-      internalID: 3247585505423474002
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player-Tutorial_64
-      rect:
-        serializedVersion: 2
-        x: 2801
-        y: 2573
-        width: 8
-        height: 8
-      alignment: 9
-      pivot: {x: 0.37, y: 0.187}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 9c8d8b4c1f49ad1c0800000000000000
-      internalID: -4478103113358059319
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player-Tutorial_65
-      rect:
-        serializedVersion: 2
-        x: 2825
-        y: 2579
-        width: 6
-        height: 8
-      alignment: 9
-      pivot: {x: 0.37, y: 0.187}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: dd7282d035a09bd30800000000000000
-      internalID: 4447597458824374237
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player-Tutorial_66
-      rect:
-        serializedVersion: 2
-        x: 3977
-        y: 2573
-        width: 6
-        height: 8
-      alignment: 9
-      pivot: {x: 0.37, y: 0.187}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 78247dc79401ac540800000000000000
-      internalID: 5028849841725719175
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player-Tutorial_67
-      rect:
-        serializedVersion: 2
-        x: 329
-        y: 2537
-        width: 32
-        height: 26
-      alignment: 9
-      pivot: {x: 0.37, y: 0.187}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: ffec4ee6fbf080270800000000000000
-      internalID: 8216834835011129087
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player-Tutorial_68
-      rect:
-        serializedVersion: 2
-        x: 365
-        y: 2555
-        width: 20
-        height: 20
-      alignment: 9
-      pivot: {x: 0.37, y: 0.187}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 33b8c993559dca280800000000000000
-      internalID: -9030604192722678989
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player-Tutorial_69
-      rect:
-        serializedVersion: 2
-        x: 389
-        y: 2549
-        width: 38
-        height: 14
-      alignment: 9
-      pivot: {x: 0.37, y: 0.187}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 0eb7dc983f6032c60800000000000000
-      internalID: 7792079423339854816
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player-Tutorial_70
-      rect:
-        serializedVersion: 2
-        x: 473
-        y: 2549
-        width: 14
-        height: 20
-      alignment: 9
-      pivot: {x: 0.37, y: 0.187}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 57f71b5f37b308ef0800000000000000
-      internalID: -108021021827563659
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player-Tutorial_71
-      rect:
-        serializedVersion: 2
-        x: 485
-        y: 2549
-        width: 20
-        height: 26
-      alignment: 9
-      pivot: {x: 0.37, y: 0.187}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 6b86cb145a36f5880800000000000000
-      internalID: -8620061600340219722
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player-Tutorial_72
-      rect:
-        serializedVersion: 2
-        x: 1481
-        y: 2549
-        width: 14
-        height: 14
-      alignment: 9
-      pivot: {x: 0.37, y: 0.187}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: b93d2e4b39fd040e0800000000000000
-      internalID: -2287582785216261221
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player-Tutorial_73
-      rect:
-        serializedVersion: 2
-        x: 1517
-        y: 2555
-        width: 8
-        height: 8
-      alignment: 9
-      pivot: {x: 0.37, y: 0.187}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: d084f7071ff99ad20800000000000000
-      internalID: 3290336862094182413
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player-Tutorial_74
-      rect:
-        serializedVersion: 2
-        x: 1571
-        y: 2549
-        width: 8
-        height: 8
-      alignment: 9
-      pivot: {x: 0.37, y: 0.187}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: aae64b69c6647c450800000000000000
-      internalID: 6108928851750186666
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player-Tutorial_75
-      rect:
-        serializedVersion: 2
-        x: 1631
-        y: 2549
-        width: 14
-        height: 20
-      alignment: 9
-      pivot: {x: 0.37, y: 0.187}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 546040cd64406c5d0800000000000000
-      internalID: -3042739795856718267
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player-Tutorial_76
-      rect:
-        serializedVersion: 2
-        x: 2633
-        y: 2549
-        width: 8
-        height: 8
-      alignment: 9
-      pivot: {x: 0.37, y: 0.187}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: cde3d505faea1fa70800000000000000
-      internalID: 8859054010005274332
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player-Tutorial_77
-      rect:
-        serializedVersion: 2
-        x: 2789
-        y: 2549
-        width: 8
-        height: 8
-      alignment: 9
-      pivot: {x: 0.37, y: 0.187}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 4cbf2a55e59f39a40800000000000000
-      internalID: 5373912963942120388
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player-Tutorial_78
-      rect:
-        serializedVersion: 2
-        x: 359
-        y: 2531
-        width: 14
-        height: 14
-      alignment: 9
-      pivot: {x: 0.37, y: 0.187}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 56b015c96154ccba0800000000000000
-      internalID: -6067398634560746651
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player-Tutorial_79
-      rect:
-        serializedVersion: 2
-        x: 449
-        y: 2525
-        width: 20
-        height: 20
-      alignment: 9
-      pivot: {x: 0.37, y: 0.187}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 192e3b30e093647a0800000000000000
-      internalID: -6393359888651394415
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player-Tutorial_80
-      rect:
-        serializedVersion: 2
-        x: 503
-        y: 2537
-        width: 24
-        height: 8
-      alignment: 9
-      pivot: {x: 0.37, y: 0.187}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 1e452d9231fa2b7c0800000000000000
-      internalID: -4056987817466506015
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player-Tutorial_81
-      rect:
-        serializedVersion: 2
-        x: 1461
-        y: 2531
-        width: 28
-        height: 14
-      alignment: 9
-      pivot: {x: 0.37, y: 0.187}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 7ee980f55be90dfe0800000000000000
-      internalID: -1166257801668288793
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player-Tutorial_82
-      rect:
-        serializedVersion: 2
-        x: 1505
-        y: 2525
-        width: 14
-        height: 14
-      alignment: 9
-      pivot: {x: 0.37, y: 0.187}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 06870fd224df670f0800000000000000
-      internalID: -1119428996674586528
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player-Tutorial_83
-      rect:
-        serializedVersion: 2
-        x: 1613
-        y: 2525
-        width: 14
-        height: 14
-      alignment: 9
-      pivot: {x: 0.37, y: 0.187}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 50052031ea6004a60800000000000000
-      internalID: 7656126711242838021
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player-Tutorial_84
-      rect:
-        serializedVersion: 2
-        x: 1649
-        y: 2537
-        width: 14
-        height: 8
-      alignment: 9
-      pivot: {x: 0.37, y: 0.187}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 8eba6c8a5cdb4f830800000000000000
-      internalID: 4104113817079163880
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player-Tutorial_85
-      rect:
-        serializedVersion: 2
-        x: 1673
-        y: 2531
-        width: 6
-        height: 8
-      alignment: 9
-      pivot: {x: 0.37, y: 0.187}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 8b682fc96d5979b60800000000000000
-      internalID: 7752830032530278072
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player-Tutorial_86
-      rect:
-        serializedVersion: 2
-        x: 2615
-        y: 2537
-        width: 8
-        height: 8
-      alignment: 9
-      pivot: {x: 0.37, y: 0.187}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 3507fd8887f47d0c0800000000000000
-      internalID: -4551081519323582381
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player-Tutorial_87
-      rect:
-        serializedVersion: 2
-        x: 2627
-        y: 2531
-        width: 8
-        height: 8
-      alignment: 9
-      pivot: {x: 0.37, y: 0.187}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: f0b6d09ae0f58ae80800000000000000
-      internalID: -8167173407665984753
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player-Tutorial_88
-      rect:
-        serializedVersion: 2
-        x: 2795
-        y: 2537
-        width: 8
-        height: 8
-      alignment: 9
-      pivot: {x: 0.37, y: 0.187}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: fe3905cdd6611daa0800000000000000
-      internalID: -6138100156025760785
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player-Tutorial_89
-      rect:
-        serializedVersion: 2
-        x: 2819
-        y: 2531
-        width: 8
-        height: 8
-      alignment: 9
-      pivot: {x: 0.37, y: 0.187}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: d848ed6d7c07a9b80800000000000000
-      internalID: -8387267352418417523
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player-Tutorial_90
-      rect:
-        serializedVersion: 2
-        x: 3575
-        y: 2537
-        width: 206
-        height: 8
-      alignment: 9
-      pivot: {x: 0.37, y: 0.187}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 512aa89fc5a3441c0800000000000000
-      internalID: -4520423954975120875
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player-Tutorial_91
-      rect:
-        serializedVersion: 2
-        x: 3941
-        y: 2537
-        width: 8
-        height: 8
-      alignment: 9
-      pivot: {x: 0.37, y: 0.187}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 0e69caec5810e4bd0800000000000000
-      internalID: -2644174257010207008
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player-Tutorial_92
-      rect:
-        serializedVersion: 2
-        x: 3965
-        y: 2531
-        width: 8
-        height: 8
-      alignment: 9
-      pivot: {x: 0.37, y: 0.187}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 5923a65bfd9d046a0800000000000000
-      internalID: -6466929510059461995
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player-Tutorial_93
-      rect:
-        serializedVersion: 2
-        x: 2657
-        y: 2525
-        width: 8
-        height: 8
-      alignment: 9
-      pivot: {x: 0.37, y: 0.187}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: fb9b7790d778c3ae0800000000000000
-      internalID: -1568229599132272193
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player-Tutorial_94
-      rect:
-        serializedVersion: 2
-        x: 2771
-        y: 2525
-        width: 8
-        height: 8
-      alignment: 9
-      pivot: {x: 0.37, y: 0.187}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: fd92769b82b8ac000800000000000000
-      internalID: 57010952321051103
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player-Tutorial_95
-      rect:
-        serializedVersion: 2
-        x: 3929
-        y: 2525
-        width: 8
-        height: 8
-      alignment: 9
-      pivot: {x: 0.37, y: 0.187}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: fa5163e444d2e4910800000000000000
-      internalID: 1823444670524822959
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player-Tutorial_96
-      rect:
-        serializedVersion: 2
-        x: 521
-        y: 2513
-        width: 6
-        height: 8
-      alignment: 9
-      pivot: {x: 0.37, y: 0.187}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 04f42f1df20a0ec90800000000000000
-      internalID: -7142532881763381440
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player-Tutorial_97
-      rect:
-        serializedVersion: 2
-        x: 1655
-        y: 2501
-        width: 24
-        height: 20
-      alignment: 9
-      pivot: {x: 0.37, y: 0.187}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: e397ce1619bf59200800000000000000
-      internalID: 186331561437460798
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player-Tutorial_98
-      rect:
-        serializedVersion: 2
-        x: 2795
-        y: 2501
-        width: 14
-        height: 14
-      alignment: 9
-      pivot: {x: 0.37, y: 0.187}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 17c35dacd16ad2fd0800000000000000
-      internalID: -2365051582412407695
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player-Tutorial_99
-      rect:
-        serializedVersion: 2
-        x: 3947
-        y: 2501
-        width: 8
-        height: 8
-      alignment: 9
-      pivot: {x: 0.37, y: 0.187}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: c3628902b646b5120800000000000000
-      internalID: 2403625237403412028
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player-Tutorial_100
-      rect:
-        serializedVersion: 2
-        x: 371
-        y: 1979
-        width: 86
-        height: 122
-      alignment: 9
-      pivot: {x: 0.3805, y: 0.724}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 7b7c89d512151b740800000000000000
-      internalID: 5165999451316733879
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player-Tutorial_101
-      rect:
-        serializedVersion: 2
-        x: 1523
-        y: 1979
-        width: 86
-        height: 122
-      alignment: 9
-      pivot: {x: 0.3805, y: 0.724}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 6c2b0bbb12001e560800000000000000
-      internalID: 7341149012473459398
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player-Tutorial_102
-      rect:
-        serializedVersion: 2
-        x: 2675
-        y: 1979
-        width: 86
-        height: 110
-      alignment: 9
-      pivot: {x: 0.3805, y: 0.724}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: eae84459b8347bfc0800000000000000
-      internalID: -3479237920336605522
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player-Tutorial_103
-      rect:
-        serializedVersion: 2
-        x: 3827
-        y: 1979
-        width: 86
-        height: 104
-      alignment: 9
-      pivot: {x: 0.3805, y: 0.724}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: ea00f7c9056f823b0800000000000000
-      internalID: -5536904915768639314
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player-Tutorial_104
-      rect:
-        serializedVersion: 2
-        x: 371
-        y: 1769
-        width: 86
-        height: 116
-      alignment: 9
-      pivot: {x: 0.3805, y: 0.536}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: bf7addf462afc7d40800000000000000
-      internalID: 5583612680488200187
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player-Tutorial_105
-      rect:
-        serializedVersion: 2
-        x: 1523
-        y: 1769
-        width: 86
-        height: 110
-      alignment: 9
-      pivot: {x: 0.3805, y: 0.536}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 83ecb63b718026ee0800000000000000
-      internalID: -1269443247077601736
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player-Tutorial_106
-      rect:
-        serializedVersion: 2
-        x: 2675
-        y: 1769
-        width: 86
-        height: 104
-      alignment: 9
-      pivot: {x: 0.3805, y: 0.536}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: f9c564457f7f6f760800000000000000
-      internalID: 7491447671820278943
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player-Tutorial_107
-      rect:
-        serializedVersion: 2
-        x: 3827
-        y: 1763
-        width: 86
-        height: 98
-      alignment: 9
-      pivot: {x: 0.3805, y: 0.536}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: c4a1b651a3710fdc0800000000000000
-      internalID: -3607357763288884660
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player-Tutorial_108
-      rect:
-        serializedVersion: 2
-        x: 353
-        y: 1559
-        width: 92
-        height: 68
-      alignment: 9
-      pivot: {x: 0.375, y: 0.359}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: d4604bf055ceb25e0800000000000000
-      internalID: -1933191764945664435
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player-Tutorial_109
-      rect:
-        serializedVersion: 2
-        x: 1511
-        y: 1559
-        width: 86
-        height: 68
-      alignment: 9
-      pivot: {x: 0.375, y: 0.359}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: d9c2389fed08f0d60800000000000000
-      internalID: 7858641569942023325
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player-Tutorial_110
-      rect:
-        serializedVersion: 2
-        x: 2669
-        y: 1559
-        width: 86
-        height: 116
-      alignment: 9
-      pivot: {x: 0.375, y: 0.359}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: bb6f35d8ca670b7f0800000000000000
-      internalID: -598848266962733381
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player-Tutorial_111
-      rect:
-        serializedVersion: 2
-        x: 3821
-        y: 1559
-        width: 80
-        height: 116
-      alignment: 9
-      pivot: {x: 0.375, y: 0.359}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 4efe3b9cfa2d5dcc0800000000000000
-      internalID: -3686809067487760412
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player-Tutorial_112
-      rect:
-        serializedVersion: 2
-        x: 497
-        y: 1469
-        width: 8
-        height: 8
-      alignment: 9
-      pivot: {x: 0.37, y: 0.187}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: f7a430d9c3d458380800000000000000
-      internalID: -8969678160110859649
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player-Tutorial_113
-      rect:
-        serializedVersion: 2
-        x: 509
-        y: 1415
-        width: 14
-        height: 14
-      alignment: 9
-      pivot: {x: 0.37, y: 0.187}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 8313a7dcf4cae7c90800000000000000
-      internalID: -7170104097977519816
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player-Tutorial_114
-      rect:
-        serializedVersion: 2
-        x: 1667
-        y: 1421
-        width: 8
-        height: 8
-      alignment: 9
-      pivot: {x: 0.37, y: 0.187}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 6bc0e49436d21e970800000000000000
-      internalID: 8782350652804041910
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player-Tutorial_115
-      rect:
-        serializedVersion: 2
-        x: 317
-        y: 1379
-        width: 8
-        height: 8
-      alignment: 9
-      pivot: {x: 0.37, y: 0.187}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 6e4e5df7f39cf4980800000000000000
-      internalID: -8552395892788435738
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player-Tutorial_116
-      rect:
-        serializedVersion: 2
-        x: 503
-        y: 1379
-        width: 8
-        height: 8
-      alignment: 9
-      pivot: {x: 0.37, y: 0.187}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: d96165509e07ae610800000000000000
-      internalID: 1651256359503926941
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player-Tutorial_117
-      rect:
-        serializedVersion: 2
-        x: 485
-        y: 1349
-        width: 8
-        height: 8
-      alignment: 9
-      pivot: {x: 0.37, y: 0.187}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 0a70ae2e360d600b0800000000000000
-      internalID: -5762689545746643040
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player-Tutorial_118
-      rect:
-        serializedVersion: 2
-        x: 371
-        y: 827
-        width: 86
-        height: 116
-      alignment: 9
-      pivot: {x: 0.3805, y: 0.724}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 94bbf5d5084a5ff40800000000000000
-      internalID: 5761692169519741769
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player-Tutorial_119
-      rect:
-        serializedVersion: 2
-        x: 371
-        y: 611
-        width: 86
-        height: 98
-      alignment: 9
-      pivot: {x: 0.3805, y: 0.536}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: d529af9c4e4e57340800000000000000
-      internalID: 4861043044108636765
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Player-Tutorial_120
-      rect:
-        serializedVersion: 2
-        x: 365
-        y: 407
-        width: 74
-        height: 116
-      alignment: 9
-      pivot: {x: 0.375, y: 0.359}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 4d62fc5a4c4802c80800000000000000
-      internalID: -8349527729014626604
+      spriteID: 327b6112db93f0070800000000000000
+      internalID: 8074736141365327651
       vertices: []
       indices: 
       edges: []
@@ -3135,6 +1698,42 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
+      Born-reverse_0: 7033121763058193864
+      Born-reverse_1: 3785674352904316731
+      Born-reverse_2: -6518622014833469797
+      Born-reverse_3: 5914499702037539373
+      Born-reverse_4: -2168796799557077433
+      Born-reverse_5: -6696968145416042774
+      Born-reverse_6: -2314150676691336677
+      Born-reverse_7: 3559281048542594658
+      Born-reverse_8: -8129666616674806649
+      Born-reverse_9: 8074736141365327651
+      Grab_0: -224255142843906860
+      Grab_1: -5883350367517167650
+      Grab_10: 3874132127545004130
+      Grab_11: 5181630716902482286
+      Grab_12: -3878805461526139618
+      Grab_2: -7806333298255021245
+      Grab_3: 1246945922709491994
+      Grab_4: 5819661159441211927
+      Grab_5: 4996659400846918229
+      Grab_6: -6859424180663443922
+      Grab_7: -6842909119263109435
+      Grab_8: -3228032989793910493
+      Grab_9: 923374690896055745
+      Idle_0: 4723107735738678597
+      Idle_1: -7385789195546760866
+      Idle_10: 7132915409514813599
+      Idle_11: -2055793278435719954
+      Idle_12: -1133706752296058015
+      Idle_2: 3234629978573100161
+      Idle_3: 6373048116405451881
+      Idle_4: 7264182050183361747
+      Idle_5: -2834552850196481573
+      Idle_6: 3278449094680734212
+      Idle_7: 3384493420599841878
+      Idle_8: -2331352242086191015
+      Idle_9: -3914248031228685145
       Player-Tutorial_0: 1848095538321900034
       Player-Tutorial_1: 4452681127014780338
       Player-Tutorial_10: -6220182295614312768
@@ -3256,6 +1855,19 @@ TextureImporter:
       Player-Tutorial_97: 186331561437460798
       Player-Tutorial_98: -2365051582412407695
       Player-Tutorial_99: 2403625237403412028
+      Run_0: 4944230376442633554
+      Run_1: -2274363484027164459
+      Run_10: 9151066736925549315
+      Run_11: -7266845314124737194
+      Run_12: -5168576596277122810
+      Run_2: 8284087734974297348
+      Run_3: 5304202850863732263
+      Run_4: 2833043080597125133
+      Run_5: -2217414122262695004
+      Run_6: -4440497016933152808
+      Run_7: 8676454946275842879
+      Run_8: -6351944509545543589
+      Run_9: 2158891789428380870
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

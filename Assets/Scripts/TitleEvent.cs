@@ -122,7 +122,8 @@ public class TitleEvent : MonoBehaviour
 
         _anyKeyCo = null;
 
-        // 3단계: 화면이 완전히 검게 변했으므로 Map-test 씬으로 이동!
-        SceneManager.LoadScene("Map-test");
+        // 3단계: 화면이 완전히 검게 변했으므로 IntroScene으로 이동!
+        // (IntroScene은 검은 화면에서 시작해 페이드 아웃하므로 여기서 넘어가는 순간이 이어진다)
+        SceneManager.LoadScene("IntroScene");
     }
 }
