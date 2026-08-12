@@ -110,6 +110,8 @@ public class LightObject : MonoBehaviour
     {
         if (!lit) return false;
         lit = false;
+        // 획득음은 여기가 아니라 LightPixelFx.SpawnAbsorb에서 낸다 — 이 오브젝트를 친 직후
+        // CheckAttackHit이 그걸 부르므로, 여기서도 울리면 같은 획득에 두 번 겹친다.
         TestLog.Event("light_object", $"{name} hit_off relight_in={relightDelay}");
         fadeRoutine = StartCoroutine(FadeOutThenRelight());
         return true;

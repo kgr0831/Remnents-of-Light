@@ -58,9 +58,16 @@ public class DamageText : MonoBehaviour
 
     void Update()
     {
-        transform.position += Vector3.up * (floatSpeed * Time.deltaTime);
+        // ⚠️ 스케일 시간(Time.deltaTime)으로 세면 Time.timeScale = 0인 구간에서 타이머가 아예 안 늘어
+        //    화면에 얼어붙은 채 영영 안 사라진다 — 튜토리얼 스텝 종료 연출(TutorialDirector.Freeze)에서
+        //    실제로 남았다(사용자 리포트 2026-08-12 "일부 이펙트 스프라이트가 남아있음").
+        //    HitVfxAutoReturn을 같은 이유로 이미 실시간으로 바꿨고, 여기가 남아 있던 두 번째 자리다.
+        //    씬 로드 직후 unscaledDeltaTime이 1초 넘게 튀는 사례가 있어 프로젝트 관례대로 클램프한다.
+        float dt = Mathf.Min(Time.unscaledDeltaTime, 0.05f);
 
-        timer += Time.deltaTime;
+        transform.position += Vector3.up * (floatSpeed * dt);
+
+        timer += dt;
         currentColor.a = 1f - Mathf.Clamp01(timer / lifetime);
         if (textMesh != null) textMesh.color = currentColor;
 

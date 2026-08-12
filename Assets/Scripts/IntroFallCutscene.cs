@@ -71,7 +71,8 @@ public class IntroFallCutscene : MonoBehaviour
         yield return ShowGroup(teamUi, teamGlow);
         if (gap > 0f) yield return new WaitForSecondsRealtime(gap);
 
-        yield return ShowGroup(logo, logoGlow);
+        // 임팩트는 로고가 **다 뜬 뒤**에 터진다(사용자 지시 2026-08-12) — 페이드 인이 끝나는 순간에 맞춘다.
+        yield return ShowGroup(logo, logoGlow, () => GameSfx.Play(Sfx.Impact));
 
         if (letterbox != null) yield return letterbox.Hide();
         if (beforeFall > 0f) yield return new WaitForSecondsRealtime(beforeFall);
@@ -97,11 +98,12 @@ public class IntroFallCutscene : MonoBehaviour
     //
     // 발광을 그룹 알파와 같이 올리면 처음부터 뿌옇게 시작해 로고 획이 뭉개진다 — 본체가 완전히
     // 자리잡은 뒤에 빛만 따로 차오르게 한다. 나갈 때는 그룹 알파가 둘을 같이 데려가므로 따로 안 내린다.
-    IEnumerator ShowGroup(CanvasGroup group, Graphic glow)
+    IEnumerator ShowGroup(CanvasGroup group, Graphic glow, System.Action onFadedIn = null)
     {
         if (group == null) yield break;
         SetAlpha(glow, 0f);
         yield return FadeGroup(group, 0f, 1f, fadeIn);
+        onFadedIn?.Invoke();   // 본체가 완전히 뜬 순간(로고 임팩트음이 여기 붙는다)
         yield return FadeGraphic(glow, 0f, 1f, glowFadeIn);
         if (hold > 0f) yield return new WaitForSecondsRealtime(hold);
         yield return FadeGroup(group, 1f, 0f, fadeOut);

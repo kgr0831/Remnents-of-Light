@@ -21,10 +21,18 @@ public class TutorialMover : MonoBehaviour
 
     static readonly int IdMoving = Animator.StringToHash("Moving");
 
+    // 착지음 판정 — 접지 판정이 없는 스크립트라 수직 속도만 본다. 이 속도보다 빠르게 떨어진 적이
+    // 있어야 "떨어지는 중"으로 치므로, 물리 솔버의 미세 진동으로는 절대 무장되지 않는다
+    // (IntroScene_2 오프닝 낙하는 10.9유닛 낙하 = 착지 속도 약 14.6 u/s로 여유가 크다).
+    const float FallSpeedToArmLand = 2f;
+    const float SettledSpeed = 0.5f;   // 이보다 느리면 땅에 닿아 속도가 죽은 것으로 본다
+
     SpriteRenderer sr;
     Animator anim;
     Rigidbody2D rb;
     float input;
+    float footstepTimer; // PlayerController와 같은 규칙으로 GameSfx.TickFootstep이 관리한다
+    bool landSfxArmed;   // 떨어져 본 적이 있어야 착지음이 울린다(시작 첫 프레임 헛울림 방지)
 
     void Awake()
     {
@@ -44,6 +52,23 @@ public class TutorialMover : MonoBehaviour
 
         if (input != 0f) sr.flipX = input < 0f;
         if (anim != null) anim.SetBool(IdMoving, input != 0f);
+
+        float vy = rb.linearVelocity.y;
+
+        // 발소리. 접지 판정이 없는 최소 구현이라 "수직 속도가 거의 0"을 접지 대용으로 쓴다 —
+        // 인트로 낙하 중에 발소리가 나지 않게 막는 용도(이 플레이어는 점프가 없어 이걸로 충분하다).
+        bool walking = input != 0f && Mathf.Abs(vy) < SettledSpeed;
+        GameSfx.TickFootstep(ref footstepTimer, walking, Time.deltaTime);
+
+        // 착지음 — IntroScene_2 오프닝(하늘에서 떨어져 착지)이 이 경로다.
+        // ⚠️ 무장 조건을 먼저 통과해야 하므로, 낙하가 시작되며 속도가 0을 스쳐 지나갈 때는 울리지 않는다.
+        //    Intro-cutScene처럼 transform으로 직접 내리는 연출은 속도가 0이라 아예 무장되지 않는다.
+        if (vy < -FallSpeedToArmLand) landSfxArmed = true;
+        else if (landSfxArmed && Mathf.Abs(vy) < SettledSpeed)
+        {
+            landSfxArmed = false;
+            GameSfx.Play(Sfx.Land);
+        }
     }
 
     void FixedUpdate()

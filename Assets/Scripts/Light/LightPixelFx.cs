@@ -44,6 +44,11 @@ public class LightPixelFx : MonoBehaviour
         Color? color = null)
     {
         if (totalAmount <= 0) return;
+        // 광원 획득음은 여기 한 곳에서만 낸다 — 적 타격·처치, 광원 오브젝트 타격 등 실제로 광원이
+        // 들어오는 모든 경로가 이 함수를 지나기 때문이다(사용자 지시 2026-08-12 "적에게서 얻을 때도").
+        // onArrivePixel이 null인 호출은 게이지에 반영되지 않는 순수 장식(초월 진입 흡수)이라 제외한다.
+        // 픽셀 하나하나가 아니라 흡수 1회당 1번이라 연사되지 않는다.
+        if (onArrivePixel != null) GameSfx.Play(Sfx.LightGain);
         int count = Mathf.Clamp(totalAmount, 3, 10);
         int baseShare = totalAmount / count;
         int remainder = totalAmount - baseShare * count;

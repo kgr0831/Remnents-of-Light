@@ -327,7 +327,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &268623668
 RectTransform:
   m_ObjectHideFlags: 0
@@ -869,7 +869,7 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: 4c2a8bab37ea7fd4f8f169d9b5f3b4f8, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0.4
   m_Pitch: 1
   Loop: 1
   Mute: 0
@@ -1225,7 +1225,7 @@ PrefabInstance:
     - target: {fileID: 2018470854386703376, guid: be0bc037c70520345ae3cdd2fc3519a3, type: 3}
       propertyPath: m_Material
       value: 
-      objectReference: {fileID: 2100000, guid: e29c4be3f41373148925906048f7e865, type: 2}
+      objectReference: {fileID: 0}
     - target: {fileID: 2018470854386703376, guid: be0bc037c70520345ae3cdd2fc3519a3, type: 3}
       propertyPath: m_RaycastTarget
       value: 0
@@ -1237,7 +1237,7 @@ PrefabInstance:
     - target: {fileID: 3841469545928651172, guid: be0bc037c70520345ae3cdd2fc3519a3, type: 3}
       propertyPath: m_Material
       value: 
-      objectReference: {fileID: 2100000, guid: e29c4be3f41373148925906048f7e865, type: 2}
+      objectReference: {fileID: 0}
     - target: {fileID: 3841469545928651172, guid: be0bc037c70520345ae3cdd2fc3519a3, type: 3}
       propertyPath: m_RaycastTarget
       value: 0
@@ -1643,7 +1643,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1854978655
 RectTransform:
   m_ObjectHideFlags: 0

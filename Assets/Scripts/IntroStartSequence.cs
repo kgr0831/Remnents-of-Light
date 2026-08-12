@@ -71,7 +71,8 @@ public class IntroStartSequence : MonoBehaviour
         // 여기서부터가 "페이드 아웃이 끝난 뒤" — born은 반드시 이 뒤에 재생된다.
         if (beatBeforeBorn > 0f) yield return new WaitForSecondsRealtime(beatBeforeBorn);
 
-        playerAnimator.speed = 1f;
+        playerAnimator.speed = 1f;   // 여기서부터 born이 실제로 흐른다
+        GameSfx.Play(Sfx.Born);
         yield return WaitForBorn();
 
         yield return ZoomOut();

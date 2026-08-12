@@ -626,6 +626,9 @@ public class PlayerController : MonoBehaviour
     float wallJumpLockCounter;
     bool wasGrounded;
 
+    float footstepTimer;  // 발소리 간격 카운터 — GameSfx.TickFootstep이 관리(TutorialMover와 같은 규칙)
+    bool landSfxArmed;    // 한 번이라도 공중에 떠야 착지음이 울린다(스폰 첫 프레임 헛울림 방지)
+
     bool isDashing;
     float dashTimer;
     float dashCooldownCounter;
@@ -792,6 +795,9 @@ public class PlayerController : MonoBehaviour
     // 값이라 여기서 안 되돌리면 다음 Play 세션이 느려진 채로 시작한다(Awake의 방어적 리셋과 같은 이유).
     void OnDisable()
     {
+        // 홀드음(일섬 차지 · 광원 방출)은 DontDestroyOnLoad 오브젝트에서 도므로 플레이어가 사라져도
+        // 혼자 계속 울린다 — 씬 전환·플레이 종료로 여기 도달하면 반드시 끊는다.
+        GameSfx.StopAllLoops();
         EndTimeAccel("disabled");
         // 낙사 연출 도중에 멈추면 화면이 검은 채로, 게임이 멈춘 채로 남는다 — 둘 다 되돌린다.
         if (isFallRespawning)
@@ -823,6 +829,10 @@ public class PlayerController : MonoBehaviour
         // 낙사 연출 중엔 아무것도 굴리지 않는다. ⚠️ 특히 HandleTimeAccel보다 먼저 빠져야 한다 —
         // 그쪽이 Time.timeScale을 자기 값으로 덮어써서 "게임 멈춤"이 풀려 버린다.
         if (isFallRespawning) return;
+
+        // 튜토리얼 게이트(기본값은 항상 열려 있어 다른 씬에는 영향 0). 이동이 잠긴 구간에서는
+        // 입력값 자체를 지운다 — 연출·시간정지 구간의 "입력 제한"이 이 한 줄로 이동·벽타기에 동시에 걸린다.
+        if (!TutorialGate.Has(TutorialAbility.Move)) moveInput = Vector2.zero;
 
         // 시간 가속을 가장 먼저 굴린다 — 이 프레임의 TimeAccelMul(플레이어 보정 배율)이 아래 모든
         // 타이머·속도 계산의 전제이기 때문이다(Left Alt 토글 입력도 여기서 본다).
@@ -1236,7 +1246,10 @@ public class PlayerController : MonoBehaviour
     {
         bool wasWallSliding = isWallSliding;
 
-        if (isDashing || isCharging || ilseomActive || isParrying || isExecuting || isSpendingLight || isLedgeClimbing)
+        // 튜토리얼에서 벽타기를 아직 안 배웠으면 붙지도, 붙어 있지도 못한다(아래 전이 처리가
+        // 중력·애니메이터를 알아서 복구하므로 여기 한 줄이면 충분하다).
+        if (isDashing || isCharging || ilseomActive || isParrying || isExecuting || isSpendingLight || isLedgeClimbing
+            || !TutorialGate.Has(TutorialAbility.WallClimb))
         {
             isWallSliding = false;
         }
@@ -1402,6 +1415,8 @@ public class PlayerController : MonoBehaviour
             // 공격 중엔 이제 캔슬하고 점프로 넘어간다(사용자 지시 2026-08-05: "공격 도중에 애니메이션을
             // 캔슬하고 점프 가능"). CancelAttack()이 isAttacking을 끄므로 아래로 그대로 진행된다.
             if (isDodgeCountering || isCharging || ilseomActive || isParrying || isExecuting || isSpendingLight || isLedgeClimbing) { isJumping = false; return; }
+            // 튜토리얼에서 아직 점프를 안 배웠으면 입력을 버린다(위 잠금들과 같은 자리 = 발동 직전 한 곳).
+            if (!TutorialGate.Has(TutorialAbility.Jump)) { isJumping = false; return; }
             CancelAttack();
             float jumpMul = isRampaging ? rampageJumpMultiplier
                 : isTranscending ? transcendJumpMultiplier
@@ -1421,16 +1436,19 @@ public class PlayerController : MonoBehaviour
                 // wallJumpForce를 그대로 쓴다.
                 rb.linearVelocity = new Vector2(-wallDirX * wallJumpForce.x * TimeAccelMul, jumpForce * jumpMul * TimeAccelMul);
                 wallJumpLockCounter = wallJumpHorizontalLockDuration;
+                GameSfx.Play(Sfx.Jump);
             }
             else if (coyoteTimeCounter > 0f) {
                 rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce * jumpMul * TimeAccelMul);
                 coyoteTimeCounter = 0f;
+                GameSfx.Play(Sfx.Jump);
             }
             else if (hasJumpAttackBonusJump) {
                 // 점프 공격으로 무언가를 맞혀서 생긴 여분의 공중 점프(사용자 지시 2026-08-05) — 코요테
                 // 타임이 끝난 뒤에도 이 한 번만은 쓸 수 있다. 사용하면 소모, 착지하면 CheckEnvironment가 리셋.
                 rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce * jumpMul * TimeAccelMul);
                 hasJumpAttackBonusJump = false;
+                GameSfx.Play(Sfx.Jump);
             }
             // 폭주·초월 중엔 점프 순간 글리치 변형으로 덮어쓴다(사용자 지시 2026-08-02). Any State가
             // isGrounded/yVelocity로 매 프레임 "Glitch Samurai-Jump"를 다시 끌어올 수 있는 Fall과 달리
@@ -1458,11 +1476,13 @@ public class PlayerController : MonoBehaviour
             // 일섬 발동 중 · 패링 모션 중엔 대시로 캔슬할 수 없음(버퍼가 살아 다음 프레임에 재시도).
             // 공격 중엔 이제 캔슬하고 대시로 넘어간다(사용자 지시 2026-08-05: "공격 도중에 애니메이션을
             // 캔슬하고 대시 가능").
-            if (!isDashing && !ilseomActive && !isParrying && !isExecuting && !isSpendingLight && !isLedgeClimbing && dashCooldownCounter <= 0f)
+            if (!isDashing && !ilseomActive && !isParrying && !isExecuting && !isSpendingLight && !isLedgeClimbing && dashCooldownCounter <= 0f
+                && TutorialGate.Has(TutorialAbility.Dash))
             {
                 dashBufferTimer = 0f; // 소비
                 CancelAttack();
                 isDashing = true;
+                GameSfx.Play(Sfx.Dash);
                 BeginActionBloom(0.9f); // 대시 중 마스크 블룸(사용자 지시)
                 dashTimer = dashDuration;
                 dashCooldownCounter = dashCooldown;
@@ -1568,6 +1588,15 @@ public class PlayerController : MonoBehaviour
 
         chargeTimer += PDelta;
 
+        // 튜토리얼: 일섬이 아직 안 열렸으면 홀드가 "차지"로 넘어가기 직전에 끊는다 — 연출(픽셀·블룸·
+        // 애니 고정)도, 광원 소모도, 발동도 전부 일어나지 않는다(스펙: "홀드를 해도 입력조차 안 됨").
+        // 탭 구간(parryTapMaxHold 이내)은 그대로 남아 패링만 정상 동작한다.
+        if (!TutorialGate.Has(TutorialAbility.Ilseom) && chargeTimer > parryTapMaxHold)
+        {
+            CancelCharge("tutorial_ilseom_locked");
+            return;
+        }
+
         // 누른 직후 parryTapMaxHold 동안은 "패링일 수도 있는" 구간이라 차지 연출을 켜지 않는다.
         // (탭할 때마다 픽셀 FX가 깜빡이고 취소 이펙트까지 터지는 것을 막는다.)
         if (!chargeVisualsStarted && chargeTimer >= parryTapMaxHold) BeginChargeVisuals();
@@ -1645,8 +1674,11 @@ public class PlayerController : MonoBehaviour
         // 같은 입력을 공유하므로 둘 다 한 번에 봉인된다(사용자 지시: "홀드 자체도 안 되도록").
         // 벽타기 중도 마찬가지로 막는다(사용자 지시 2026-08-03) — 일섬·패링이 같은 입력을 공유하므로
         // 여기 한 곳만 막으면 둘 다 한 번에 봉인된다(위 폭주와 같은 논리).
+        // 튜토리얼: 패링(탭)과 일섬(홀드)이 이 차지 상태를 공유하므로, 둘 다 잠겼을 때만 시작 자체를 막는다.
+        // 하나만 열려 있으면 차지는 시작하되 아래 HandleIlseom이 잠긴 쪽으로는 절대 안 넘어가게 끊는다.
         return ilseomEnabled && !isRampaging && !isCharging && !ilseomActive && !isDashing && !isAttacking
-            && !isDodgeCountering && !isParrying && !isExecuting && !isSpendingLight && !isWallSliding;
+            && !isDodgeCountering && !isParrying && !isExecuting && !isSpendingLight && !isWallSliding
+            && (TutorialGate.Has(TutorialAbility.Parry) || TutorialGate.Has(TutorialAbility.Ilseom));
     }
 
     // 누르는 순간엔 아직 패링(탭)인지 일섬(홀드)인지 알 수 없다 — 상태만 열어두고 연출은 뒤로 미룬다.
@@ -1678,6 +1710,7 @@ public class PlayerController : MonoBehaviour
         // 매 프레임 먹이므로 여기서는 0에서 시작만 시켜두면 그대로 페이드 인이 된다.
         bloomFx = PlayerBloomFx.Attach(transform, playerBloomMaterial, playerBloomSortingOffset);
 
+        GameSfx.PlayLoop(Sfx.IlseomCharge); // 홀드가 끝날 때(CancelCharge · IlseomRoutine) 꺼진다
         TestLog.Event("ilseom", "charge_visuals_start");
     }
 
@@ -1712,6 +1745,7 @@ public class PlayerController : MonoBehaviour
         isCharging = false;
         chargeTimer = 0f;
         chargeCompletePopped = false;
+        GameSfx.StopLoop(Sfx.IlseomCharge);
 
         // 연출이 시작되기 전(패링 탭 구간)에 취소되면 애니메이터를 건드리지 않는다 — Idle로 강제
         // 복귀시키면 곧바로 재생할 패링 모션(Slash 1) 앞에 한 프레임짜리 Idle이 끼어든다.
@@ -1758,11 +1792,15 @@ public class PlayerController : MonoBehaviour
     {
         // 폭주 중 봉인(사용자 지시). CanStartCharge에서 이미 막히지만, 다른 경로로 새지 않게 여기서도 막는다.
         if (isRampaging) { TestLog.Event("parry_timing", "blocked_rampage"); return; }
+        if (!TutorialGate.Has(TutorialAbility.Parry)) return; // 튜토리얼 미해금 — 모션조차 재생하지 않는다
         if (!parryEnabled || parryCooldownCounter > 0f) return;
 
         isParrying = true;
         parryTimer = 0f;
         if (anim != null) { anim.enabled = true; anim.SetTrigger("Attack1"); }
+        // 모션이 1타(Slash 1)라 휘두르는 소리도 1타를 쓴다(사용자 지시 2026-08-12). 성공/실패와 무관하게
+        // 휘두른 순간 울린다 — 성공하면 아래에서 실드파괴음이 겹쳐 "막아냈다"가 된다.
+        GameSfx.Play(Sfx.Attack1);
 
         Vector2 contact;
         DummyEnemy target = FindParryTarget(out contact);
@@ -1774,6 +1812,10 @@ public class PlayerController : MonoBehaviour
         }
 
         target.ConsumeParry();
+        ParrySuccessCount++;
+        // 패링 성공음은 패링.wav가 아니라 실드파괴음(사용자 지시 2026-08-12). Sfx.Parry 항목은
+        // GameSfxSet에 남겨 뒀다 — 되돌리려면 이 한 줄만 바꾸면 된다.
+        GameSfx.Play(Sfx.ShieldBreak);
 
         Vector3 fxPos = (Vector3)contact + Vector3.up * parryFxHeightOffset;
         Vector2 facing = (contact - (Vector2)transform.position).normalized;
@@ -1888,6 +1930,7 @@ public class PlayerController : MonoBehaviour
         if (!parryShieldActive) return false;
         parryShieldActive = false;
         if (parryShieldFx != null) { parryShieldFx.Break(); parryShieldFx = null; }
+        GameSfx.Play(Sfx.ShieldBreak);
         TestLog.Event("parry_timing", "shield_blocked");
         return true;
     }
@@ -1906,6 +1949,9 @@ public class PlayerController : MonoBehaviour
 
         int dirX = (sr != null && sr.flipX) ? -1 : 1;
         Color baseColor = sr != null ? sr.color : Color.white;
+
+        GameSfx.StopLoop(Sfx.IlseomCharge); // 차지 홀드음을 끊고 발동음으로 넘긴다
+        GameSfx.Play(Sfx.Ilseom);
 
         if (sectionCamera != null) sectionCamera.SetSustainedShake(0f);
         if (chargeFx != null) { chargeFx.PlayFinish(ilseomFinishFxDuration); chargeFx = null; } // 모인 픽셀은 그 자리에서 페이드아웃
@@ -2097,6 +2143,8 @@ public class PlayerController : MonoBehaviour
     void HandleExecution()
     {
         if (!executionEnabled) { ClearExecutionTargeting(); return; }
+        // 튜토리얼 미해금 — 타겟팅까지 지워야 적 아웃라인(글로우)·프롬프트가 화면에 안 뜬다(사용자 스펙).
+        if (!TutorialGate.Has(TutorialAbility.Execution)) { ClearExecutionTargeting(); return; }
         // 폭주 중 봉인(사용자 지시). 타겟팅까지 지워야 붉은 글로우·프롬프트가 화면에 남지 않는다.
         if (isRampaging) { ClearExecutionTargeting(); return; }
         if (isExecuting) return; // 시퀀스 시작 시 이미 정리했다 — 진행 중엔 커서를 보지 않는다
@@ -2138,6 +2186,7 @@ public class PlayerController : MonoBehaviour
     void HandleRampage()
     {
         if (!rampageEnabled) { EndRampage("disabled"); return; }
+        if (!TutorialGate.Has(TutorialAbility.Rampage)) { EndRampage("tutorial_locked"); return; } // 튜토리얼 미해금
 
         // 폭주는 "쓰는 능력"이 아니라 빛이 바닥난 상태 그 자체다 — 조건이 곧 상태라 토글이 없다.
         // ⚠️ 진입은 지연된다(사용자 지시 2026-08-02): 조건이 성립해도 IsActionIdle이 아니면 기다린다
@@ -2165,6 +2214,7 @@ public class PlayerController : MonoBehaviour
     void HandleTranscend()
     {
         if (!transcendEnabled) { EndTranscend("disabled"); return; }
+        if (!TutorialGate.Has(TutorialAbility.Transcend)) { EndTranscend("tutorial_locked"); return; } // 튜토리얼 미해금
         if (isRampaging) { EndTranscend("rampage"); return; } // 구조적으로 동시 성립 불가 — 순서 의존 제거용 방어 가드
 
         if (!isTranscending)
@@ -2229,6 +2279,103 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    /// <summary>이전 상황의 잔재를 **전부** 지운다 — 진행 중인 동작 · 보호막 · 쿨타임 · 입력 버퍼 ·
+    /// 폭주/초월 상태 · 플레이어 블룸 · 화면 이펙트 · 카메라 쉐이크/줌.
+    /// 튜토리얼이 구간을 초기화할 때 호출한다(사용자 지시 2026-08-12
+    /// "이전의 보호막, 상태 등을 다음 액션이 시작되기 전에 초기화" ·
+    ///  "카메라 무빙, 쉐이킹, 이팩트, 플레이어 블룸, 폭주, 초월 등등.. 전부 초기화").
+    ///
+    /// 남겨두면 앞 구간에서 얻은 패링 실드가 다음 구간의 첫 공격을 대신 막고, 차지·쿨타임·대시
+    /// 버퍼 때문에 누르지도 않은 동작이 시작되며, 카메라가 지속 줌인/쉐이크에 물린 채 다음 구간으로
+    /// 넘어간다.
+    ///
+    /// ⚠️ 폭주·초월은 "광원 수치가 곧 상태"라 여기서 끄기만 하면 된다 — 호출자가 곧바로 광원을
+    ///    그 구간의 시작값으로 설정하므로, 필요한 구간에서는 다음 프레임에 **처음부터** 다시 켜진다
+    ///    (자아 게이지도 그때 가득 찬 채로 새로 시작한다).
+    ///
+    /// 사망·낙사 연출처럼 "되돌리면 안 되는 진행 중 시퀀스"는 건드리지 않는다.</summary>
+    public void ResetTransientCombatState()
+    {
+        // ── 진행 중인 동작 — 각자의 정리 경로를 그대로 태워 애니메이션·VFX·시간배율까지 되돌린다
+        if (isDashing) EndDash("tutorial_reset");
+        if (isCharging || chargeVisualsStarted) CancelCharge("tutorial_reset");
+        if (isTimeAccelActive) EndTimeAccel("tutorial_reset");
+        if (isSpendingLight) EndLightSpend("tutorial_reset");
+
+        // ── 폭주 · 초월 — 상태 + 전용 화면 이펙트(시야 제한 · 예고 원) + 블룸까지 각자 정리한다
+        EndRampage("tutorial_reset");
+        EndTranscend("tutorial_reset");
+
+        // ── 패링 실드 — 판정과 연출을 같이 지운다. TryConsumeParryShield는 "막아냈다"는 유리 깨짐
+        //    연출을 재생하므로 여기서는 쓰지 않는다(막은 게 아니라 없던 일로 하는 것).
+        parryShieldActive = false;
+        if (parryShieldFx != null) { Destroy(parryShieldFx.gameObject); parryShieldFx = null; }
+
+        // ── 플레이어 블룸 — 위 정리 경로들이 각자 자기 슬롯을 지우지만, 페이드로 남는 것까지
+        //    확실히 끊는다(구간이 암전 뒤에서 바뀌므로 페이드가 다음 구간까지 넘어가면 안 된다).
+        EndActionBloom(0f);
+        if (rampageBloomFx != null) { rampageBloomFx.FadeOut(0f); rampageBloomFx = null; }
+        if (transcendBloomFx != null) { transcendBloomFx.FadeOut(0f); transcendBloomFx = null; }
+        if (lightSpendBloomFx != null) { lightSpendBloomFx.FadeOut(0f); lightSpendBloomFx = null; }
+
+        // ── 화면 이펙트 — 이 플레이어가 켰을 수 있는 것들을 전부 내린다.
+        //    글리치의 Cutscene/Tutorial 원인은 TutorialDirector가 따로 관리하므로 건드리지 않는다.
+        RampageVisionFx.End();
+        TranscendVisionFx.End();
+        ScreenGlitchFx.End(ScreenGlitchFx.Source.Ego);
+        ScreenGlitchFx.End(ScreenGlitchFx.Source.Heartbeat);
+
+        // ── 카메라 — 지속 쉐이크·지속 줌인을 즉시(램프 0) 푼다. 구간 이동은 곧바로 SnapToTarget이 한다.
+        if (sectionCamera != null)
+        {
+            sectionCamera.SetSustainedShake(0f);
+            sectionCamera.ClearSustainedFocus(0f);
+        }
+
+        // ── 입력 버퍼·엣지 — 앞 구간에서 누른 것이 다음 구간 첫 프레임에 터지지 않게 한다.
+        dashBufferTimer = 0f;
+        attackQueued = false;
+        parryPressed = false;
+        chargeHeld = false;
+        chargeStartRequested = false;
+
+        // ── 쿨타임 — 새 구간은 항상 "쓸 수 있는" 상태에서 시작해야 한다.
+        dashCooldownCounter = 0f;
+        jumpAttackCooldownCounter = 0f;
+        parryCooldownCounter = 0f;
+        ilseomCooldownCounter = 0f;
+
+        // ── 회피 인정 창·타격 상태.
+        dodgeCounterGraceTimer = 0f;
+        hasJumpAttackBonusJump = false;
+
+        // ── 애니메이션 — 진행 중이던 스윙 클립이 다음 구간으로 그대로 넘어가는 것을 막는다
+        //    (사용자 리포트 2026-08-12 "공격하다가 끝나면 이전 애니메이션이 남아서 다음으로 감").
+        //    트리거는 소비되지 않으면 **큐에 남아 있다가** 다음에 애니메이터가 평가될 때 터진다 —
+        //    그래서 상태를 Idle로 미는 것만으로는 부족하고 ResetTrigger로 큐를 비워야 한다.
+        CancelAttack();
+        if (anim != null)
+        {
+            anim.enabled = true;                          // 대시·일섬 프리즈가 꺼둔 채로 끝났을 수 있다
+            anim.speed = 1f;                              // 공격속도 버프 배율 잔재 제거
+            anim.updateMode = AnimatorUpdateMode.Normal;  // 사망 연출이 UnscaledTime으로 바꿔 뒀을 수 있다
+
+            anim.ResetTrigger("Attack1");
+            anim.ResetTrigger("Attack2");
+            anim.ResetTrigger("JumpAttack");
+            anim.ResetTrigger("Land");
+            anim.SetBool("isDead", false);
+            anim.SetBool("isWallSliding", false);
+            anim.SetBool("isWallClimbGlitch", false);
+            anim.SetBool("isGrounded", true);
+            anim.SetFloat("Speed", 0f);
+            anim.SetFloat("yVelocity", 0f);
+
+            anim.Play("Glitch Samurai-Idle", 0, 0f);
+            anim.Update(0f);   // Idle 0프레임을 즉시 sr.sprite에 기록 — 옛 클립이 한 프레임도 안 남는다
+        }
+    }
+
     // ── 시간 가속(Time Accel) ───────────────────────────────────────────────────────────────
     // Shift 탭 = 기존 대시 / 홀드 = 시간 가속(누르는 동안). 세계만 느려지고 플레이어는 평소 그대로.
 
@@ -2260,6 +2407,16 @@ public class PlayerController : MonoBehaviour
     public bool IsLedgeClimbing => isLedgeClimbing;     // 벽 꼭대기 올라타는 보간 중(테스트가 읽는다)
     public bool IsGrounded => isGrounded;               // 접지 상태(테스트가 읽는다)
     public float GroundAngle => groundAngle;            // 발밑 경사 각도(도, 테스트가 읽는다)
+    public bool IsDashing => isDashing;                 // 대시 중(튜토리얼 성공 판정이 상승 엣지를 읽는다)
+    public bool IsIlseomActive => ilseomActive;         // 일섬 발동 시퀀스 중(동일)
+    public bool IsExecuting => isExecuting;             // 처형 시퀀스 중(연출이 끝날 때까지 기다릴 때 읽는다)
+    public bool IsSpendingLight => isSpendingLight;     // 광원 방출(E 홀드) 중 — 하강 엣지 = "홀드 해제"
+
+    // 순간에 끝나 폴링으로는 놓치는 동작들의 누적 성공 횟수. 튜토리얼이 스텝 시작 시점의 값과 비교해
+    // "이번 스텝에서 성공했는가"를 판정한다(TestLog는 에디터·개발빌드에서만 컴파일돼 판정에 못 쓴다).
+    public int ParrySuccessCount { get; private set; }
+    public int DodgeCounterSuccessCount { get; private set; }
+    public int ExecutionCount { get; private set; }
 
     void HandleTimeAccel()
     {
@@ -2287,7 +2444,8 @@ public class PlayerController : MonoBehaviour
     // 회피-카운터·일섬·처형·광원소모는 각자 자기 timeScale이나 연출 타이밍을 소유하는 구간이라
     // 시간 가속과 겹치면 서로의 시계를 덮어쓴다. 폭주는 광원이 바닥난 상태라 애초에 쓸 자원이 없다.
     bool CanSustainTimeAccel() =>
-        !isRampaging && !isDodgeCountering && !ilseomActive && !isExecuting && !isSpendingLight;
+        TutorialGate.Has(TutorialAbility.TimeAccel)   // 튜토리얼 미해금 — 진입도, 유지도 안 된다
+        && !isRampaging && !isDodgeCountering && !ilseomActive && !isExecuting && !isSpendingLight;
 
     void TryStartTimeAccel()
     {
@@ -2304,6 +2462,7 @@ public class PlayerController : MonoBehaviour
     void StartTimeAccel()
     {
         isTimeAccelActive = true;
+        GameSfx.Play(Sfx.DodgeCounter); // 회피-카운터와 같은 클립(사용자 지시). 유지 구간이 길어도 루프 없이 1회.
         timeAccelDrainAccum = 0f;
         timeAccelVfxTimer = 0f;
         timeAccelAfterImageTimer = 0f;
@@ -2461,6 +2620,7 @@ public class PlayerController : MonoBehaviour
             {
                 egoDepletedTimer = 0f; // 붕괴 시작 — 첫 피해는 한 주기(5초)를 채운 뒤에 들어간다
                 ScreenGlitchFx.Begin(); // 자아 고갈 — 화면 전체 글리치(사용자 지시 2026-08-01)
+                GameSfx.PlayLoop(Sfx.EgoZero); // 자아가 다시 찰 때까지 계속 울린다
                 TestLog.Event("ego", "depleted");
             }
         }
@@ -2472,6 +2632,7 @@ public class PlayerController : MonoBehaviour
             egoDepletedTimer = 0f;
             egoDepletedEnergyDrainAccum = 0f;
             ScreenGlitchFx.End();
+            GameSfx.StopLoop(Sfx.EgoZero);
             return;
         }
 
@@ -2546,9 +2707,14 @@ public class PlayerController : MonoBehaviour
         currentEgo = Mathf.Min(maxEgo, currentEgo + egoGainPerHit);
     }
 
+    // 폭주·초월 진입음("폭주or광원진입")은 앞 1초가 리드인이라 그대로 틀면 임팩트가 하트비트 연출보다
+    // 1초 늦게 터진다. 클립을 이 지점부터 재생해 화면과 맞춘다(사용자 지시 2026-08-12).
+    const float RampageSfxLeadIn = 1f;
+
     void StartRampage()
     {
         isRampaging = true;
+        GameSfx.PlayFrom(Sfx.RampageEnter, RampageSfxLeadIn);
         rampageDrainAccum = 0f;
         currentEgo = maxEgo;   // 자아는 폭주와 함께 생겼다가 함께 사라진다
         egoDrainAccum = 0f;
@@ -2600,6 +2766,7 @@ public class PlayerController : MonoBehaviour
         egoDepletedEnergyDrainAccum = 0f;
         RampageVisionFx.End(); // 페이드아웃 후 스스로 파괴(화면·아웃라인 전부 원복)
         ScreenGlitchFx.End();  // 자아 고갈 글리치도 같이 끝난다(붕괴 중 폭주가 풀린 경우 대비)
+        GameSfx.StopLoop(Sfx.EgoZero); // 자아는 폭주와 함께 사라지므로 소리도 여기서 확실히 끊는다
         if (rampageBloomFx != null) { rampageBloomFx.FadeOut(0.25f); rampageBloomFx = null; }
         // ⚠️ 여기서 바로 되살리면 안 된다 — 시야 제한은 0.30s에 걸쳐 페이드아웃하므로, 그 동안 화면은
         //    아직 어둡고 실드는 보호 레이어라 스캔라인이 "스프라이트가 여러 개"처럼 번쩍인다(사용자 지적).
@@ -2620,6 +2787,7 @@ public class PlayerController : MonoBehaviour
     void StartTranscend()
     {
         isTranscending = true;
+        GameSfx.PlayFrom(Sfx.RampageEnter, RampageSfxLeadIn); // 폭주와 같은 클립("폭주or광원진입")
         transcendDrainAccum = 0f;
         TranscendVisionFx.Begin(transform); // 적 미래 공격 범위 예고(T-3) — 폭주의 RampageVisionFx.Begin과 같은 자리
 
@@ -2689,6 +2857,13 @@ public class PlayerController : MonoBehaviour
         // 다음 방출에서 경고가 다시 작동하게 하려면 필요하다.
         if (currentEnergy > LightGateEnergy) lightSpendLowWarned = false;
 
+        // 튜토리얼 미해금 — E를 눌러도 시작되지 않고, 도중에 잠기면 그 자리에서 끝난다.
+        if (!TutorialGate.Has(TutorialAbility.LightSpend))
+        {
+            if (isSpendingLight) EndLightSpend("tutorial_locked");
+            return;
+        }
+
         if (!isSpendingLight)
         {
             if (KeyPressedThisFrame(Key.E))
@@ -2752,6 +2927,7 @@ public class PlayerController : MonoBehaviour
     void StartLightSpend()
     {
         isSpendingLight = true;
+        GameSfx.PlayLoop(Sfx.LightEmit); // E를 떼거나 어떤 이유로든 끝나면 EndLightSpend가 끈다
         lightSpendDrainAccum = 0f;
         lightSpendHealAccum = 0f;
         lightSpendPixelAccum = 0f;
@@ -2785,6 +2961,7 @@ public class PlayerController : MonoBehaviour
     {
         if (!isSpendingLight) return;
         isSpendingLight = false;
+        GameSfx.StopLoop(Sfx.LightEmit);
         lightSpendDrainAccum = 0f;
         lightSpendHealAccum = 0f;
 
@@ -2848,6 +3025,8 @@ public class PlayerController : MonoBehaviour
     System.Collections.IEnumerator ExecutionRoutine(DummyEnemy target)
     {
         isExecuting = true;
+        ExecutionCount++;
+        GameSfx.Play(Sfx.Execution);
         executionTarget = null; // 타겟팅 UI 정리(시퀀스 중엔 불필요)
         if (executionGlowFx != null) { executionGlowFx.FadeOut(0.1f); executionGlowFx = null; }
         BeginActionBloom(1f); // 처형 구간 마스크 블룸(사용자 지시) — "빛을 강탈"하는 순간이라 강하게
@@ -3020,6 +3199,7 @@ public class PlayerController : MonoBehaviour
     public bool TryConsumeDodge(DummyEnemy attacker)
     {
         if (!dodgeCounterEnabled) return false;
+        if (!TutorialGate.Has(TutorialAbility.DodgeCounter)) return false; // 튜토리얼 미해금 — 회피 판정 자체가 안 선다
         if (isRampaging) { TestLog.Event("dodge_counter", "blocked_rampage"); return false; } // 폭주 중 봉인(사용자 지시)
         if (dodgeCounterGraceTimer <= 0f || dodgeCounterTriggeredThisDash || isDodgeCountering) return false;
         dodgeCounterTriggeredThisDash = true;
@@ -3038,6 +3218,7 @@ public class PlayerController : MonoBehaviour
         EndTimeAccel("dodge_counter");
 
         isDodgeCountering = true;
+        GameSfx.Play(Sfx.DodgeCounter); // 시간 가속과 공용 클립. 슬로우모션 내내 끌지 않고 진입 1회만.
         BeginActionBloom(1f); // 회피-카운터 구간 마스크 블룸(사용자 지시)
         parryPressed = false;
         // 윈도우가 열리기 "전부터" F/우클릭을 이미 누르고 있던 경우(선입력) 구제: OnParry는 press 엣지
@@ -3149,7 +3330,10 @@ public class PlayerController : MonoBehaviour
             if (confirmed) DodgeUI.GetOrCreate().FlashHidePrompt();
             else DodgeUI.GetOrCreate().HidePromptImmediate();
             if (countered)
+            {
+                DodgeCounterSuccessCount++;
                 yield return CounterRush(target);
+            }
 
             yield return GrayscaleRampOut();
         }
@@ -3286,6 +3470,7 @@ public class PlayerController : MonoBehaviour
         // 닷지 카운터는 항상 크리티컬 취급(사용자 스펙) — 배율은 기존 dodgeCounterDamageMultiplier(3배) 그대로 쓰고,
         // 연출만 크리티컬과 동일하게(Hit02 VFX + 금색 2배 "숫자!!!" 텍스트 + 쉐이크/히트스톱 2배) 맞춘다.
         int dmg = RampageDamage(Mathf.RoundToInt(attack1Damage * dodgeCounterDamageMultiplier));
+        GameSfx.Play(Sfx.CounterAttack);
         target.TakeDamage(dmg, facingBack.x * attackLungeDistance * enemyKnockbackMultiplier);
         SpawnHitFeedback(target.transform.position, facingBack, dmg, HitTier.Critical);
         float impactAngle = Mathf.Atan2(facingBack.y, facingBack.x) * Mathf.Rad2Deg;
@@ -3453,6 +3638,7 @@ public class PlayerController : MonoBehaviour
         attackTimer = 0f;
         attackHitDone = false;
         if (anim != null) anim.SetTrigger(stage == 1 ? "Attack1" : "Attack2");
+        GameSfx.Play(stage == 1 ? Sfx.Attack1 : Sfx.Attack2);
 
         // UniTrio-Game-2026(PlayerWeaponController.HandleAttackInput) 참고: 검 공격 시작 시
         // 바라보는 방향으로 살짝 전진해 타격감 연출(flipX: true=왼쪽, false=오른쪽).
@@ -3473,6 +3659,7 @@ public class PlayerController : MonoBehaviour
         // 쿨타임을 0에 가깝게 조정하면 재현 가능한 상태 누수라 여기서 명시적으로 초기화한다.
         jumpAttackHangTimer = 0f;
         if (anim != null) anim.SetTrigger("JumpAttack");
+        GameSfx.Play(Sfx.Attack1); // 점프 공격 전용 클립이 없어 1타를 그대로 쓴다
 
         float lungeDirX = (sr != null && sr.flipX) ? -1f : 1f;
         transform.position += new Vector3(lungeDirX * attackLungeDistance, 0f, 0f);
@@ -3516,7 +3703,8 @@ public class PlayerController : MonoBehaviour
     {
         attackHitDone = true;
         // 크리티컬 판정은 스윙 1회당 한 번(맞은 적마다 따로 굴리지 않음).
-        bool crit = Random.value < critChance;
+        // 튜토리얼 공격 스텝은 "크리티컬 불가능"(스펙) — 적 HP 3을 정확히 3타로 배우게 하기 위함.
+        bool crit = !TutorialGate.NoCrit && Random.value < critChance;
         if (crit) damage = Mathf.RoundToInt(damage * Random.Range(critDamageMultiplierMin, critDamageMultiplierMax));
         damage = RampageDamage(damage); // 폭주 중이면 그 위에 다시 배율(명세서 "데미지 증폭")
 
@@ -3573,6 +3761,9 @@ public class PlayerController : MonoBehaviour
         if (hitCount > 0)
         {
             if (restoreEgo) RestoreEgo(); // 폭주 중 자아 회복 — 적중 1회당 1번(여러 적을 동시에 맞혀도 중첩 없음)
+            // 타격음도 스윙 1회당 1번. restoreEgo(=적 또는 광원 오브젝트를 맞혔는가)를 그대로 쓴다 —
+            // 문 스위치만 맞힌 스윙은 제외된다(그쪽은 SwitchSFX 담당).
+            if (restoreEgo) GameSfx.Play(Sfx.EnemyHit);
             // 점프 공격이 무언가를 맞히면 공중 점프 1회 재충전(사용자 지시 2026-08-05, 저글링 리셋).
             if (isJumpAttacking && jumpAttackBonusJumpEnabled) hasJumpAttackBonusJump = true;
             TestLog.Event("player_attack", $"stage={attackStage} dmg={damage} hits={hitCount} crit={crit} rampage={isRampaging}");
@@ -3599,6 +3790,12 @@ public class PlayerController : MonoBehaviour
     {
         if (damage <= 0) return;
         if (isDead) return; // 이미 사망 처리 중이면 추가 피해를 받지 않는다
+        // 튜토리얼 무적(스펙: "적의 공격을 받아도 체력이 닳지 않음"). 피해 경로 전체가 여기로 모이므로
+        // 여기 한 곳만 막으면 낙사·자아 붕괴 피해까지 전부 무효가 된다.
+        // ⚠️ 단, **맞았다는 피드백은 준다**(사용자 리포트 2026-08-12 "튜토리얼에서 피격 효과음과
+        //    피격 효과가 재생되지 않는다"). 배우는 구간이라 체력이 안 깎이더라도 "맞았다"는 건
+        //    알려줘야 한다 — 예전엔 여기서 그냥 return이라 소리·점멸·쉐이크가 전부 통째로 죽었다.
+        if (TutorialGate.Invulnerable) { PlayHitFeedback(); return; }
 
         // 광원 소모(E 홀드) 중 피격 시 즉시 중단(스펙 6) — 재개하려면 E를 다시 눌러야 한다.
         if (isSpendingLight) EndLightSpend("hit");
@@ -3632,12 +3829,18 @@ public class PlayerController : MonoBehaviour
         if (!canKill) newHealth = Mathf.Max(1, newHealth);
         currentHealth = Mathf.Max(0, newHealth);
         TestLog.Event("player_damage", $"hp={currentHealth}/{maxHealth} dmg={damage}");
-
-        // 피격 연출(쉐이크 + 붉은 점멸) — 공격 쉐이크(0.12s/0.15)보다 크게(맞은 쪽이 더 아파야 한다).
-        if (sectionCamera != null) sectionCamera.Shake(0.18f, 0.22f);
-        PlayerDamageFlashUI.Flash();
+        PlayHitFeedback();
 
         if (canKill && currentHealth <= 0) Die();
+    }
+
+    /// <summary>피격 연출(효과음 + 쉐이크 + 붉은 점멸). 쉐이크는 공격 쉐이크(0.12s/0.15)보다 크게 —
+    /// 맞은 쪽이 더 아파야 한다. 튜토리얼 무적 구간도 체력만 안 깎일 뿐 이건 그대로 재생한다.</summary>
+    void PlayHitFeedback()
+    {
+        GameSfx.Play(Sfx.PlayerHit);
+        if (sectionCamera != null) sectionCamera.Shake(0.18f, 0.22f);
+        PlayerDamageFlashUI.Flash();
     }
 
     // ── 사망 ────────────────────────────────────────────────────────────────────────────────
@@ -3658,6 +3861,8 @@ public class PlayerController : MonoBehaviour
 
         // ── 1. 사망 순간 활성 상태·이펙트·판정을 전부 즉시 해제("모든 영향 판정 해제") ────────
         isDashing = false; isCharging = false; isSpendingLight = false; isDodgeCountering = false;
+        // 위 상태들을 CancelCharge/EndLightSpend를 거치지 않고 직접 끄므로 홀드음도 여기서 직접 끊는다.
+        GameSfx.StopAllLoops();
         if (isRampaging) EndRampage("death");
         if (isTranscending) EndTranscend("death");
         EndTimeAccel("death");
@@ -3881,6 +4086,7 @@ public class PlayerController : MonoBehaviour
     {
         if (amount <= 0) return;
         currentHealth = Mathf.Clamp(currentHealth + amount, 0, maxHealth);
+        GameSfx.Play(Sfx.Heal);
         TestLog.Event("player_hud", $"heal hp={currentHealth}/{maxHealth} amount={amount}");
     }
 
@@ -3970,6 +4176,17 @@ public class PlayerController : MonoBehaviour
             // Idle이라 끊을 것도 없다). wasGrounded는 어느 경우든 갱신해 뒤늦게 튀어나오지 않게 한다.
             if (isGrounded && !wasGrounded && !attackAnimPlaying) anim.SetTrigger("Land");
             wasGrounded = isGrounded;
+
+            // ── 효과음: 상태를 보고 판단하는 것만 여기서 처리한다(발동 순간이 명확한 소리는 각 동작 안에서).
+            //    이 함수 상단의 early return 덕에 일섬·처형·광원 소모·엣지 클라임·회피 카운터 구간은
+            //    자동으로 제외된다 — 그쪽은 제자리에 묶여 있어 발소리가 울리면 안 되는 구간이다.
+            if (!isGrounded) landSfxArmed = true;
+            else if (landSfxArmed) { landSfxArmed = false; GameSfx.Play(Sfx.Land); }
+
+            bool walking = isGrounded && !isDashing
+                && Mathf.Abs(moveInput.x) > 0.01f          // 입력이 있고
+                && Mathf.Abs(rb.linearVelocity.x) > 0.5f;  // 실제로 나아가는 중(벽에 밀착·넉백 제외)
+            GameSfx.TickFootstep(ref footstepTimer, walking, Time.deltaTime);
 
             UpdateAlteredStateAnim();
         }
@@ -4061,6 +4278,9 @@ public class PlayerController : MonoBehaviour
     {
         if (value.isPressed)
         {
+            // 튜토리얼에서 공격을 아직 안 배웠으면 입력을 아예 안 받는다(버퍼에도 안 쌓인다).
+            if (!TutorialGate.Has(TutorialAbility.Attack)) return;
+
             // 일섬 차지는 지상/공중 무관하게 좌클릭으로 취소된다(스펙 3).
             if (isCharging) cancelChargeRequested = true;
 

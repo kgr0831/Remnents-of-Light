@@ -17,7 +17,7 @@ public class ScreenGlitchFx : MonoBehaviour
     /// (2026-08-09: 보스 레이저 노출이 세 번째 원인으로 들어오면서 필요해졌다. 그전까지는
     ///  자아 고갈과 폭주 심박이 서로의 End에 꺼지는 잠재 버그가 있었다.)</summary>
     [System.Flags]
-    public enum Source { Ego = 1, Heartbeat = 2, BossBeam = 4, Death = 8, Cutscene = 16 }
+    public enum Source { Ego = 1, Heartbeat = 2, BossBeam = 4, Death = 8, Cutscene = 16, Tutorial = 32 }
 
     static int activeSources;
 

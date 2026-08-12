@@ -558,11 +558,21 @@ public class PlayerHudUI : MonoBehaviour
         var hpData = _hpBloomCamera.GetUniversalAdditionalCameraData();
         hpData.renderType = CameraRenderType.Overlay;
         hpData.renderPostProcessing = true;
-        hpData.volumeLayerMask = 1 << layer;
+        // ⚠️ 여기에 HP 전용 마스크(1 << layer)를 걸면 **화면 전체 블룸이 HP바용 프로파일로 바뀐다.**
+        //    URP는 카메라 스택의 포스트프로세싱을 "마지막 카메라"에서 한 번만 적용하는데, 이 카메라가
+        //    바로 그 마지막이기 때문이다(URP 문서: "스택의 마지막 카메라에만 포스트를 적용하라").
+        //    실측(빌드 로그 2026-08-12): 씬의 IlseomBloomProfile(threshold 1.15 / intensity 2.2 /
+        //    scatter 0.7) 대신 HpBarBloomProfile(1.05 / 0.7 / 0.25)이 화면 전체에 걸려, 세계·UI·
+        //    플레이어 블룸이 통째로 3배 약해져 있었다.
+        //    베이스 카메라와 같은 마스크를 써서 씬이 의도한 블룸이 그대로 화면에 적용되게 한다
+        //    (사용자 확정 2026-08-12: HP 전용 블룸 튜닝은 포기).
+        hpData.volumeLayerMask = baseData.volumeLayerMask;
         baseData.cameraStack.Add(_hpBloomCamera);
 
-        // 전용 Bloom 볼륨 — 전역 DefaultVolumeProfile은 건드리지 않는다(그건 다른 용도로 대기 중).
-        // 이 볼륨의 오브젝트 레이어가 HpBloomCamera의 Volume Mask와 일치할 때만 영향을 준다.
+        // ⚠️ 현재 이 볼륨은 **동작하지 않는다**(2026-08-12). 위에서 volumeLayerMask를 베이스 카메라와
+        //    같게 바꾼 뒤로 HPBloom 레이어가 마스크에 없어서다. HP 전용 블룸 튜닝을 되살리려면 이 카메라를
+        //    스택에서 빼고 별도 RenderTexture로 합성해야 한다 — 마스크만 되돌리면 화면 전체 블룸이
+        //    다시 이 프로파일에 하이재킹된다. 정리(삭제)는 별도 승인 후에 한다.
         var profile = Resources.Load<VolumeProfile>("VFX/HpBarBloomProfile");
         if (profile != null)
         {

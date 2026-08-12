@@ -5525,3 +5525,187 @@ null이면 그냥 조용히 리턴하고 폴백이 없다(머티리얼 필드들
 
 **검증**: 씬 리소스로 5개 필드 전부 올바른 asset path로 반영 확인. 콘솔 error 0(무관한 IK/재생
 관련 경고 3건만 — MCP 인스펙션 부작용으로 판단). `manage_scene.save` 완료.
+
+## 2026-08-12 — 전투 학습(튜토리얼) 씬 구축 · 12스텝 배선 · 자동 검증
+
+`TUTORIAL_PLAN.md` §4의 남은 작업(A 씬 골격 → B 맵 12구역 → C 배선 → D 검증)을 실행.
+코드(TutorialGate·TutorialPanelUI·TutorialDirector + PlayerController 게이트 16곳)는 이미
+작성돼 있었고, 이번 세션은 **씬 쪽 전부**를 만들었다. `TutorialScene.unity` 저장 완료.
+
+**씬 골격.** Main Camera에 `SectionCamera`(ortho 9 / section 32×18 / origin (-16,0) / slide 10,
+배경 #0B0D12) — 사용자가 붙여 둔 BGM `AudioSource`는 손대지 않음. `Global Light 2D`는
+`intensity 1.0`(Map-test의 0.09는 LightObject로 밝히는 맵의 값이라 광원 오브젝트가 없는
+미니멀 맵에는 못 쓴다). `Global Volume` 프리팹 · `EventSystem`(InputSystemUIInputModule) 추가.
+
+**캔버스를 2개로 나눈 이유(중요).** `PlayerHudUI.FindOverlayCanvas`는 "가장 낮은 sortingOrder의
+Overlay 캔버스"를 찾아 그 밑에 HUD를 만든다. 튜토리얼 UI와 같은 캔버스에 두면 HUD가
+`ScreenBlackout`이 Awake에서 맨 마지막 형제로 밀어 넣은 검은 패널보다 **나중에** 붙어 암전 위에
+떠 버린다. → `PlayerHudCanvas`(order 0, 빈 캔버스)와 `TutorialUI`(order 100, ScreenBlackout ·
+TutorialPanelUI · SFX AudioSource · SwordPanel 인스턴스)로 분리. `PlayerHudUI` 자체는
+`[RuntimeInitializeOnLoadMethod]`로 스스로 생기므로 배치할 필요 없었다(Play 실측 확인).
+
+**`TutorialPanelUI.Open`에 `SetAsLastSibling()` 한 줄 추가.** 같은 이유로 인트로·마무리 문구
+("검은 화면 위 문구"가 스펙)가 암전 뒤에 가려 안 보이는 문제를 막는다.
+
+**맵 12구역**(`Map` 루트, 64u 간격 = 카메라 한 칸 건너). 플랫폼은 새로 만든 흰색 1유닛 스프라이트
+(`Assets/Textures/TutorialSolid.png`, PPU 4)에 색만 입혀 `localScale`로 크기를 준다.
+투명벽은 렌더러 없이 콜라이더만, **Ground 레이어**(Wall이면 타고 올라가진다).
+벽타기 구역은 벽 꼭대기(y=12)와 상단 플랫폼 윗면을 같은 높이로 맞춰, 렛지 등반 뒤 그대로
+걸어 올라가게 했다. `EnemySpawn`의 y는 바닥 윗면 **+0.60** — DummyEnemy 원점이 콜라이더
+바닥에서 0.60 위(실측)라 바닥 높이에 두면 지형에 묻혔다 튀어나온다.
+
+**Play 자동 검증 통과분**: 인트로→점프 진입(게이트 Move|Jump) / 점프 3.0u 간격 통과
+(`[ASSERT] tutorial_jump: PASS`) / 벽 부착→렛지 등반→상단 성공존 / **패링 게이트에서 우클릭
+2.5초 홀드 시 일섬 무반응**(IsIlseomActive=False·차지 연출 없음·광원 소모 0) / **처형 잠김
+상태에서 HP 20% 적 위 커서 → executionTarget=null**(아웃라인 없음) / 실패→초기화 사이클
+(`FAIL failed - reset` → 스폰 복귀) / 무적(hit_player 로그가 떠도 체력 8/8).
+
+**점프 간격 3.0u 확정 근거**: 에디터 실값으로 체공 0.582s × moveSpeed 6 = 3.49u.
+콜라이더 반폭 0.375까지 더하면 "너무 일찍 뛴" 여유 ≈0.87u, 코요테 타임 0.6u를 합쳐 유효 창 ≈1.5u.
+
+**⚠️ 에디터 전용 함정(새로 실측)**: Play 도중 스크립트 재컴파일 → 도메인 리로드가 일어나면
+`TutorialDirector`의 코루틴이 죽고 `TutorialGate`의 static이 `All`로 초기화된다. 잠겨 있어야 할
+동작이 전부 풀린 채 멈춘 것처럼 보이는데 튜토리얼 버그가 아니다(빌드엔 없는 현상).
+
+**후속(같은 날)**: 사용자 지시로 `DummyEnemy (3)` 프리팹의 `moveSpeed`를 **0 -> 1**로 변경.
+공유 프리팹이라 Map-test - Map1-test - SampleScene의 적도 같이 쫓아오게 된다(세 씬 모두 이 값을
+오버라이드하지 않음을 확인하고 사용자 승인 후 진행). 스폰 간격 8u - attackRange 2.4라 플레이어가
+가만히 있으면 첫 공격까지 약 5.6초 걸리는 점은 §8에 남김.
+
+**미결**: 처형 스텝 HP 비율이 경계값 0.2인
+점 / §8의 손 검증 항목 / `Assets/Screenshots/`의 디버그 스크린샷 3장 · Play로 구워진
+`Silver Bitmap.asset` 폰트 아틀라스 처리. 커밋은 승인 대기.
+
+## 2026-08-12 (후속) — 튜토리얼 폴리싱 7건 (텍스트 · 대기 · 초기화 · 글리치 · 블룸 · 네온)
+
+사용자 요청이 연달아 들어와 한 턴에 처리. 전부 `TutorialScene` 저장 완료.
+
+**1. 설명 패널 텍스트 잘림.** `text-action-2`가 폰트 86 · VerticalOverflow=Truncate라 긴 문구(폭주 66자)가
+한 줄만 보이고 잘렸다. 폰트 **44** · Overflow로 바꾸고 14개 문구 전부 실측(최대 147/200px).
+이어서 사용자 지시("좌우 여백 더, 위로는 안 됨, 아래로는 OK")로 폭 786.9 → **640**,
+정렬을 `MiddleCenter` → **`UpperCenter`**로 바꿔 **윗변 y=12.5를 고정**하고 높이만 200으로 늘렸다 —
+짧은 문구는 원래 자리 그대로, 긴 문구만 아래로 흐른다.
+⚠️ **함정**: 프리팹 인스턴스 값을 스크립트로 대입만 하면 `refresh_unity(force)` 때 프리팹 값으로
+조용히 되돌아간다. `PrefabUtility.RecordPrefabInstancePropertyModifications`를 붙여야 씬에 남는다
+(Play에서 옛 폰트 크기로 돌아와 있어서 발견 — 씬 YAML의 `propertyPath: m_FontData.m_FontSize`로 검증).
+
+**2. 달성 후 1초 대기.** `successHold` 0.5 → 1초. 그리고 **`Freeze()` 앞으로 순서를 옮겼다** —
+뒤에 두면 `timeScale=0`이라 적 사망 연출·히트 이펙트가 얼어붙은 채 암전으로 넘어간다.
+사용자 요구가 "애니메이션과 효과가 끝나도록"이라 시간이 흐르는 채로 기다려야 맞다.
+
+**3. 이전 상태 초기화.** `PlayerController.ResetTransientCombatState()` 신규 → `SetupStep` 첫 줄에서 호출.
+대상: 대시·차지·시간가속·광원방출 종료 / **폭주·초월**(각자 시야 이펙트·블룸까지) / 패링 실드(판정+연출) /
+플레이어 블룸 4종 / `RampageVisionFx`·`TranscendVisionFx`·글리치(Ego·Heartbeat) /
+**카메라 지속 쉐이크·지속 줌인** / 입력 버퍼·엣지 / 쿨타임 4종 / 회피 인정 창.
+폭주·초월은 끄기만 하면 된다 — 호출 직후 광원을 그 구간 시작값으로 넣으므로 필요한 구간에서는
+다음 프레임에 자아까지 가득 찬 채로 새로 켜진다.
+
+**4. 간헐 글리치.** `ScreenGlitchFx.Source`에 `Tutorial = 32` 추가 + `AmbientGlitchRoutine` —
+플레이 가능한 동안에만 4~9초 간격으로 0.08~0.2초 번쩍. 연출 구간은 이미 `Cutscene` 글리치가 돌아서 제외.
+원인 플래그를 나눠 컷신 글리치 종료가 이쪽까지 끄지 않게 했다.
+
+**5. 블룸.** 원인은 단순했다 — Main Camera의 **`renderPostProcessing`이 꺼져 있었다**(`Global Volume`은
+붙어 있었는데 카메라가 PP를 안 돌림). 켠 뒤:
+- 플랫폼·벽·적: 몸통 뒤에 조금 큰 HDR 사각형(`Glow` 자식)을 깔아 테두리만 빛나게. 몸통을 HDR로 올리면
+  도형이 통째로 하얗게 뜬다. 적은 스프라이트 색을 못 올린다 — `DummyEnemy`가 피격 점멸용 baseColor를
+  캐시했다가 되돌려 놓기 때문에 실루엣 자식 방식으로.
+- 텍스트: 프리팹에 이미 `SwordTextBloom`(`Custom/UIBloomBoost` `_Boost 6`)이 있었지만
+  **Overlay 캔버스는 URP 포스트프로세싱을 안 받는다** → `TutorialUI`를 **Screen Space - Camera**로 전환
+  (IntroScene_2의 `SwordBloomCanvas`와 같은 방식). 그 결과 Overlay인 HUD가 암전 위에 뜨게 돼
+  `TutorialDirector`가 암전 구간에 HUD를 직접 껐다 켜도록 추가.
+
+**6. 네온 룩.** 1차로 과포화(HDR 4.6~5.2 · 마젠타)까지 올렸다가 사용자가 "그렇게 과한 건 아니다"라고 해
+절제된 값으로 확정: 배경 `#070A0E` / 지형 `#1C2230`+시안 HDR(0.15,1.9,2.1) /
+벽 `#232041`+**보라** HDR(1.15,0.85,2.3) / 적 붉은 HDR(2.1,0.3,0.45) · 테두리 0.13u.
+
+**7. 적 `moveSpeed` 0 → 1**(프리팹 직접 변경, 사용자 승인). Map-test·Map1-test·SampleScene도 같이 바뀜.
+
+**⚠️ 이번에 확인한 도구 함정 2개** (memory에도 기록)
+- **Play 모드 스크린샷은 감마가 밝게 틀어진다** — 배경 `#0B0D12`가 캡처에선 `#3E4657`(= `sRGB(0.043 linear)`).
+  "Play에서만 화면이 허옇게 뜬다"고 한참 원인을 쫓았는데 렌더 자체는 정상이었다(`cam.Render()` +
+  `ReadPixels` 실측으로 확정). 색 판단은 **에디트 캡처**로, UI 표시 확인은 **Play 캡처**로 — 용도가 정반대다.
+- **Play 중 스크립트 재컴파일 → 도메인 리로드**로 `TutorialDirector` 코루틴이 죽고 `TutorialGate`가
+  `All`로 초기화된다. 잠금이 다 풀린 채 멈춘 것처럼 보이지만 튜토리얼 버그가 아니다.
+
+## 2026-08-12 (후속 2) — 시뮬레이션 룩 + 구도 조정
+
+**"좀 더 시뮬레이션 느낌 — 수치 조절 말고 다른 방식으로."** 색·HDR을 더 만지는 대신 연출 요소를 추가했다.
+신규 `Assets/Scripts/Tutorial/TutorialSimFx.cs`(Main Camera에 부착) + `SimGrid` 루트.
+
+- **배경 격자**: `Assets/Textures/TutorialGrid.png`(32×32px, 좌·하 1px 선, PPU 16 → 2u 한 칸)를
+  `SpriteDrawMode.Tiled`로 구간마다 32×22로 깐다. 알파 0.10 — 블룸 임계값 아래라 배경은 안 번진다.
+  ⚠️ Tiled 드로우모드는 텍스처 `wrapMode = Repeat` + `spriteMeshType = FullRect`가 아니면 동작하지 않는다.
+- **구간 경계 기둥**: `cx ± 15.7`에 세로 발광선(시뮬레이션 챔버 벽).
+- **스캔라인 스윕**: `TutorialScanline.png`(1×64px 세로 그라데이션)을 **카메라 자식**으로 붙여
+  6초에 아래→위, 2.5초 쉬고 반복. `sortingOrder 50`이라 지형 위를 지나간다.
+- **그리드 호흡 + 리프레시 깜빡임**: 5초 주기 0.75~1.15배 + 평균 7초마다 0.06초 2.2배 튐(간격은 매번
+  0.5~1.5배로 랜덤화 — 규칙적이면 "장치"가 아니라 "애니메이션"으로 보인다).
+- 전부 unscaled — 연출 구간(timeScale=0)에도 배경은 계속 돌아야 "세계만 멈췄다"로 읽힌다.
+
+**구도(사용자 지시 "플랫폼이 카메라 아래쪽에")**: 지형 y를 내리지 않고 **카메라 구간을 올렸다** —
+지형을 만지면 점프 높이·성공존·실패선을 전부 다시 잡아야 한다. `SectionCamera.gridOrigin.y` 0 → **2**
+(구간 중심 y 9 → 11, 보이는 범위 [0,18] → [2,20]). 평지 바닥 윗면이 화면 아래에서 22% → **11%**로 내려간다.
+`SimGrid`도 같은 중심으로 옮기고 세로 22로 확장. Play 실측으로 점프 성공 → 벽타기 순간이동까지 정상 확인.
+
+**네온 강도**: 1차로 과포화(HDR 4.6~5.2 · 마젠타)까지 갔다가 사용자가 참고 이미지와 함께
+"이런 식으로 과한 건 아니다"라고 해 절제 값으로 되돌렸다(§9.4).
+
+## 2026-08-12 (후속 3) — 스캔라인 개편 · 연출 스킵 · 대사 지우기 속도
+
+**스캔라인 텍스처 버그(실측).** 처음 만든 `TutorialScanline.png`이 1×64px + PPU 64라 스프라이트 폭이
+1/64u였다 — `localScale.x = 34`를 줘도 실제 렌더 폭이 **0.53u**라 화면(32u)을 가로지르지 못하고
+작은 얼룩으로만 떠 있었다(`sr.bounds.size` 찍어서 발견). 64×64px로 다시 만들어 1u×1u로 맞췄다.
+
+**스캔라인 개편**(사용자 지시 "여러 곳, 여러 속도, 여러 방향" / "지형·캐릭터 뒤에").
+씬에는 원본 1개만 두고 `TutorialSimFx`가 8개로 복제해 줄마다 축(세로 35%)·방향(반전 40%)·
+속도(1.4~5.5초)·쉼(0.2~3.5초)·위상·직교 좌표·두께/진하기(±45%)를 전부 따로 뽑는다.
+위상은 균등 분할이 아니라 통째 무작위 — 균등 분할은 줄 수가 적을 때 규칙적으로 보인다.
+`sortingOrder -40`으로 격자(-60)보다 앞, **지형(-11/-10)·플레이어보다 뒤**.
+8줄이 동시에 도니 개별 선은 얇고 옅게(두께 0.8u · 알파 0.16 · HDR 0.30/1.20/1.35).
+
+**연출 스킵(F · 좌클릭).** `TutorialDirector.skip` 래치 — 한 번 누르면 그 구간이 플레이 가능해질
+때까지의 연출 **전체**를 건너뛴다. `Resume()`이 래치를 풀어 다음 구간은 정상 재생.
+- `Wait`를 `WaitForSecondsRealtime` → 직접 세는 루프로 교체(중간에 끊을 수 있게).
+- 페이드는 `ScreenBlackout.FadeTo` 코루틴을 직접 `MoveNext()`로 굴리다 스킵 시 목표 알파로 즉시 찍음.
+- `TutorialPanelUI.skipping` — 프레임 훑기·타이핑·역타이핑 즉시 완료.
+- Play 실측: F 한 번 / 좌클릭 한 번 모두 곧바로 playable(gate=Move|Jump, timeScale=1)로 도달,
+  좌클릭이 공격으로 새어 나가지 않음(`isAttacking=false`) 확인.
+
+**대사 효과음**은 이미 배선돼 있었다(`textSfx` 루프, Play에서 `sfxSource.isPlaying=true` 확인).
+느렸던 건 지워질 때뿐이라 `untypeSpeedMultiplier = 3`을 추가해 타이핑의 3배 속도로 지워지게 했다.
+
+## 2026-08-12 (후속 4) — 글리치 효과음 + 오디오 시간 독립성
+
+간헐 글리치에 `GlitchSFX3`, 전환·컷신 글리치(암전 페이드 인)에 `SwitchSFX`를 붙였다.
+`TutorialDirector`에 **전용 AudioSource**를 따로 달았다 — 패널 타이핑 소스를 같이 쓰면
+`TutorialPanelUI.EndTypingSfx`의 `Stop()`이 글리치 효과음까지 잘라 버린다.
+`spatialBlend = 0`(2D)이라 카메라가 x=704 구역까지 가도 거리 감쇠가 없다.
+
+**"사운드가 시간의 영향을 안 받게"** — 확인해 보니 Unity 오디오는 원래 `Time.timeScale`과 무관하다
+(DSP 클럭). Play 실측: `Time.timeScale = 0`에서 `PlayOneShot` → `isPlaying = true`, 타이핑 루프도
+정지 구간에서 정상 재생. 프로젝트 전체 grep으로 오디오를 시간에 묶는 코드가 없음도 확인
+(`pitch` 대입 · `AudioMixer` · `AudioListener.pause` 전부 없음).
+그래도 나중에 깨질 수 있는 두 경로에 못을 박아 뒀다 — `EnsureTimeIndependentAudio()`가 시작할 때
+`pitch = 1` 고정 + `ignoreListenerPause = true`(다른 시스템이 리스너를 일시정지시켜도 계속 난다) +
+`AudioListener.pause = false`.
+
+## 2026-08-12 (후속 5) — 스킵 의미 정정(효과 단위) + 초월·폭주 적 HP 20
+
+**스킵을 래치 → 효과 단위 소비로 정정.** 사용자 확정: "스킵이라는 게 해당 효과만 스킵인 겁니다."
+`TutorialDirector.skipPending`을 각 효과가 `ConsumeSkip()`으로 **한 번만 집어간다** —
+페이드 / 암전 대기 / 패널 여닫이 애니 / 타이핑 / panelHold / 역타이핑이 각각 따로 스킵된다.
+`TutorialPanelUI`는 `skipping` bool을 버리고 `consumeSkip` 델리게이트 + `WaitOrSkip()` 헬퍼로 교체.
+
+예외 하나: **대사 타이핑은 두 줄을 한 번에 다 띄운다**(`typingSkipped` 플래그). 첫 줄만 완성되고
+둘째 줄이 다시 한 글자씩 타이핑되기 시작하면 "대사를 다 띄웠다"로 안 보이기 때문 —
+사용자 지시 원문("대사 다 띄우는 걸로 스킵")에 맞춘 것.
+역타이핑도 마찬가지로 한 번에 두 줄 전부 지운다.
+
+**Play 실측**: 타이핑 중 F 1회 → `t2`가 `'벽에 붙'` → `'벽에 붙어 W키로 벽을 오르세요.'`로 완성되고,
+패널은 그대로 떠 있고 `timeScale=0`·`gate=None` 유지(다음 효과인 panelHold로 넘어가지 않음) 확인.
+※ 검증할 때 `charInterval`을 0.5, `panelHold`를 30으로 늘려야 한다 — MCP 왕복이 수 초라
+기본값(0.06/1초)으로는 "스킵된 것"과 "그냥 다 끝난 것"이 구분되지 않는다.
+
+**초월·폭주 적 HP 1 → 20.** "광원/초월 상태의 적"이 어느 스텝인지 물어 폭주로 확정(광원방출 스텝엔
+적이 없다). HP 1이면 한 방에 죽어 상태를 체감할 시간이 없다 — 특히 폭주는 "적을 때려야 자아가 찬다"를
+보여줘야 한다.

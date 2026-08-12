@@ -110,6 +110,7 @@ public class SwordPickupSequence : MonoBehaviour
 
         for (int i = 0; i < destroyOnPickup.Length; i++)
             if (destroyOnPickup[i] != null) Destroy(destroyOnPickup[i]);
+        GameSfx.Play(Sfx.Pickup); // 암전 뒤 Sword를 치우는 순간(사용자 지시 2026-08-12)
 
         if (blackHold > 0f) yield return new WaitForSecondsRealtime(blackHold);
         yield return blackout.FadeTo(0f, blackFadeOut);
@@ -134,6 +135,7 @@ public class SwordPickupSequence : MonoBehaviour
 
         // ── 마무리: 글리치 → 암전 + BGM → 씬 전환 ─────────────────────────────────────────
         ScreenGlitchFx.Begin(ScreenGlitchFx.Source.Cutscene);
+        GameSfx.Play(Sfx.Glitch);
         if (glitchLead > 0f) yield return new WaitForSecondsRealtime(glitchLead);
 
         // BGM은 암전과 나란히 흘러야 하므로 기다리지 않고 따로 돌린다(SceneTransitionTrigger 선례).

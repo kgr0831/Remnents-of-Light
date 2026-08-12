@@ -24,16 +24,23 @@ public class HitVfxAutoReturn : MonoBehaviour
         _animator.Update(0f);
 
         float dur = _animator.GetCurrentAnimatorStateInfo(0).length;
-        Invoke(nameof(SelfDestroy), dur > 0f ? dur : 0.5f);
+        StartCoroutine(SelfDestroyAfter(dur > 0f ? dur : 0.5f));
     }
 
     private void OnDisable()
     {
-        CancelInvoke(nameof(SelfDestroy));
+        StopAllCoroutines();
     }
 
-    private void SelfDestroy()
+    // ⚠️ Invoke가 아니라 **실시간** 대기다(사용자 리포트 2026-08-12 "전투학습 종료 시점에 공격
+    //    이펙트가 남아있음"). Invoke는 스케일 시간으로 도는데, 튜토리얼은 스텝 성공 연출에서
+    //    Time.timeScale = 0으로 세계를 멈춘 채 암전으로 넘어간다(TutorialDirector.Freeze) —
+    //    그 순간 살아 있던 히트 VFX는 파괴 타이머가 아예 안 돌아 화면에 얼어붙은 채로 남았다.
+    //    TutorialDirector가 successHold(1초)만큼 시간을 흘려 완화해 뒀지만, 그보다 늦게 터진
+    //    스윙은 여전히 남는다. 실시간으로 세면 세계가 멈춰 있어도 예정대로 사라진다.
+    private System.Collections.IEnumerator SelfDestroyAfter(float seconds)
     {
+        yield return new WaitForSecondsRealtime(seconds);
         Destroy(gameObject);
     }
 }

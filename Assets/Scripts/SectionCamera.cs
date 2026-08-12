@@ -22,6 +22,7 @@ public class SectionCamera : MonoBehaviour
     Vector3 targetPos;
     Vector3 basePos;   // 구간 추적 정착 위치
     Vector3 shakeOffset;
+    int shakeCancelToken;  // StopShake()가 올려 진행 중인 ShakeCo를 무효화한다
     Vector3 sustainOffset; // SetSustainedShake가 매 프레임 새로 뽑는 오프셋(Shake와 독립적으로 합산)
     float sustainMagnitude;
     Vector3 focusOffset;   // FocusPulse가 파고들 때 basePos에 더해지는 오프셋
@@ -77,18 +78,33 @@ public class SectionCamera : MonoBehaviour
         StartCoroutine(ShakeCo(duration, magnitude));
     }
 
+    /// <summary>진행 중인 쉐이크를 전부 무효화하고 오프셋을 지운다.
+    ///
+    /// ShakeCo는 <see cref="Time.deltaTime"/>(스케일 시간)으로 세기 때문에 Time.timeScale = 0인 구간
+    /// (튜토리얼 스텝 종료 연출)에서는 elapsed가 아예 안 늘어 while 루프를 영영 못 빠져나온다. 그러면
+    /// 매 프레임 shakeOffset을 다시 써 넣어서, 다음 구간으로 순간이동한 뒤에도 공격 쉐이크가 그대로
+    /// 남는다(사용자 리포트 2026-08-12 "가끔 공격 쉐이킹이 다음 튜토리얼로 넘어갈 때 남음").
+    /// shakeOffset만 지우는 걸로는 안 되고 코루틴 자체를 끊어야 한다.</summary>
+    public void StopShake()
+    {
+        shakeCancelToken++;
+        shakeOffset = Vector3.zero;
+    }
+
     System.Collections.IEnumerator ShakeCo(float duration, float magnitude)
     {
+        int myToken = shakeCancelToken;
         float elapsed = 0f;
         while (elapsed < duration)
         {
+            if (myToken != shakeCancelToken) yield break; // StopShake()로 취소됨
             // 남은 시간 비율만큼 세기를 선형 감쇠시켜 뚝 끊기지 않고 부드럽게 잦아들게 한다.
             float falloff = 1f - (elapsed / duration);
             shakeOffset = Random.insideUnitCircle * magnitude * falloff;
             elapsed += Time.deltaTime;
             yield return null;
         }
-        shakeOffset = Vector3.zero;
+        if (myToken == shakeCancelToken) shakeOffset = Vector3.zero;
     }
 
     // 끝나는 시점이 정해져 있지 않은(입력을 떼야 끝나는) 쉐이크. 일섬 차지처럼 세기가 시간에 따라
@@ -252,27 +268,49 @@ public class SectionCamera : MonoBehaviour
         baseOrthoSize = cam.orthographicSize;
     }
 
+    // 지금 target이 있어야 할 카메라 위치. 룸 트리거가 한 번이라도 불렸으면 그 방식이 그리드
+    // 자동분할을 대체한다(사용자 지시 2026-08-03).
+    Vector3 ComputeTargetPos()
+    {
+        if (hasRoom) return roomTargetPos;
+
+        float w = sectionSize.x > 0.01f ? sectionSize.x : baseOrthoSize * 2f * cam.aspect;
+        float h = sectionSize.y > 0.01f ? sectionSize.y : baseOrthoSize * 2f;
+
+        // 플레이어가 속한 구간의 인덱스 → 그 구간의 중심으로 카메라 목표 설정
+        float sx = Mathf.Floor((target.position.x - gridOrigin.x) / w);
+        float sy = Mathf.Floor((target.position.y - gridOrigin.y) / h);
+        float cx = gridOrigin.x + (sx + 0.5f) * w;
+        float cy = gridOrigin.y + (sy + 0.5f) * h;
+        return new Vector3(cx, cy, basePos.z);
+    }
+
+    /// <summary>보간 없이 지금 구간으로 즉시 정착시킨다.
+    ///
+    /// ⚠️ LateUpdate의 슬라이드는 Time.deltaTime을 쓴다 — Time.timeScale=0으로 세계를 멈춘 채
+    ///    플레이어를 순간이동시키는 연출(튜토리얼의 구역 이동)에서는 그 보간이 **한 프레임도 진행되지
+    ///    않아** 카메라가 옛 구간에 그대로 남는다. 그런 구간에서 텔레포트 직후 한 번 부른다.</summary>
+    public void SnapToTarget()
+    {
+        if (target == null) return;
+        if (cam == null) cam = GetComponent<Camera>();
+
+        basePos = ComputeTargetPos();
+        targetPos = basePos;
+        if (hasRoom) baseOrthoSize = roomTargetOrthoSize;
+        StopShake();   // 오프셋만 지우면 얼어붙은 ShakeCo가 다음 프레임에 되돌린다(StopShake 주석 참고)
+        sustainOffset = Vector3.zero;
+        focusOffset = Vector3.zero;
+        focusZoomDelta = 0f;
+        transform.position = basePos + sustainFocusOffset;
+        cam.orthographicSize = baseOrthoSize + sustainFocusZoomDelta;
+    }
+
     void LateUpdate()
     {
         if (target == null) return;
 
-        if (hasRoom)
-        {
-            // 룸 트리거가 한 번이라도 불렸으면 그 방식이 그리드 자동분할을 대체한다(사용자 지시 2026-08-03).
-            targetPos = roomTargetPos;
-        }
-        else
-        {
-            float w = sectionSize.x > 0.01f ? sectionSize.x : baseOrthoSize * 2f * cam.aspect;
-            float h = sectionSize.y > 0.01f ? sectionSize.y : baseOrthoSize * 2f;
-
-            // 플레이어가 속한 구간의 인덱스 → 그 구간의 중심으로 카메라 목표 설정
-            float sx = Mathf.Floor((target.position.x - gridOrigin.x) / w);
-            float sy = Mathf.Floor((target.position.y - gridOrigin.y) / h);
-            float cx = gridOrigin.x + (sx + 0.5f) * w;
-            float cy = gridOrigin.y + (sy + 0.5f) * h;
-            targetPos = new Vector3(cx, cy, basePos.z);
-        }
+        targetPos = ComputeTargetPos();
 
         // 시간 가속(PlayerController) 중엔 세계가 느려져도 플레이어는 평소 속도로 움직인다 — 추적까지
         // 같이 느려지면 카메라가 계속 뒤처져 화면 밖으로 밀려난다. 플레이어와 같은 실시간 배율을 곱해

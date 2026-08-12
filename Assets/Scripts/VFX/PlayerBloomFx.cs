@@ -89,8 +89,10 @@ public class PlayerBloomFx : MonoBehaviour
     public void SetIntensity(float k)
     {
         if (fadeOutDuration >= 0f) return; // 이미 꺼지는 중이면 무시
-        // 사용자 요청에 따라 기본 블룸 강도를 50%로 낮춤
-        intensity = Mathf.Clamp01(k) * 0.5f;
+        // 사용자 요청에 따라 기본 블룸 강도를 낮춘다. 원래 0.5였는데 그러면 실효 HDR 출력이 1.17까지밖에
+        // 안 올라가 씬 Bloom 임계값(1.15)을 0.02 차로 겨우 넘어서, 에디터에서도 헤일로가 거의 안 보이고
+        // 빌드에서는 아예 사라졌다(사용자 리포트 2026-08-12). 0.75면 약 1.55라 확실히 문턱을 넘는다.
+        intensity = Mathf.Clamp01(k) * 0.75f;
     }
 
     /// <summary>
