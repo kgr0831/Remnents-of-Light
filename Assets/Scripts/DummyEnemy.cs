@@ -135,9 +135,22 @@ public class DummyEnemy : MonoBehaviour
         }
     }
 
+    /// <summary>연출 동안 모든 적의 이동·플레이어 감지를 통째로 멈춘다(BossStageDirector가 켜고 끈다).
+    ///
+    /// 상태(phase·state·HP)는 그대로 얼려 두고 매 프레임 굴리는 것만 건너뛴다 — 그래서 풀리는 순간
+    /// 자던 놈은 자던 대로, 순찰하던 놈은 순찰하던 대로 이어진다.
+    ///
+    /// ⚠️ static이라 도메인 리로드를 끄면 Play 세션을 넘어 살아남는다(TutorialGate와 같은 함정).
+    ///    아래 ResetOnPlay가 매 Play 시작에 반드시 푼다 — 안 그러면 다른 씬의 적이 통째로 멈춘다.</summary>
+    public static bool AiFrozen;
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    static void ResetOnPlay() => AiFrozen = false;
+
     protected virtual void Update()
     {
         if (dead) return;
+        if (AiFrozen) { SetHorizontalVelocity(0f); return; }
 
         TickTimers();
 

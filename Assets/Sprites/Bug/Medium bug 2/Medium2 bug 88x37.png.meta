@@ -1,0 +1,1339 @@
+fileFormatVersion: 2
+guid: 7f1f5b7a7341bea4d90445fb1a98af81
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -6007069620822634809
+    second: Medium2 bug 88x37_0
+  - first:
+      213: 5590773798247279331
+    second: Medium2 bug 88x37_1
+  - first:
+      213: -8713162518564578392
+    second: Medium2 bug 88x37_2
+  - first:
+      213: 3910113360993373619
+    second: Medium2 bug 88x37_3
+  - first:
+      213: 1971400310005079157
+    second: Medium2 bug 88x37_4
+  - first:
+      213: 1183759409933564086
+    second: Medium2 bug 88x37_5
+  - first:
+      213: -220366012541600757
+    second: Medium2 bug 88x37_6
+  - first:
+      213: -8925275168472946491
+    second: Medium2 bug 88x37_7
+  - first:
+      213: 7344437570548246535
+    second: Medium2 bug 88x37_8
+  - first:
+      213: 2885925798701974985
+    second: Medium2 bug 88x37_9
+  - first:
+      213: 8365629477869787289
+    second: Medium2 bug 88x37_10
+  - first:
+      213: 2582354102143322019
+    second: Medium2 bug 88x37_11
+  - first:
+      213: 5388728072177584959
+    second: Medium2 bug 88x37_12
+  - first:
+      213: -1982675240807586135
+    second: Medium2 bug 88x37_13
+  - first:
+      213: -2978376806972959132
+    second: Medium2 bug 88x37_14
+  - first:
+      213: -3945205783384544844
+    second: Medium2 bug 88x37_15
+  - first:
+      213: -3288206505948289785
+    second: Medium2 bug 88x37_16
+  - first:
+      213: 8178120589024070996
+    second: Medium2 bug 88x37_17
+  - first:
+      213: 3588410883029471409
+    second: Medium2 bug 88x37_18
+  - first:
+      213: -7038191836018671775
+    second: Medium2 bug 88x37_19
+  - first:
+      213: -1658736322388122280
+    second: Medium2 bug 88x37_20
+  - first:
+      213: 6712047599724266567
+    second: Medium2 bug 88x37_21
+  - first:
+      213: 3691215273751926053
+    second: Medium2 bug 88x37_22
+  - first:
+      213: -2272243497236373534
+    second: Medium2 bug 88x37_23
+  - first:
+      213: 6147900185254914993
+    second: Medium2 bug 88x37_24
+  - first:
+      213: 4339103664619581980
+    second: Medium2 bug 88x37_25
+  - first:
+      213: 8901790574714860103
+    second: Medium2 bug 88x37_26
+  - first:
+      213: -4386390057394543796
+    second: Medium2 bug 88x37_27
+  - first:
+      213: 3331516113093171593
+    second: Medium2 bug 88x37_28
+  - first:
+      213: -4432421506595154288
+    second: Medium2 bug 88x37_29
+  - first:
+      213: -5924809875607664662
+    second: Medium2 bug 88x37_30
+  - first:
+      213: 5204195595720292543
+    second: Medium2 bug 88x37_31
+  - first:
+      213: 779307259015153283
+    second: Medium2 bug 88x37_32
+  - first:
+      213: 527434148599119159
+    second: Medium2 bug 88x37_33
+  - first:
+      213: -6471735242146872124
+    second: Medium2 bug 88x37_34
+  - first:
+      213: -3134703949315430069
+    second: Medium2 bug 88x37_35
+  - first:
+      213: 8663172056493137492
+    second: Medium2 bug 88x37_36
+  - first:
+      213: -7268287354680349725
+    second: Medium2 bug 88x37_37
+  - first:
+      213: -8226006936330420906
+    second: Medium2 bug 88x37_38
+  - first:
+      213: -121233446428589662
+    second: Medium2 bug 88x37_39
+  - first:
+      213: -5099650470005937765
+    second: Medium2 bug 88x37_40
+  - first:
+      213: -3738746275699045919
+    second: Medium2 bug 88x37_41
+  - first:
+      213: -4925691509008615016
+    second: Medium2 bug 88x37_42
+  - first:
+      213: 1952279810467338227
+    second: Medium2 bug 88x37_43
+  - first:
+      213: -6539819472203802758
+    second: Medium2 bug 88x37_44
+  - first:
+      213: 5118079831638507068
+    second: Medium2 bug 88x37_45
+  - first:
+      213: 7791799934887897283
+    second: Medium2 bug 88x37_46
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 0
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Medium2 bug 88x37_0
+      rect:
+        serializedVersion: 2
+        x: 22
+        y: 75
+        width: 19
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7ce83d5b10a92aca0800000000000000
+      internalID: -6007069620822634809
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium2 bug 88x37_1
+      rect:
+        serializedVersion: 2
+        x: 110
+        y: 75
+        width: 19
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3ea2718f52b669d40800000000000000
+      internalID: 5590773798247279331
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium2 bug 88x37_2
+      rect:
+        serializedVersion: 2
+        x: 198
+        y: 75
+        width: 19
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8abd5ba8ad0a41780800000000000000
+      internalID: -8713162518564578392
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium2 bug 88x37_3
+      rect:
+        serializedVersion: 2
+        x: 286
+        y: 75
+        width: 19
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3bdc4899263834630800000000000000
+      internalID: 3910113360993373619
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium2 bug 88x37_4
+      rect:
+        serializedVersion: 2
+        x: 374
+        y: 81
+        width: 19
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 57c92f31322db5b10800000000000000
+      internalID: 1971400310005079157
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium2 bug 88x37_5
+      rect:
+        serializedVersion: 2
+        x: 377
+        y: 75
+        width: 14
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6b8bd9859ee8d6010800000000000000
+      internalID: 1183759409933564086
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium2 bug 88x37_6
+      rect:
+        serializedVersion: 2
+        x: 462
+        y: 81
+        width: 19
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b0c73e5774a11fcf0800000000000000
+      internalID: -220366012541600757
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium2 bug 88x37_7
+      rect:
+        serializedVersion: 2
+        x: 465
+        y: 75
+        width: 14
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5c82e8cb58d032480800000000000000
+      internalID: -8925275168472946491
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium2 bug 88x37_8
+      rect:
+        serializedVersion: 2
+        x: 550
+        y: 75
+        width: 19
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 708af83de0face560800000000000000
+      internalID: 7344437570548246535
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium2 bug 88x37_9
+      rect:
+        serializedVersion: 2
+        x: 638
+        y: 75
+        width: 19
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9c544cf393edc0820800000000000000
+      internalID: 2885925798701974985
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium2 bug 88x37_10
+      rect:
+        serializedVersion: 2
+        x: 22
+        y: 38
+        width: 19
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 99817f6efafa81470800000000000000
+      internalID: 8365629477869787289
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium2 bug 88x37_11
+      rect:
+        serializedVersion: 2
+        x: 109
+        y: 38
+        width: 20
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3a7868ebf5d56d320800000000000000
+      internalID: 2582354102143322019
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium2 bug 88x37_12
+      rect:
+        serializedVersion: 2
+        x: 195
+        y: 46
+        width: 19
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f3b025581ab98ca40800000000000000
+      internalID: 5388728072177584959
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium2 bug 88x37_13
+      rect:
+        serializedVersion: 2
+        x: 282
+        y: 48
+        width: 19
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9a6a3b68f5f1c74e0800000000000000
+      internalID: -1982675240807586135
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium2 bug 88x37_14
+      rect:
+        serializedVersion: 2
+        x: 377
+        y: 38
+        width: 27
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4665d1df21eaaa6d0800000000000000
+      internalID: -2978376806972959132
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium2 bug 88x37_15
+      rect:
+        serializedVersion: 2
+        x: 391
+        y: 36
+        width: 46
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4b92c8b1e30df39c0800000000000000
+      internalID: -3945205783384544844
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium2 bug 88x37_16
+      rect:
+        serializedVersion: 2
+        x: 464
+        y: 38
+        width: 64
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 705e2d0ca91fd52d0800000000000000
+      internalID: -3288206505948289785
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium2 bug 88x37_17
+      rect:
+        serializedVersion: 2
+        x: 527
+        y: 2
+        width: 91
+        height: 60
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 45d861f98558e7170800000000000000
+      internalID: 8178120589024070996
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium2 bug 88x37_18
+      rect:
+        serializedVersion: 2
+        x: 638
+        y: 38
+        width: 19
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1b01e179fa89cc130800000000000000
+      internalID: 3588410883029471409
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium2 bug 88x37_19
+      rect:
+        serializedVersion: 2
+        x: 201
+        y: 38
+        width: 14
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 16f7d09a0d1535e90800000000000000
+      internalID: -7038191836018671775
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium2 bug 88x37_20
+      rect:
+        serializedVersion: 2
+        x: 289
+        y: 38
+        width: 14
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 855a4086a1cfaf8e0800000000000000
+      internalID: -1658736322388122280
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium2 bug 88x37_21
+      rect:
+        serializedVersion: 2
+        x: 674
+        y: 1
+        width: 80
+        height: 45
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7440411eabbf52d50800000000000000
+      internalID: 6712047599724266567
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium2 bug 88x37_22
+      rect:
+        serializedVersion: 2
+        x: 803
+        y: 8
+        width: 40
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 525da7d0cb4d93330800000000000000
+      internalID: 3691215273751926053
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium2 bug 88x37_23
+      rect:
+        serializedVersion: 2
+        x: 22
+        y: 1
+        width: 19
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2efd800049e5770e0800000000000000
+      internalID: -2272243497236373534
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium2 bug 88x37_24
+      rect:
+        serializedVersion: 2
+        x: 66
+        y: 2
+        width: 79
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1bb6da045aab15550800000000000000
+      internalID: 6147900185254914993
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium2 bug 88x37_25
+      rect:
+        serializedVersion: 2
+        x: 179
+        y: 6
+        width: 24
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c12fe3d1bc7973c30800000000000000
+      internalID: 4339103664619581980
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium2 bug 88x37_26
+      rect:
+        serializedVersion: 2
+        x: 198
+        y: 24
+        width: 9
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 742bcce2d53898b70800000000000000
+      internalID: 8901790574714860103
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium2 bug 88x37_27
+      rect:
+        serializedVersion: 2
+        x: 199
+        y: 5
+        width: 9
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c4361be9b796023c0800000000000000
+      internalID: -4386390057394543796
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium2 bug 88x37_28
+      rect:
+        serializedVersion: 2
+        x: 205
+        y: 16
+        width: 15
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9899864f04ceb3e20800000000000000
+      internalID: 3331516113093171593
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium2 bug 88x37_29
+      rect:
+        serializedVersion: 2
+        x: 209
+        y: 4
+        width: 8
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 096189caf10ec72c0800000000000000
+      internalID: -4432421506595154288
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium2 bug 88x37_30
+      rect:
+        serializedVersion: 2
+        x: 214
+        y: 8
+        width: 18
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ae7cda22fc8d6cda0800000000000000
+      internalID: -5924809875607664662
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium2 bug 88x37_31
+      rect:
+        serializedVersion: 2
+        x: 266
+        y: 5
+        width: 21
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fb87f804254093840800000000000000
+      internalID: 5204195595720292543
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium2 bug 88x37_32
+      rect:
+        serializedVersion: 2
+        x: 277
+        y: 18
+        width: 11
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3864b78b2d7a0da00800000000000000
+      internalID: 779307259015153283
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium2 bug 88x37_33
+      rect:
+        serializedVersion: 2
+        x: 286
+        y: 25
+        width: 9
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 73d39ad4092d15700800000000000000
+      internalID: 527434148599119159
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium2 bug 88x37_34
+      rect:
+        serializedVersion: 2
+        x: 286
+        y: 4
+        width: 8
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4c485730617cf26a0800000000000000
+      internalID: -6471735242146872124
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium2 bug 88x37_35
+      rect:
+        serializedVersion: 2
+        x: 293
+        y: 16
+        width: 11
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b492a01dd5b4f74d0800000000000000
+      internalID: -3134703949315430069
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium2 bug 88x37_36
+      rect:
+        serializedVersion: 2
+        x: 295
+        y: 27
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 45e1d5ff515c93870800000000000000
+      internalID: 8663172056493137492
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium2 bug 88x37_37
+      rect:
+        serializedVersion: 2
+        x: 298
+        y: 3
+        width: 24
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3eb60d2f82bd12b90800000000000000
+      internalID: -7268287354680349725
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium2 bug 88x37_38
+      rect:
+        serializedVersion: 2
+        x: 299
+        y: 21
+        width: 9
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 65d3020564a57dd80800000000000000
+      internalID: -8226006936330420906
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium2 bug 88x37_39
+      rect:
+        serializedVersion: 2
+        x: 353
+        y: 3
+        width: 30
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2a14ab2a2da415ef0800000000000000
+      internalID: -121233446428589662
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium2 bug 88x37_40
+      rect:
+        serializedVersion: 2
+        x: 381
+        y: 17
+        width: 15
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b9964a8aae66a39b0800000000000000
+      internalID: -5099650470005937765
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium2 bug 88x37_41
+      rect:
+        serializedVersion: 2
+        x: 387
+        y: 2
+        width: 24
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1e9c4ab221e4d1cc0800000000000000
+      internalID: -3738746275699045919
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium2 bug 88x37_42
+      rect:
+        serializedVersion: 2
+        x: 440
+        y: 2
+        width: 31
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 89932648bad64abb0800000000000000
+      internalID: -4925691509008615016
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium2 bug 88x37_43
+      rect:
+        serializedVersion: 2
+        x: 472
+        y: 2
+        width: 28
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3f7921dd424e71b10800000000000000
+      internalID: 1952279810467338227
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium2 bug 88x37_44
+      rect:
+        serializedVersion: 2
+        x: 562
+        y: 24
+        width: 10
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a771c18e6d4ed35a0800000000000000
+      internalID: -6539819472203802758
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium2 bug 88x37_45
+      rect:
+        serializedVersion: 2
+        x: 624
+        y: 1
+        width: 42
+        height: 36
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c3e77e87d72170740800000000000000
+      internalID: 5118079831638507068
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium2 bug 88x37_46
+      rect:
+        serializedVersion: 2
+        x: 915
+        y: 26
+        width: 9
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3c8a7ef02c8022c60800000000000000
+      internalID: 7791799934887897283
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Medium2 bug 88x37_0: -6007069620822634809
+      Medium2 bug 88x37_1: 5590773798247279331
+      Medium2 bug 88x37_10: 8365629477869787289
+      Medium2 bug 88x37_11: 2582354102143322019
+      Medium2 bug 88x37_12: 5388728072177584959
+      Medium2 bug 88x37_13: -1982675240807586135
+      Medium2 bug 88x37_14: -2978376806972959132
+      Medium2 bug 88x37_15: -3945205783384544844
+      Medium2 bug 88x37_16: -3288206505948289785
+      Medium2 bug 88x37_17: 8178120589024070996
+      Medium2 bug 88x37_18: 3588410883029471409
+      Medium2 bug 88x37_19: -7038191836018671775
+      Medium2 bug 88x37_2: -8713162518564578392
+      Medium2 bug 88x37_20: -1658736322388122280
+      Medium2 bug 88x37_21: 6712047599724266567
+      Medium2 bug 88x37_22: 3691215273751926053
+      Medium2 bug 88x37_23: -2272243497236373534
+      Medium2 bug 88x37_24: 6147900185254914993
+      Medium2 bug 88x37_25: 4339103664619581980
+      Medium2 bug 88x37_26: 8901790574714860103
+      Medium2 bug 88x37_27: -4386390057394543796
+      Medium2 bug 88x37_28: 3331516113093171593
+      Medium2 bug 88x37_29: -4432421506595154288
+      Medium2 bug 88x37_3: 3910113360993373619
+      Medium2 bug 88x37_30: -5924809875607664662
+      Medium2 bug 88x37_31: 5204195595720292543
+      Medium2 bug 88x37_32: 779307259015153283
+      Medium2 bug 88x37_33: 527434148599119159
+      Medium2 bug 88x37_34: -6471735242146872124
+      Medium2 bug 88x37_35: -3134703949315430069
+      Medium2 bug 88x37_36: 8663172056493137492
+      Medium2 bug 88x37_37: -7268287354680349725
+      Medium2 bug 88x37_38: -8226006936330420906
+      Medium2 bug 88x37_39: -121233446428589662
+      Medium2 bug 88x37_4: 1971400310005079157
+      Medium2 bug 88x37_40: -5099650470005937765
+      Medium2 bug 88x37_41: -3738746275699045919
+      Medium2 bug 88x37_42: -4925691509008615016
+      Medium2 bug 88x37_43: 1952279810467338227
+      Medium2 bug 88x37_44: -6539819472203802758
+      Medium2 bug 88x37_45: 5118079831638507068
+      Medium2 bug 88x37_46: 7791799934887897283
+      Medium2 bug 88x37_5: 1183759409933564086
+      Medium2 bug 88x37_6: -220366012541600757
+      Medium2 bug 88x37_7: -8925275168472946491
+      Medium2 bug 88x37_8: 7344437570548246535
+      Medium2 bug 88x37_9: 2885925798701974985
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

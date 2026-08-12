@@ -111,11 +111,19 @@ public class PlayerHudUI : MonoBehaviour
     [Header("자아 고갈 연출 (HP 아이콘에 표시 — 폭주 중에만)")]
     public Color pipDepletedColor = new Color(0.55f, 0.56f, 0.60f); // 자아가 줄어들며 차오르는 회색(오버레이 색)
 
+    // ⚠️ 세기(_Intensity × _BloomBoost)는 광원 글로우와 같은 계열로 맞춰 둔다(사용자 지시 2026-08-12
+    //    "hp UI가 비정상적으로 빛난다"). UIHpGlow는 `_Color × _Intensity × _BloomBoost`를 그대로 HDR로
+    //    내보내고 씬 블룸(IlseomBloomProfile: threshold 1.15 / soft knee ≈0.575 / intensity 2.2)이 그걸
+    //    먹는 구조라, 이 곱이 곧 번짐의 크기다. 예전 값(1.0 × 4 / 만피 1.0 × 6)은 최대 채널이 4.0/6.0로
+    //    문턱을 한참 넘겨 광원 글로우(0.4 × 1.5 = 0.6, knee 언저리)의 **10배**로 번졌다.
+    //    ⚠️ hpGlowBoost도 같이 내려야 한다 — hpGlowIntensity는 평상시·만피가 **공유**하는 값이라
+    //       (아래 hpFullGlowBoost 주석 참고) intensity만 낮추면 평상시(4×0.4=1.6)가 만피(2.2×0.4=0.88)보다
+    //       밝아져 강조가 뒤집힌다.
     [Header("HP 블룸 (빨간 칸만, 2026-08-10 사용자 지시)")]
     public bool hpGlowEnabled = true;
     public Color hpGlowColor = new Color(1f, 0.16f, 0.08f, 1f);
-    [Range(1f, 8f)] public float hpGlowBoost = 4f;
-    [Range(0f, 1f)] public float hpGlowIntensity = 1f;
+    [Range(1f, 8f)] public float hpGlowBoost = 1.5f;
+    [Range(0f, 1f)] public float hpGlowIntensity = 0.4f;
 
     // Outline 컴포넌트는 원본 텍스처 색(빨강/적갈색)을 그대로 복제해 effectColor를 곱하기 때문에
     // 흰색을 넣어도 살짝 물든 빨간 테두리가 된다(사용자 실측 2026-08-10) — 그래서 알파 경계만 보고
@@ -128,10 +136,14 @@ public class PlayerHudUI : MonoBehaviour
 
     // 만피(찼을 때)를 안 찼을 때와 색으로 바로 구분되게 한다(사용자 지시 2026-08-11). 평소엔 빨간
     // 아이콘 그대로 두고, 8칸이 전부 찼을 때만 금빛 틴트 + 전용(더 강한) 글로우로 바뀐다.
+    // ⚠️ 만피/평상시는 _BloomBoost만 갈리고 _Intensity(hpGlowIntensity)는 공유한다(UpdateHpGlow 참고).
+    //    그래서 "만피가 더 밝다"는 두 boost의 대소로만 정해진다 — 1.5(평상시) < 2.2(만피)로 약 1.5배.
+    //    HP 변화 순간의 번쩍임(_hpChangeFlash)이 boost를 1.6배까지 밀어 올려 만피 피크가 문턱(1.15)을
+    //    넘으므로, 세기를 낮춰도 "칸이 변할 때 확 빛나는" 피드백은 그대로 남는다.
     [Header("HP 만피 강조 (안 찼을 때와 색으로 구분, 2026-08-11 사용자 지시)")]
     public Color hpFullTint = new Color(1f, 0.92f, 0.55f);
     public Color hpFullGlowColor = new Color(1f, 0.82f, 0.25f, 1f);
-    [Range(1f, 8f)] public float hpFullGlowBoost = 6f;
+    [Range(1f, 8f)] public float hpFullGlowBoost = 2.2f;
 
     // 칸이 찰 때/깎일 때 훨씬 잘 보이게(사용자 지시 2026-08-11) — 변화 순간 아이콘에 색이 번쩍
     // 스치고 살짝 커졌다 돌아온다. 방향(회복/피격)에 따라 색만 다르고 메커니즘은 같다.
@@ -208,6 +220,10 @@ public class PlayerHudUI : MonoBehaviour
     Camera _hpBloomCamera;
     Image _hpGlowIcon;
     Material _hpGlowMat;
+    // ⚠️ 글로우 캔버스는 _root 밑이 아니라 **씬 루트**에 따로 만든다(중첩 Canvas 함정 — BuildBloomPipeline
+    //    주석 참고). 그래서 _root만 껐다간 아이콘은 사라지고 헤일로만 화면에 남는다. 숨김을 다루는
+    //    두 곳(SetVisible · Update의 shouldShow)에서 반드시 _root와 같이 토글한다.
+    GameObject _glowRoot;
 
     // 프로젝트 전역에서 한 번만 로드하면 되는 리소스 — Awake마다 다시 조회하지 않는다.
     static Sprite[] _hpSpriteCache;   // 0=HP1 .. 7=HP8 (x좌표 순 정렬)
@@ -257,7 +273,9 @@ public class PlayerHudUI : MonoBehaviour
     public void SetVisible(bool visible)
     {
         _hidden = !visible;
-        if (_root != null) _root.SetActive(visible && _player != null);
+        bool show = visible && _player != null;
+        if (_root != null) _root.SetActive(show);
+        if (_glowRoot != null) _glowRoot.SetActive(show);   // 글로우 캔버스는 별도 루트다(_glowRoot 주석)
     }
 
     // 씬에 배치하지 않아도 항상 뜨게 한다(씬 편집 없이 HUD가 붙는 유일한 방법).
@@ -530,6 +548,7 @@ public class PlayerHudUI : MonoBehaviour
         _hpBloomCamera = null;
         _hpGlowIcon = null;
         _energyGlowIcon = null;
+        _glowRoot = null;
         if (_hpGlowMat != null) { if (Application.isPlaying) Destroy(_hpGlowMat); else DestroyImmediate(_hpGlowMat); _hpGlowMat = null; }
         if (_energyGlowMat != null) { if (Application.isPlaying) Destroy(_energyGlowMat); else DestroyImmediate(_energyGlowMat); _energyGlowMat = null; }
         if (!hpGlowEnabled && !energyGlowEnabled) return;
@@ -651,6 +670,10 @@ public class PlayerHudUI : MonoBehaviour
         }
 
         MarkDontSaveInEditor(glowCanvasGO); // 씬 루트에 만든 캔버스라 그대로 두면 씬에 저장된다
+        _glowRoot = glowCanvasGO;
+        // 방금 만든 캔버스는 항상 켜진 상태다 — 숨김 중(사망 연출·컷신)에 리빌드가 돌면 헤일로만
+        // 되살아나므로 현재 숨김 상태를 그대로 물려받게 한다.
+        if (_hidden || _player == null) _glowRoot.SetActive(false);
     }
 
     /// <summary>
@@ -755,6 +778,7 @@ public class PlayerHudUI : MonoBehaviour
 
         bool shouldShow = _player != null && !_hidden;
         if (_root != null && _root.activeSelf != shouldShow) _root.SetActive(shouldShow);
+        if (_glowRoot != null && _glowRoot.activeSelf != shouldShow) _glowRoot.SetActive(shouldShow);
         if (_player == null) return;
 
         // 최대 칸 수는 세이브 불러오기로도 바뀔 수 있다 → 바뀌면 줄을 다시 만든다.

@@ -30,6 +30,22 @@ public class PlayerController : MonoBehaviour
     // (이 프로젝트는 "즉시 이동" 컨벤션이라 관성이 없어 입력이 없으면 그 자리에서 바로 멈춘다).
     // 이 값을 늘리면 push가 살아있는 시간이 길어져 실제로 벽 반대쪽으로 밀려나는 거리가 늘어난다.
     public float wallJumpHorizontalLockDuration = 0.3f;
+    // ── 벽점프가 "가끔 안 되는" 문제(사용자 리포트 2026-08-13) 대응 3종 ──────────────────────────
+    // ① 재부착 유예: 벽점프 직후 **같은 벽**에 다시 붙는 것을 이 시간 동안 막는다. 이게 없으면 벽 쪽
+    //    방향키를 쥔 채 점프했을 때, 점프한 다음 프레임에 아직 wallCheckDistance(0.15) 안(한 프레임에
+    //    0.08 정도밖에 못 벗어난다)이라 HandleWallSlide의 미부착 분기가 즉시 다시 붙여버리고, 그
+    //    순간 중력 0 + vy 대입으로 **방금 준 상승 속도가 통째로 삭제**된다(= "점프가 씹혔다").
+    //    반대쪽 벽에는 그대로 붙을 수 있다 — 좁은 수직 통로의 좌우 연속 벽점프를 막지 않기 위해서다.
+    public float wallReattachDelay = 0.2f;
+    // ② 점프 입력 버퍼: 예전엔 HandleJump가 어떤 분기도 안 걸려도 입력을 그냥 버려서(isJumping=false),
+    //    벽에 닿기 직전에 미리 누른 점프가 사라졌다. 대시(dashInputBuffer)와 같은 패턴으로 이 시간
+    //    동안 요청을 들고 있다가 조건이 열리는 첫 프레임에 발동한다.
+    public float jumpInputBuffer = 0.12f;
+    // ③ 벽 코요테 타임: 벽에서 떨어진 직후에도 이 시간 안에는 벽점프가 나간다. 벽타기는 반대 방향키를
+    //    누르는 순간 즉시 떨어지므로(pressingAway), "반대 방향 누르고 → 점프"라는 가장 흔한 조작이
+    //    같은 프레임 동시입력이 아니면 전부 실패했다. 접지 중에는 채우지 않는다 — 땅에서 벽 옆에 서
+    //    있다가 점프했을 때 일반 점프가 벽점프로 바뀌면 안 된다.
+    public float wallCoyoteTime = 0.12f;
     public float wallClimbShakeDuration = 0.08f; // 벽에 붙는 순간 카메라 쉐이크(사용자 지시)
     public float wallClimbShakeMagnitude = 0.06f;
     // 벽 꼭대기 자동 오르기(사용자 지시 2026-08-03) — "벽을 다 올라가서 위로 갈 수 있는 상황이면
@@ -156,6 +172,15 @@ public class PlayerController : MonoBehaviour
     // 부를 수 없는 지형으로 보고 원래 지점 그대로 둔다(중앙이라는 개념 자체가 성립하지 않는다).
     public float platformEdgeProbeStep = 0.5f;
     public float platformEdgeProbeMaxDistance = 20f;
+    // 사용자 리포트(2026-08-13): "플랫폼 상단에서 낙하 후 복귀해서 다른 곳에 떨어지는 문제" — 예전엔
+    // 가장자리 탐색도, 최종 착지 지점 계산도 **표면 높이를 전혀 안 봤다**. 특히 마지막 레이캐스트가
+    // groundedPos.y+5에서 아래로 20을 훑어서, 서 있던 발판보다 최대 15유닛 아래의 전혀 다른 지형에
+    // 착지할 수 있었다. 이제 한 스텝(platformEdgeProbeStep)씩 **직전 표면 높이 기준으로만** 다음
+    // 표면을 찾는다 — 높이가 이 값보다 급격히 달라지면 "다른 발판"으로 보고 거기서 끊는다.
+    // ⚠️ 경사면 때문에 너무 작게 잡으면 안 된다: maxSlopeAngle(50°)에서 한 스텝(0.5)당 0.6까지
+    //    올라가므로 그보다 커야 한다. 반대로 너무 크면 층이 다른 발판을 같은 발판으로 오인한다.
+    [Tooltip("한 스텝 사이에 표면 높이가 이보다 크게 변하면 다른 발판으로 본다(경사면 허용치)")]
+    public float platformSurfaceStepTolerance = 1f;
 
     // 사망 연출·로직(사용자 확정 2026-08-10, 세부 플로우 재지시로 전면 재설계). 페널티 없음 — 부활 시
     // 체력 전부/자아(폭주 유지 시) 전부 회복, 광원은 그대로 유지. 부활 지점은 RoomTrigger가 갱신하는
@@ -210,8 +235,10 @@ public class PlayerController : MonoBehaviour
     public int maxEnergy = 100;
     public int currentEnergy;
     [Range(0f, 1f)] public float startEnergyRatio = 0.5f; // 충전(패링)과 소모(일섬)가 둘 다 보이도록 절반에서 시작
-    public int parryEnergyGain = 25;
-    public int executionEnergyGain = 30;
+    // 광원 획득량 일괄 50% 하향(사용자 지시 2026-08-13): 패링 25→12, 처형 30→15.
+    // 적 타격·처치와 광원 오브젝트도 같은 비율로 내렸다(CheckAttackHit / LightObject.energyChargePercent).
+    public int parryEnergyGain = 12;
+    public int executionEnergyGain = 15;
     public int executionHealCount = 1;   // 처형 성공 시 회복되는 체력 "칸" 수
     public int ilseomEnergyCost = 40;
     // 사용자 확정(2026-08-01): 일섬은 발동 시 목돈을 떼는 게 아니라, 홀드(차지) 진행도에 비례해
@@ -232,8 +259,12 @@ public class PlayerController : MonoBehaviour
     [Header("Rampage (폭주)")]
     public bool rampageEnabled = true;
     public int rampageExitEnergyPercent = 25;       // 이 % 이상 회복해야 폭주가 풀린다(진입은 RampageEnterEnergy, 1/8)
-    // 폭주 중 광원 획득 75% 감소(25%만 회복) — 사용자 지시 2026-08-02로 기존 50% 감소(0.5)에서 강화.
-    public float rampageEnergyGainMultiplier = 0.25f;
+    // 폭주 중 광원 획득 배율.
+    // ⚠️ 0.25 → 0.5 (2026-08-13): 값이 완화된 게 아니라 **기준이 절반으로 내려간 것을 되돌린 것**이다.
+    //    사용자 지시 "폭주 상태에서는 감소 전과 똑같은 양 획득" — 기본 획득량을 전부 50%로 내렸으므로
+    //    (기본÷2) × 0.5 = 기본 × 0.25 가 되어 폭주 중 실제 획득량은 하향 이전과 정확히 같다.
+    //    실측: 패링 25×0.25=6 → 12×0.5=6 / 처형 30×0.25=8 → 15×0.5=8 / 광원 오브젝트 25×0.25=6 → 12×0.5=6.
+    public float rampageEnergyGainMultiplier = 0.5f;
     public int rampageMinEnergy = 50;               // ⚠️ 고아 필드(옛 Q 토글 게이트) — 삭제는 별도 승인
     public float rampageDrainPerSecond = 20f;       // ⚠️ 고아 필드(옛 지속 드레인) — 삭제는 별도 승인
     // 폭주 버프 4종. 기획안은 "원초적인 파괴력과 맷집이 극도로 상승"이라고만 쓰고 수치는 없어서
@@ -598,6 +629,17 @@ public class PlayerController : MonoBehaviour
     SpriteRenderer sr;
 
     Vector2 moveInput;
+
+    /// <summary>컷신이 이동 입력을 대신 밀어 넣는 채널(-1~1). null이면 평소대로 플레이어 입력만 쓴다.
+    ///
+    /// 연출 중 "입력은 막혔는데 캐릭터는 걸어간다"를 만드는 유일한 경로다(BossStageDirector의 오프닝
+    /// 자동 보행). <see cref="TutorialGate"/>로 Move를 잠근 위에 덮어쓰므로, 플레이어가 A/D를 눌러도
+    /// 그 입력은 이미 지워진 뒤라 연출과 섞이지 않는다.
+    ///
+    /// ⚠️ static이라 도메인 리로드를 끄면 Play 세션을 넘어 살아남는다 — 아래 Awake에서 반드시 지운다
+    ///    (TutorialGate.ResetOnPlay와 같은 이유).</summary>
+    public static float? ScriptedMoveX;
+
     bool isJumping;
     bool isJumpHeld;
     float coyoteTimeCounter;
@@ -624,6 +666,11 @@ public class PlayerController : MonoBehaviour
     public int DeathStreak => deathStreak;
 
     float wallJumpLockCounter;
+    float jumpBufferTimer;        // 점프 입력 유예(jumpInputBuffer) — 살아있는 동안 매 프레임 발동 재시도
+    float wallCoyoteCounter;      // 벽에서 떨어진 뒤 남는 벽점프 유예(wallCoyoteTime)
+    int lastWallDirX;             // 그 유예 동안 어느 쪽 벽이었는지(벽점프가 밀어낼 방향의 기준)
+    float wallReattachCooldown;   // 벽점프 직후 같은 벽 재부착 금지 시간(wallReattachDelay)
+    int wallReattachBlockedDir;   // 그 금지가 걸린 벽 방향(반대쪽 벽에는 바로 붙을 수 있다)
     bool wasGrounded;
 
     float footstepTimer;  // 발소리 간격 카운터 — GameSfx.TickFootstep이 관리(TutorialMover와 같은 규칙)
@@ -726,6 +773,8 @@ public class PlayerController : MonoBehaviour
         // 초기화되지 않는 정적 값(도메인 리로드 전까지 유지)이라, 이전 Play 세션이 슬로우모션
         // 코루틴 도중 비정상 종료됐다면 다음 Play가 그 값을 그대로 물려받는다. 항상 정상 속도로 시작.
         Time.timeScale = 1f;
+        // 같은 이유로 컷신 보행 채널도 지운다 — 연출 도중 Stop하면 다음 Play에서 캐릭터가 혼자 걸어간다.
+        ScriptedMoveX = null;
 
         rb = GetComponent<Rigidbody2D>();
         coll = GetComponent<BoxCollider2D>();
@@ -834,6 +883,10 @@ public class PlayerController : MonoBehaviour
         // 입력값 자체를 지운다 — 연출·시간정지 구간의 "입력 제한"이 이 한 줄로 이동·벽타기에 동시에 걸린다.
         if (!TutorialGate.Has(TutorialAbility.Move)) moveInput = Vector2.zero;
 
+        // 컷신 자동 보행 — 반드시 위 게이트 **다음**에 덮어쓴다. 순서가 반대면 게이트가 연출용
+        // 이동값까지 같이 지워 버려 "연출인데 캐릭터가 제자리걸음"이 된다.
+        if (ScriptedMoveX.HasValue) moveInput = new Vector2(ScriptedMoveX.Value, 0f);
+
         // 시간 가속을 가장 먼저 굴린다 — 이 프레임의 TimeAccelMul(플레이어 보정 배율)이 아래 모든
         // 타이머·속도 계산의 전제이기 때문이다(Left Alt 토글 입력도 여기서 본다).
         HandleTimeAccel();
@@ -841,6 +894,9 @@ public class PlayerController : MonoBehaviour
         // 플레이어 자신의 타이머는 전부 PDelta(=가속 중에도 실시간과 같은 간격)로 센다 — 세계만
         // 느려지고 플레이어는 평소대로 움직여야 하므로 쿨다운·모션 길이도 평소 속도여야 한다.
         if (wallJumpLockCounter > 0f) wallJumpLockCounter -= PDelta;
+        if (wallReattachCooldown > 0f) wallReattachCooldown -= PDelta;
+        // 버퍼가 만료되면 요청 자체를 버린다 — 안 그러면 isJumping이 계속 남아 한참 뒤에 튀어나온다.
+        if (jumpBufferTimer > 0f) { jumpBufferTimer -= PDelta; if (jumpBufferTimer <= 0f) isJumping = false; }
         if (dashCooldownCounter > 0f) dashCooldownCounter -= PDelta;
         // ⚠️ 이 유예만은 PDelta가 아니라 **세계 시간**(Time.deltaTime)으로 센다 — 다른 플레이어 타이머와
         // 성격이 다르기 때문이다. 이건 "내 동작의 길이"가 아니라 "적의 공격 타임라인과 겹치는가"를 재는
@@ -1032,6 +1088,17 @@ public class PlayerController : MonoBehaviour
         isTouchingWall = rightWall || leftWall;
         wallDirX = rightWall ? 1 : (leftWall ? -1 : 0);
 
+        // 벽 코요테(wallCoyoteTime 주석 참고) — 벽에 붙어 있거나 공중에서 벽에 닿아 있는 동안 채우고,
+        // 벽을 떠난 뒤부터 줄어든다. 접지 중 단순 접촉은 제외한다(땅에서 벽 옆에 서서 점프한 것이
+        // 벽점프로 바뀌면 안 된다). isWallSliding은 직전 프레임 값이지만 유예 타이머라 문제없다.
+        if (wallDirX != 0 && (isWallSliding || !isGrounded))
+        {
+            lastWallDirX = wallDirX;
+            wallCoyoteCounter = wallCoyoteTime;
+        }
+        else if (wallCoyoteCounter > 0f) wallCoyoteCounter -= PDelta;
+        if (isGrounded && !isWallSliding) wallCoyoteCounter = 0f; // 착지하면 즉시 소멸
+
         if (isGrounded)
         {
             coyoteTimeCounter = coyoteTime;
@@ -1080,6 +1147,11 @@ public class PlayerController : MonoBehaviour
         // 완전 암전 상태에서 복귀시킨다 — 순간이동이 화면에 보이지 않게.
         transform.position = ResolvePlatformCenter(lastGroundedPosition);
         rb.linearVelocity = Vector2.zero;
+        // 여기는 timeScale=0이라 물리가 안 돌아 RoomTrigger.OnTriggerEnter2D가 발생하지 않고,
+        // SectionCamera의 슬라이드도 Time.deltaTime이 0이라 한 프레임도 진행되지 않는다 — 방을
+        // 넘어가는 복귀면 카메라가 옛 방에 그대로 남는다. 암전 뒤에서 직접 다시 잡고 정착시킨다.
+        RoomTrigger.ApplyRoomAt(transform.position);
+        if (sectionCamera != null) sectionCamera.SnapToTarget();
         TakeDamage(fallDeathDamage, canKill: false);
         TestLog.Event("fall_death", $"respawned hp={currentHealth}/{maxHealth}");
 
@@ -1106,32 +1178,72 @@ public class PlayerController : MonoBehaviour
     {
         if (!HasGroundBelow(groundedPos)) return groundedPos; // 안전장치 — 애초에 발밑이 지형이 아니면 손대지 않는다
 
+        Bounds b = coll.bounds;
+        float feetOffset = transform.position.y - b.min.y; // 피봇(발)-바닥 오프셋. 콜라이더 기준이라 위치와 무관한 상수다
+        float startSurfaceY = groundedPos.y - feetOffset;  // 서 있던 그 발판의 표면 높이
+
         float maxDist = Mathf.Max(platformEdgeProbeStep, platformEdgeProbeMaxDistance);
-        float leftEdge = FindGroundEdge(groundedPos, -1f, maxDist);
-        float rightEdge = FindGroundEdge(groundedPos, 1f, maxDist);
+        float leftEdge = FindGroundEdge(groundedPos, startSurfaceY, -1f, maxDist);
+        float rightEdge = FindGroundEdge(groundedPos, startSurfaceY, 1f, maxDist);
         float centerX = (leftEdge + rightEdge) * 0.5f;
 
-        Bounds b = coll.bounds;
-        float feetOffset = groundedPos.y - b.min.y; // 피봇(발)-바닥 오프셋(TryLedgeClimb과 같은 관례)
-        RaycastHit2D surface = Physics2D.Raycast(new Vector2(centerX, groundedPos.y + 5f), Vector2.down, 20f, groundLayer);
-        if (surface.collider == null) return groundedPos;
+        // 중앙까지 표면을 따라 걸어가 그 지점의 높이를 구한다 — 경사면이면 중앙의 높이가 다르고,
+        // 도중에 끊기면 애초에 같은 발판이 아니므로 원래 지점을 그대로 쓴다.
+        if (!TryWalkSurfaceTo(groundedPos.x, startSurfaceY, centerX, out float centerSurfaceY))
+            return groundedPos;
 
-        return new Vector3(centerX, surface.point.y + feetOffset, groundedPos.z);
+        return new Vector3(centerX, centerSurfaceY + feetOffset, groundedPos.z);
     }
 
     /// <summary>groundedPos에서 dir(-1=좌/+1=우) 방향으로 지형이 끊기는 X를 찾는다. maxDist 안에
     /// 못 찾으면(끝없이 이어지는 큰 지형) 탐색 한계 지점(groundedPos.x + dir*maxDist)을 그대로
-    /// 돌려준다 — "경계를 모른다"가 아니라 "적어도 이만큼은 안쪽"이라는 보수적 근사치로 쓴다.</summary>
-    float FindGroundEdge(Vector3 groundedPos, float dir, float maxDist)
+    /// 돌려준다 — "경계를 모른다"가 아니라 "적어도 이만큼은 안쪽"이라는 보수적 근사치로 쓴다.
+    /// 표면 높이를 한 스텝씩 이어서 추적하므로, 지형이 끊기는 곳뿐 아니라 **높이가 뚝 달라지는 곳**
+    /// (옆에 붙은 다른 층의 발판)도 가장자리로 본다.</summary>
+    float FindGroundEdge(Vector3 groundedPos, float startSurfaceY, float dir, float maxDist)
     {
         float step = Mathf.Max(0.05f, platformEdgeProbeStep);
         int maxSteps = Mathf.Max(1, Mathf.RoundToInt(maxDist / step));
+        float surfaceY = startSurfaceY;
         for (int i = 1; i <= maxSteps; i++)
         {
-            Vector3 probe = groundedPos + new Vector3(dir * step * i, 0f, 0f);
-            if (!HasGroundBelow(probe)) return probe.x - dir * step;
+            float x = groundedPos.x + dir * step * i;
+            if (!TryStepSurface(x, surfaceY, out surfaceY)) return x - dir * step;
         }
         return groundedPos.x + dir * maxDist;
+    }
+
+    /// <summary>fromX에서 targetX까지 표면을 한 스텝씩 따라가 도착 지점의 표면 높이를 구한다.
+    /// 도중에 지형이 끊기거나 높이가 급변하면 false(= 같은 발판이 아니다).</summary>
+    bool TryWalkSurfaceTo(float fromX, float startSurfaceY, float targetX, out float surfaceY)
+    {
+        surfaceY = startSurfaceY;
+
+        float step = Mathf.Max(0.05f, platformEdgeProbeStep);
+        float span = targetX - fromX;
+        int steps = Mathf.CeilToInt(Mathf.Abs(span) / step);
+        if (steps == 0) return true; // 이미 그 자리
+
+        float dir = Mathf.Sign(span);
+        for (int i = 1; i <= steps; i++)
+        {
+            float x = (i == steps) ? targetX : fromX + dir * step * i;
+            if (!TryStepSurface(x, surfaceY, out surfaceY)) return false;
+        }
+        return true;
+    }
+
+    /// <summary>x 지점의 지형 표면 높이 — **직전 표면(prevSurfaceY) 기준 위아래
+    /// platformSurfaceStepTolerance 안에서만** 찾는다. 이 좁은 창이 "같은 발판인가"의 판정 그 자체다.
+    /// 예전처럼 위아래로 넉넉히 훑으면 층이 다른 지형까지 잡혀 엉뚱한 곳으로 복귀한다.</summary>
+    bool TryStepSurface(float x, float prevSurfaceY, out float surfaceY)
+    {
+        float tol = Mathf.Max(0.1f, platformSurfaceStepTolerance);
+        RaycastHit2D hit = Physics2D.Raycast(new Vector2(x, prevSurfaceY + tol), Vector2.down, tol * 2f, groundLayer);
+        if (hit.collider == null) { surfaceY = prevSurfaceY; return false; }
+
+        surfaceY = hit.point.y;
+        return true;
     }
 
     /// <summary>pos에 플레이어가 그대로 서 있을 수 있는 지형이 있는지(짧은 탐침) — ResolvePlatformCenter의
@@ -1279,7 +1391,13 @@ public class PlayerController : MonoBehaviour
         {
             // 아직 안 붙어있음 — 처음 붙으려면 벽 쪽으로 눌러야 한다(진입 조건은 기존과 동일,
             // 붙은 뒤부터는 위 분기가 이어받아 방향키 없이도 유지).
-            bool pushingIntoWall = isTouchingWall && wallDirX != 0
+            // ★ 벽점프 직후 **방금 뛰어나온 그 벽**에는 wallReattachDelay 동안 다시 붙지 않는다.
+            // 이 가드가 없으면: 프레임 N에 벽점프(상승 속도 부여) → 같은 프레임에 떨어짐 → 프레임 N+1에
+            // 아직 벽에서 0.08 정도밖에 못 벗어나(wallCheckDistance 0.15 안) 벽 쪽 키를 쥐고 있으면
+            // 여기가 즉시 다시 붙여버리고, 아래 targetY 대입이 방금 준 상승 속도를 0으로 덮어쓴다.
+            // 사용자가 겪은 "벽 점프가 자꾸 안 된다"의 정체다(2026-08-13). 반대쪽 벽은 막지 않는다.
+            bool reattachBlocked = wallReattachCooldown > 0f && wallDirX == wallReattachBlockedDir;
+            bool pushingIntoWall = isTouchingWall && wallDirX != 0 && !reattachBlocked
                 && Mathf.Abs(moveInput.x) > 0.01f && Mathf.Sign(moveInput.x) == wallDirX;
 
             // 접지 상태에서 낮은 턱을 걸어 올라가던 TryStepUpShortWall은 2026-08-04 사용자 지시로 제거됐다
@@ -1410,18 +1528,33 @@ public class PlayerController : MonoBehaviour
 
     void HandleJump()
     {
+        // isJumping은 이제 "누른 순간"이 아니라 **버퍼가 살아있는 요청**이다(jumpInputBuffer 주석 참고) —
+        // 발동 조건이 안 열려 있으면 아래에서 return해 다음 프레임에 그대로 재시도한다. 만료 처리는
+        // Update의 타이머가 한다(그때 isJumping도 같이 내려간다).
         if (isJumping) {
-            // 회피-카운터/일섬 중엔 점프로 캔슬할 수 없음 — 입력은 버림.
+            // 회피-카운터/일섬 중엔 점프로 캔슬할 수 없음 — 입력은 버림(버퍼도 같이 버린다. 안 그러면
+            // 잠금이 풀리는 순간 예전에 누른 점프가 뒤늦게 튀어나온다).
             // 공격 중엔 이제 캔슬하고 점프로 넘어간다(사용자 지시 2026-08-05: "공격 도중에 애니메이션을
-            // 캔슬하고 점프 가능"). CancelAttack()이 isAttacking을 끄므로 아래로 그대로 진행된다.
-            if (isDodgeCountering || isCharging || ilseomActive || isParrying || isExecuting || isSpendingLight || isLedgeClimbing) { isJumping = false; return; }
+            // 캔슬하고 점프 가능"). 아래 CancelAttack()이 isAttacking을 끈다.
+            if (isDodgeCountering || isCharging || ilseomActive || isParrying || isExecuting || isSpendingLight || isLedgeClimbing) { isJumping = false; jumpBufferTimer = 0f; return; }
             // 튜토리얼에서 아직 점프를 안 배웠으면 입력을 버린다(위 잠금들과 같은 자리 = 발동 직전 한 곳).
-            if (!TutorialGate.Has(TutorialAbility.Jump)) { isJumping = false; return; }
-            CancelAttack();
+            if (!TutorialGate.Has(TutorialAbility.Jump)) { isJumping = false; jumpBufferTimer = 0f; return; }
             float jumpMul = isRampaging ? rampageJumpMultiplier
                 : isTranscending ? transcendJumpMultiplier
                 : 1f; // 폭주·초월 점프력 버프
-            if (isWallSliding) {
+            // 벽점프 판정(사용자 지시 2026-08-13 "붙었을 때 · 벽 코요테 · 공중 벽접촉 셋 다 허용").
+            //  · isWallSliding      — 기존 조건(붙어 있는 동안)
+            //  · wallCoyoteCounter  — 방금 벽에서 떨어졌다(반대 방향키로 떼어낸 직후가 여기 해당)
+            //  · isTouchingWall && !isGrounded — 붙지 않은 채 공중에서 벽을 스치는 중
+            // 접지 중 단순 접촉은 제외 — 땅에서 벽 옆에 서서 누른 점프까지 벽점프가 되면 안 된다.
+            int wallJumpDir = wallDirX != 0 ? wallDirX : lastWallDirX;
+            // 방금 뛰어나온 벽으로 곧바로 또 뛰는 것은 막는다(재부착 금지와 같은 유예·같은 방향 판정).
+            // "공중에서 벽에 닿아 있기만 해도 벽점프"를 허용했기 때문에, 이 가드가 없으면 벽 하나에
+            // 붙어 스페이스만 연타해도 무한히 타고 올라간다. 반대쪽 벽은 그대로 즉시 허용된다.
+            bool sameWallBlocked = wallReattachCooldown > 0f && wallJumpDir == wallReattachBlockedDir;
+            bool canWallJump = wallJumpDir != 0 && !sameWallBlocked
+                && (isWallSliding || wallCoyoteCounter > 0f || (isTouchingWall && !isGrounded));
+            if (canWallJump) {
                 // 벽에 붙어있으면 일반 점프보다 우선(사용자 실측 버그 2026-08-03) — 땅에 붙은 채
                 // 벽타기 중이면 coyoteTimeCounter가 항상 접지 상태로 가득 차 있어(0보다 큼) 아래
                 // 일반 점프 분기가 먼저 걸려버렸다. 그러면 벽타기 특유의 "붙어있는 동안 중력 0"이
@@ -1434,8 +1567,16 @@ public class PlayerController : MonoBehaviour
                 // "기존 점프와 같은 높이로") — 씬에 저장된 wallJumpForce.y(5)가 jumpForce(9)보다 낮아
                 // 벽점프가 일반 점프보다 약하게 튀던 게 원인이었다. x(벽 반대쪽으로 밀어내는 수평 힘)만
                 // wallJumpForce를 그대로 쓴다.
-                rb.linearVelocity = new Vector2(-wallDirX * wallJumpForce.x * TimeAccelMul, jumpForce * jumpMul * TimeAccelMul);
+                rb.linearVelocity = new Vector2(-wallJumpDir * wallJumpForce.x * TimeAccelMul, jumpForce * jumpMul * TimeAccelMul);
                 wallJumpLockCounter = wallJumpHorizontalLockDuration;
+                // ⚠️ 여기서 isWallSliding=false로 직접 떼면 안 된다 — 바로 뒤 HandleWallSlide가
+                // wasWallSliding을 자기 시작 시점에 읽으므로, 미리 꺼두면 "뗀 프레임" 전이가 통째로
+                // 스킵돼 중력이 0인 채로 남는다(끝없이 솟는 버그). 떼는 것은 그대로 그쪽에 맡긴다.
+                // 방금 뛰어나온 그 벽에는 잠깐 다시 붙지 않는다(wallReattachDelay 주석 = 이번 버그의 핵심).
+                wallReattachCooldown = wallReattachDelay;
+                wallReattachBlockedDir = wallJumpDir;
+                // 코요테를 소진한다 — 안 그러면 유예 0.12초 안에 같은 벽으로 두 번 뛰어 제자리에서 솟는다.
+                wallCoyoteCounter = 0f;
                 GameSfx.Play(Sfx.Jump);
             }
             else if (coyoteTimeCounter > 0f) {
@@ -1450,6 +1591,15 @@ public class PlayerController : MonoBehaviour
                 hasJumpAttackBonusJump = false;
                 GameSfx.Play(Sfx.Jump);
             }
+            else {
+                // 지금은 뛸 수 없다(공중 + 벽도 없음) — 예전엔 여기서 입력을 그대로 버렸다. 이제 요청을
+                // 그대로 두고 다음 프레임에 재시도한다: 벽에 닿기 직전에 미리 누른 점프가 살아난다.
+                return;
+            }
+
+            // ↓ 실제로 뛴 경우에만 여기까지 온다. CancelAttack도 여기서 부른다 — 위에서 부르면 버퍼가
+            //   재시도하는 동안(최대 jumpInputBuffer) 매 프레임 공격을 끊어버린다.
+            CancelAttack();
             // 폭주·초월 중엔 점프 순간 글리치 변형으로 덮어쓴다(사용자 지시 2026-08-02). Any State가
             // isGrounded/yVelocity로 매 프레임 "Glitch Samurai-Jump"를 다시 끌어올 수 있는 Fall과 달리
             // Jump는 발동 순간 한 번만 재생되는 클립이라 여기서 한 번 Play하면 그대로 끝까지 간다.
@@ -1457,6 +1607,7 @@ public class PlayerController : MonoBehaviour
             // 점프한 상승은 슬로프 런치 억제(FixedUpdate 상단)가 깎으면 안 되므로 잠깐 면제해 준다.
             jumpSuppressTimer = 0.2f;
             isJumping = false;
+            jumpBufferTimer = 0f; // 소비
         }
     }
 
@@ -3729,10 +3880,12 @@ public class PlayerController : MonoBehaviour
                 restoreEgo = true;
                 SpawnHitFeedback(hits[i].transform.position, facing, damage, crit ? HitTier.Critical : HitTier.Normal);
 
-                // C-1: 적 타격 +3 / 처치 +10(합산) — 처형·회피-카운터는 각자 보상(+30 등)이 있어
-                // 여기서 중복 지급하지 않는다(일반 공격 경로에서만 killed를 본다). 에너지는 즉시가 아니라
+                // C-1: 적 타격 +2 / 처치 +5(합산) — 처형·회피-카운터는 각자 보상이 있어 여기서
+                // 중복 지급하지 않는다(일반 공격 경로에서만 killed를 본다). 에너지는 즉시가 아니라
                 // 포물선 픽셀이 도착할 때마다 AddEnergy가 나눠서 불린다(게이지가 또르르 차오르게).
-                LightPixelFx.SpawnAbsorb(hits[i].transform.position, transform, 3 + (killed ? 10 : 0), AddEnergy, hits[i].bounds.extents.magnitude, lightPixelPivotOffset, CurrentPixelTint);
+                // 광원 획득 일괄 50% 하향(2026-08-13, 3/+10에서). 정수라 정확히 반이 안 되는 유일한
+                // 지점이다 — 1.5·5로는 픽셀을 못 쪼개므로 2·5로 올림했다.
+                LightPixelFx.SpawnAbsorb(hits[i].transform.position, transform, 2 + (killed ? 5 : 0), AddEnergy, hits[i].bounds.extents.magnitude, lightPixelPivotOffset, CurrentPixelTint);
                 continue;
             }
 
@@ -4041,6 +4194,11 @@ public class PlayerController : MonoBehaviour
         transform.position = pos;
         lastGroundedPosition = pos;
         rb.linearVelocity = Vector2.zero;
+        // 낙사 복귀와 같은 이유(timeScale=0이라 트리거·슬라이드가 안 돈다) — 체크포인트가 다른 방이면
+        // 카메라가 죽은 방에 남는다. SnapToTarget은 sustainFocus 오프셋·줌은 건드리지 않으므로
+        // 바로 뒤에 오는 부활 줌아웃(ClearSustainedFocus(respawnZoomOutDuration))과 충돌하지 않는다.
+        RoomTrigger.ApplyRoomAt(pos);
+        if (sectionCamera != null) sectionCamera.SnapToTarget();
 
         currentHealth = maxHealth;
         if (currentEnergy < RampageExitEnergy) currentEnergy = RampageExitEnergy;
@@ -4257,6 +4415,7 @@ public class PlayerController : MonoBehaviour
     {
         if (value.isPressed) {
             isJumping = true;
+            jumpBufferTimer = jumpInputBuffer; // 조건이 안 열려 있으면 이 시간 동안 매 프레임 재시도
             isJumpHeld = true;
         } else {
             isJumpHeld = false;

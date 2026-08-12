@@ -24,7 +24,9 @@ using UnityEngine.Rendering;
 public class BossPixelResolutionController : MonoBehaviour
 {
     // 낮을수록 더 거칠게(강하게) 픽셀화되고, 높을수록 세밀해진다.
-    [Range(16, 480)] public int pixelHeight = 90;
+    // 상한 480 → 1500(사용자 지시 2026-08-13) — Map-test가 이미 480(옛 상한)에 붙어 있어 더
+    // 세밀하게 올릴 여지가 없었다. 1500이면 16:9 기준 RT가 2668x1500(≈16MB)까지 커진다.
+    [Range(16, 1500)] public int pixelHeight = 90;
 
     // 사용자 리포트(2026-08-09): "보스가 일부 오브젝트를 감춘다" — Quad의 SortingOrder가 1이라
     // 광원 오브젝트(LightObjects/OBJ_*, order 0) 위에 그려져 그것들을 덮어버렸다.

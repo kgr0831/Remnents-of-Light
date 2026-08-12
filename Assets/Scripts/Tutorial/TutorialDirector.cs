@@ -85,6 +85,8 @@ public class TutorialDirector : MonoBehaviour
     public TutorialPanelUI panel;
     public PlayerController player;
     public SectionCamera sectionCamera;
+    [Tooltip("마지막 구간의 암전과 같은 시간에 걸쳐 같이 잦아든다 (비워두면 무시)")]
+    public AudioSource bgm;
 
     [Header("문구")]
     [Tooltip("text-action-1에 항상 타이핑되는 머리말")]
@@ -212,7 +214,9 @@ public class TutorialDirector : MonoBehaviour
             }
 
             yield return SucceedRoutine(s);
-            yield return FadeToBlack();
+            // 마지막 구간의 암전에서만 BGM을 같이 데려간다 — 그 뒤 outro 패널과 씬 전환은 조용한
+            // 화면에서 진행된다(사용자 지시 2026-08-12).
+            yield return FadeToBlack(i == steps.Length - 1);
         }
 
         // ── 마무리: 패널 → 대기 → 패널 닫기 → 글리치 해제 → 다음 씬(사용자 지시 2026-08-12) ──
@@ -246,12 +250,36 @@ public class TutorialDirector : MonoBehaviour
 
     // ── 흐름 조각 ────────────────────────────────────────────────────────────────────────────
 
-    IEnumerator FadeToBlack()
+    IEnumerator FadeToBlack(bool fadeBgm = false)
     {
         ScreenGlitchFx.Begin(ScreenGlitchFx.Source.Cutscene);   // "노이즈 + 검정 페이드 인"
         PlaySfx(transitionGlitchSfx);
+        // BGM은 암전과 **나란히** 잦아들어야 하므로 기다리지 않고 따로 돌린다
+        // (SceneTransitionTrigger.FadeAndLoad와 같은 방식).
+        if (fadeBgm && bgm != null) StartCoroutine(FadeBgmOut());
         yield return Fade(1f, fadeInDuration);
         SetHudVisible(false);   // 완전히 검어진 뒤에 끈다 — 페이드 시작과 동시에 끄면 툭 사라져 보인다
+    }
+
+    /// <summary>BGM을 암전과 같은 길이에 걸쳐 0으로 줄인다.
+    ///
+    /// ⚠️ 반드시 unscaled 시계로 센다 — 이 연출 구간은 Freeze()가 Time.timeScale을 0으로 눌러 두므로
+    ///    Time.deltaTime으로 세면 루프가 영영 안 끝나고 BGM이 그대로 남는다. 첫 프레임 델타 폭주
+    ///    클램프도 같이 건다(ScreenBlackout.MaxStep 선례).
+    ///
+    /// 암전이 스킵되면(ConsumeSkip) 화면만 즉시 검어지고 이 페이드는 제 길이를 마저 채운다 —
+    /// "해당 효과만 스킵"이라는 이 씬의 스킵 규칙과 같은 결이다.</summary>
+    IEnumerator FadeBgmOut()
+    {
+        float from = bgm.volume;
+        float t = 0f;
+        while (t < fadeInDuration)
+        {
+            t += Mathf.Min(Time.unscaledDeltaTime, 0.05f);
+            bgm.volume = Mathf.Lerp(from, 0f, Mathf.Clamp01(t / fadeInDuration));
+            yield return null;
+        }
+        bgm.volume = 0f;
     }
 
     /// <summary>스킵을 받을 수 있는 페이드. ScreenBlackout의 코루틴을 직접 굴리다가

@@ -5709,3 +5709,152 @@ TutorialPanelUI · SFX AudioSource · SwordPanel 인스턴스)로 분리. `Playe
 **초월·폭주 적 HP 1 → 20.** "광원/초월 상태의 적"이 어느 스텝인지 물어 폭주로 확정(광원방출 스텝엔
 적이 없다). HP 1이면 한 방에 죽어 상태를 체감할 시간이 없다 — 특히 폭주는 "적을 때려야 자아가 찬다"를
 보여줘야 한다.
+
+## 2026-08-12 (후속 6) — IntroScene_3: 튜토리얼 귀환 씬
+
+IntroScene_2에서 검을 줍고 튜토리얼을 마친 뒤 **같은 자리로 돌아온** 장면.
+IntroScene_2를 복사해 둔 씬을 그 컨셉에 맞게 재배선했다.
+
+**흐름**: 레터박스가 이미 걸린 채 + 검은 패널로 시작 → 패널 페이드 아웃(1.2초) → 뜸(0.3초)
+→ "오른쪽으로 나아가자." 타이핑 → `text-tr-2` 맥동 → F → 텍스트 페이드 아웃 → 레터박스 퇴장
+→ 이동 가능 → `Trigger-Action`에 닿으면 검은 패널 페이드 인(1초, BGM도 같이 감쇠) → `Map-test` 로드.
+
+**새 스크립트** `Assets/Scripts/IntroReturnStartSequence.cs`.
+`IntroFallStartSequence`를 못 쓴 이유: 그쪽은 낙하(중력 홀드) + `actionTrigger.Fired` 폴링이 본체라
+`player`/`actionTrigger`가 null이면 NRE가 난다. 이 씬은 낙하도 트리거 대기도 없다.
+
+⚠️ **이동 잠금이 `TutorialMover.InputLocked`이 아니라 `TutorialGate.Allowed`다.**
+이 씬의 플레이어는 `Player-Tutorial`이 아니라 `PlayerController`가 붙은 본편 플레이어라
+`TutorialMover`가 아예 없다. `PlayerController.Update` 첫머리의
+`if (!TutorialGate.Has(TutorialAbility.Move)) moveInput = Vector2.zero;` 한 줄이 유일한 잠금 경로다.
+연출 동안 `None`으로 두면 점프·공격·대시까지 같이 막힌다(연출 중엔 그게 맞다), 끝나면 `ResetAll()`.
+
+**씬 작업**
+- `Player`를 Map-test에서 원본 GameObject째 `Instantiate` → `MoveGameObjectToScene`으로 이식
+  (컴포넌트 손수 재조립 금지 — 타일맵 이식 때와 같은 이유). 외부 참조는 프리팹 애셋 4개뿐이라 안전.
+- 위치는 검이 있던 x(6.66) 그대로, **y만 땅에 스냅**(24.76 → 24.06). 검은 공중에 뜬 픽업이라
+  그 좌표 그대로 두면 시작하자마자 0.72u 낙하한다.
+- `Main Camera / SectionCamera.target` = `Player`.
+- `Sword`는 비활성(이미 주웠다는 설정). `IntroFallStartSequence` · `SwordPickupSequence` ·
+  `IntroActionTrigger`도 비활성 — **삭제는 안 했다**(사용자 확인 대기).
+  비활성 MonoBehaviour는 `Start`/`Update`/`OnTriggerEnter2D`를 안 받으므로 런타임 영향 0.
+- `Trigger-Action`에 `SceneTransitionTrigger`(scene=`Map-test`, blackout=Canvas, bgm=Main Camera, fade=1).
+
+**Play 실측**: 암전 alpha 0.98 → 0, 레터박스 h=131.5 유지, 타이핑 완료 후 `Busy=true`·`gate=None`
+→ 가상 F → `text-tr` alpha 0 · 비활성, 레터박스 h=0, `gate=All` → 트리거 진입 → `activeScene=Map-test`.
+에러/경고 0.
+
+⚠️ 원격(비포커스) 에디터에서 가상 F가 안 먹는다 — `backgroundBehavior`가
+`ResetAndDisableNonBackgroundDevices`라 키보드 장치가 통째로 `enabled=false`가 된다.
+검증 동안만 `IgnoreFocus` + `AllDeviceInputAlwaysGoesToGameView`로 바꾸고 `InputSystem.EnableDevice`로
+장치를 켠 뒤, 끝나고 원래값으로 되돌렸다.
+
+### HP 만피 글로우 과다 — 원인과 수정 (2026-08-12)
+
+사용자 리포트: IntroScene_3에서 "hp UI가 비정상적으로 빛난다"(노랑-연두 거대 헤일로).
+**씬 복사 탓이 아니었다** — IntroScene_3과 Map-test의 블룸 설정은 완전히 같다
+(둘 다 `IlseomBloomProfile` threshold 1.15 / intensity 2.2 / scatter 0.7 / **tint 청록(0.65,0.92,0.96)**,
+`volumeLayerMask=1`, `renderPostProcessing=true`).
+
+**원인**: `PlayerController.Awake`가 `currentHealth = maxHealth`라 씬이 **항상 만피(8/8)로 시작**한다
+→ HP 아이콘이 만피 강조 모드(`hpFullGlowColor` 금빛 + `hpFullGlowBoost`)로 들어간다.
+`UIHpGlow.shader`는 `_Color × _Intensity × _BloomBoost`를 그대로 HDR로 내보내므로 실측 출력이
+
+| | HDR 출력 | 최대 채널 |
+|---|---|---|
+| HP 만피(수정 전) | (6.00, 4.92, 1.50) | **6.00** |
+| HP 평상시(수정 전) | (4.00, 0.64, 0.32) | 4.00 |
+| 광원 | (0.12, 0.55, 0.60) | 0.60 |
+
+문턱 1.15(soft knee 하한 ≈0.575) 대비 HP 만피가 광원의 **10배**였다.
+**노랑-연두색의 정체**는 금빛 글로우 (1,0.82,0.25)에 씬 블룸의 **청록 tint**가 곱해진
+(0.65, 0.75, 0.24)다. IntroScene_3에서만 유독 튄 건 배경이 어두워서(bg 0.085 / 전역광 0.25)일 뿐,
+Map-test에서도 만피면 같은 글로우가 떴다. `hpFullGlowBoost = 6`은 `f361890` 이후 안 바뀐 값 —
+이번 작업의 회귀가 아니다. (광원 글로우는 2026-08-11에 같은 리포트를 받고 1.5/0.4로 낮췄는데
+HP 만피만 그 정리에서 빠져 있었다.)
+
+**수정**(사용자 선택: "세기를 광원 수준으로") — `PlayerHudUI` 기본값 3개:
+`hpGlowIntensity 1 → 0.4`, `hpGlowBoost 4 → 1.5`, `hpFullGlowBoost 6 → 2.2`.
+
+⚠️ `hpGlowIntensity`는 평상시·만피가 **공유**하는 값이라(`UpdateHpGlow`는 boost만 갈아 끼운다)
+intensity만 낮추면 평상시(4×0.4=1.6)가 만피(2.2×0.4=0.88)보다 밝아져 **강조가 뒤집힌다** —
+`hpGlowBoost`를 같이 내려야 한다. 결과: 평상시 0.60(광원과 동일) < 만피 0.88.
+HP 변화 순간의 `_hpChangeFlash`가 boost를 1.6배로 밀어 만피 피크 1.41 > 문턱 1.15라
+"칸이 변할 때 번쩍"은 그대로 남는다.
+
+**Play 실측**: HP 글로우 HDR (0.88, 0.72, 0.22) max 0.88 / 광원 (0.12, 0.55, 0.60) max 0.60.
+캡처로 거대 헤일로 소멸 확인.
+
+※ 캡처 주의: `manage_camera(action=screenshot)`은 카메라 직접 렌더라 **Screen Space - Overlay
+캔버스(HUD·레터박스)가 통째로 빠진다**. HUD를 보려면 Play 모드에서
+`ScreenCapture.CaptureScreenshot(path)`를 직접 부르고 그 PNG를 읽어야 한다.
+
+※ 남은 관찰: 레터박스가 펼쳐진 동안 HP 아이콘 윗부분이 위쪽 검은 바에 가린다(연출이 끝나면 정상).
+
+### 레터박스 구간 HUD 숨김 (2026-08-12)
+
+사용자 지시: "레터박스 있을때는 비활성화(안보이게만) 시켜줘요".
+`IntroReturnStartSequence`가 시작에서 `PlayerHudUI.GetOrCreate().SetVisible(false)`,
+`letterbox.Hide()` 직후 `SetVisible(true)`. `OnDisable`에도 복구를 넣어 연출이 끊겨도 HUD가 안 남는다.
+
+⚠️ **`SetVisible`이 글로우 캔버스를 안 껐다** — `_root`("PlayerHud")만 토글하는데, 글로우 캔버스
+(`HpGlowCanvas`)는 중첩 Canvas 함정 때문에 **씬 루트에 따로** 만들어져 있다. 그대로 불렀다면
+아이콘만 사라지고 **헤일로만 공중에 남았을** 것이다. `_glowRoot` 필드를 추가해 숨김을 다루는 두 곳
+(`SetVisible` · `Update`의 `shouldShow`)에서 `_root`와 같이 토글하고, `BuildBloomPipeline` 끝에서
+현재 숨김 상태를 물려받게 했다(숨김 중 리빌드가 돌면 헤일로만 되살아남).
+→ 이건 IntroScene_3만의 문제가 아니라 **사망 연출**(`PlayerController`의 `SetVisible(false)`)에도
+그대로 있던 버그다. 한 곳을 고쳐 양쪽이 같이 낫는다.
+
+**Play 실측**: frame 1 — `PlayerHud=False` · `HpGlowCanvas=False` · LetterboxTop h=131.5(올라옴).
+F 이후 — 둘 다 `True` · h=0.0 · `TutorialGate=All`. 캡처 2장으로 육안 확인
+(레터박스 중 HUD 완전 소멸 → F 후 정상 복귀, 헤일로도 정상 크기).
+
+### 대사 2개 + 프롬프트 문구 교체 (2026-08-12)
+
+사용자 지시: text-tr이 대사 2개를 띄우고 F로 넘긴다.
+`"카타나 모듈을 착용했다."` → F → `"오른쪽으로 나아가자."` → F → 닫힘.
+text-tr-2는 **첫 대사 때만** `"F키로 넘기기"`, 마지막 대사에는 원본(`"F를 눌러 닫기"`)으로 복귀.
+
+`IntroTextSequence.ShowMessage`에 **기본값 null인 선택 인자** `promptOverride`를 추가했다 —
+IntroScene · IntroScene_2의 기존 호출부는 인자를 안 넘기므로 동작이 그대로다(회귀 0).
+`Awake`에서 `defaultPrompt = promptText.text`로 씬에 적힌 원본을 챙겨 두고, `ShowMessage`가
+**매 대사마다** `promptText.text`를 다시 대입한다 — 그래서 앞 대사가 바꾼 문구가 다음으로 새지 않고,
+마지막 대사는 인자를 안 넘기는 것만으로 자동 복귀한다(별도 되돌리기 코드가 필요 없다).
+
+`IntroReturnStartSequence`: `message` 하나를 `message1`/`message2`/`advancePrompt`로 쪼갰다.
+⚠️ 필드명이 바뀌어 씬에 저장돼 있던 `message` 값이 고아가 되므로, 씬 컴포넌트에 새 값 3개를
+직접 넣고 저장했다.
+
+연속 두 대사가 **같은 F 한 번에 둘 다 넘어가지 않는** 이유: 1번 대사의 F 대기 루프를 빠져나온 뒤
+textFadeOut(0.35초)이 돌고, 2번 대사는 타이핑(0.06×11≈0.66초)을 마친 뒤에야 F를 보기 시작한다 —
+그 사이 `wasPressedThisFrame`은 이미 false다.
+
+**Play 실측**: 1번 대사 `"카타나 모듈을 착용했다."` + 프롬프트 `"F키로 넘기기"` →
+F → 2번 대사 `"오른쪽으로 나아가자."` + 프롬프트 `"F를 눌러 닫기"`(레터박스 h=131.5 유지) →
+F → `Busy=False` · text-tr 비활성 · 레터박스 h=0 · `TutorialGate=All` · HUD(PlayerHud·HpGlowCanvas) 복귀.
+에러 0.
+
+### 튜토리얼 마무리 암전에 BGM 페이드 아웃 (2026-08-12)
+
+사용자 지시: "튜토리얼 씬에서 페이드 인되며 씬 전환 대기 전에 BGM도 페이드".
+여기서 "페이드 인"은 `FadeToBlack()`의 **암전**이다(그 함수 주석이 이미 `"노이즈 + 검정 페이드 인"`).
+그 암전과 나란히 BGM 볼륨을 0으로 줄인다 — outro 패널(`blackHold` → Open → `panelHold` → Close)과
+`LoadScene`은 그 뒤라 조용한 화면에서 진행된다.
+
+`TutorialDirector`에 `public AudioSource bgm` 추가 → TutorialScene의 Main Camera(`TutorialSceneBGM`,
+vol 0.40)에 배선하고 씬 저장.
+
+⚠️ `FadeToBlack()`은 **매 구간 끝마다** 불린다(steps 12개) — 거기 그냥 넣으면 1구간 뒤 음악이 죽는다.
+`FadeToBlack(bool fadeBgm = false)`로 바꾸고 루프에서 `i == steps.Length - 1`일 때만 true를 넘긴다.
+
+⚠️ `FadeBgmOut`은 반드시 **unscaled 시계**로 센다 — 이 구간은 `Freeze()`가 `Time.timeScale = 0`으로
+눌러 두므로 `Time.deltaTime`으로 세면 루프가 영영 안 끝나고 BGM이 그대로 남는다.
+첫 프레임 델타 폭주 클램프(0.05)도 같이 건다(ScreenBlackout.MaxStep 선례).
+BGM은 암전과 **나란히** 가야 하므로 `yield return`이 아니라 `StartCoroutine`으로 띄운다
+(SceneTransitionTrigger.FadeAndLoad와 같은 방식).
+
+**Play 실측**(리플렉션으로 해당 경로만 직접 호출): `timeScale=0` 상태에서
+`FadeToBlack(true)` → `bgm.volume` 0.400 → **0.000** 확인.
+`FadeToBlack(false)` → 0.400 **유지**(안 건드림) 확인. 에러 0.
+※ 검증을 위해 TutorialScene을 잠시 Single로 열었고, 끝나고 사용자가 열어 두었던 Map-test로 되돌렸다
+  (열기 전 `isDirty=false` 확인 — 저장 안 된 작업물 없음).

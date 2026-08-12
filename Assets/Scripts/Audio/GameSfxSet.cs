@@ -31,6 +31,10 @@ public enum Sfx
     EgoZero,        // 자아 0상태 — 폭주 중 자아가 0인 동안 루프(다시 차면 정지)
     CounterAttack,  // 회피카운터공격 — 카운터가 적을 타격하는 순간
     Execution,      // 처형 — 처형 시퀀스 발동 순간
+
+    BossAppear,     // BossSFX-2 — Map-test 보스 등장(어둠 속에서 걸어 나올 때) 1회
+    BossRoar,       // BossSFX-1 — 보스가 빔을 플레이어에게 겨눈 뒤 1회
+    BossBeamNoise,  // BossBeamSFX — 빔 노출 3초가 넘어 화면 노이즈가 켜지는 순간 1회
 }
 
 /// <summary>

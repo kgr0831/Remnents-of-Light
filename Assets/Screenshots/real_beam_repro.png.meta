@@ -1,0 +1,559 @@
+fileFormatVersion: 2
+guid: 7fb8d06c849a634408baf06574d3432d
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -2017467223267155227
+    second: real_beam_repro_0
+  - first:
+      213: 6269985918874229109
+    second: real_beam_repro_1
+  - first:
+      213: -6007896869319902155
+    second: real_beam_repro_2
+  - first:
+      213: 8231432680056048995
+    second: real_beam_repro_3
+  - first:
+      213: 3127335547246956579
+    second: real_beam_repro_4
+  - first:
+      213: 4945781046394948551
+    second: real_beam_repro_5
+  - first:
+      213: -2217735352160348374
+    second: real_beam_repro_6
+  - first:
+      213: -7240469475785159655
+    second: real_beam_repro_7
+  - first:
+      213: 2107712442702865421
+    second: real_beam_repro_8
+  - first:
+      213: -662242298077631581
+    second: real_beam_repro_9
+  - first:
+      213: 1355615085568276651
+    second: real_beam_repro_10
+  - first:
+      213: -8137613469073723138
+    second: real_beam_repro_11
+  - first:
+      213: -3362469419158159206
+    second: real_beam_repro_12
+  - first:
+      213: -8173324386720806057
+    second: real_beam_repro_13
+  - first:
+      213: -6139490910087248159
+    second: real_beam_repro_14
+  - first:
+      213: 608759525855342691
+    second: real_beam_repro_15
+  - first:
+      213: -7748272359626731163
+    second: real_beam_repro_16
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 0
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: real_beam_repro_0
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 202
+        width: 14
+        height: 70
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5e2ea2bdf348004e0800000000000000
+      internalID: -2017467223267155227
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: real_beam_repro_1
+      rect:
+        serializedVersion: 2
+        x: 120
+        y: 234
+        width: 42
+        height: 111
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 579133139f6730750800000000000000
+      internalID: 6269985918874229109
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: real_beam_repro_2
+      rect:
+        serializedVersion: 2
+        x: 208
+        y: 247
+        width: 65
+        height: 147
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 53c7109e0a9af9ca0800000000000000
+      internalID: -6007896869319902155
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: real_beam_repro_3
+      rect:
+        serializedVersion: 2
+        x: 484
+        y: 0
+        width: 126
+        height: 394
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 36d4847196ceb3270800000000000000
+      internalID: 8231432680056048995
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: real_beam_repro_4
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 94
+        height: 163
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3205b136c17866b20800000000000000
+      internalID: 3127335547246956579
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: real_beam_repro_5
+      rect:
+        serializedVersion: 2
+        x: 89
+        y: 100
+        width: 6
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7cb0b3768a1f2a440800000000000000
+      internalID: 4945781046394948551
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: real_beam_repro_6
+      rect:
+        serializedVersion: 2
+        x: 95
+        y: 101
+        width: 15
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a2718a082750931e0800000000000000
+      internalID: -2217735352160348374
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: real_beam_repro_7
+      rect:
+        serializedVersion: 2
+        x: 115
+        y: 73
+        width: 63
+        height: 70
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 91c44c89f5fa48b90800000000000000
+      internalID: -7240469475785159655
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: real_beam_repro_8
+      rect:
+        serializedVersion: 2
+        x: 193
+        y: 49
+        width: 23
+        height: 66
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d04a9fbac49104d10800000000000000
+      internalID: 2107712442702865421
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: real_beam_repro_9
+      rect:
+        serializedVersion: 2
+        x: 298
+        y: 78
+        width: 21
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3ab28db732e3fc6f0800000000000000
+      internalID: -662242298077631581
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: real_beam_repro_10
+      rect:
+        serializedVersion: 2
+        x: 90
+        y: 52
+        width: 6
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ba8357becbc10d210800000000000000
+      internalID: 1355615085568276651
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: real_beam_repro_11
+      rect:
+        serializedVersion: 2
+        x: 100
+        y: 51
+        width: 7
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ef03d603aa3611f80800000000000000
+      internalID: -8137613469073723138
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: real_beam_repro_12
+      rect:
+        serializedVersion: 2
+        x: 109
+        y: 60
+        width: 8
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a90c6fed0eb1651d0800000000000000
+      internalID: -3362469419158159206
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: real_beam_repro_13
+      rect:
+        serializedVersion: 2
+        x: 97
+        y: 17
+        width: 7
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 75b087f36c4829e80800000000000000
+      internalID: -8173324386720806057
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: real_beam_repro_14
+      rect:
+        serializedVersion: 2
+        x: 108
+        y: 14
+        width: 7
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1e68282bb852ccaa0800000000000000
+      internalID: -6139490910087248159
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: real_beam_repro_15
+      rect:
+        serializedVersion: 2
+        x: 271
+        y: 0
+        width: 88
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3603e3c309fb27800800000000000000
+      internalID: 608759525855342691
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: real_beam_repro_16
+      rect:
+        serializedVersion: 2
+        x: 425
+        y: 0
+        width: 59
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 561987d475b987490800000000000000
+      internalID: -7748272359626731163
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      real_beam_repro_0: -2017467223267155227
+      real_beam_repro_1: 6269985918874229109
+      real_beam_repro_10: 1355615085568276651
+      real_beam_repro_11: -8137613469073723138
+      real_beam_repro_12: -3362469419158159206
+      real_beam_repro_13: -8173324386720806057
+      real_beam_repro_14: -6139490910087248159
+      real_beam_repro_15: 608759525855342691
+      real_beam_repro_16: -7748272359626731163
+      real_beam_repro_2: -6007896869319902155
+      real_beam_repro_3: 8231432680056048995
+      real_beam_repro_4: 3127335547246956579
+      real_beam_repro_5: 4945781046394948551
+      real_beam_repro_6: -2217735352160348374
+      real_beam_repro_7: -7240469475785159655
+      real_beam_repro_8: 2107712442702865421
+      real_beam_repro_9: -662242298077631581
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

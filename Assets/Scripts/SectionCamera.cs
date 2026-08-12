@@ -25,6 +25,8 @@ public class SectionCamera : MonoBehaviour
     int shakeCancelToken;  // StopShake()가 올려 진행 중인 ShakeCo를 무효화한다
     Vector3 sustainOffset; // SetSustainedShake가 매 프레임 새로 뽑는 오프셋(Shake와 독립적으로 합산)
     float sustainMagnitude;
+    Vector3 ambientOffset; // SetAmbientShake(보스 이동 등 플레이어와 무관한 주체)의 오프셋 — sustainOffset과 독립
+    float ambientMagnitude;
     Vector3 focusOffset;   // FocusPulse가 파고들 때 basePos에 더해지는 오프셋
     float focusZoomDelta;  // orthographicSize에 더해지는 값(음수=줌인)
     int focusToken;        // 중복 FocusPulse 호출 시 이전 코루틴을 무력화(값만 덮어씀, 안전한 종료 보장)
@@ -73,6 +75,130 @@ public class SectionCamera : MonoBehaviour
         hasRoom = true;
     }
 
+    // ── 컷신 프레이밍(BossStageDirector 전용) ──────────────────────────────────────────────
+    // 룸/그리드 프레이밍 결과 **위에** 블렌드로 덮는 채널이다. blend=0이면 계산에 아예 끼어들지
+    // 않으므로 다른 씬·평상시 동작은 완전히 그대로다(회귀 0).
+    //
+    // 왜 SectionCamera를 꺼 버리지 않는가: 이 컴포넌트를 끄면 쉐이크(보스 발걸음 SetAmbientShake)와
+    // BasePosition(BossEyeTracker의 화면 밖 판정)이 같이 죽는다. 오프닝은 그 둘이 다 필요하다.
+    // ⚠️ 컷신은 카메라가 플레이어를 **따라다니지 않는다**(사용자 지시 2026-08-13: "원래 카메라는
+    //    플레이어를 따라 움직이지 않아야합니다. 작은 시점에서 방 전환이 이뤄지게"). 1차 구현은 플레이어를
+    //    화면 중앙에 물고 가는 추적 카메라였는데, 이 게임의 카메라 문법(구간에 고정 → 경계를 넘으면 슬라이드)과
+    //    정반대였다. 지금은 룸 프레이밍만 잠시 끄고 **그리드 구간 추적**(sectionSize · gridOrigin)으로
+    //    되돌린다 — 방보다 훨씬 작은 구간이라 "작은 시점에서 방 전환"이 그대로 나온다.
+    //    화면 안 플레이어의 높이는 gridOrigin.y가 정한다(구간 경계를 내리면 화면도 같이 내려간다).
+    //
+    // 앵커는 두 종류다(사용자 지시 2026-08-13 "처음에는 씬에 설정해놓은 곳과 카메라 크기 구도에서
+    // 시작 / 보스 등장 컷씬에서만 더 아래로 + 더 크게"):
+    //   SceneGrid — 오프닝. 씬에 저장해 둔 카메라 자리·크기를 그대로 구도로 쓴다. 구간 중심과의
+    //               차이를 오프셋으로 굳혀서, 구간이 넘어가도 그 구도가 유지된 채 슬라이드한다.
+    //   Room      — 보스 등장. 방 중심 기준 오프셋 + 지정 크기.
+    enum CutsceneAnchor { SceneGrid, Room }
+
+    CutsceneAnchor cutsceneAnchor;
+    Vector2 cutsceneRoomOffset;   // Room: 방 중심 기준 오프셋
+    float cutsceneOrthoSize;
+    float cutsceneBlend;      // 0=평소(룸) 프레이밍, 1=컷신 프레이밍
+    Vector3 cutsceneBasePos;  // 컷신 앵커 추적 상태 — 룸 추적(basePos)과 독립적으로 굴린다
+    Vector3 framedBasePos;    // 블렌드까지 반영된 실제 화면 중심 — BasePosition이 이걸 돌려준다
+
+    Vector3 sceneCameraPos;   // Awake에서 캡처한 씬 저장값 — 오프닝 구도의 기준
+    float sceneOrthoSize;
+
+    /// <summary>씬에 저장해 둔 카메라 자리·크기를 그대로 오프닝 구도로 쓴다(사용자가 에디터에서 잡아둔 그림).
+    /// 보간 없이 그 자리에서 시작한다 — 씬 시작 첫 프레임부터 완성된 그림이어야 하기 때문
+    /// (ScreenBlackout·CinematicLetterbox.ShowInstant와 같은 이유).
+    ///
+    /// ⚠️ 씬에 저장된 **자리**는 "얼어 있는 첫 컷"에만 쓴다 — 구간 추적이 풀린 뒤에는 구간 중심을
+    ///    그대로 따라간다. 씬 자리와 구간 중심의 차이를 오프셋으로 굳혀 두는 게 1차 구현이었는데,
+    ///    그러면 화면이 구간에서 그만큼 밀려 구간 가장자리가 통째로 사각지대가 된다 — 플레이어가
+    ///    경계를 넘는 순간 화면 밖으로 사라졌다(사용자 리포트 2026-08-13, 스크린샷으로 확인).</summary>
+    public void BeginSceneCutsceneFraming()
+    {
+        cutsceneAnchor = CutsceneAnchor.SceneGrid;
+        cutsceneOrthoSize = sceneOrthoSize;
+        cutsceneBlend = 1f;
+        cutsceneBasePos = new Vector3(sceneCameraPos.x, sceneCameraPos.y, basePos.z);
+        ApplyFraming(true);
+    }
+
+    /// <summary>방 중심 기준 오프셋 + 지정 크기로 프레이밍한다(보스 등장 컷씬).
+    /// blend를 1→0으로 내리면 평소 룸 프레이밍으로 돌아간다.</summary>
+    public void SetRoomCutsceneFraming(float orthoSize, Vector2 centerOffset, float blend)
+    {
+        bool wasOff = cutsceneBlend <= 0f;
+        cutsceneAnchor = CutsceneAnchor.Room;
+        cutsceneOrthoSize = Mathf.Max(0.01f, orthoSize);
+        cutsceneRoomOffset = centerOffset;
+        cutsceneBlend = Mathf.Clamp01(blend);
+        if (wasOff && cutsceneBlend > 0f)
+        {
+            cutsceneBasePos = ComputeCutsceneAnchor();
+            ApplyFraming(true);
+        }
+    }
+
+    /// <summary>컷신 프레이밍을 완전히 끈다 — 이후엔 평소의 룸/그리드 프레이밍만 남는다.</summary>
+    public void EndCutsceneFraming()
+    {
+        cutsceneBlend = 0f;
+        cutsceneFrozen = false;
+    }
+
+    /// <summary>컷신 프레이밍을 그 자리에 얼린다 — 플레이어가 구간 경계를 넘어도 카메라가 안 따라간다
+    /// (사용자 지시 2026-08-13: "자동 걷기 되는 동안은 카메라 자동 이동 빼").</summary>
+    public void SetCutsceneFrozen(bool frozen)
+    {
+        cutsceneFrozen = frozen;
+    }
+
+    bool cutsceneFrozen;
+
+    /// <summary>씬에 저장돼 있던 카메라 크기(룸 프레이밍이 덮어쓰기 전 원본).</summary>
+    public float SceneOrthoSize => sceneOrthoSize;
+
+    /// <summary>보스 등장 구도의 기준점 — 방 중심(방이 없으면 그리드 구간 중심).</summary>
+    public Vector3 RoomAnchorPosition => hasRoom ? roomTargetPos : ComputeGridPos();
+
+    /// <summary>지금 컷신 채널이 쓰고 있는 카메라 크기 — 다음 구도로 이어 붙일 때의 출발값.</summary>
+    public float CutsceneOrthoSize => cutsceneOrthoSize;
+
+    Vector3 ComputeCutsceneAnchor()
+    {
+        if (cutsceneAnchor == CutsceneAnchor.Room && hasRoom)
+            return new Vector3(roomTargetPos.x + cutsceneRoomOffset.x,
+                               roomTargetPos.y + cutsceneRoomOffset.y, basePos.z);
+
+        // ⚠️ 구간은 절대 화면보다 클 수 없다. 구간이 화면보다 크면 구간 가장자리가 화면 밖에 남고,
+        //    플레이어가 경계를 갓 넘은 순간 그 사각지대에 들어가 화면에서 사라진다
+        //    (실측: sectionSize 21.33×12 vs 카메라 크기 5의 화면 17.78×10 — 사용자 리포트 2026-08-13).
+        //    씬에 적어둔 sectionSize가 화면보다 작으면 그대로 존중하고, 크면 화면 크기로 깎는다.
+        float viewW = cutsceneOrthoSize * 2f * cam.aspect;
+        float viewH = cutsceneOrthoSize * 2f;
+        float w = sectionSize.x > 0.01f ? Mathf.Min(sectionSize.x, viewW) : viewW;
+        float h = sectionSize.y > 0.01f ? Mathf.Min(sectionSize.y, viewH) : viewH;
+        return ComputeSectionPos(w, h);
+    }
+
+    /// <summary>지금 평상시 프레이밍이 목표로 삼고 있는 카메라 크기 — 컷신이 줌 아웃할 도착점.</summary>
+    public float NaturalOrthoSize => hasRoom ? roomTargetOrthoSize : baseOrthoSize;
+
+    float framedOrthoSize;
+
+    // 룸 프레이밍(basePos·baseOrthoSize) 위에 컷신 블렌드를 얹어 최종 화면 중심·크기를 낸다.
+    // 블렌드가 0이면 그냥 원본을 그대로 복사하므로 평상시 경로는 계산이 늘지 않는다.
+    void ApplyFraming(bool snap)
+    {
+        framedBasePos = basePos;
+        framedOrthoSize = baseOrthoSize;
+        if (cutsceneBlend <= 0f) return;
+
+        framedOrthoSize = Mathf.Lerp(baseOrthoSize, cutsceneOrthoSize, cutsceneBlend);
+        framedBasePos = Vector3.Lerp(basePos, cutsceneBasePos, cutsceneBlend);
+
+        if (snap) transform.position = framedBasePos;
+    }
+
     public void Shake(float duration, float magnitude)
     {
         StartCoroutine(ShakeCo(duration, magnitude));
@@ -113,6 +239,31 @@ public class SectionCamera : MonoBehaviour
     public void SetSustainedShake(float magnitude)
     {
         sustainMagnitude = Mathf.Max(0f, magnitude);
+    }
+
+    /// <summary>플레이어 연출과 겹치지 않는 **두 번째** 지속 쉐이크 채널(보스 이동 진동 등).
+    ///
+    /// ⚠️ 왜 SetSustainedShake를 같이 쓰지 않는가: 그쪽은 슬롯이 하나뿐이라 PlayerController가
+    /// 일섬 차지·빛 소모 중에 매 프레임 자기 값을 써 넣는다(2944행 등). 보스도 매 프레임 써 넣으면
+    /// 실행 순서에 따라 서로를 지워 둘 다 깨진다. 그래서 채널을 따로 파서 합산한다.
+    ///
+    /// 흔드는 방식도 다르다 — 매 프레임 난수(백색 잡음)는 "지지직거리는 진동"으로 읽혀서 큰 덩치와
+    /// 안 어울린다. Perlin 노이즈로 저주파로 출렁이게 해 "무거운 것이 움직인다"에 가깝게 만든다.</summary>
+    public void SetAmbientShake(float magnitude)
+    {
+        ambientMagnitude = Mathf.Max(0f, magnitude);
+    }
+
+    const float AmbientNoiseFrequency = 11f; // 낮출수록 더 느리고 묵직하게 출렁인다
+
+    Vector3 SampleAmbientNoise()
+    {
+        // 지속 쉐이크와 같은 이유로 unscaled 기준 — 히트스톱(timeScale=0) 중에도 흐름이 끊기지 않는다.
+        float t = Time.unscaledTime * AmbientNoiseFrequency;
+        // PerlinNoise는 0~1이라 -0.5로 중심을 옮기고, 실제로 양 끝(0·1)에 잘 안 닿는 걸 감안해 2배로 편다.
+        return new Vector3((Mathf.PerlinNoise(t, 0.37f) - 0.5f) * 2f,
+                           (Mathf.PerlinNoise(5.13f, t) - 0.5f) * 2f,
+                           0f);
     }
 
     // UniTrio JustDodgeController의 카메라 팬+줌 참고 — worldPos 쪽으로 살짝 다가가며 줌인했다가 원복.
@@ -252,7 +403,10 @@ public class SectionCamera : MonoBehaviour
     // 봐야 하는 쪽에서 transform.position 대신 이걸 본다(사용자 리포트 2026-08-11 "E 홀드시
     // 튜토리얼 보스가 움직이는 버그" — transform.position은 sustainFocusOffset까지 합산된 값이라
     // E홀드 줌인 팬만으로도 보스가 카메라를 따라 밀려났었다).
-    public Vector3 BasePosition => basePos;
+    // ⚠️ basePos가 아니라 컷신 블렌드까지 반영한 framedBasePos를 돌려준다 — 오프닝 연출 중에는 화면
+    //    중심이 방 중심이 아니라 플레이어 쪽에 있어서, basePos를 그대로 주면 보스의 화면 밖 판정이
+    //    엉뚱한 경계를 보고 계산한다. 블렌드가 0일 때는 두 값이 정확히 같아 평상시 동작은 그대로다.
+    public Vector3 BasePosition => framedBasePos;
 
     void Awake()
     {
@@ -265,7 +419,12 @@ public class SectionCamera : MonoBehaviour
         }
         targetPos = transform.position;
         basePos = transform.position;
+        framedBasePos = transform.position;
         baseOrthoSize = cam.orthographicSize;
+        framedOrthoSize = baseOrthoSize;
+        // 룸 프레이밍이 덮어쓰기 전의 "씬에 저장된 그림" — 오프닝 컷신이 이걸 그대로 구도로 쓴다.
+        sceneCameraPos = transform.position;
+        sceneOrthoSize = cam.orthographicSize;
     }
 
     // 지금 target이 있어야 할 카메라 위치. 룸 트리거가 한 번이라도 불렸으면 그 방식이 그리드
@@ -273,11 +432,20 @@ public class SectionCamera : MonoBehaviour
     Vector3 ComputeTargetPos()
     {
         if (hasRoom) return roomTargetPos;
+        return ComputeGridPos();
+    }
 
+    // 그리드 자동분할 구간의 중심. 컷신 프레이밍이 룸을 무시하고 이쪽만 쓰기 때문에 따로 뺐다.
+    Vector3 ComputeGridPos()
+    {
         float w = sectionSize.x > 0.01f ? sectionSize.x : baseOrthoSize * 2f * cam.aspect;
         float h = sectionSize.y > 0.01f ? sectionSize.y : baseOrthoSize * 2f;
+        return ComputeSectionPos(w, h);
+    }
 
-        // 플레이어가 속한 구간의 인덱스 → 그 구간의 중심으로 카메라 목표 설정
+    // 플레이어가 속한 구간의 인덱스 → 그 구간의 중심.
+    Vector3 ComputeSectionPos(float w, float h)
+    {
         float sx = Mathf.Floor((target.position.x - gridOrigin.x) / w);
         float sy = Mathf.Floor((target.position.y - gridOrigin.y) / h);
         float cx = gridOrigin.x + (sx + 0.5f) * w;
@@ -300,10 +468,13 @@ public class SectionCamera : MonoBehaviour
         if (hasRoom) baseOrthoSize = roomTargetOrthoSize;
         StopShake();   // 오프셋만 지우면 얼어붙은 ShakeCo가 다음 프레임에 되돌린다(StopShake 주석 참고)
         sustainOffset = Vector3.zero;
+        ambientOffset = Vector3.zero;
         focusOffset = Vector3.zero;
         focusZoomDelta = 0f;
-        transform.position = basePos + sustainFocusOffset;
-        cam.orthographicSize = baseOrthoSize + sustainFocusZoomDelta;
+        if (cutsceneBlend > 0f) cutsceneBasePos = ComputeCutsceneAnchor();
+        ApplyFraming(false);
+        transform.position = framedBasePos + sustainFocusOffset;
+        cam.orthographicSize = framedOrthoSize + sustainFocusZoomDelta;
     }
 
     void LateUpdate()
@@ -319,13 +490,22 @@ public class SectionCamera : MonoBehaviour
         basePos = Vector3.Lerp(basePos, targetPos, t);
         if (hasRoom) baseOrthoSize = Mathf.Lerp(baseOrthoSize, roomTargetOrthoSize, t);
 
+        // 컷신 앵커 추적 — 룸 추적과 **같은 감쇠**로 굴린다. 그래서 구간 경계를 넘는 순간
+        // 순간이동이 아니라 평소와 똑같은 슬라이드가 나온다("작은 시점에서 방 전환").
+        if (cutsceneBlend > 0f && !cutsceneFrozen)
+            cutsceneBasePos = Vector3.Lerp(cutsceneBasePos, ComputeCutsceneAnchor(), t);
+
         // 지속 쉐이크는 unscaled 기준 난수라 히트스톱(timeScale=0) 중에도 계속 떨린다.
         sustainOffset = sustainMagnitude > 0f
             ? (Vector3)(Random.insideUnitCircle * sustainMagnitude)
             : Vector3.zero;
 
-        transform.position = basePos + shakeOffset + sustainOffset + focusOffset + sustainFocusOffset;
-        cam.orthographicSize = baseOrthoSize + focusZoomDelta + sustainFocusZoomDelta;
+        ambientOffset = ambientMagnitude > 0f ? SampleAmbientNoise() * ambientMagnitude : Vector3.zero;
+
+        ApplyFraming(false);
+
+        transform.position = framedBasePos + shakeOffset + sustainOffset + ambientOffset + focusOffset + sustainFocusOffset;
+        cam.orthographicSize = framedOrthoSize + focusZoomDelta + sustainFocusZoomDelta;
 
         ApplyLetterbox();
     }

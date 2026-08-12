@@ -105,6 +105,9 @@ public class GehennaHound : DummyEnemy
     protected override void Update()
     {
         if (!IsAlive) return; // Die()가 사망 연출/비활성화를 별도로 처리한다.
+        // 연출 중 정지 — base.Update()의 같은 가드만으로는 부족하다. Sleep/Patrol 단계는 base를
+        // 아예 호출하지 않고 자체 로직으로 감지·배회를 돌리기 때문에 여기서 따로 막아야 한다.
+        if (AiFrozen) { SetHorizontalVelocity(0f); return; }
 
         UpdateHitFlash(); // phase와 무관하게 항상 — Sleep/Patrol 중 기습당해도 흰색 플래시는 켜져야 한다.
         TickMovementCheck();

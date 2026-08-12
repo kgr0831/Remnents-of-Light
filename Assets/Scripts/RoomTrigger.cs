@@ -41,6 +41,39 @@ public class RoomTrigger : MonoBehaviour
         SaveCheckpointFor(other.gameObject);
     }
 
+    /// <summary>worldPos를 품는 방을 찾아 카메라를 그 방으로 다시 프레이밍한다. 찾았으면 true.
+    ///
+    /// 순간이동(낙사 복귀 · 체크포인트 부활)은 <c>Time.timeScale = 0</c> 상태에서 일어나는데, 그때는
+    /// 물리가 한 스텝도 안 돌아 <see cref="OnTriggerEnter2D"/>가 **발생하지 않는다**. 그래서 방을
+    /// 넘어가는 복귀인데도 카메라는 옛 방의 중심·크기·레터박스를 그대로 붙들고 있었다
+    /// (사용자 리포트 2026-08-13 "구간 전환이 틀어짐"). 트리거에 의존하지 않고 직접 찾는다.
+    ///
+    /// 방이 겹쳐 있으면 **더 작은 쪽**을 고른다 — OnTriggerEnter2D 경로는 "마지막에 들어간 것"이
+    /// 이겨서 진입 순서에 따라 결과가 달라지지만, 이쪽은 항상 같은 답이 나와야 한다.</summary>
+    public static bool ApplyRoomAt(Vector3 worldPos)
+    {
+        if (SectionCamera.Instance == null) return false;
+
+        RoomTrigger best = null;
+        Bounds bestBounds = default;
+
+        var rooms = FindObjectsByType<RoomTrigger>(FindObjectsSortMode.None);
+        for (int i = 0; i < rooms.Length; i++)
+        {
+            // box는 Awake에서 채워지는데 그게 아직 안 돌았을 수 있어 직접 가져온다.
+            var b = rooms[i].GetComponent<BoxCollider2D>();
+            if (b == null || !b.OverlapPoint(worldPos)) continue;
+            if (best != null && b.bounds.size.sqrMagnitude >= bestBounds.size.sqrMagnitude) continue;
+
+            best = rooms[i];
+            bestBounds = b.bounds;
+        }
+        if (best == null) return false;
+
+        SectionCamera.Instance.EnterRoom(bestBounds, best.useLetterbox);
+        return true;
+    }
+
     void SaveCheckpointFor(GameObject player)
     {
         GameDataManager.SaveCheckpoint(SceneManager.GetActiveScene().name, player.transform.position);

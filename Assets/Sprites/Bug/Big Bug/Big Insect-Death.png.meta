@@ -1,0 +1,793 @@
+fileFormatVersion: 2
+guid: 82b4211ccf63cf3469eb77d5acd3b45a
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 4996711749709808608
+    second: Big Insect-Death_0
+  - first:
+      213: 1160084748857008377
+    second: Big Insect-Death_1
+  - first:
+      213: 9190049814500950191
+    second: Big Insect-Death_2
+  - first:
+      213: 3253175246756726577
+    second: Big Insect-Death_3
+  - first:
+      213: 2327165649156149734
+    second: Big Insect-Death_4
+  - first:
+      213: 3700234635562022328
+    second: Big Insect-Death_5
+  - first:
+      213: 1509027510685414683
+    second: Big Insect-Death_6
+  - first:
+      213: 6968291142120875004
+    second: Big Insect-Death_7
+  - first:
+      213: -4289185038166758164
+    second: Big Insect-Death_8
+  - first:
+      213: 7210848660739823308
+    second: Big Insect-Death_9
+  - first:
+      213: -7732835591574949422
+    second: Big Insect-Death_10
+  - first:
+      213: -713182739704673981
+    second: Big Insect-Death_11
+  - first:
+      213: -9159855869274929291
+    second: Big Insect-Death_12
+  - first:
+      213: -3608954883991614249
+    second: Big Insect-Death_13
+  - first:
+      213: -8856367243593764606
+    second: Big Insect-Death_14
+  - first:
+      213: -427222852277307963
+    second: Big Insect-Death_15
+  - first:
+      213: -4542802412531883785
+    second: Big Insect-Death_16
+  - first:
+      213: 1402470363334005230
+    second: Big Insect-Death_17
+  - first:
+      213: -3199344020608640954
+    second: Big Insect-Death_18
+  - first:
+      213: -6614917788460934468
+    second: Big Insect-Death_19
+  - first:
+      213: 8956266567640604672
+    second: Big Insect-Death_20
+  - first:
+      213: -8211393468004890648
+    second: Big Insect-Death_21
+  - first:
+      213: -1756407969224813013
+    second: Big Insect-Death_22
+  - first:
+      213: 4975380977483763480
+    second: Big Insect-Death_23
+  - first:
+      213: -1544508544570759317
+    second: Big Insect-Death_24
+  - first:
+      213: -8432946300888979037
+    second: Big Insect-Death_25
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 0
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Big Insect-Death_0
+      rect:
+        serializedVersion: 2
+        x: 16
+        y: 6
+        width: 27
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0e34976dcd2e75540800000000000000
+      internalID: 4996711749709808608
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Big Insect-Death_1
+      rect:
+        serializedVersion: 2
+        x: 77
+        y: 9
+        width: 52
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9f068f4cee2791010800000000000000
+      internalID: 1160084748857008377
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Big Insect-Death_2
+      rect:
+        serializedVersion: 2
+        x: 147
+        y: 13
+        width: 24
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fa049758d9d998f70800000000000000
+      internalID: 9190049814500950191
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Big Insect-Death_3
+      rect:
+        serializedVersion: 2
+        x: 166
+        y: 31
+        width: 9
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 137470f96a9952d20800000000000000
+      internalID: 3253175246756726577
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Big Insect-Death_4
+      rect:
+        serializedVersion: 2
+        x: 167
+        y: 12
+        width: 9
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6e1917bf3d0cb4020800000000000000
+      internalID: 2327165649156149734
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Big Insect-Death_5
+      rect:
+        serializedVersion: 2
+        x: 173
+        y: 23
+        width: 15
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8b5754edbcfd95330800000000000000
+      internalID: 3700234635562022328
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Big Insect-Death_6
+      rect:
+        serializedVersion: 2
+        x: 177
+        y: 11
+        width: 8
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b1532ba968421f410800000000000000
+      internalID: 1509027510685414683
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Big Insect-Death_7
+      rect:
+        serializedVersion: 2
+        x: 182
+        y: 15
+        width: 18
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cf3ad99cfd754b060800000000000000
+      internalID: 6968291142120875004
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Big Insect-Death_8
+      rect:
+        serializedVersion: 2
+        x: 218
+        y: 12
+        width: 21
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cec6620dee0c974c0800000000000000
+      internalID: -4289185038166758164
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Big Insect-Death_9
+      rect:
+        serializedVersion: 2
+        x: 229
+        y: 25
+        width: 11
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cc69f78f6a4121460800000000000000
+      internalID: 7210848660739823308
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Big Insect-Death_10
+      rect:
+        serializedVersion: 2
+        x: 238
+        y: 32
+        width: 9
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2d17da1fff27fa490800000000000000
+      internalID: -7732835591574949422
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Big Insect-Death_11
+      rect:
+        serializedVersion: 2
+        x: 238
+        y: 11
+        width: 8
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 34986fba3144a16f0800000000000000
+      internalID: -713182739704673981
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Big Insect-Death_12
+      rect:
+        serializedVersion: 2
+        x: 245
+        y: 23
+        width: 11
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 577471e2e97a1e080800000000000000
+      internalID: -9159855869274929291
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Big Insect-Death_13
+      rect:
+        serializedVersion: 2
+        x: 247
+        y: 34
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7dcc44177aa6aedc0800000000000000
+      internalID: -3608954883991614249
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Big Insect-Death_14
+      rect:
+        serializedVersion: 2
+        x: 250
+        y: 10
+        width: 24
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 201303d3aecd71580800000000000000
+      internalID: -8856367243593764606
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Big Insect-Death_15
+      rect:
+        serializedVersion: 2
+        x: 251
+        y: 28
+        width: 9
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5c5f4125413321af0800000000000000
+      internalID: -427222852277307963
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Big Insect-Death_16
+      rect:
+        serializedVersion: 2
+        x: 289
+        y: 10
+        width: 30
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7f0ef3c4649b4f0c0800000000000000
+      internalID: -4542802412531883785
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Big Insect-Death_17
+      rect:
+        serializedVersion: 2
+        x: 317
+        y: 24
+        width: 15
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ee159866d53967310800000000000000
+      internalID: 1402470363334005230
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Big Insect-Death_18
+      rect:
+        serializedVersion: 2
+        x: 323
+        y: 9
+        width: 24
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6481a596095a993d0800000000000000
+      internalID: -3199344020608640954
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Big Insect-Death_19
+      rect:
+        serializedVersion: 2
+        x: 360
+        y: 9
+        width: 31
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cba9f5891571334a0800000000000000
+      internalID: -6614917788460934468
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Big Insect-Death_20
+      rect:
+        serializedVersion: 2
+        x: 392
+        y: 9
+        width: 28
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 000ecedadfc0b4c70800000000000000
+      internalID: 8956266567640604672
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Big Insect-Death_21
+      rect:
+        serializedVersion: 2
+        x: 431
+        y: 9
+        width: 61
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8e70b9c85254b0e80800000000000000
+      internalID: -8211393468004890648
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Big Insect-Death_22
+      rect:
+        serializedVersion: 2
+        x: 503
+        y: 8
+        width: 62
+        height: 36
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b2690b1024cff97e0800000000000000
+      internalID: -1756407969224813013
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Big Insect-Death_23
+      rect:
+        serializedVersion: 2
+        x: 584
+        y: 8
+        width: 42
+        height: 36
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 81fc72963aa1c0540800000000000000
+      internalID: 4975380977483763480
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Big Insect-Death_24
+      rect:
+        serializedVersion: 2
+        x: 659
+        y: 15
+        width: 40
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b67ed4079adc09ae0800000000000000
+      internalID: -1544508544570759317
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Big Insect-Death_25
+      rect:
+        serializedVersion: 2
+        x: 755
+        y: 33
+        width: 9
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3a9619dd40828fa80800000000000000
+      internalID: -8432946300888979037
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Big Insect-Death_0: 4996711749709808608
+      Big Insect-Death_1: 1160084748857008377
+      Big Insect-Death_10: -7732835591574949422
+      Big Insect-Death_11: -713182739704673981
+      Big Insect-Death_12: -9159855869274929291
+      Big Insect-Death_13: -3608954883991614249
+      Big Insect-Death_14: -8856367243593764606
+      Big Insect-Death_15: -427222852277307963
+      Big Insect-Death_16: -4542802412531883785
+      Big Insect-Death_17: 1402470363334005230
+      Big Insect-Death_18: -3199344020608640954
+      Big Insect-Death_19: -6614917788460934468
+      Big Insect-Death_2: 9190049814500950191
+      Big Insect-Death_20: 8956266567640604672
+      Big Insect-Death_21: -8211393468004890648
+      Big Insect-Death_22: -1756407969224813013
+      Big Insect-Death_23: 4975380977483763480
+      Big Insect-Death_24: -1544508544570759317
+      Big Insect-Death_25: -8432946300888979037
+      Big Insect-Death_3: 3253175246756726577
+      Big Insect-Death_4: 2327165649156149734
+      Big Insect-Death_5: 3700234635562022328
+      Big Insect-Death_6: 1509027510685414683
+      Big Insect-Death_7: 6968291142120875004
+      Big Insect-Death_8: -4289185038166758164
+      Big Insect-Death_9: 7210848660739823308
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

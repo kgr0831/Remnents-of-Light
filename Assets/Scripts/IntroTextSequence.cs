@@ -50,6 +50,8 @@ public class IntroTextSequence : MonoBehaviour
     CanvasGroup textGroup;    // text-tr — 대사 전체(자식 포함) 페이드
     CanvasGroup promptGroup;  // text-tr-2 — 맥동. 중첩 CanvasGroup은 알파가 곱해지므로 위와 안 밟는다
     string triggerMessage;
+    string defaultPrompt;     // 씬에 적어둔 text-tr-2 문구("F를 눌러 닫기") — 교체 후 되돌릴 원본
+    Color defaultTextColor;   // 씬에 적어둔 text-tr 색 — 대사마다 갈아 끼운 뒤 되돌릴 원본
     bool triggerDone;
     Coroutine pulse;
 
@@ -66,6 +68,8 @@ public class IntroTextSequence : MonoBehaviour
         promptGroup.blocksRaycasts = false;
 
         triggerMessage = mainText.text;   // Trigger-Text용 문구는 씬에 적어둔 것을 그대로 쓴다
+        defaultPrompt = promptText.text;  // 대사마다 갈아 끼운 뒤 되돌릴 원본
+        defaultTextColor = mainText.color;
         mainText.gameObject.SetActive(false);
         promptText.gameObject.SetActive(false);
     }
@@ -93,9 +97,18 @@ public class IntroTextSequence : MonoBehaviour
 
     // ── 공용 대사 표시 ───────────────────────────────────────────────────────────────────────
     /// <summary>문구를 타이핑하고, 프롬프트를 점멸시키고, F를 기다렸다가 페이드아웃한다.</summary>
-    public IEnumerator ShowMessage(string message)
+    /// <param name="promptOverride">이 대사 동안만 쓸 text-tr-2 문구("F키로 넘기기" 등).
+    /// 비우면 씬에 적어둔 원본을 쓴다 — 기존 호출부(IntroScene · IntroScene_2)는 인자를 안 넘기므로
+    /// 동작이 그대로다. 대사를 여러 개 이어 붙일 때 마지막이 아닌 대사에만 넘긴다.</param>
+    /// <param name="colorOverride">이 대사 동안만 쓸 text-tr 색(경고 대사를 붉게 등). null이면 씬에
+    /// 적어둔 원본 색. text-tr-2(프롬프트)는 자기 색을 그대로 쓰므로 같이 물들지 않는다.</param>
+    public IEnumerator ShowMessage(string message, string promptOverride = null, Color? colorOverride = null)
     {
         Busy = true;
+
+        // 매 대사마다 다시 대입한다 — 앞 대사가 바꿔 놓은 색이 다음 대사로 새어 나가지 않는다
+        // (promptOverride와 같은 규칙).
+        mainText.color = colorOverride ?? defaultTextColor;
 
         textGroup.alpha = 1f;
         mainText.text = string.Empty;
@@ -107,6 +120,10 @@ public class IntroTextSequence : MonoBehaviour
             yield return new WaitForSecondsRealtime(charInterval);
         }
         EndTypingSfx();
+
+        // 프롬프트 문구는 대사마다 갈아 끼운다. 여기서 매번 대입하므로 앞 대사가 바꿔 놓은 값이
+        // 다음 대사로 새어 나가지 않는다(마지막 대사는 인자를 안 넘겨 자동으로 원본으로 돌아온다).
+        promptText.text = string.IsNullOrEmpty(promptOverride) ? defaultPrompt : promptOverride;
 
         promptGroup.alpha = 0f;      // 안 보이는 데서 페이드 인으로 시작
         promptText.gameObject.SetActive(true);

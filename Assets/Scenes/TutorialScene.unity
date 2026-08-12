@@ -6742,6 +6742,9 @@ MonoBehaviour:
   wallClimbAccel: 20
   wallJumpForce: {x: 10, y: 5}
   wallJumpHorizontalLockDuration: 0.3
+  wallReattachDelay: 0.2
+  jumpInputBuffer: 0.12
+  wallCoyoteTime: 0.12
   wallClimbShakeDuration: 0.08
   wallClimbShakeMagnitude: 0.06
   ledgeWallCheckDist: 0.15
@@ -6796,6 +6799,7 @@ MonoBehaviour:
   fallFadeOutDuration: 0.32
   platformEdgeProbeStep: 0.5
   platformEdgeProbeMaxDistance: 20
+  platformSurfaceStepTolerance: 1
   deathSlowMoScale: 0.04
   deathCameraZoomMultiplier: 1.35
   deathCameraRampIn: 0.25
@@ -6815,13 +6819,13 @@ MonoBehaviour:
   maxEnergy: 100
   currentEnergy: 100
   startEnergyRatio: 0.5
-  parryEnergyGain: 25
-  executionEnergyGain: 30
+  parryEnergyGain: 12
+  executionEnergyGain: 15
   executionHealCount: 1
   ilseomEnergyCost: 40
   rampageEnabled: 1
   rampageExitEnergyPercent: 25
-  rampageEnergyGainMultiplier: 0.25
+  rampageEnergyGainMultiplier: 0.5
   rampageMinEnergy: 50
   rampageDrainPerSecond: 20
   rampageDamageMultiplier: 2
@@ -11216,9 +11220,11 @@ MonoBehaviour:
   panel: {fileID: 1119119646}
   player: {fileID: 1036640309}
   sectionCamera: {fileID: 363616879}
+  bgm: {fileID: 363616877}
   systemLine: SYSTEM MESSAGE
   introMessage: "\uC804\uD22C \uD559\uC2B5\uC5D0 \uC624\uC2E0\uAC83\uC744 \uD658\uC601\uD569\uB2C8\uB2E4."
   outroMessage: "\uC804\uD22C \uD559\uC2B5\uC774 \uC885\uB8CC\uB418\uC5C8\uC2B5\uB2C8\uB2E4."
+  nextScene: IntroScene_3
   introSpawn: {fileID: 0}
   steps:
   - id: jump
@@ -11452,6 +11458,7 @@ MonoBehaviour:
   failBlackHold: 0.5
   enemyGlowColor: {r: 2.1, g: 0.3, b: 0.45, a: 1}
   enemyGlowScale: 1.15
+  enemyGlowBoost: 1.8
   sfxSource: {fileID: 1771372969}
   ambientGlitchSfx: {fileID: 8300000, guid: 94a8e5e20a9bd394ba76592bd0fa79a8, type: 3}
   transitionGlitchSfx: {fileID: 8300000, guid: 52c9ed0483da4ee4cb584186cbe3f57a, type: 3}

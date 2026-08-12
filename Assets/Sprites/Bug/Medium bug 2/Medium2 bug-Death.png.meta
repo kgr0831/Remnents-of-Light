@@ -1,0 +1,793 @@
+fileFormatVersion: 2
+guid: 745b3d793f988ee4bb9e1641b873db20
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 1097522731784099524
+    second: Medium2 bug-Death_0
+  - first:
+      213: -2313566912031996113
+    second: Medium2 bug-Death_1
+  - first:
+      213: 5141236140895246904
+    second: Medium2 bug-Death_2
+  - first:
+      213: -2797918919146293247
+    second: Medium2 bug-Death_3
+  - first:
+      213: -4606664095438372041
+    second: Medium2 bug-Death_4
+  - first:
+      213: 7867072822087909563
+    second: Medium2 bug-Death_5
+  - first:
+      213: -6804360737996903467
+    second: Medium2 bug-Death_6
+  - first:
+      213: -2813186086058164509
+    second: Medium2 bug-Death_7
+  - first:
+      213: -4385289855117813565
+    second: Medium2 bug-Death_8
+  - first:
+      213: -4884793856059481906
+    second: Medium2 bug-Death_9
+  - first:
+      213: -2532333778251826965
+    second: Medium2 bug-Death_10
+  - first:
+      213: 8853044300847693759
+    second: Medium2 bug-Death_11
+  - first:
+      213: -3289198354225743419
+    second: Medium2 bug-Death_12
+  - first:
+      213: 6544323075071781687
+    second: Medium2 bug-Death_13
+  - first:
+      213: -2877319414756486682
+    second: Medium2 bug-Death_14
+  - first:
+      213: 1819243279057469311
+    second: Medium2 bug-Death_15
+  - first:
+      213: -7143377691054833439
+    second: Medium2 bug-Death_16
+  - first:
+      213: -1255171544478567009
+    second: Medium2 bug-Death_17
+  - first:
+      213: 3254592201362286317
+    second: Medium2 bug-Death_18
+  - first:
+      213: 5735088661712679346
+    second: Medium2 bug-Death_19
+  - first:
+      213: 2586294606503812169
+    second: Medium2 bug-Death_20
+  - first:
+      213: -4845689395071747688
+    second: Medium2 bug-Death_21
+  - first:
+      213: -5339645885431613987
+    second: Medium2 bug-Death_22
+  - first:
+      213: 6190258090712495983
+    second: Medium2 bug-Death_23
+  - first:
+      213: 5281350033257227249
+    second: Medium2 bug-Death_24
+  - first:
+      213: 5092854812407427514
+    second: Medium2 bug-Death_25
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 0
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Medium2 bug-Death_0
+      rect:
+        serializedVersion: 2
+        x: 22
+        y: 1
+        width: 19
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4c658e01c1f2b3f00800000000000000
+      internalID: 1097522731784099524
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium2 bug-Death_1
+      rect:
+        serializedVersion: 2
+        x: 66
+        y: 2
+        width: 79
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f274c3cb62f84efd0800000000000000
+      internalID: -2313566912031996113
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium2 bug-Death_2
+      rect:
+        serializedVersion: 2
+        x: 179
+        y: 6
+        width: 24
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 83a167cd707595740800000000000000
+      internalID: 5141236140895246904
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium2 bug-Death_3
+      rect:
+        serializedVersion: 2
+        x: 198
+        y: 24
+        width: 9
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 108b0f9219bcb29d0800000000000000
+      internalID: -2797918919146293247
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium2 bug-Death_4
+      rect:
+        serializedVersion: 2
+        x: 199
+        y: 5
+        width: 9
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 73389df8967d110c0800000000000000
+      internalID: -4606664095438372041
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium2 bug-Death_5
+      rect:
+        serializedVersion: 2
+        x: 205
+        y: 16
+        width: 15
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bb00ea6dc057d2d60800000000000000
+      internalID: 7867072822087909563
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium2 bug-Death_6
+      rect:
+        serializedVersion: 2
+        x: 209
+        y: 4
+        width: 8
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5db6418b5fd0291a0800000000000000
+      internalID: -6804360737996903467
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium2 bug-Death_7
+      rect:
+        serializedVersion: 2
+        x: 214
+        y: 8
+        width: 18
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3ee7e6dd82e85f8d0800000000000000
+      internalID: -2813186086058164509
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium2 bug-Death_8
+      rect:
+        serializedVersion: 2
+        x: 266
+        y: 5
+        width: 21
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3c8149c6c125423c0800000000000000
+      internalID: -4385289855117813565
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium2 bug-Death_9
+      rect:
+        serializedVersion: 2
+        x: 277
+        y: 18
+        width: 11
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ec060906ed9b53cb0800000000000000
+      internalID: -4884793856059481906
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium2 bug-Death_10
+      rect:
+        serializedVersion: 2
+        x: 286
+        y: 25
+        width: 9
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: be8b39678d75bdcd0800000000000000
+      internalID: -2532333778251826965
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium2 bug-Death_11
+      rect:
+        serializedVersion: 2
+        x: 286
+        y: 4
+        width: 8
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fbfb2dcd2e45cda70800000000000000
+      internalID: 8853044300847693759
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium2 bug-Death_12
+      rect:
+        serializedVersion: 2
+        x: 293
+        y: 16
+        width: 11
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5c93394168b6a52d0800000000000000
+      internalID: -3289198354225743419
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium2 bug-Death_13
+      rect:
+        serializedVersion: 2
+        x: 295
+        y: 27
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 73bab09d92b12da50800000000000000
+      internalID: 6544323075071781687
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium2 bug-Death_14
+      rect:
+        serializedVersion: 2
+        x: 298
+        y: 3
+        width: 24
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6e1da1aac35b118d0800000000000000
+      internalID: -2877319414756486682
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium2 bug-Death_15
+      rect:
+        serializedVersion: 2
+        x: 299
+        y: 21
+        width: 9
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f7fbc30af104f3910800000000000000
+      internalID: 1819243279057469311
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium2 bug-Death_16
+      rect:
+        serializedVersion: 2
+        x: 353
+        y: 3
+        width: 30
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1e00a3456df9ddc90800000000000000
+      internalID: -7143377691054833439
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium2 bug-Death_17
+      rect:
+        serializedVersion: 2
+        x: 381
+        y: 17
+        width: 15
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f953d27612cb49ee0800000000000000
+      internalID: -1255171544478567009
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium2 bug-Death_18
+      rect:
+        serializedVersion: 2
+        x: 387
+        y: 2
+        width: 24
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: de6a4f21d52aa2d20800000000000000
+      internalID: 3254592201362286317
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium2 bug-Death_19
+      rect:
+        serializedVersion: 2
+        x: 440
+        y: 2
+        width: 31
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2b131c480c0279f40800000000000000
+      internalID: 5735088661712679346
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium2 bug-Death_20
+      rect:
+        serializedVersion: 2
+        x: 472
+        y: 2
+        width: 28
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 94c1b29ed3d54e320800000000000000
+      internalID: 2586294606503812169
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium2 bug-Death_21
+      rect:
+        serializedVersion: 2
+        x: 527
+        y: 2
+        width: 61
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 899fed23b27a0ccb0800000000000000
+      internalID: -4845689395071747688
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium2 bug-Death_22
+      rect:
+        serializedVersion: 2
+        x: 615
+        y: 1
+        width: 62
+        height: 36
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dd5f87c9b54c5e5b0800000000000000
+      internalID: -5339645885431613987
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium2 bug-Death_23
+      rect:
+        serializedVersion: 2
+        x: 712
+        y: 1
+        width: 42
+        height: 36
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f67f7e4afe638e550800000000000000
+      internalID: 6190258090712495983
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium2 bug-Death_24
+      rect:
+        serializedVersion: 2
+        x: 803
+        y: 8
+        width: 40
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1f36bca9fdf1b4940800000000000000
+      internalID: 5281350033257227249
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium2 bug-Death_25
+      rect:
+        serializedVersion: 2
+        x: 915
+        y: 26
+        width: 9
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ab1fe2208747da640800000000000000
+      internalID: 5092854812407427514
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Medium2 bug-Death_0: 1097522731784099524
+      Medium2 bug-Death_1: -2313566912031996113
+      Medium2 bug-Death_10: -2532333778251826965
+      Medium2 bug-Death_11: 8853044300847693759
+      Medium2 bug-Death_12: -3289198354225743419
+      Medium2 bug-Death_13: 6544323075071781687
+      Medium2 bug-Death_14: -2877319414756486682
+      Medium2 bug-Death_15: 1819243279057469311
+      Medium2 bug-Death_16: -7143377691054833439
+      Medium2 bug-Death_17: -1255171544478567009
+      Medium2 bug-Death_18: 3254592201362286317
+      Medium2 bug-Death_19: 5735088661712679346
+      Medium2 bug-Death_2: 5141236140895246904
+      Medium2 bug-Death_20: 2586294606503812169
+      Medium2 bug-Death_21: -4845689395071747688
+      Medium2 bug-Death_22: -5339645885431613987
+      Medium2 bug-Death_23: 6190258090712495983
+      Medium2 bug-Death_24: 5281350033257227249
+      Medium2 bug-Death_25: 5092854812407427514
+      Medium2 bug-Death_3: -2797918919146293247
+      Medium2 bug-Death_4: -4606664095438372041
+      Medium2 bug-Death_5: 7867072822087909563
+      Medium2 bug-Death_6: -6804360737996903467
+      Medium2 bug-Death_7: -2813186086058164509
+      Medium2 bug-Death_8: -4385289855117813565
+      Medium2 bug-Death_9: -4884793856059481906
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

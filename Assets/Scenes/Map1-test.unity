@@ -433379,6 +433379,10 @@ MonoBehaviour:
   wallClimbSpeed: 3
   wallClimbAccel: 20
   wallJumpForce: {x: 10, y: 5}
+  wallJumpHorizontalLockDuration: 0.3
+  wallReattachDelay: 0.2
+  jumpInputBuffer: 0.12
+  wallCoyoteTime: 0.12
   wallClimbShakeDuration: 0.08
   wallClimbShakeMagnitude: 0.06
   ledgeWallCheckDist: 0.15
@@ -433426,17 +433430,40 @@ MonoBehaviour:
   hitstopScale: 0
   maxHealth: 5
   currentHealth: 0
+  fallDeathDistance: 20
+  fallDeathDamage: 1
+  fallFadeInDuration: 0.22
+  fallBlackHoldDuration: 0.18
+  fallFadeOutDuration: 0.32
+  platformEdgeProbeStep: 0.5
+  platformEdgeProbeMaxDistance: 20
+  platformSurfaceStepTolerance: 1
+  deathSlowMoScale: 0.04
+  deathCameraZoomMultiplier: 1.35
+  deathCameraRampIn: 0.25
+  deathClipName: Glitch Samurai-Death
+  deathPostAnimDelay: 0.5
+  deathGrayscaleRampInDuration: 0.4
+  deathBlackFadeInDuration: 0.6
+  deathGrayscaleRampOutDuration: 0.5
+  deathGlitchPulseCount: 3
+  deathGlitchPulseOnDuration: 0.05
+  deathGlitchPulseOffDuration: 0.07
+  deathConfirmGlitchDuration: 0.3
+  respawnZoomOutDuration: 0.9
+  respawnGlitchPulseCount: 3
+  deathFadeOutDuration: 0.5
+  titleSceneName: TitleScene
   maxEnergy: 100
   currentEnergy: 0
   startEnergyRatio: 0.5
-  parryEnergyGain: 25
-  executionEnergyGain: 30
+  parryEnergyGain: 12
+  executionEnergyGain: 15
   executionHealCount: 1
   ilseomEnergyCost: 40
-  ilseomCancelEnergyPercent: 0.1
   rampageEnabled: 1
   rampageExitEnergyPercent: 25
-  rampageEnergyGainMultiplier: 0.25
+  rampageEnergyGainMultiplier: 0.5
   rampageMinEnergy: 50
   rampageDrainPerSecond: 20
   rampageDamageMultiplier: 2
@@ -433457,7 +433484,6 @@ MonoBehaviour:
   egoDepletedEnergyDrainPerSecond: 5
   lightSpendDrainPerSecond: 25
   lightSpendHealThreshold: 25
-  lightSpendLowWarnPercent: 0.1
   lightSpendPixelRate: 16
   lightSpendZoomTarget: 1.3
   lightSpendZoomRampIn: 1.5
@@ -433486,11 +433512,20 @@ MonoBehaviour:
   attack2Duration: 0.4167
   comboBufferDuration: 2
   attackInputBufferDuration: 0.3
+  jumpAttackDamage: 1
+  jumpAttackDuration: 0.5833
+  jumpAttackCooldown: 0.5
+  jumpAttackHangDuration: 0.08
+  jumpAttackClipName: Glitch Samurai-Jump Attack
+  jumpAttackBonusJumpEnabled: 1
   attackHitboxSize: {x: 1.6, y: 1.2}
   attackHitboxDistance: 1
   attackLungeDistance: 0.3
   enemyKnockbackMultiplier: 1.5
   enemyLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  switchLayer:
     serializedVersion: 2
     m_Bits: 0
   attackHitstop: 1

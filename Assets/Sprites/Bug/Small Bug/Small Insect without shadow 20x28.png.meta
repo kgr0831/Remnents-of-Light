@@ -1,0 +1,585 @@
+fileFormatVersion: 2
+guid: eb86ec0d46c130044ac80aa77490c0bd
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 4266709540046394467
+    second: Small Insect without shadow 20x28_0
+  - first:
+      213: 7907404933895126442
+    second: Small Insect without shadow 20x28_1
+  - first:
+      213: -4728447312073636707
+    second: Small Insect without shadow 20x28_2
+  - first:
+      213: -1266222858360540627
+    second: Small Insect without shadow 20x28_3
+  - first:
+      213: -8742098198120036099
+    second: Small Insect without shadow 20x28_4
+  - first:
+      213: 6737688552370808917
+    second: Small Insect without shadow 20x28_5
+  - first:
+      213: 1435232668278768834
+    second: Small Insect without shadow 20x28_6
+  - first:
+      213: 740054587136844239
+    second: Small Insect without shadow 20x28_7
+  - first:
+      213: 782650960309737002
+    second: Small Insect without shadow 20x28_8
+  - first:
+      213: -1403509934864684045
+    second: Small Insect without shadow 20x28_9
+  - first:
+      213: -3843239069340852762
+    second: Small Insect without shadow 20x28_10
+  - first:
+      213: -7358938272683124073
+    second: Small Insect without shadow 20x28_11
+  - first:
+      213: -5815894316816689277
+    second: Small Insect without shadow 20x28_12
+  - first:
+      213: 1030681490816027224
+    second: Small Insect without shadow 20x28_13
+  - first:
+      213: -4056383369995656172
+    second: Small Insect without shadow 20x28_14
+  - first:
+      213: 1497207187151419070
+    second: Small Insect without shadow 20x28_15
+  - first:
+      213: -8270210184811934227
+    second: Small Insect without shadow 20x28_16
+  - first:
+      213: 1852751718818164475
+    second: Small Insect without shadow 20x28_17
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 0
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Small Insect without shadow 20x28_0
+      rect:
+        serializedVersion: 2
+        x: 2
+        y: 66
+        width: 12
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3645c3e78b5663b30800000000000000
+      internalID: 4266709540046394467
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Small Insect without shadow 20x28_1
+      rect:
+        serializedVersion: 2
+        x: 22
+        y: 67
+        width: 12
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: aad7df364eebcbd60800000000000000
+      internalID: 7907404933895126442
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Small Insect without shadow 20x28_2
+      rect:
+        serializedVersion: 2
+        x: 42
+        y: 66
+        width: 12
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d9443b8d83e216eb0800000000000000
+      internalID: -4728447312073636707
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Small Insect without shadow 20x28_3
+      rect:
+        serializedVersion: 2
+        x: 62
+        y: 65
+        width: 12
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d22b0f0e4097d6ee0800000000000000
+      internalID: -1266222858360540627
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Small Insect without shadow 20x28_4
+      rect:
+        serializedVersion: 2
+        x: 2
+        y: 38
+        width: 12
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: df80975a104dda680800000000000000
+      internalID: -8742098198120036099
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Small Insect without shadow 20x28_5
+      rect:
+        serializedVersion: 2
+        x: 21
+        y: 40
+        width: 12
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 55827436a04118d50800000000000000
+      internalID: 6737688552370808917
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Small Insect without shadow 20x28_6
+      rect:
+        serializedVersion: 2
+        x: 42
+        y: 27
+        width: 19
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2c4cac2f188fae310800000000000000
+      internalID: 1435232668278768834
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Small Insect without shadow 20x28_7
+      rect:
+        serializedVersion: 2
+        x: 62
+        y: 27
+        width: 15
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fc1a0bcd9b3354a00800000000000000
+      internalID: 740054587136844239
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Small Insect without shadow 20x28_8
+      rect:
+        serializedVersion: 2
+        x: 82
+        y: 29
+        width: 15
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a265168d6e88cda00800000000000000
+      internalID: 782650960309737002
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Small Insect without shadow 20x28_9
+      rect:
+        serializedVersion: 2
+        x: 102
+        y: 37
+        width: 12
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3fba8ad762bb58ce0800000000000000
+      internalID: -1403509934864684045
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Small Insect without shadow 20x28_10
+      rect:
+        serializedVersion: 2
+        x: 21
+        y: 8
+        width: 17
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6ed1905cd621aaac0800000000000000
+      internalID: -3843239069340852762
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Small Insect without shadow 20x28_11
+      rect:
+        serializedVersion: 2
+        x: 41
+        y: 7
+        width: 18
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 79a12bc51accfd990800000000000000
+      internalID: -7358938272683124073
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Small Insect without shadow 20x28_12
+      rect:
+        serializedVersion: 2
+        x: 60
+        y: 6
+        width: 25
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3879deaceeac94fa0800000000000000
+      internalID: -5815894316816689277
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Small Insect without shadow 20x28_13
+      rect:
+        serializedVersion: 2
+        x: 84
+        y: 11
+        width: 11
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 85ac8a8ea57bd4e00800000000000000
+      internalID: 1030681490816027224
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Small Insect without shadow 20x28_14
+      rect:
+        serializedVersion: 2
+        x: 95
+        y: 6
+        width: 26
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4146b9e01d4d4b7c0800000000000000
+      internalID: -4056383369995656172
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Small Insect without shadow 20x28_15
+      rect:
+        serializedVersion: 2
+        x: 145
+        y: 19
+        width: 9
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: eb67251110627c410800000000000000
+      internalID: 1497207187151419070
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Small Insect without shadow 20x28_16
+      rect:
+        serializedVersion: 2
+        x: 185
+        y: 20
+        width: 9
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ded877487af4a3d80800000000000000
+      internalID: -8270210184811934227
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Small Insect without shadow 20x28_17
+      rect:
+        serializedVersion: 2
+        x: 2
+        y: 9
+        width: 12
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bfea6293fdb46b910800000000000000
+      internalID: 1852751718818164475
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Small Insect without shadow 20x28_0: 4266709540046394467
+      Small Insect without shadow 20x28_1: 7907404933895126442
+      Small Insect without shadow 20x28_10: -3843239069340852762
+      Small Insect without shadow 20x28_11: -7358938272683124073
+      Small Insect without shadow 20x28_12: -5815894316816689277
+      Small Insect without shadow 20x28_13: 1030681490816027224
+      Small Insect without shadow 20x28_14: -4056383369995656172
+      Small Insect without shadow 20x28_15: 1497207187151419070
+      Small Insect without shadow 20x28_16: -8270210184811934227
+      Small Insect without shadow 20x28_17: 1852751718818164475
+      Small Insect without shadow 20x28_2: -4728447312073636707
+      Small Insect without shadow 20x28_3: -1266222858360540627
+      Small Insect without shadow 20x28_4: -8742098198120036099
+      Small Insect without shadow 20x28_5: 6737688552370808917
+      Small Insect without shadow 20x28_6: 1435232668278768834
+      Small Insect without shadow 20x28_7: 740054587136844239
+      Small Insect without shadow 20x28_8: 782650960309737002
+      Small Insect without shadow 20x28_9: -1403509934864684045
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

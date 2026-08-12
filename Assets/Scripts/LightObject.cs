@@ -14,7 +14,8 @@ public class LightObject : MonoBehaviour
     public Sprite offSprite;
 
     [Header("Hit / Energy")]
-    [Range(0f, 1f)] public float energyChargePercent = 0.25f;
+    // 광원 획득량 일괄 50% 하향(사용자 지시 2026-08-13) — 0.25 → 0.125.
+    [Range(0f, 1f)] public float energyChargePercent = 0.125f;
     public float relightDelay = 10f;
     public float fadeOutDuration = 0.6f; // 꺼질 때 즉시가 아니라 이 시간에 걸쳐 서서히 어두워진다
 

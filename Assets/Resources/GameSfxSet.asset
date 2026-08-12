@@ -112,4 +112,16 @@ MonoBehaviour:
     clips:
     - {fileID: 8300000, guid: 16b97acd2f1b5324e9ae24824f87a7a7, type: 3}
     volume: 1
+  - id: 24
+    clips:
+    - {fileID: 8300000, guid: db11f2378fa75564ca04023e14ba65ee, type: 3}
+    volume: 1
+  - id: 25
+    clips:
+    - {fileID: 8300000, guid: d78bf10ba1b7607429a76b93d5e0ad7d, type: 3}
+    volume: 1
+  - id: 26
+    clips:
+    - {fileID: 8300000, guid: 96f66f12cedc816498543cc6ee936d54, type: 3}
+    volume: 1
   footstepInterval: 0.5

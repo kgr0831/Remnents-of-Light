@@ -1,0 +1,1391 @@
+fileFormatVersion: 2
+guid: 271c34c13b5dd7748af968153d329832
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 8239611331573943594
+    second: Medium Insect with shadow 34x37_0
+  - first:
+      213: -6334631649672415740
+    second: Medium Insect with shadow 34x37_1
+  - first:
+      213: -7139590574926656135
+    second: Medium Insect with shadow 34x37_2
+  - first:
+      213: -1725773731586017915
+    second: Medium Insect with shadow 34x37_3
+  - first:
+      213: 3094890698434536021
+    second: Medium Insect with shadow 34x37_4
+  - first:
+      213: -4052661015626229150
+    second: Medium Insect with shadow 34x37_5
+  - first:
+      213: -2024378778420130718
+    second: Medium Insect with shadow 34x37_6
+  - first:
+      213: -6763909127513729738
+    second: Medium Insect with shadow 34x37_7
+  - first:
+      213: 627978538639795655
+    second: Medium Insect with shadow 34x37_8
+  - first:
+      213: -4108719815969723199
+    second: Medium Insect with shadow 34x37_9
+  - first:
+      213: 5503346713631344662
+    second: Medium Insect with shadow 34x37_10
+  - first:
+      213: 3024546708999464161
+    second: Medium Insect with shadow 34x37_11
+  - first:
+      213: 2034191531285821428
+    second: Medium Insect with shadow 34x37_12
+  - first:
+      213: -6620318445728821897
+    second: Medium Insect with shadow 34x37_13
+  - first:
+      213: 6171757691324999243
+    second: Medium Insect with shadow 34x37_14
+  - first:
+      213: -6515440428601770129
+    second: Medium Insect with shadow 34x37_15
+  - first:
+      213: -4172523560653152738
+    second: Medium Insect with shadow 34x37_16
+  - first:
+      213: 2842977057348302430
+    second: Medium Insect with shadow 34x37_17
+  - first:
+      213: 1520010656663050542
+    second: Medium Insect with shadow 34x37_18
+  - first:
+      213: 5607934055736432949
+    second: Medium Insect with shadow 34x37_19
+  - first:
+      213: 5478222151477753797
+    second: Medium Insect with shadow 34x37_20
+  - first:
+      213: -8849848017396564807
+    second: Medium Insect with shadow 34x37_21
+  - first:
+      213: 5152149350546082343
+    second: Medium Insect with shadow 34x37_22
+  - first:
+      213: 6035649108361699102
+    second: Medium Insect with shadow 34x37_23
+  - first:
+      213: 4152868809296949149
+    second: Medium Insect with shadow 34x37_24
+  - first:
+      213: 5408824392832775586
+    second: Medium Insect with shadow 34x37_25
+  - first:
+      213: 6801426744035449298
+    second: Medium Insect with shadow 34x37_26
+  - first:
+      213: 8238389565257628532
+    second: Medium Insect with shadow 34x37_27
+  - first:
+      213: 5962533455353569788
+    second: Medium Insect with shadow 34x37_28
+  - first:
+      213: 3461949015777572249
+    second: Medium Insect with shadow 34x37_29
+  - first:
+      213: -3873803701528405708
+    second: Medium Insect with shadow 34x37_30
+  - first:
+      213: 4903197020851407639
+    second: Medium Insect with shadow 34x37_31
+  - first:
+      213: -384884780390449096
+    second: Medium Insect with shadow 34x37_32
+  - first:
+      213: 2701043033308094011
+    second: Medium Insect with shadow 34x37_33
+  - first:
+      213: 858406881356930535
+    second: Medium Insect with shadow 34x37_34
+  - first:
+      213: 7977180800860208859
+    second: Medium Insect with shadow 34x37_35
+  - first:
+      213: 3075394589845748678
+    second: Medium Insect with shadow 34x37_36
+  - first:
+      213: 6955947674979698156
+    second: Medium Insect with shadow 34x37_37
+  - first:
+      213: -2012015643507483780
+    second: Medium Insect with shadow 34x37_38
+  - first:
+      213: -3000068118285842440
+    second: Medium Insect with shadow 34x37_39
+  - first:
+      213: -5097956182636911725
+    second: Medium Insect with shadow 34x37_40
+  - first:
+      213: -4637168693324695832
+    second: Medium Insect with shadow 34x37_41
+  - first:
+      213: 1918253790493606198
+    second: Medium Insect with shadow 34x37_42
+  - first:
+      213: 3466739543044540971
+    second: Medium Insect with shadow 34x37_43
+  - first:
+      213: -1805331625135947483
+    second: Medium Insect with shadow 34x37_44
+  - first:
+      213: 4918402342983745722
+    second: Medium Insect with shadow 34x37_45
+  - first:
+      213: 8194435812752723409
+    second: Medium Insect with shadow 34x37_46
+  - first:
+      213: 1001788381315384594
+    second: Medium Insect with shadow 34x37_47
+  - first:
+      213: 5600098536823525946
+    second: Medium Insect with shadow 34x37_48
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 0
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Medium Insect with shadow 34x37_0
+      rect:
+        serializedVersion: 2
+        x: 6
+        y: 86
+        width: 18
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a2d8fb9c9daf85270800000000000000
+      internalID: 8239611331573943594
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium Insect with shadow 34x37_1
+      rect:
+        serializedVersion: 2
+        x: 10
+        y: 81
+        width: 13
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4063452b31ed618a0800000000000000
+      internalID: -6334631649672415740
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium Insect with shadow 34x37_2
+      rect:
+        serializedVersion: 2
+        x: 40
+        y: 86
+        width: 18
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 97d05c303341bec90800000000000000
+      internalID: -7139590574926656135
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium Insect with shadow 34x37_3
+      rect:
+        serializedVersion: 2
+        x: 44
+        y: 81
+        width: 13
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5857d164fe1dc08e0800000000000000
+      internalID: -1725773731586017915
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium Insect with shadow 34x37_4
+      rect:
+        serializedVersion: 2
+        x: 74
+        y: 87
+        width: 18
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 552e9da51b243fa20800000000000000
+      internalID: 3094890698434536021
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium Insect with shadow 34x37_5
+      rect:
+        serializedVersion: 2
+        x: 78
+        y: 81
+        width: 13
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 26a5688374e02c7c0800000000000000
+      internalID: -4052661015626229150
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium Insect with shadow 34x37_6
+      rect:
+        serializedVersion: 2
+        x: 108
+        y: 87
+        width: 18
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 26ccd650a36f7e3e0800000000000000
+      internalID: -2024378778420130718
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium Insect with shadow 34x37_7
+      rect:
+        serializedVersion: 2
+        x: 112
+        y: 81
+        width: 13
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 63595893c74c122a0800000000000000
+      internalID: -6763909127513729738
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium Insect with shadow 34x37_8
+      rect:
+        serializedVersion: 2
+        x: 142
+        y: 86
+        width: 18
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7c5a13a572707b800800000000000000
+      internalID: 627978538639795655
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium Insect with shadow 34x37_9
+      rect:
+        serializedVersion: 2
+        x: 146
+        y: 81
+        width: 13
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1cc2487a815eaf6c0800000000000000
+      internalID: -4108719815969723199
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium Insect with shadow 34x37_10
+      rect:
+        serializedVersion: 2
+        x: 176
+        y: 86
+        width: 18
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6184fc59da0df5c40800000000000000
+      internalID: 5503346713631344662
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium Insect with shadow 34x37_11
+      rect:
+        serializedVersion: 2
+        x: 180
+        y: 81
+        width: 13
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1e46d74053959f920800000000000000
+      internalID: 3024546708999464161
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium Insect with shadow 34x37_12
+      rect:
+        serializedVersion: 2
+        x: 210
+        y: 81
+        width: 18
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4f7366b8b66ea3c10800000000000000
+      internalID: 2034191531285821428
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium Insect with shadow 34x37_13
+      rect:
+        serializedVersion: 2
+        x: 244
+        y: 81
+        width: 18
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 77d0e561377ef14a0800000000000000
+      internalID: -6620318445728821897
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium Insect with shadow 34x37_14
+      rect:
+        serializedVersion: 2
+        x: 6
+        y: 49
+        width: 18
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b46263fbbec76a550800000000000000
+      internalID: 6171757691324999243
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium Insect with shadow 34x37_15
+      rect:
+        serializedVersion: 2
+        x: 40
+        y: 49
+        width: 18
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f6ff8f153718495a0800000000000000
+      internalID: -6515440428601770129
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium Insect with shadow 34x37_16
+      rect:
+        serializedVersion: 2
+        x: 72
+        y: 55
+        width: 19
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e1e1256bde73816c0800000000000000
+      internalID: -4172523560653152738
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium Insect with shadow 34x37_17
+      rect:
+        serializedVersion: 2
+        x: 105
+        y: 56
+        width: 19
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e56b4d72298447720800000000000000
+      internalID: 2842977057348302430
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium Insect with shadow 34x37_18
+      rect:
+        serializedVersion: 2
+        x: 144
+        y: 36
+        width: 25
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e29953d83a9281510800000000000000
+      internalID: 1520010656663050542
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium Insect with shadow 34x37_19
+      rect:
+        serializedVersion: 2
+        x: 178
+        y: 43
+        width: 17
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5395cf3cf4263dd40800000000000000
+      internalID: 5607934055736432949
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium Insect with shadow 34x37_20
+      rect:
+        serializedVersion: 2
+        x: 212
+        y: 36
+        width: 25
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5c7f18b950e860c40800000000000000
+      internalID: 5478222151477753797
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium Insect with shadow 34x37_21
+      rect:
+        serializedVersion: 2
+        x: 245
+        y: 37
+        width: 26
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9bcf1eedd160f2580800000000000000
+      internalID: -8849848017396564807
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium Insect with shadow 34x37_22
+      rect:
+        serializedVersion: 2
+        x: 278
+        y: 16
+        width: 37
+        height: 49
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 72a0f0d798c108740800000000000000
+      internalID: 5152149350546082343
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium Insect with shadow 34x37_23
+      rect:
+        serializedVersion: 2
+        x: 312
+        y: 49
+        width: 18
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e1f5dc4c2eee2c350800000000000000
+      internalID: 6035649108361699102
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium Insect with shadow 34x37_24
+      rect:
+        serializedVersion: 2
+        x: 10
+        y: 44
+        width: 13
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d9fa1f0ed24f1a930800000000000000
+      internalID: 4152868809296949149
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium Insect with shadow 34x37_25
+      rect:
+        serializedVersion: 2
+        x: 44
+        y: 44
+        width: 13
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2a5f34bc021001b40800000000000000
+      internalID: 5408824392832775586
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium Insect with shadow 34x37_26
+      rect:
+        serializedVersion: 2
+        x: 78
+        y: 44
+        width: 13
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2d913149695836e50800000000000000
+      internalID: 6801426744035449298
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium Insect with shadow 34x37_27
+      rect:
+        serializedVersion: 2
+        x: 112
+        y: 44
+        width: 13
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 47b377629a3a45270800000000000000
+      internalID: 8238389565257628532
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium Insect with shadow 34x37_28
+      rect:
+        serializedVersion: 2
+        x: 182
+        y: 36
+        width: 21
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cf16bb7369c2fb250800000000000000
+      internalID: 5962533455353569788
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium Insect with shadow 34x37_29
+      rect:
+        serializedVersion: 2
+        x: 316
+        y: 40
+        width: 24
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9957fe3a9405b0030800000000000000
+      internalID: 3461949015777572249
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium Insect with shadow 34x37_30
+      rect:
+        serializedVersion: 2
+        x: 319
+        y: 29
+        width: 9
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4395ec8ce0c7d3ac0800000000000000
+      internalID: -3873803701528405708
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium Insect with shadow 34x37_31
+      rect:
+        serializedVersion: 2
+        x: 6
+        y: 12
+        width: 18
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 71b0a9356b7ab0440800000000000000
+      internalID: 4903197020851407639
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium Insect with shadow 34x37_32
+      rect:
+        serializedVersion: 2
+        x: 42
+        y: 13
+        width: 20
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8308f59d45d98aaf0800000000000000
+      internalID: -384884780390449096
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium Insect with shadow 34x37_33
+      rect:
+        serializedVersion: 2
+        x: 73
+        y: 22
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b3e5f5bf3580c7520800000000000000
+      internalID: 2701043033308094011
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium Insect with shadow 34x37_34
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 20
+        width: 10
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7edd704b28ca9eb00800000000000000
+      internalID: 858406881356930535
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium Insect with shadow 34x37_35
+      rect:
+        serializedVersion: 2
+        x: 87
+        y: 14
+        width: 12
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bdeb6586ca3a4be60800000000000000
+      internalID: 7977180800860208859
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium Insect with shadow 34x37_36
+      rect:
+        serializedVersion: 2
+        x: 112
+        y: 7
+        width: 34
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6cbf9e7d51ffdaa20800000000000000
+      internalID: 3075394589845748678
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium Insect with shadow 34x37_37
+      rect:
+        serializedVersion: 2
+        x: 114
+        y: 23
+        width: 10
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ce58e536e8d788060800000000000000
+      internalID: 6955947674979698156
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium Insect with shadow 34x37_38
+      rect:
+        serializedVersion: 2
+        x: 148
+        y: 7
+        width: 21
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c7b153eae62e314e0800000000000000
+      internalID: -2012015643507483780
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium Insect with shadow 34x37_39
+      rect:
+        serializedVersion: 2
+        x: 182
+        y: 6
+        width: 32
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8f7099301fd9d56d0800000000000000
+      internalID: -3000068118285842440
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium Insect with shadow 34x37_40
+      rect:
+        serializedVersion: 2
+        x: 251
+        y: 28
+        width: 9
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 393ab6dacdb6049b0800000000000000
+      internalID: -5097956182636911725
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium Insect with shadow 34x37_41
+      rect:
+        serializedVersion: 2
+        x: 10
+        y: 7
+        width: 13
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8e6b1d664a775afb0800000000000000
+      internalID: -4637168693324695832
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium Insect with shadow 34x37_42
+      rect:
+        serializedVersion: 2
+        x: 71
+        y: 10
+        width: 8
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6310b6bb8a10f9a10800000000000000
+      internalID: 1918253790493606198
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium Insect with shadow 34x37_43
+      rect:
+        serializedVersion: 2
+        x: 75
+        y: 15
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b2a48ff2f355c1030800000000000000
+      internalID: 3466739543044540971
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium Insect with shadow 34x37_44
+      rect:
+        serializedVersion: 2
+        x: 78
+        y: 8
+        width: 15
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5214ef5b37c22f6e0800000000000000
+      internalID: -1805331625135947483
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium Insect with shadow 34x37_45
+      rect:
+        serializedVersion: 2
+        x: 81
+        y: 15
+        width: 9
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ab0cef34fdca14440800000000000000
+      internalID: 4918402342983745722
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium Insect with shadow 34x37_46
+      rect:
+        serializedVersion: 2
+        x: 103
+        y: 9
+        width: 11
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1dd8dd9a4fb78b170800000000000000
+      internalID: 8194435812752723409
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium Insect with shadow 34x37_47
+      rect:
+        serializedVersion: 2
+        x: 171
+        y: 8
+        width: 8
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 215ca60a93117ed00800000000000000
+      internalID: 1001788381315384594
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium Insect with shadow 34x37_48
+      rect:
+        serializedVersion: 2
+        x: 225
+        y: 11
+        width: 42
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a321d8ad2fb87bd40800000000000000
+      internalID: 5600098536823525946
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Medium Insect with shadow 34x37_0: 8239611331573943594
+      Medium Insect with shadow 34x37_1: -6334631649672415740
+      Medium Insect with shadow 34x37_10: 5503346713631344662
+      Medium Insect with shadow 34x37_11: 3024546708999464161
+      Medium Insect with shadow 34x37_12: 2034191531285821428
+      Medium Insect with shadow 34x37_13: -6620318445728821897
+      Medium Insect with shadow 34x37_14: 6171757691324999243
+      Medium Insect with shadow 34x37_15: -6515440428601770129
+      Medium Insect with shadow 34x37_16: -4172523560653152738
+      Medium Insect with shadow 34x37_17: 2842977057348302430
+      Medium Insect with shadow 34x37_18: 1520010656663050542
+      Medium Insect with shadow 34x37_19: 5607934055736432949
+      Medium Insect with shadow 34x37_2: -7139590574926656135
+      Medium Insect with shadow 34x37_20: 5478222151477753797
+      Medium Insect with shadow 34x37_21: -8849848017396564807
+      Medium Insect with shadow 34x37_22: 5152149350546082343
+      Medium Insect with shadow 34x37_23: 6035649108361699102
+      Medium Insect with shadow 34x37_24: 4152868809296949149
+      Medium Insect with shadow 34x37_25: 5408824392832775586
+      Medium Insect with shadow 34x37_26: 6801426744035449298
+      Medium Insect with shadow 34x37_27: 8238389565257628532
+      Medium Insect with shadow 34x37_28: 5962533455353569788
+      Medium Insect with shadow 34x37_29: 3461949015777572249
+      Medium Insect with shadow 34x37_3: -1725773731586017915
+      Medium Insect with shadow 34x37_30: -3873803701528405708
+      Medium Insect with shadow 34x37_31: 4903197020851407639
+      Medium Insect with shadow 34x37_32: -384884780390449096
+      Medium Insect with shadow 34x37_33: 2701043033308094011
+      Medium Insect with shadow 34x37_34: 858406881356930535
+      Medium Insect with shadow 34x37_35: 7977180800860208859
+      Medium Insect with shadow 34x37_36: 3075394589845748678
+      Medium Insect with shadow 34x37_37: 6955947674979698156
+      Medium Insect with shadow 34x37_38: -2012015643507483780
+      Medium Insect with shadow 34x37_39: -3000068118285842440
+      Medium Insect with shadow 34x37_4: 3094890698434536021
+      Medium Insect with shadow 34x37_40: -5097956182636911725
+      Medium Insect with shadow 34x37_41: -4637168693324695832
+      Medium Insect with shadow 34x37_42: 1918253790493606198
+      Medium Insect with shadow 34x37_43: 3466739543044540971
+      Medium Insect with shadow 34x37_44: -1805331625135947483
+      Medium Insect with shadow 34x37_45: 4918402342983745722
+      Medium Insect with shadow 34x37_46: 8194435812752723409
+      Medium Insect with shadow 34x37_47: 1001788381315384594
+      Medium Insect with shadow 34x37_48: 5600098536823525946
+      Medium Insect with shadow 34x37_5: -4052661015626229150
+      Medium Insect with shadow 34x37_6: -2024378778420130718
+      Medium Insect with shadow 34x37_7: -6763909127513729738
+      Medium Insect with shadow 34x37_8: 627978538639795655
+      Medium Insect with shadow 34x37_9: -4108719815969723199
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

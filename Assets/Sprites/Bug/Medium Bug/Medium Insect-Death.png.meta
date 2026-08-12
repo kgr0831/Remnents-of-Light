@@ -1,0 +1,585 @@
+fileFormatVersion: 2
+guid: 8a0969546e07a7844a15244c4f187871
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -4040642683061575457
+    second: Medium Insect-Death_0
+  - first:
+      213: 1105461197520774287
+    second: Medium Insect-Death_1
+  - first:
+      213: 1684371787342179615
+    second: Medium Insect-Death_2
+  - first:
+      213: -8264992639547365019
+    second: Medium Insect-Death_3
+  - first:
+      213: 6028439259498399602
+    second: Medium Insect-Death_4
+  - first:
+      213: 3929618921707102949
+    second: Medium Insect-Death_5
+  - first:
+      213: 2351176831036776630
+    second: Medium Insect-Death_6
+  - first:
+      213: 6870356712777749604
+    second: Medium Insect-Death_7
+  - first:
+      213: 6807931723200716064
+    second: Medium Insect-Death_8
+  - first:
+      213: 598818640135499317
+    second: Medium Insect-Death_9
+  - first:
+      213: 1077972503090657131
+    second: Medium Insect-Death_10
+  - first:
+      213: -4674574276763585883
+    second: Medium Insect-Death_11
+  - first:
+      213: 8711718138338291093
+    second: Medium Insect-Death_12
+  - first:
+      213: 209258597949094350
+    second: Medium Insect-Death_13
+  - first:
+      213: 4934506083064092599
+    second: Medium Insect-Death_14
+  - first:
+      213: -8654057357639160203
+    second: Medium Insect-Death_15
+  - first:
+      213: 4795011263354797091
+    second: Medium Insect-Death_16
+  - first:
+      213: 3736207369115417343
+    second: Medium Insect-Death_17
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 0
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Medium Insect-Death_0
+      rect:
+        serializedVersion: 2
+        x: 6
+        y: 12
+        width: 18
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fd065d353e0cce7c0800000000000000
+      internalID: -4040642683061575457
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium Insect-Death_1
+      rect:
+        serializedVersion: 2
+        x: 42
+        y: 13
+        width: 20
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f8424372a13675f00800000000000000
+      internalID: 1105461197520774287
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium Insect-Death_2
+      rect:
+        serializedVersion: 2
+        x: 71
+        y: 10
+        width: 8
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f1d68366737106710800000000000000
+      internalID: 1684371787342179615
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium Insect-Death_3
+      rect:
+        serializedVersion: 2
+        x: 73
+        y: 22
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 569af80fbf8dc4d80800000000000000
+      internalID: -8264992639547365019
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium Insect-Death_4
+      rect:
+        serializedVersion: 2
+        x: 75
+        y: 15
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 277cb64019159a350800000000000000
+      internalID: 6028439259498399602
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium Insect-Death_5
+      rect:
+        serializedVersion: 2
+        x: 78
+        y: 8
+        width: 15
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5e2610bd69fc88630800000000000000
+      internalID: 3929618921707102949
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium Insect-Death_6
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 20
+        width: 10
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6b0631aeede01a020800000000000000
+      internalID: 2351176831036776630
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium Insect-Death_7
+      rect:
+        serializedVersion: 2
+        x: 81
+        y: 15
+        width: 9
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 46496519709685f50800000000000000
+      internalID: 6870356712777749604
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium Insect-Death_8
+      rect:
+        serializedVersion: 2
+        x: 87
+        y: 14
+        width: 12
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 02ddd7015d1aa7e50800000000000000
+      internalID: 6807931723200716064
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium Insect-Death_9
+      rect:
+        serializedVersion: 2
+        x: 103
+        y: 9
+        width: 11
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 53ea82a616e6f4800800000000000000
+      internalID: 598818640135499317
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium Insect-Death_10
+      rect:
+        serializedVersion: 2
+        x: 112
+        y: 7
+        width: 34
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b677b5cb74ab5fe00800000000000000
+      internalID: 1077972503090657131
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium Insect-Death_11
+      rect:
+        serializedVersion: 2
+        x: 114
+        y: 23
+        width: 10
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5a2f3555673902fb0800000000000000
+      internalID: -4674574276763585883
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium Insect-Death_12
+      rect:
+        serializedVersion: 2
+        x: 148
+        y: 7
+        width: 21
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 59d2bfa7d7d36e870800000000000000
+      internalID: 8711718138338291093
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium Insect-Death_13
+      rect:
+        serializedVersion: 2
+        x: 171
+        y: 8
+        width: 8
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ec9b3fc069f67e200800000000000000
+      internalID: 209258597949094350
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium Insect-Death_14
+      rect:
+        serializedVersion: 2
+        x: 182
+        y: 6
+        width: 32
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7b71a0f6323ea7440800000000000000
+      internalID: 4934506083064092599
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium Insect-Death_15
+      rect:
+        serializedVersion: 2
+        x: 225
+        y: 12
+        width: 26
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 57eef043fac96e780800000000000000
+      internalID: -8654057357639160203
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium Insect-Death_16
+      rect:
+        serializedVersion: 2
+        x: 251
+        y: 11
+        width: 43
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 32c7246c65d4b8240800000000000000
+      internalID: 4795011263354797091
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Medium Insect-Death_17
+      rect:
+        serializedVersion: 2
+        x: 311
+        y: 16
+        width: 17
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ffa32539ecca9d330800000000000000
+      internalID: 3736207369115417343
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Medium Insect-Death_0: -4040642683061575457
+      Medium Insect-Death_1: 1105461197520774287
+      Medium Insect-Death_10: 1077972503090657131
+      Medium Insect-Death_11: -4674574276763585883
+      Medium Insect-Death_12: 8711718138338291093
+      Medium Insect-Death_13: 209258597949094350
+      Medium Insect-Death_14: 4934506083064092599
+      Medium Insect-Death_15: -8654057357639160203
+      Medium Insect-Death_16: 4795011263354797091
+      Medium Insect-Death_17: 3736207369115417343
+      Medium Insect-Death_2: 1684371787342179615
+      Medium Insect-Death_3: -8264992639547365019
+      Medium Insect-Death_4: 6028439259498399602
+      Medium Insect-Death_5: 3929618921707102949
+      Medium Insect-Death_6: 2351176831036776630
+      Medium Insect-Death_7: 6870356712777749604
+      Medium Insect-Death_8: 6807931723200716064
+      Medium Insect-Death_9: 598818640135499317
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

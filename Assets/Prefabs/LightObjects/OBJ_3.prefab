@@ -153,7 +153,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::LightObject
   onSprite: {fileID: -769877854, guid: 4f5ae8ae9a8108f49bb7ed45fe1e0732, type: 3}
   offSprite: {fileID: -521342534, guid: 4f5ae8ae9a8108f49bb7ed45fe1e0732, type: 3}
-  energyChargePercent: 0.25
+  energyChargePercent: 0.125
   relightDelay: 10
   fadeOutDuration: 0.6
   glowColor: {r: 1, g: 0.6118, b: 1, a: 1}

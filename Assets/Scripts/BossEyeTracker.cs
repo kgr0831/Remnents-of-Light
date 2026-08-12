@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
@@ -32,26 +33,82 @@ public class BossEyeTracker : MonoBehaviour
     [Tooltip("초당 회전 속도(도) — 순간적으로 돌지 않고 이 속도로 목표각을 따라간다")]
     public float rotationSpeedDegPerSec = 45f;
 
-    // 사용자 지시(2026-08-08): "무조건 보스는 카메라 이동이 될 때만 따라가게" — 플레이어 위치가
-    // 아니라 카메라가 실제로 움직인 만큼만(1:1 델타) 같이 움직인다. 플레이어가 화면 안에서 어디
-    // 있든 보스는 안 움직이고, 카메라(SectionCamera)가 구간을 넘어가며 실제로 이동할 때만 따라간다.
-    [Header("Follow (플레이어가 아니라 카메라가 움직일 때만 같이 이동)")]
-    public Transform trackedCamera; // 비워두면 Camera.main 자동 탐색
-    // trackedCamera가 SectionCamera라면 transform.position이 아니라 이 컴포넌트를 통해 basePos만
-    // 읽는다(사용자 리포트 2026-08-11 "E 홀드시 튜토리얼 보스가 움직이는 버그") — transform.position은
-    // 쉐이크·FocusPulse·SetSustainedFocus(E홀드 줌인 팬 등)의 오프셋까지 전부 합산된 값이라, 카메라가
-    // 실제로 구간을 넘어가지 않았는데도 이런 연출 흔들림만으로 보스가 화면 안에서 밀려 보였다.
+    // ⚠️ 추적 방식 전면 교체(2026-08-13, 사용자 지시 "카메라 이동시에 따라 말고 상시로 따라오게,
+    //    일정 거리 이상 이동시마다"). 이전 방식은 카메라(SectionCamera.BasePosition)가 움직인 델타를
+    //    1:1로 누적해 따라가는 것이었다(2026-08-08 지시 "무조건 카메라 이동이 될 때만"). 그래서 룸
+    //    안에서는 카메라가 고정이라 보스가 아예 안 움직였고, 구간을 넘어갈 때만 한꺼번에 밀려왔다 —
+    //    "덩치에 비해 갑자기 빠르게 따라온다"는 인상의 근본 원인이기도 하다.
+    //
+    //    지금은 플레이어를 **상시** 목표로 삼되, 매 프레임 야금야금 따라가지 않는다. 목표 지점이
+    //    stepTriggerDistance만큼 벌어질 때까지 보스는 제자리에 버티고, 한계를 넘는 순간 목표를 한 번에
+    //    갱신해 크게 한 걸음 내딛는다(+그 순간 카메라를 쿵 친다). "가만히 버틴다 → 훅 다가온다"의
+    //    반복이라, 매끄럽게 따라붙는 것보다 질량이 훨씬 잘 느껴진다.
+    [Header("Follow (플레이어를 상시 추적 — 일정 거리 벌어질 때마다 한 걸음)")]
+    public Transform trackedCamera; // 쉐이크를 걸 SectionCamera + 화면 경계를 읽을 Camera. 비워두면 Camera.main
     SectionCamera trackedSectionCamera;
-    bool cameraTrackingInitialized; // lastCameraPosition의 첫 캡처를 첫 LateUpdate까지 미루는 플래그
-    // 사용자 지시(2026-08-08): "너무 보스가 빨리 따라오는 문제 수정" — 카메라 델타를 즉시
-    // 100% 반영하지 않고, 목표 지점(desiredPosition)을 향해 이 속도로 서서히 뒤쫓아간다.
-    [Tooltip("카메라를 뒤쫓아가는 속도 — 작을수록 더 느긋하게(뒤늦게) 따라온다")]
-    public float followSmoothSpeed = 2f;
+    Camera trackedCameraComponent;  // 화면 밖 재배치가 뷰 크기(orthographicSize·aspect)를 읽는다
+    [Tooltip("목표 지점이 이만큼(유닛) 벌어지면 따라붙기 시작한다 — 그 전까지 보스는 완전히 정지")]
+    public float stepTriggerDistance = 8f;
+    // ⚠️ 재설계(2026-08-13, 사용자 피드백 "덩치에 비해 갑자기 + 빠르게 따라와서 중압감이 덜하다"):
+    //    예전엔 지수 보간(Lerp, t = 1-exp(-k·dt))이라 **속도가 오차에 그대로 비례**했다 — 오차가
+    //    생기는 순간 보스가 정지 상태에서 곧바로 최고 속도로 튀어나갔다(가속 구간이 아예 없음 =
+    //    "갑자기"). SmoothDamp는 속도를 프레임 간 상태로 들고 있어 정지→가속→감속이 생기고(=관성),
+    //    maxSpeed로 최고 속도에 천장을 씌워 "빠르게"도 같이 잡는다.
+    // 사용자 지시(2026-08-13): "플레이어 이동속도보다 살짝 느리게" — followMaxSpeed를 플레이어
+    // 이동속도 바로 아래로 잡는다. 달리면 조금씩 벌어지지만 압도적으로 뒤처지진 않는다.
+    // ⚠️ 기준값은 PlayerController.moveSpeed의 **스크립트 기본값(5)이 아니라 씬 값**이다 — Map-test는
+    //    6으로 덮어써져 있다(실측 2026-08-13). 5 기준으로 잡으면 "살짝"이 아니라 75%가 된다.
+    // ⚠️ followSmoothTime을 같이 줄여야 이 값이 실제로 먹는다. SmoothDamp의 최고 속도는 대략
+    //    거리/smoothTime × 0.46이라, 8유닛 걸음에 smoothTime이 2.4면 1.5유닛/초밖에 안 나와서
+    //    maxSpeed를 아무리 올려도 천장에 닿질 않는다(예전 값이 그랬다). 0.8이면 약 4.6이 나와
+    //    maxSpeed가 비로소 실제 상한으로 작동한다.
+    [Tooltip("한 번 따라붙는 데 걸리는 대략적인 시간(초) — 너무 크면 maxSpeed에 아예 안 닿는다")]
+    public float followSmoothTime = 0.8f;
+    [Tooltip("최고 속도(유닛/초) — 플레이어 이동속도(Map-test 기준 6)보다 살짝 낮게")]
+    public float followMaxSpeed = 5.5f;
+    Vector3 followVelocity; // SmoothDamp가 프레임 간에 들고 가는 속도 — 관성의 실체
     // 사용자 지시(2026-08-08): "보스가 약간 플레이어 왼쪽에 배치되어있어야해" — 시작 시 플레이어
     // 기준 이만큼(월드 X, 음수=왼쪽) 떨어진 곳을 홈 포지션으로 삼는다.
+    // ⚠️ 버그 수정(2026-08-13, 사용자 지시 "플레이어 앞쪽(왼쪽)에 위치하게. 애초에 등장부터 그렇게"):
+    //    예전 코드는 Awake에서 `transform.position += (이 값, 0, 0)`이었다 — 즉 **씬에 찍어둔 위치를
+    //    왼쪽으로 미는** 것이지 플레이어 기준이 아니었다. Map-test 실측으로 보스 x=-0.86, 플레이어
+    //    x=-8.70이라 -6을 더해도 x=-6.86 → 플레이어보다 1.84유닛 **오른쪽**에 서 있었다. 이제 X를
+    //    플레이어 기준으로 직접 계산한다(Y·Z는 씬에 잡아둔 구도를 그대로 존중한다).
     public float startOffsetFromPlayerX = -6f;
-    Vector3 lastCameraPosition;
-    Vector3 desiredPosition; // 카메라 델타가 누적되는 목표 지점 — transform.position은 이걸 서서히 뒤쫓는다
+    // 사용자 지시(2026-08-13): "상시로 이동하지마" — 걸음은 완전한 **이산 동작**이다. 한 번 떼면
+    // 그 순간의 목표를 붙들고(걷는 도중엔 플레이어를 다시 조준하지 않는다) 거기 도착하면 딱 멈춘다.
+    // 도착 후 stepRestSeconds 동안은 아무리 멀어져도 안 움직인다 — 이 정지 구간이 없으면 플레이어가
+    // 달리는 내내 다음 걸음이 곧바로 이어져 결국 "상시 이동"으로 되돌아간다.
+    [Tooltip("한 걸음이 끝난 뒤 최소 이만큼(초)은 완전히 멈춰 있는다")]
+    public float stepRestSeconds = 1.2f;
+    Vector3 homeOffset;       // 첫 프레임에 잡은 플레이어→보스 상대 위치. 이걸 유지하며 X·Y 모두 따라간다
+    bool followInitialized;   // homeOffset의 첫 캡처를 첫 LateUpdate까지 미루는 플래그
+    Vector3 desiredPosition;  // 걸음을 뗄 때 한 번 정해지고, 그 걸음이 끝날 때까지 고정되는 목표 지점
+    bool stepping;            // 걷는 중인가 — false면 SmoothDamp를 아예 안 돌려 완전히 정지한다
+    float stepRestTimer;      // 도착 후 남은 강제 정지 시간
+    const float StepArriveEpsilon = 0.15f; // 이 안에 들어오면 도착으로 치고 스냅(SmoothDamp는 점근이라 영영 안 닿는다)
+
+    // 사용자 지시(2026-08-13): "카메라 밖에 존재할 때, 카메라 밖 위치 중 가장 가까운 위치로 순간이동
+    // (단, 몸의 아주 일부분이라도 순간이동 시 카메라에 보이면 안됨)".
+    // 보스는 플레이어보다 느리고 걸음 사이에 정지 구간까지 있어 한 방향으로 계속 달리면 구조적으로
+    // 무한히 뒤처진다. 그래서 **화면 밖에 있는 동안에만** 화면 밖 최근접 지점으로 당겨 온다 —
+    // 보이지 않는 동안에만 벌어지므로 순간이동 자체가 플레이어 눈에 띌 수 없다.
+    //
+    // ⚠️ 여백을 상수로 추측하면 안 된다(이전 구현의 실수) — 보스 몸집을 모르는 값이라 "일부분이라도
+    //    보이면 안 된다"를 보장할 수 없다. 매번 실제 렌더러 월드 AABB를 재서 그 반폭만큼 밀어낸다.
+    Renderer[] bossRenderers; // AABB 계산용 — 계층은 안 변하므로 한 번만 캐시
+    const float OffscreenPadding = 0.25f; // 부동소수·RT 반올림 여유. 경계에 딱 붙이지 않는다
+
+    // 사용자 피드백(2026-08-13): "보스가 움직일 때 카메라 쉐이킹 약간 주면 덩치가 느껴질듯".
+    // 한 걸음 내딛는 순간에만 터지고 잦아드는 펄스다 — 이동 내내 깔리는 지속 진동이 아니다.
+    // ⚠️ 되먹임 없음 — 보스는 이제 카메라를 아예 안 읽으므로(플레이어만 본다), 여기서 건 쉐이크가
+    //    다시 보스를 밀어 진동이 자가증폭되는 경로가 구조적으로 없다.
+    [Header("Step Shake (한 걸음 내딛는 순간의 쿵)")]
+    [Tooltip("쿵의 세기 — 플레이어 공격 쉐이크가 0.15, 벽타기가 0.06이다")]
+    public float stepShakeMagnitude = 0.08f;
+    [Tooltip("쿵이 잦아드는 데 걸리는 시간(초)")]
+    public float stepShakeDuration = 0.35f;
+    float stepShakeTimer; // 남은 쿵 시간(0이면 조용)
 
     [Header("Beam Light (Light2D, Point/Spot)")]
     public Color beamColor = new Color(1f, 0.02f, 0.01f);
@@ -76,14 +133,19 @@ public class BossEyeTracker : MonoBehaviour
     // 각속도 dθ/dt = v·h/(h²+x²)로, 일정 속도로 직선 이동하면 거리가 늘수록 각속도가 0에
     // 수렴하므로 고정된 추적 속도는 "충분히 오래 걷다 보면 반드시 다시 따라잡는다"는 구조적 한계가
     // 있다. 그래서 이 숫자 하나로는 못 풀고, 아래 exposureReacquireDelay(재포착 유예)를 같이 둔다.
+    // 20 → 12(사용자 지시 2026-08-13 "빔도 느리게"). ⚠️ Map-test 씬에는 이 20조차 반영된 적이 없어
+    // 실제로는 최초값 180으로 돌고 있었다 — 씬 값이 스크립트 기본값을 이긴다는 걸 놓치면 "고쳤는데
+    // 왜 그대로냐"가 반복된다. 씬 쪽도 같이 맞춰야 한다.
     [Tooltip("빔이 플레이어를 순간적으로 스냅하지 않고 쫓아가는 느낌을 주는 회전 속도(도/초) — 너무 크면 사실상 항상 명중")]
-    public float beamTrackSpeedDegPerSec = 20f;
+    public float beamTrackSpeedDegPerSec = 12f;
     // 회전(beamTrackSpeedDegPerSec)엔 이미 속도 제한이 있었지만, 빔 길이(사거리)는 매 프레임
     // 플레이어와의 실제 거리에 그대로 스냅돼(Mathf.Min) 늘어나는/줄어드는 데 아무 제한이 없었다
     // — "직선으로 쫓아오는(커지는) 게 너무 빠르다"는 사용자 지시(2026-08-11)로, 이 길이 변화도
     // 회전과 같은 방식(초당 최대 변화량)으로 속도를 제한한다.
+    // 20 → 10(사용자 지시 2026-08-13 "빔도 느리게") — 회전만 늦추고 길이는 그대로 두면 빔이 여전히
+    // 쭉 뻗어 나오는 속도로 "빠르다"고 읽힌다. 두 축을 같은 비율로 같이 내린다.
     [Tooltip("빔 길이(사거리)가 플레이어와의 실제 거리를 따라가는 속도(유닛/초) — 순간적으로 늘어나거나 줄지 않는다")]
-    public float beamLengthChangeSpeed = 20f;
+    public float beamLengthChangeSpeed = 10f;
     float beamCurrentLength;          // 스무딩된 현재 빔 길이 — pointLightOuterRadius에 매 프레임 반영
     bool beamLengthInitialized;       // 첫 프레임엔 스무딩 없이 실제 거리로 바로 맞춘다(0에서 안 자라나게)
     // 사용자 지시(2026-08-10): "거리가 멀수록 붉은 빔이 잘 안 보인다" — Light2D Point의 반경 감쇠
@@ -129,6 +191,16 @@ public class BossEyeTracker : MonoBehaviour
     public string beamOccluderLayerName = "BossBeamOccluder";
     int beamOccluderMask;
 
+    // 사용자 지시(2026-08-12): "layer2도 빔을 가리게" — 지형은 fan activ와 성격이 다르다. 팬은
+    // "안에 들어가 숨는" 것이라 겹침 판정이지만, 지형은 "뒤에 서면 안전"이라 시선 차단이 맞다.
+    // ⚠️ 이 마스크에 BossBeamOccluder를 절대 같이 넣지 말 것 — 눈이 높이 있어 차폐물의 그림자가
+    // 아래로 길게 깔리는 탓에 팬 옆(밖)에 서 있어도 라인캐스트에 걸려 안전해지던 문제 때문에
+    // 2026-08-10에 겹침으로 바꾼 이력이 있다. 그래서 레이어를 따로 판다.
+    [Header("Terrain Occlusion (이 레이어가 눈-플레이어 시선을 끊으면 노출 무효)")]
+    [Tooltip("지형 타일맵(layer2)의 콜라이더 레이어. 겹침이 아니라 라인캐스트로 판정하므로 뒤에 서 있기만 해도 안전하다")]
+    public string terrainOccluderLayerName = "BossBeamTerrain";
+    int terrainOccluderMask;
+
     // 사용자 지시(2026-08-09): 빔에 3초 이상 계속 노출되면 자아 고갈과 같은 화면 노이즈가 걸리고
     // 5초에 한 칸씩 체력이 깎인다. 노출이 끊기면 카운트도 노이즈도 즉시 0으로 돌아간다.
     // ⚠️ 첫 피해 시점은 자아 붕괴(egoDepletedDamageInterval)와 같은 규칙을 따른다 — 디버프가
@@ -164,6 +236,32 @@ public class BossEyeTracker : MonoBehaviour
     [Tooltip("보스 룸(가장 큰 것이 48x27)을 덮을 만큼 넉넉히")]
     public float glowOuterRadius = 45f;
 
+    // 사용자 지시(2026-08-12): BossEndTrigger에 닿으면 빔을 멈추고(페이드아웃 + 모든 빔 효과 해제)
+    // 오른쪽 상단으로 이동하며 사라진다. BossPixelCamera는 보스가 아니라 메인 카메라를 따라가므로
+    // (BossPixelResolutionController) 위치만 옮겨도 화면 밖으로 빠지며 자연스럽게 사라진다 —
+    // 알파 페이드가 따로 필요 없다.
+    // 사용자 지시(2026-08-13): Map-test는 보스가 처음부터 서 있는 게 아니라, BossTrigger를 밟은 뒤
+    // 어둠 속 왼쪽 위에서 걸어 들어오며 눈 → 빔 순서로 켜진다. 그 연출 동안에는 추적·조준·노출 판정이
+    // 전부 멈춰 있어야 해서(BossStageDirector가 위치와 라이트를 직접 몰고 간다) 휴면 스위치를 둔다.
+    //
+    // ⚠️ startDormant를 끄면 이 블록은 존재하지 않는 것과 같다 — 다른 씬(TutorialScene 등)에 배치된
+    //    보스는 기본값 false라 예전 그대로 Awake 직후부터 추적을 시작한다(회귀 0).
+    [Header("등장 연출 (BossStageDirector가 몰고 간다)")]
+    [Tooltip("켜면 씬 시작부터 잠들어 있다 — 라이트 전부 꺼짐 + 추적·빔·노출 판정 정지")]
+    public bool startDormant;
+    [Tooltip("등장 시작 위치 — 도착 지점(홈) 기준 오프셋. 기본값은 화면 밖 왼쪽 위")]
+    public Vector3 introSpawnOffset = new Vector3(-34f, 22f, 0f);
+
+    [Header("퇴장 (BossEndTrigger가 호출)")]
+    [Tooltip("빔이 꺼지는 데 걸리는 시간(초) — 이동보다 먼저 빠르게 끝난다")]
+    public float beamFadeSeconds = 0.6f;
+    [Tooltip("빔이 다 꺼진 뒤 보스가 천천히 물러나는 데 걸리는 시간(초)")]
+    public float retreatSeconds = 4f;
+    [Tooltip("퇴장 시 현재 위치에서 이동할 오프셋 — 기본값은 오른쪽 위 대각선")]
+    public Vector3 retreatOffset = new Vector3(40f, 30f, 0f);
+    [Tooltip("보스가 물러나는 동안 같이 페이드 아웃할 BGM(Main Camera의 AudioSource). 비워두면 BGM은 건드리지 않는다")]
+    public AudioSource bgm;
+
     Quaternion restRotation;
     Light2D beamLight;
     Light2D glowLight;
@@ -173,6 +271,9 @@ public class BossEyeTracker : MonoBehaviour
     float exposureTimer;       // 연속 노출 시간(끊기면 0)
     float exposureDamageTimer; // 디버프가 걸린 뒤 도는 피해 주기
     bool exposureBroken;       // 3초를 넘겨 노이즈·피해가 켜진 상태
+    bool retreating;           // 퇴장 시작 후 — 추적·조준·노출 판정을 전부 멈춘다
+    bool dormant;              // 등장 연출 전/중 — retreating과 같은 이유로 LateUpdate를 통째로 건너뛴다
+    Vector3 sceneStartPosition; // 씬에 찍어둔 원래 자리. 홈 좌표의 Y·Z 기준값이라 Awake에서만 잡는다
 
     // [ASSERT] 판독구 — 플레이 테스트에서 로그로 확인한다
     public bool IsPlayerExposed { get; private set; }
@@ -182,6 +283,11 @@ public class BossEyeTracker : MonoBehaviour
     void Awake()
     {
         beamOccluderMask = LayerMask.GetMask(beamOccluderLayerName);
+        terrainOccluderMask = LayerMask.GetMask(terrainOccluderLayerName);
+
+        // 등장 연출이 보스를 화면 밖으로 옮기기 **전에** 원래 자리를 잡아 둔다 — 홈 좌표의 Y·Z가 여기서 나온다.
+        sceneStartPosition = transform.position;
+        dormant = startDormant;
 
         if (player == null)
         {
@@ -194,7 +300,8 @@ public class BossEyeTracker : MonoBehaviour
         // restTiltEuler만큼 미리 비스듬히 틀어서 완전 정면이 아니게 한다.
         restRotation = transform.rotation * Quaternion.Euler(restTiltEuler);
 
-        if (player != null) transform.position += new Vector3(startOffsetFromPlayerX, 0f, 0f);
+        // 위치 배치는 첫 LateUpdate(아래 followInitialized 블록)에서 한다 — player가 아직 null일 수
+        // 있고, 어차피 거기서 homeOffset을 잡으므로 한 군데서 처리하는 게 어긋날 여지가 없다.
 
         if (trackedCamera == null)
         {
@@ -204,13 +311,7 @@ public class BossEyeTracker : MonoBehaviour
         if (trackedCamera != null)
         {
             trackedSectionCamera = trackedCamera.GetComponent<SectionCamera>();
-            // ⚠️ 여기서 바로 TrackedCameraPosition()을 읽으면 안 된다(사용자 리포트 2026-08-11
-            // "보스가 겁나 위에 있음") — SectionCamera.BasePosition은 SectionCamera 자신의 Awake()가
-            // 돌아야 실제 카메라 위치로 채워지는데, Unity는 서로 다른 오브젝트의 Awake() 순서를
-            // 보장하지 않는다. 이 스크립트의 Awake()가 먼저 실행되면 아직 초기화 안 된 basePos(0,0,0)를
-            // 읽고, 다음 프레임에 SectionCamera가 실제 위치(예: y≈36)로 초기화되면 그 차이 전체가
-            // "카메라가 한 번에 움직인 델타"로 보스에 그대로 더해져 훅 튀어 오른다. 첫 LateUpdate까지
-            // 초기화를 미룬다(LateUpdate는 씬의 모든 Awake가 끝난 뒤에만 도므로 항상 안전하다).
+            trackedCameraComponent = trackedCamera.GetComponent<Camera>();
         }
         desiredPosition = transform.position;
 
@@ -221,11 +322,6 @@ public class BossEyeTracker : MonoBehaviour
 
         BuildBeamLight();
     }
-
-    /// <summary>trackedCamera가 SectionCamera면 흔들림·포커스 오프셋이 안 섞인 basePos만,
-    /// 아니면(다른 카메라·씬) 기존처럼 transform.position을 그대로 쓴다.</summary>
-    Vector3 TrackedCameraPosition() =>
-        trackedSectionCamera != null ? trackedSectionCamera.BasePosition : trackedCamera.position;
 
     void BuildBeamLight()
     {
@@ -274,6 +370,14 @@ public class BossEyeTracker : MonoBehaviour
         glowLight.shadowsEnabled = true;
         glowLight.shadowIntensity = 1f;
         ApplyToAllSortingLayers(glowLight);
+
+        // 휴면으로 시작하면 "빔 꺼짐 + 모든 보스 라이트 꺼짐"이 첫 프레임부터 성립해야 한다(사용자 지시).
+        // 세기만 0으로 두면 볼류메트릭 안개가 미세하게 남으므로 오브젝트째 끈다.
+        if (dormant)
+        {
+            beamLight.gameObject.SetActive(false);
+            glowLight.gameObject.SetActive(false);
+        }
     }
 
     // Light2D는 "타깃 소팅 레이어"에 속한 렌더러만 비춘다. AddComponent로 만들면 Awake가 전체
@@ -289,6 +393,9 @@ public class BossEyeTracker : MonoBehaviour
 
     void LateUpdate()
     {
+        if (retreating) return; // 퇴장 연출이 위치·라이트를 직접 몰고 있다 — 추적이 끼어들면 안 된다
+        if (dormant) return;    // 등장 연출도 같은 이유(BossStageDirector가 위치·라이트를 직접 몬다)
+
         if (player == null)
         {
             GameObject p = GameObject.FindGameObjectWithTag("Player");
@@ -296,28 +403,67 @@ public class BossEyeTracker : MonoBehaviour
             else return;
         }
 
-        // ── 카메라가 움직인 만큼 목표 지점(desiredPosition)을 갱신하고, 실제 위치는 그걸 서서히
-        // 뒤쫓는다(즉시 100% 반영 X) — 위/아래 방향에 편향 없이 대칭적으로 동작한다.
-        if (trackedCamera != null)
+        // ── 걷는 중 / 멈춰 있는 중, 둘 중 하나다. 멈춰 있을 땐 SmoothDamp를 아예 안 돌린다.
+        // 첫 LateUpdate에서만 homeOffset을 캡처한다 — Awake 실행 순서에 의존하지 않기 위해서다.
+        // (LateUpdate는 씬의 모든 Awake가 끝난 뒤에만 돈다.)
+        if (!followInitialized)
         {
-            // 첫 LateUpdate에서만 lastCameraPosition을 캡처한다(Awake 실행 순서 경합 회피 —
-            // 위 Awake()의 주석 참고). LateUpdate는 씬의 모든 Awake가 끝난 뒤에만 돌므로 이 시점엔
-            // SectionCamera.BasePosition이 항상 진짜 값으로 채워져 있다.
-            if (!cameraTrackingInitialized)
-            {
-                lastCameraPosition = TrackedCameraPosition();
-                cameraTrackingInitialized = true;
-            }
-
-            Vector3 currentTrackedPos = TrackedCameraPosition();
-            Vector3 cameraDelta = currentTrackedPos - lastCameraPosition;
-            cameraDelta.z = 0f;
-            desiredPosition += cameraDelta;
-            lastCameraPosition = currentTrackedPos;
-
-            float followT = 1f - Mathf.Exp(-followSmoothSpeed * Time.deltaTime);
-            transform.position = Vector3.Lerp(transform.position, desiredPosition, followT);
+            // 등장 시점부터 반드시 플레이어 왼쪽(앞쪽)에 선다 — X만 플레이어 기준으로 다시 잡고,
+            // Y·Z는 씬에 잡아둔 구도(눈높이 · 메시 깊이)를 그대로 존중한다.
+            transform.position = new Vector3(player.position.x + startOffsetFromPlayerX,
+                                             transform.position.y, transform.position.z);
+            homeOffset = transform.position - player.position;
+            desiredPosition = transform.position;
+            followInitialized = true;
+            TestLog.Event("boss_step", $"spawn x={transform.position.x:F1} offsetFromPlayer={homeOffset.x:F1}");
         }
+
+        // z는 보스 메시 자체의 깊이(≈18)라 플레이어를 따라가면 안 된다 — X·Y만 추적한다.
+        Vector3 anchor = new Vector3(player.position.x + homeOffset.x,
+                                     player.position.y + homeOffset.y,
+                                     desiredPosition.z);
+
+        if (TryPullBackOffscreen(anchor))
+        {
+            // 재배치했으면 진행 중이던 걸음은 무효 — 새 자리에서 정지 구간부터 다시 시작한다.
+            desiredPosition = transform.position;
+            followVelocity = Vector3.zero;
+            stepping = false;
+            stepRestTimer = stepRestSeconds;
+        }
+        else if (stepping)
+        {
+            // ⚠️ 걷는 도중엔 desiredPosition을 절대 갱신하지 않는다 — 매 프레임 플레이어를 다시 조준하면
+            //    그게 바로 "상시 이동"이다. 이번 걸음은 걸음을 뗀 순간의 좌표만 붙들고 간다.
+            transform.position = Vector3.SmoothDamp(transform.position, desiredPosition, ref followVelocity,
+                                                    Mathf.Max(0.01f, followSmoothTime),
+                                                    Mathf.Max(0.01f, followMaxSpeed), Time.deltaTime);
+
+            if ((transform.position - desiredPosition).sqrMagnitude <= StepArriveEpsilon * StepArriveEpsilon)
+            {
+                transform.position = desiredPosition;
+                followVelocity = Vector3.zero;
+                stepping = false;
+                stepRestTimer = stepRestSeconds;
+                TestLog.Event("boss_step", "step_end");
+            }
+        }
+        else if (stepRestTimer > 0f)
+        {
+            stepRestTimer -= Time.deltaTime; // 강제 정지 구간 — 아무리 멀어져도 안 움직인다
+        }
+        else
+        {
+            if (Vector3.Distance(desiredPosition, anchor) > Mathf.Max(0.01f, stepTriggerDistance))
+            {
+                desiredPosition = anchor;
+                stepping = true;
+                stepShakeTimer = stepShakeDuration; // 걸음을 떼는 그 순간에 쿵
+                TestLog.Event("boss_step", $"step_begin to={anchor.x:F1},{anchor.y:F1}");
+            }
+        }
+
+        UpdateStepShake();
 
         // ── 제한된 회전(좌우뿐 아니라 위아래도 함께 — "눈으로 응시"하는 느낌) ──
         // 정면(restRotation)에서 플레이어 방향까지의 회전을 구하고, 그 전체 각도를 maxYawDegrees로
@@ -394,6 +540,107 @@ public class BossEyeTracker : MonoBehaviour
         UpdateExposure(eyeWorldNow);
     }
 
+    /// <summary>보스가 **화면 밖에 완전히 나가 있는 동안에만**, 화면 밖 위치 중 목표에 가장 가까운
+    /// 자리로 순간이동시킨다(사용자 지시 2026-08-13). 재배치했으면 true.
+    ///
+    /// 판정·배치 모두 보스의 실제 월드 AABB로 한다 — "몸의 아주 일부분이라도 보이면 안 된다"는
+    /// 조건은 피벗이 아니라 렌더 경계로만 보장할 수 있다. 몸통 절반(extents)만큼 더 밀어내므로
+    /// 순간이동 직후에도 AABB가 화면과 절대 겹치지 않는다.
+    ///
+    /// 후보는 두 개뿐이다: 지금 이미 벗어나 있는 축(들)의 **같은 쪽** 경계 바깥. 같은 쪽만 쓰므로
+    /// 화면을 가로질러 반대편에서 튀어나오는 일이 없고, 그중 목표에 더 가까운 쪽을 고른다.
+    ///
+    /// ⚠️ 직교 카메라라 Z는 화면 위치에 영향이 없다(원근 없음) — 월드 X·Y만 뷰 크기와 비교한다.
+    /// 카메라 중심은 SectionCamera.BasePosition을 쓴다: transform.position은 쉐이크·줌 오프셋이
+    /// 전부 합산된 값이라 화면이 흔들리는 순간마다 경계가 미세하게 달라진다.</summary>
+    bool TryPullBackOffscreen(Vector3 anchor)
+    {
+        if (trackedCameraComponent == null || !trackedCameraComponent.orthographic) return false;
+        if (!TryGetBossWorldBounds(out Bounds b)) return false;
+
+        Vector3 camCenter = trackedSectionCamera != null ? trackedSectionCamera.BasePosition : trackedCamera.position;
+        float halfH = trackedCameraComponent.orthographicSize;
+        float halfW = halfH * trackedCameraComponent.aspect;
+        if (halfH <= 0.01f || halfW <= 0.01f) return false;
+
+        // AABB가 화면과 겹치는지 — 겹치면(=조금이라도 보이면) 순간이동 자체를 하지 않는다.
+        float limitX = halfW + b.extents.x + OffscreenPadding;
+        float limitY = halfH + b.extents.y + OffscreenPadding;
+        float offX = b.center.x - camCenter.x;
+        float offY = b.center.y - camCenter.y;
+        bool xOutside = Mathf.Abs(offX) >= limitX;
+        bool yOutside = Mathf.Abs(offY) >= limitY;
+        if (!xOutside && !yOutside) return false;
+
+        // 피벗과 렌더 중심이 다르다(메시 피벗이 바닥 쪽) — 경계 계산은 중심으로 하고 결과는 피벗으로 되돌린다.
+        Vector3 pivotFromCenter = transform.position - b.center;
+
+        Vector3 best = Vector3.zero;
+        float bestDist = float.MaxValue;
+
+        if (xOutside)
+        {
+            Vector3 cand = new Vector3(camCenter.x + Mathf.Sign(offX) * limitX + pivotFromCenter.x,
+                                       anchor.y, transform.position.z);
+            float d = Vector2.Distance(cand, anchor);
+            if (d < bestDist) { bestDist = d; best = cand; }
+        }
+        if (yOutside)
+        {
+            Vector3 cand = new Vector3(anchor.x,
+                                       camCenter.y + Mathf.Sign(offY) * limitY + pivotFromCenter.y,
+                                       transform.position.z);
+            float d = Vector2.Distance(cand, anchor);
+            if (d < bestDist) { bestDist = d; best = cand; }
+        }
+
+        // 이미 그만큼 가까우면 굳이 옮기지 않는다 — 매 프레임 무의미하게 걸음 상태를 리셋하지 않기 위해서다.
+        if (bestDist >= Vector2.Distance(transform.position, anchor) - 0.5f) return false;
+
+        transform.position = best;
+        TestLog.Event("boss_step", $"pullback to={best.x:F1},{best.y:F1} dist={bestDist:F1}");
+        return true;
+    }
+
+    /// <summary>보스의 현재 월드 AABB(자식 렌더러 전부 합산). 렌더러가 하나도 없으면 false.</summary>
+    bool TryGetBossWorldBounds(out Bounds bounds)
+    {
+        if (bossRenderers == null) bossRenderers = GetComponentsInChildren<Renderer>();
+
+        bounds = default;
+        bool any = false;
+        for (int i = 0; i < bossRenderers.Length; i++)
+        {
+            Renderer r = bossRenderers[i];
+            if (r == null || !r.enabled) continue;
+            if (!any) { bounds = r.bounds; any = true; }
+            else bounds.Encapsulate(r.bounds);
+        }
+        return any;
+    }
+
+    /// <summary>한 걸음의 쿵을 감쇠시킨다 — 덩치 연출(사용자 피드백 2026-08-13).
+    ///
+    /// SectionCamera의 전용 채널(SetAmbientShake)을 쓴다. 두 가지 이유다:
+    /// ① SetSustainedShake는 플레이어 연출(일섬 차지·빛 소모)이 매 프레임 덮어쓰는 슬롯이라 같이
+    ///    쓰면 서로를 지운다. ② Shake()는 매 프레임 난수(백색 잡음)에 shakeOffset을 공유해서
+    ///    StopShake()에 같이 끊기는데, ambient 채널은 Perlin 저주파라 같은 세기에서도 훨씬 무겁게
+    ///    읽힌다("지지직"이 아니라 "쿵").</summary>
+    void UpdateStepShake()
+    {
+        if (trackedSectionCamera == null) return;
+
+        if (stepShakeTimer <= 0f)
+        {
+            trackedSectionCamera.SetAmbientShake(0f);
+            return;
+        }
+
+        stepShakeTimer -= Time.deltaTime;
+        float k = Mathf.Clamp01(stepShakeTimer / Mathf.Max(0.01f, stepShakeDuration));
+        trackedSectionCamera.SetAmbientShake(stepShakeMagnitude * k * k); // 제곱 감쇠 — 초반이 세고 빨리 잦아든다
+    }
+
     /// <summary>플레이어가 빔 부채꼴 안에 있는지 — 사거리(beamRange)와 외곽각(beamOuterAngle, 전체각)으로
     /// 1차 판정한 뒤, 플레이어가 occluder(fan activ 등) **안에 들어가 있으면** 최종적으로 false로 뒤집는다.
     /// ⚠️ 시선 차단(눈→플레이어 라인캐스트)이 아니라 **겹침** 판정이다(사용자 지시 2026-08-10):
@@ -416,6 +663,7 @@ public class BossEyeTracker : MonoBehaviour
         if (Vector3.Angle(beamDir, toPlayer) > beamOuterAngle * 0.5f) return false;
 
         if (IsPlayerInsideOccluder()) return false;
+        if (IsSightBlockedByTerrain(eyeWorld)) return false;
 
         return true;
     }
@@ -430,6 +678,20 @@ public class BossEyeTracker : MonoBehaviour
         Vector2 probe = playerCollider != null ? (Vector2)playerCollider.bounds.center : (Vector2)player.position;
 
         return Physics2D.OverlapPoint(probe, beamOccluderMask) != null;
+    }
+
+    /// <summary>지형(layer2)이 눈→플레이어 시선을 끊는지. 겹침이 아니라 라인캐스트라 "뒤에 숨으면
+    /// 안전"이 된다 — occluder(겹침)와는 독립된 경로고, 둘 중 하나만 걸려도 노출이 꺼진다.
+    /// 지형 콜라이더는 isTrigger라 물리적으로 막지 않지만 Physics2D.queriesHitTriggers가 true라
+    /// 라인캐스트에는 정상적으로 걸린다.</summary>
+    bool IsSightBlockedByTerrain(Vector3 eyeWorld)
+    {
+        if (terrainOccluderMask == 0) return false;
+
+        if (playerCollider == null) playerCollider = player.GetComponentInChildren<Collider2D>();
+        Vector2 target = playerCollider != null ? (Vector2)playerCollider.bounds.center : (Vector2)player.position;
+
+        return Physics2D.Linecast(eyeWorld, target, terrainOccluderMask).collider != null;
     }
 
     // 3초 이상 연속 노출 → 자아 고갈과 같은 화면 노이즈 + 5초마다 체력 한 칸(사용자 지시 2026-08-09).
@@ -462,6 +724,9 @@ public class BossEyeTracker : MonoBehaviour
             exposureBroken = true;
             exposureDamageTimer = 0f; // 첫 피해는 한 주기를 꽉 채운 뒤(자아 붕괴와 같은 규칙)
             ScreenGlitchFx.Begin(ScreenGlitchFx.Source.BossBeam);
+            // 사용자 지시(2026-08-13): "빔에 의해 노이즈가 나타날 때 BossBeamSFX 재생".
+            // 노이즈를 켜는 이 지점 하나에만 건다 — 노출이 끊겼다 다시 걸리면 다시 울린다.
+            GameSfx.Play(Sfx.BossBeamNoise);
             TestLog.Event("boss_beam", $"exposure_break after={exposureTimer:F2}s");
         }
 
@@ -505,9 +770,280 @@ public class BossEyeTracker : MonoBehaviour
         TestLog.Event("boss_beam", "exposure_clear");
     }
 
-    // 보스가 사라져도 노이즈가 화면에 남지 않게 한다(씬 전환 · 오브젝트 파괴).
+    // ── 등장 연출 (BossStageDirector 전용) ────────────────────────────────────────────────────
+    // 여기 있는 이유: beamLight·glowLight는 런타임에 만들어지는 private 참조라 밖에서 못 만진다.
+    // 순서(이동 → 눈 → 빔 위쪽 페이드 인 → 플레이어 조준)는 감독이 정하고, 각 동작의 구현만 가져간다.
+
+    /// <summary>등장이 끝나고 보스가 서 있어야 할 자리 — X는 플레이어 기준
+    /// <see cref="startOffsetFromPlayerX"/>, Y·Z는 씬에 잡아둔 구도를 그대로 쓴다.
+    /// LateUpdate의 followInitialized 블록이 계산하는 것과 정확히 같은 값이라, 연출이 끝나고 추적이
+    /// 켜지는 순간 보스가 튀지 않는다.</summary>
+    public Vector3 ResolveHomePosition()
+    {
+        Transform p = ResolveIntroPlayer();
+        if (p == null) return sceneStartPosition;
+        return new Vector3(p.position.x + startOffsetFromPlayerX, sceneStartPosition.y, sceneStartPosition.z);
+    }
+
+    /// <summary>등장 시작 위치(홈 + <see cref="introSpawnOffset"/>)로 순간이동시킨다. 라이트는 전부 꺼진 채다.</summary>
+    public void IntroPlaceAtSpawn()
+    {
+        dormant = true;
+        if (beamLight != null) beamLight.gameObject.SetActive(false);
+        if (glowLight != null) glowLight.gameObject.SetActive(false);
+        transform.position = ResolveHomePosition() + introSpawnOffset;
+        TestLog.Event("boss_intro", $"spawn at={transform.position.x:F1},{transform.position.y:F1}");
+    }
+
+    /// <summary>시작 위치에서 홈까지 걸어 들어온다(감속 도착 — 덩치가 멈춰 서는 느낌).</summary>
+    public IEnumerator IntroMoveIn(float duration)
+    {
+        Vector3 from = transform.position;
+        Vector3 to = ResolveHomePosition();
+        float d = Mathf.Max(0.01f, duration);
+        float t = 0f;
+        while (t < d)
+        {
+            t += Mathf.Min(Time.unscaledDeltaTime, IntroMaxStep);
+            transform.position = Vector3.Lerp(from, to, Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(t / d)));
+            yield return null;
+        }
+        transform.position = to;
+        TestLog.Event("boss_intro", "move_in_done");
+    }
+
+    /// <summary>눈(넓은 원형 광원)만 켠다 — 빔은 그대로 꺼진 채다. 밝기와 반경이 같이 자라난다.</summary>
+    public IEnumerator IntroEyeLightUp(float duration)
+    {
+        if (glowLight == null) yield break;
+
+        glowLight.gameObject.SetActive(true);
+        glowLight.color = glowColor;
+        PlaceLightsAtEye();
+
+        float d = Mathf.Max(0.01f, duration);
+        float t = 0f;
+        while (t < d)
+        {
+            t += Mathf.Min(Time.unscaledDeltaTime, IntroMaxStep);
+            float k = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(t / d));
+            glowLight.intensity = glowIntensity * k;
+            glowLight.pointLightInnerRadius = glowInnerRadius * k;
+            glowLight.pointLightOuterRadius = glowOuterRadius * k;
+            PlaceLightsAtEye();
+            yield return null;
+        }
+        glowLight.intensity = glowIntensity;
+        glowLight.pointLightInnerRadius = glowInnerRadius;
+        glowLight.pointLightOuterRadius = glowOuterRadius;
+        TestLog.Event("boss_intro", "eye_on");
+    }
+
+    /// <summary>빔을 **위쪽**을 향한 채로 켠다(밝기와 길이가 같이 자라난다). 아직 플레이어를 겨누지 않는다.</summary>
+    public IEnumerator IntroBeamUp(float duration)
+    {
+        if (beamLight == null) yield break;
+
+        beamLight.gameObject.SetActive(true);
+        beamLight.color = beamColor;
+        beamLight.pointLightInnerAngle = beamInnerAngle;
+        beamLight.pointLightOuterAngle = beamOuterAngle;
+        beamLight.transform.rotation = Quaternion.FromToRotation(beamAimLocalAxis.normalized, Vector3.up);
+        PlaceLightsAtEye();
+
+        float targetLength = ResolveBeamTargetLength();
+        float targetIntensity = ResolveBeamTargetIntensity();
+
+        float d = Mathf.Max(0.01f, duration);
+        float t = 0f;
+        while (t < d)
+        {
+            t += Mathf.Min(Time.unscaledDeltaTime, IntroMaxStep);
+            float k = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(t / d));
+            beamLight.intensity = targetIntensity * k;
+            beamLight.volumeIntensity = k;
+            beamLight.pointLightOuterRadius = targetLength * k;
+            PlaceLightsAtEye();
+            yield return null;
+        }
+        beamLight.intensity = targetIntensity;
+        beamLight.volumeIntensity = 1f;
+        beamLight.pointLightOuterRadius = targetLength;
+        TestLog.Event("boss_intro", "beam_up");
+    }
+
+    /// <summary>위를 보던 빔을 플레이어 쪽으로 돌린다. 여기까지가 등장 연출의 마지막 동작이다.</summary>
+    public IEnumerator IntroBeamAimToPlayer(float duration)
+    {
+        if (beamLight == null) yield break;
+
+        Quaternion from = beamLight.transform.rotation;
+        float d = Mathf.Max(0.01f, duration);
+        float t = 0f;
+        while (t < d)
+        {
+            t += Mathf.Min(Time.unscaledDeltaTime, IntroMaxStep);
+            float k = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(t / d));
+            // 목표는 매 프레임 다시 구한다 — 연출 중 플레이어는 안 움직이지만, 카메라 줌 아웃으로
+            // 보스가 밀려나는 경우까지 감안해 항상 "지금의" 플레이어를 겨누게 한다.
+            beamLight.transform.rotation = Quaternion.Slerp(from, ResolveBeamAimToPlayer(), k);
+            beamLight.intensity = ResolveBeamTargetIntensity();
+            beamLight.pointLightOuterRadius = ResolveBeamTargetLength();
+            PlaceLightsAtEye();
+            yield return null;
+        }
+        beamLight.transform.rotation = ResolveBeamAimToPlayer();
+        TestLog.Event("boss_intro", "beam_aimed");
+    }
+
+    /// <summary>휴면 해제 — 이 시점부터 평소의 추적·조준·노출 판정이 돈다.</summary>
+    public void IntroFinish()
+    {
+        if (!dormant) return;
+        dormant = false;
+        // 빔 길이를 지금 값에서 이어받게 한다. 안 하면 LateUpdate의 첫 프레임이 beamCurrentLength=0에서
+        // 시작해 빔이 한 번 사그라들었다 다시 뻗는다.
+        if (beamLight != null)
+        {
+            beamCurrentLength = beamLight.pointLightOuterRadius;
+            beamLengthInitialized = true;
+        }
+        TestLog.Event("boss_intro", "finish");
+    }
+
+    // 연출 동안에는 LateUpdate가 통째로 빠져 있어 라이트를 아무도 안 옮긴다 — 매 프레임 직접 붙인다.
+    // z=0 평면에 두는 이유는 LateUpdate 쪽과 같다(URP 2D 그림자는 광원과 캐스터가 같은 평면이어야 한다).
+    void PlaceLightsAtEye()
+    {
+        Vector3 eye = transform.TransformPoint(eyeLocalOffset);
+        Vector3 lightPos = new Vector3(eye.x, eye.y, 0f);
+        if (beamLight != null) beamLight.transform.position = lightPos;
+        if (glowLight != null) glowLight.transform.position = lightPos;
+    }
+
+    Transform ResolveIntroPlayer()
+    {
+        if (player != null) return player;
+        GameObject p = GameObject.FindGameObjectWithTag("Player");
+        if (p != null) player = p.transform;
+        return player;
+    }
+
+    // 연출이 끝나는 순간의 빔 길이·세기를 LateUpdate와 **같은 식**으로 구한다 — 두 곳의 값이 다르면
+    // 휴면이 풀리는 프레임에 빔이 눈에 띄게 튄다.
+    float ResolveBeamTargetLength()
+    {
+        Transform p = ResolveIntroPlayer();
+        if (p == null) return beamRange;
+        Vector3 eye = transform.TransformPoint(eyeLocalOffset);
+        return Mathf.Min(Vector3.Distance(eye, new Vector3(p.position.x, p.position.y, eye.z)), beamRange);
+    }
+
+    float ResolveBeamTargetIntensity()
+    {
+        Transform p = ResolveIntroPlayer();
+        if (p == null) return beamIntensity;
+        Vector3 eye = transform.TransformPoint(eyeLocalOffset);
+        float dist = Vector3.Distance(eye, new Vector3(p.position.x, p.position.y, eye.z));
+        float distT = Mathf.Clamp01(dist / Mathf.Max(0.01f, beamRange));
+        return beamIntensity * Mathf.Lerp(beamNearIntensityMultiplier, beamFarIntensityMultiplier, distT);
+    }
+
+    Quaternion ResolveBeamAimToPlayer()
+    {
+        Transform p = ResolveIntroPlayer();
+        if (p == null) return beamLight.transform.rotation;
+        Vector3 eye = transform.TransformPoint(eyeLocalOffset);
+        Vector3 dir = new Vector3(p.position.x - eye.x, p.position.y - eye.y, 0f);
+        if (dir.sqrMagnitude < 0.0001f) return beamLight.transform.rotation;
+        return Quaternion.FromToRotation(beamAimLocalAxis.normalized, dir.normalized);
+    }
+
+    // 씬 로드 직후 첫 프레임의 unscaledDeltaTime은 1초를 넘길 수 있다(ScreenBlackout 주석 참고) —
+    // 그대로 누적하면 등장 연출이 한 프레임에 끝나 버린다.
+    const float IntroMaxStep = 0.05f;
+
+    /// <summary>BossEndTrigger가 호출한다 — 빔을 멈추고(현재 걸려 있는 노출 효과 전부 즉시 해제),
+    /// 두 라이트를 페이드아웃하면서 오른쪽 상단으로 물러나 사라진다. 두 번 불러도 한 번만 돈다.</summary>
+    public void BeginRetreat()
+    {
+        if (retreating) return;
+        retreating = true;
+
+        // "현재 모든 빔 효과 해제" — 화면 노이즈(ScreenGlitchFx)·노출 타이머·피해 주기를 즉시 끈다.
+        ClearExposure();
+        IsPlayerExposed = false;
+        reacquireCooldown = 0f;
+        // 퇴장 중엔 LateUpdate가 통째로 빠져나가 쿵을 아무도 안 내린다 — 마지막 값이 그대로 카메라에
+        // 남으므로 여기서 명시적으로 끈다(퇴장 이동은 자체 코루틴이 몰고 간다).
+        stepShakeTimer = 0f;
+        if (trackedSectionCamera != null) trackedSectionCamera.SetAmbientShake(0f);
+
+        StartCoroutine(RetreatRoutine());
+    }
+
+    // 순서가 중요하다(사용자 지시 2026-08-12): 빔이 "먼저 빠르게" 꺼지고, 그 다음에야 "천천히"
+    // 이동하며 떠난다. 둘을 동시에 돌리면 물러나는 보스에 빔이 끌려가 마무리가 흐려진다.
+    IEnumerator RetreatRoutine()
+    {
+        // ── 1단계: 빔을 빠르게 끈다 ─────────────────────────────────────────────
+        float beamIntensity0 = beamLight != null ? beamLight.intensity : 0f;
+        float beamVolume0 = beamLight != null ? beamLight.volumeIntensity : 0f;
+        float glowIntensity0 = glowLight != null ? glowLight.intensity : 0f;
+
+        float fadeDuration = Mathf.Max(0.01f, beamFadeSeconds);
+        float t = 0f;
+        while (t < fadeDuration)
+        {
+            t += Time.deltaTime;
+            float k = Mathf.Clamp01(t / fadeDuration);
+
+            // volumeIntensity(안개 빔)를 같이 내리지 않으면 표면 조명만 어두워지고 붉은 안개는
+            // 그대로 남는다(BuildBeamLight의 볼류메트릭 주석과 같은 이유).
+            if (beamLight != null)
+            {
+                beamLight.intensity = Mathf.Lerp(beamIntensity0, 0f, k);
+                beamLight.volumeIntensity = Mathf.Lerp(beamVolume0, 0f, k);
+            }
+            if (glowLight != null) glowLight.intensity = Mathf.Lerp(glowIntensity0, 0f, k);
+
+            yield return null;
+        }
+
+        // 라이트는 BuildBeamLight에서 루트 오브젝트로 만들어져 보스의 자식이 아니다 —
+        // 보스만 끄면 꺼진 채로 남으니 명시적으로 같이 끈다.
+        if (beamLight != null) beamLight.gameObject.SetActive(false);
+        if (glowLight != null) glowLight.gameObject.SetActive(false);
+        TestLog.Event("boss_beam", "retreat_beam_off");
+
+        // ── 2단계: 천천히 물러난다. BGM도 이 구간에 맞춰 같이 내려간다 ──────────
+        Vector3 from = transform.position;
+        Vector3 to = from + retreatOffset;
+        float bgmVolume0 = bgm != null ? bgm.volume : 0f;
+
+        float moveDuration = Mathf.Max(0.01f, retreatSeconds);
+        t = 0f;
+        while (t < moveDuration)
+        {
+            t += Time.deltaTime;
+            float k = Mathf.Clamp01(t / moveDuration);
+
+            transform.position = Vector3.Lerp(from, to, Mathf.SmoothStep(0f, 1f, k));
+            if (bgm != null) bgm.volume = Mathf.Lerp(bgmVolume0, 0f, k);
+
+            yield return null;
+        }
+        if (bgm != null) bgm.volume = 0f;
+
+        TestLog.Event("boss_beam", "retreat_done");
+        gameObject.SetActive(false);
+    }
+
+    // 보스가 사라져도 노이즈·진동이 화면에 남지 않게 한다(씬 전환 · 오브젝트 파괴).
     void OnDisable()
     {
         ClearExposure();
+        stepShakeTimer = 0f;
+        if (trackedSectionCamera != null) trackedSectionCamera.SetAmbientShake(0f);
     }
 }
