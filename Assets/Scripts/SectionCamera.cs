@@ -185,6 +185,10 @@ public class SectionCamera : MonoBehaviour
 
     float framedOrthoSize;
 
+    /// <summary>지금 화면에 실제로 적용 중인 크기. 첫 LateUpdate(ApplyFraming) 전에는 framedOrthoSize가
+    /// 아직 0이라 그때만 baseOrthoSize(Awake에서 캡처한 씬 값)로 대신한다.</summary>
+    float FramedOrthoSizeOrBase => framedOrthoSize > 0.01f ? framedOrthoSize : baseOrthoSize;
+
     // 룸 프레이밍(basePos·baseOrthoSize) 위에 컷신 블렌드를 얹어 최종 화면 중심·크기를 낸다.
     // 블렌드가 0이면 그냥 원본을 그대로 복사하므로 평상시 경로는 계산이 늘지 않는다.
     void ApplyFraming(bool snap)
@@ -337,17 +341,28 @@ public class SectionCamera : MonoBehaviour
     {
         Vector3 fromOffset = sustainFocusOffset;
         float fromZoom = sustainFocusZoomDelta;
-        float targetZoomDelta = -(baseOrthoSize - baseOrthoSize / Mathf.Max(0.01f, zoomMultiplier));
-        float targetOrthoSize = baseOrthoSize / Mathf.Max(0.01f, zoomMultiplier);
+        float targetZoomDelta = 0f;
         float t = 0f;
         while (t < rampIn)
         {
             if (myToken != sustainFocusToken) yield break; // ClearSustainedFocus가 먼저 불렸으면 조용히 포기
             t += Time.unscaledDeltaTime;
             float k = Mathf.Clamp01(t / rampIn);
-            // target - basePos(구간 중심)까지의 변위에 pan(0~1)을 곱한다 — pan=1이면 target이
-            // 화면 중앙에 오도록 basePos를 그만큼 이동시키는 오프셋이 된다(방향만 쓰던 FocusPulse와 다름).
-            Vector3 dir = sustainFocusTarget != null ? (sustainFocusTarget.position - basePos) : Vector3.zero;
+            // ⚠️ 기준은 반드시 **framed**(실제 화면에 적용되는 값)이어야 한다 — basePos/baseOrthoSize가
+            //    아니다(버그 수정 2026-08-13, 사용자 리포트 "카메라가 작을 때 E홀드하면 이상한 곳에 줌인").
+            //    LateUpdate는 `transform.position = framedBasePos + ... + sustainFocusOffset`,
+            //    `cam.orthographicSize = framedOrthoSize + ... + sustainFocusZoomDelta`로 적용하는데,
+            //    컷신 프레이밍(cutsceneBlend>0)이 걸려 있으면 framed*와 base*가 크게 벌어진다.
+            //    Map-test 실측: basePos(-87.00, 36.80) vs framedBasePos(-77.99, 27.95),
+            //    baseOrthoSize 13.50 vs framedOrthoSize 5.00 → 카메라가 플레이어에서 (9.0, -8.9)만큼
+            //    빗나간 곳으로 가고, 줌은 1.3배가 아니라 2.65배(5 → 1.885)까지 파고들었다.
+            //    cutsceneBlend가 0이면 framed* == base* 라 평상시 동작은 완전히 그대로다(회귀 0).
+            float framedSize = FramedOrthoSizeOrBase;
+            targetZoomDelta = -(framedSize - framedSize / Mathf.Max(0.01f, zoomMultiplier));
+
+            // target - 화면중심까지의 변위에 pan(0~1)을 곱한다 — pan=1이면 target이 화면 중앙에
+            // 오도록 화면중심을 그만큼 이동시키는 오프셋이 된다(방향만 쓰던 FocusPulse와 다름).
+            Vector3 dir = sustainFocusTarget != null ? (sustainFocusTarget.position - framedBasePos) : Vector3.zero;
             dir.z = 0f;
             Vector3 targetOffset = new Vector3(dir.x * sustainFocusPan, 0f, 0f);
 

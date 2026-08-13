@@ -87,6 +87,9 @@ public class DodgeUI : MonoBehaviour
 
         _prompt.transform.localScale    = Vector3.one;
         _prompt.transform.localPosition = new Vector3(PromptOffset.x, PromptOffset.y, 0f);
+        // 확인키는 PlayerActions "Parry" 액션이다(F + 우클릭 둘 다 바인딩) — 키캡에는 키보드 쪽을 띄운다.
+        // 띄울 때마다 다시 읽으므로 일시정지 중에 키를 바꿔도 다음 프롬프트부터 반영된다.
+        KeyPromptLabel.Apply(_prompt, KeyBinds.DisplayKeyboard("Parry"));
         RestorePromptColors();
         _prompt.SetActive(true);
     }

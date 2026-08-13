@@ -262,12 +262,12 @@ TextureImporter:
       name: Big Insect with shadow 72x44 sprite sheet_0
       rect:
         serializedVersion: 2
-        x: 16
-        y: 94
-        width: 27
-        height: 32
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 0
+        y: 88
+        width: 72
+        height: 44
+      alignment: 9
+      pivot: {x: 0.4097222, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -284,12 +284,12 @@ TextureImporter:
       name: Big Insect with shadow 72x44 sprite sheet_1
       rect:
         serializedVersion: 2
-        x: 88
-        y: 94
-        width: 27
-        height: 31
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 72
+        y: 88
+        width: 72
+        height: 44
+      alignment: 9
+      pivot: {x: 0.4097222, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -306,12 +306,12 @@ TextureImporter:
       name: Big Insect with shadow 72x44 sprite sheet_2
       rect:
         serializedVersion: 2
-        x: 160
-        y: 96
-        width: 27
-        height: 30
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 144
+        y: 88
+        width: 72
+        height: 44
+      alignment: 9
+      pivot: {x: 0.4097222, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -328,12 +328,12 @@ TextureImporter:
       name: Big Insect with shadow 72x44 sprite sheet_3
       rect:
         serializedVersion: 2
-        x: 232
-        y: 96
-        width: 27
-        height: 30
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 216
+        y: 88
+        width: 72
+        height: 44
+      alignment: 9
+      pivot: {x: 0.4097222, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -350,12 +350,12 @@ TextureImporter:
       name: Big Insect with shadow 72x44 sprite sheet_4
       rect:
         serializedVersion: 2
-        x: 304
-        y: 97
-        width: 27
-        height: 29
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 288
+        y: 88
+        width: 72
+        height: 44
+      alignment: 9
+      pivot: {x: 0.4097222, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -372,12 +372,12 @@ TextureImporter:
       name: Big Insect with shadow 72x44 sprite sheet_5
       rect:
         serializedVersion: 2
-        x: 376
-        y: 97
-        width: 27
-        height: 28
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 360
+        y: 88
+        width: 72
+        height: 44
+      alignment: 9
+      pivot: {x: 0.4097222, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -394,12 +394,12 @@ TextureImporter:
       name: Big Insect with shadow 72x44 sprite sheet_6
       rect:
         serializedVersion: 2
-        x: 448
-        y: 97
-        width: 27
-        height: 29
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 432
+        y: 88
+        width: 72
+        height: 44
+      alignment: 9
+      pivot: {x: 0.4097222, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -416,12 +416,12 @@ TextureImporter:
       name: Big Insect with shadow 72x44 sprite sheet_7
       rect:
         serializedVersion: 2
-        x: 520
-        y: 95
-        width: 27
-        height: 29
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 504
+        y: 88
+        width: 72
+        height: 44
+      alignment: 9
+      pivot: {x: 0.4097222, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -438,12 +438,12 @@ TextureImporter:
       name: Big Insect with shadow 72x44 sprite sheet_8
       rect:
         serializedVersion: 2
-        x: 22
-        y: 87
-        width: 18
-        height: 7
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 576
+        y: 88
+        width: 72
+        height: 44
+      alignment: 9
+      pivot: {x: 0.4097222, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -460,12 +460,12 @@ TextureImporter:
       name: Big Insect with shadow 72x44 sprite sheet_9
       rect:
         serializedVersion: 2
-        x: 94
-        y: 87
-        width: 18
-        height: 7
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 648
+        y: 88
+        width: 72
+        height: 44
+      alignment: 9
+      pivot: {x: 0.4097222, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -482,12 +482,12 @@ TextureImporter:
       name: Big Insect with shadow 72x44 sprite sheet_10
       rect:
         serializedVersion: 2
-        x: 157
-        y: 61
-        width: 28
-        height: 26
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 720
+        y: 88
+        width: 72
+        height: 44
+      alignment: 9
+      pivot: {x: 0.4097222, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -504,12 +504,12 @@ TextureImporter:
       name: Big Insect with shadow 72x44 sprite sheet_11
       rect:
         serializedVersion: 2
-        x: 166
-        y: 87
-        width: 18
-        height: 7
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 792
+        y: 88
+        width: 72
+        height: 44
+      alignment: 9
+      pivot: {x: 0.4097222, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -526,12 +526,12 @@ TextureImporter:
       name: Big Insect with shadow 72x44 sprite sheet_12
       rect:
         serializedVersion: 2
-        x: 238
-        y: 87
-        width: 18
-        height: 7
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 864
+        y: 88
+        width: 72
+        height: 44
+      alignment: 9
+      pivot: {x: 0.4097222, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -548,12 +548,12 @@ TextureImporter:
       name: Big Insect with shadow 72x44 sprite sheet_13
       rect:
         serializedVersion: 2
-        x: 310
-        y: 87
-        width: 18
-        height: 7
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 0
+        y: 44
+        width: 72
+        height: 44
+      alignment: 9
+      pivot: {x: 0.4097222, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -570,12 +570,12 @@ TextureImporter:
       name: Big Insect with shadow 72x44 sprite sheet_14
       rect:
         serializedVersion: 2
-        x: 382
-        y: 87
-        width: 18
-        height: 7
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 72
+        y: 44
+        width: 72
+        height: 44
+      alignment: 9
+      pivot: {x: 0.4097222, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -592,12 +592,12 @@ TextureImporter:
       name: Big Insect with shadow 72x44 sprite sheet_15
       rect:
         serializedVersion: 2
-        x: 454
-        y: 87
-        width: 18
-        height: 7
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 144
+        y: 44
+        width: 72
+        height: 44
+      alignment: 9
+      pivot: {x: 0.4097222, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -614,12 +614,12 @@ TextureImporter:
       name: Big Insect with shadow 72x44 sprite sheet_16
       rect:
         serializedVersion: 2
-        x: 526
-        y: 87
-        width: 18
-        height: 7
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 216
+        y: 44
+        width: 72
+        height: 44
+      alignment: 9
+      pivot: {x: 0.4097222, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -636,12 +636,12 @@ TextureImporter:
       name: Big Insect with shadow 72x44 sprite sheet_17
       rect:
         serializedVersion: 2
-        x: 16
-        y: 52
-        width: 27
-        height: 30
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 288
+        y: 44
+        width: 72
+        height: 44
+      alignment: 9
+      pivot: {x: 0.4097222, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -658,12 +658,12 @@ TextureImporter:
       name: Big Insect with shadow 72x44 sprite sheet_18
       rect:
         serializedVersion: 2
-        x: 86
-        y: 58
-        width: 27
-        height: 28
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 360
+        y: 44
+        width: 72
+        height: 44
+      alignment: 9
+      pivot: {x: 0.4097222, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -680,12 +680,12 @@ TextureImporter:
       name: Big Insect with shadow 72x44 sprite sheet_19
       rect:
         serializedVersion: 2
-        x: 234
-        y: 43
-        width: 30
-        height: 33
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 432
+        y: 44
+        width: 72
+        height: 44
+      alignment: 9
+      pivot: {x: 0.4097222, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -702,12 +702,12 @@ TextureImporter:
       name: Big Insect with shadow 72x44 sprite sheet_20
       rect:
         serializedVersion: 2
-        x: 305
-        y: 43
-        width: 27
-        height: 34
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 504
+        y: 44
+        width: 72
+        height: 44
+      alignment: 9
+      pivot: {x: 0.4097222, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -724,12 +724,12 @@ TextureImporter:
       name: Big Insect with shadow 72x44 sprite sheet_21
       rect:
         serializedVersion: 2
-        x: 354
-        y: 48
-        width: 79
-        height: 32
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 576
+        y: 44
+        width: 72
+        height: 44
+      alignment: 9
+      pivot: {x: 0.4097222, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -746,12 +746,12 @@ TextureImporter:
       name: Big Insect with shadow 72x44 sprite sheet_22
       rect:
         serializedVersion: 2
-        x: 22
-        y: 43
-        width: 18
-        height: 7
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 648
+        y: 44
+        width: 72
+        height: 44
+      alignment: 9
+      pivot: {x: 0.4097222, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -768,12 +768,12 @@ TextureImporter:
       name: Big Insect with shadow 72x44 sprite sheet_23
       rect:
         serializedVersion: 2
-        x: 92
-        y: 43
-        width: 18
-        height: 7
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 720
+        y: 44
+        width: 72
+        height: 44
+      alignment: 9
+      pivot: {x: 0.4097222, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -790,12 +790,12 @@ TextureImporter:
       name: Big Insect with shadow 72x44 sprite sheet_24
       rect:
         serializedVersion: 2
-        x: 163
-        y: 43
-        width: 18
-        height: 7
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 792
+        y: 44
+        width: 72
+        height: 44
+      alignment: 9
+      pivot: {x: 0.4097222, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -812,12 +812,12 @@ TextureImporter:
       name: Big Insect with shadow 72x44 sprite sheet_25
       rect:
         serializedVersion: 2
-        x: 264
-        y: 46
-        width: 23
-        height: 8
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 864
+        y: 44
+        width: 72
+        height: 44
+      alignment: 9
+      pivot: {x: 0.4097222, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -834,12 +834,12 @@ TextureImporter:
       name: Big Insect with shadow 72x44 sprite sheet_26
       rect:
         serializedVersion: 2
-        x: 382
-        y: 43
-        width: 18
-        height: 7
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 0
+        y: 0
+        width: 72
+        height: 44
+      alignment: 9
+      pivot: {x: 0.4097222, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -856,12 +856,12 @@ TextureImporter:
       name: Big Insect with shadow 72x44 sprite sheet_27
       rect:
         serializedVersion: 2
-        x: 16
-        y: 6
-        width: 27
-        height: 32
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 72
+        y: 0
+        width: 72
+        height: 44
+      alignment: 9
+      pivot: {x: 0.4097222, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -878,12 +878,12 @@ TextureImporter:
       name: Big Insect with shadow 72x44 sprite sheet_28
       rect:
         serializedVersion: 2
-        x: 77
-        y: 9
-        width: 52
-        height: 28
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 144
+        y: 0
+        width: 72
+        height: 44
+      alignment: 9
+      pivot: {x: 0.4097222, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -900,12 +900,12 @@ TextureImporter:
       name: Big Insect with shadow 72x44 sprite sheet_29
       rect:
         serializedVersion: 2
-        x: 147
-        y: 13
-        width: 24
-        height: 24
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 216
+        y: 0
+        width: 72
+        height: 44
+      alignment: 9
+      pivot: {x: 0.4097222, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -922,12 +922,12 @@ TextureImporter:
       name: Big Insect with shadow 72x44 sprite sheet_30
       rect:
         serializedVersion: 2
-        x: 166
-        y: 31
-        width: 9
-        height: 9
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 288
+        y: 0
+        width: 72
+        height: 44
+      alignment: 9
+      pivot: {x: 0.4097222, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -944,12 +944,12 @@ TextureImporter:
       name: Big Insect with shadow 72x44 sprite sheet_31
       rect:
         serializedVersion: 2
-        x: 167
-        y: 12
-        width: 9
-        height: 7
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 360
+        y: 0
+        width: 72
+        height: 44
+      alignment: 9
+      pivot: {x: 0.4097222, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -966,12 +966,12 @@ TextureImporter:
       name: Big Insect with shadow 72x44 sprite sheet_32
       rect:
         serializedVersion: 2
-        x: 173
-        y: 23
-        width: 15
-        height: 15
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 432
+        y: 0
+        width: 72
+        height: 44
+      alignment: 9
+      pivot: {x: 0.4097222, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -988,12 +988,12 @@ TextureImporter:
       name: Big Insect with shadow 72x44 sprite sheet_33
       rect:
         serializedVersion: 2
-        x: 177
-        y: 11
-        width: 8
-        height: 6
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 504
+        y: 0
+        width: 72
+        height: 44
+      alignment: 9
+      pivot: {x: 0.4097222, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -1010,12 +1010,12 @@ TextureImporter:
       name: Big Insect with shadow 72x44 sprite sheet_34
       rect:
         serializedVersion: 2
-        x: 182
-        y: 15
-        width: 18
-        height: 12
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 576
+        y: 0
+        width: 72
+        height: 44
+      alignment: 9
+      pivot: {x: 0.4097222, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -1032,12 +1032,12 @@ TextureImporter:
       name: Big Insect with shadow 72x44 sprite sheet_35
       rect:
         serializedVersion: 2
-        x: 218
-        y: 12
-        width: 21
-        height: 14
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 648
+        y: 0
+        width: 72
+        height: 44
+      alignment: 9
+      pivot: {x: 0.4097222, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -1054,12 +1054,12 @@ TextureImporter:
       name: Big Insect with shadow 72x44 sprite sheet_36
       rect:
         serializedVersion: 2
-        x: 229
-        y: 25
-        width: 11
-        height: 12
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 720
+        y: 0
+        width: 72
+        height: 44
+      alignment: 9
+      pivot: {x: 0.4097222, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -1076,12 +1076,12 @@ TextureImporter:
       name: Big Insect with shadow 72x44 sprite sheet_37
       rect:
         serializedVersion: 2
-        x: 238
-        y: 32
-        width: 9
-        height: 9
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 792
+        y: 0
+        width: 72
+        height: 44
+      alignment: 9
+      pivot: {x: 0.4097222, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -1098,12 +1098,12 @@ TextureImporter:
       name: Big Insect with shadow 72x44 sprite sheet_38
       rect:
         serializedVersion: 2
-        x: 238
-        y: 11
-        width: 8
-        height: 7
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 864
+        y: 0
+        width: 72
+        height: 44
+      alignment: 9
+      pivot: {x: 0.4097222, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -1112,336 +1112,6 @@ TextureImporter:
       bones: []
       spriteID: 585b15d207384abb0800000000000000
       internalID: -4925667574616574587
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Big Insect with shadow 72x44 sprite sheet_39
-      rect:
-        serializedVersion: 2
-        x: 245
-        y: 23
-        width: 11
-        height: 9
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 13fce3b54cc1dbcd0800000000000000
-      internalID: -2540842985097081039
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Big Insect with shadow 72x44 sprite sheet_40
-      rect:
-        serializedVersion: 2
-        x: 247
-        y: 34
-        width: 6
-        height: 6
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: c162c0071b7358230800000000000000
-      internalID: 3640377109027497500
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Big Insect with shadow 72x44 sprite sheet_41
-      rect:
-        serializedVersion: 2
-        x: 250
-        y: 10
-        width: 24
-        height: 16
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: d891730f33b781160800000000000000
-      internalID: 6996477484123756941
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Big Insect with shadow 72x44 sprite sheet_42
-      rect:
-        serializedVersion: 2
-        x: 251
-        y: 28
-        width: 9
-        height: 9
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 7719ffef306b218d0800000000000000
-      internalID: -2877037083657006729
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Big Insect with shadow 72x44 sprite sheet_43
-      rect:
-        serializedVersion: 2
-        x: 289
-        y: 10
-        width: 30
-        height: 32
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: b15b3e4384f346730800000000000000
-      internalID: 3991384749114635547
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Big Insect with shadow 72x44 sprite sheet_44
-      rect:
-        serializedVersion: 2
-        x: 317
-        y: 24
-        width: 15
-        height: 17
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 18a5de5c3a28be600800000000000000
-      internalID: 498635823666518657
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Big Insect with shadow 72x44 sprite sheet_45
-      rect:
-        serializedVersion: 2
-        x: 323
-        y: 9
-        width: 24
-        height: 16
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: b3b169267efa79330800000000000000
-      internalID: 3717633425743944507
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Big Insect with shadow 72x44 sprite sheet_46
-      rect:
-        serializedVersion: 2
-        x: 360
-        y: 9
-        width: 31
-        height: 34
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 486fb0e66908ac140800000000000000
-      internalID: 4740742941340595844
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Big Insect with shadow 72x44 sprite sheet_47
-      rect:
-        serializedVersion: 2
-        x: 392
-        y: 9
-        width: 28
-        height: 33
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 24a91398a79ad3090800000000000000
-      internalID: -8053094214915745214
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Big Insect with shadow 72x44 sprite sheet_48
-      rect:
-        serializedVersion: 2
-        x: 431
-        y: 9
-        width: 61
-        height: 33
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 194c2970af4251740800000000000000
-      internalID: 5122040807491290257
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Big Insect with shadow 72x44 sprite sheet_49
-      rect:
-        serializedVersion: 2
-        x: 503
-        y: 8
-        width: 62
-        height: 36
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: e3e77fb97092b9080800000000000000
-      internalID: -9179698302806426050
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Big Insect with shadow 72x44 sprite sheet_50
-      rect:
-        serializedVersion: 2
-        x: 584
-        y: 8
-        width: 42
-        height: 36
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 510101ba14e5c1df0800000000000000
-      internalID: -208187846630043627
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Big Insect with shadow 72x44 sprite sheet_51
-      rect:
-        serializedVersion: 2
-        x: 659
-        y: 15
-        width: 40
-        height: 30
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 3c5b6f189064222b0800000000000000
-      internalID: -5610845179101137469
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Big Insect with shadow 72x44 sprite sheet_52
-      rect:
-        serializedVersion: 2
-        x: 755
-        y: 33
-        width: 9
-        height: 9
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: a538bed452c169bd0800000000000000
-      internalID: -2623878786350087334
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Big Insect with shadow 72x44 sprite sheet_53
-      rect:
-        serializedVersion: 2
-        x: 22
-        y: 0
-        width: 18
-        height: 6
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: b2cdb22154dd9abe0800000000000000
-      internalID: -1465396915005039573
       vertices: []
       indices: 
       edges: []

@@ -130,7 +130,7 @@ public class IntroTextSequence : MonoBehaviour
         pulse = StartCoroutine(PromptPulse());
 
         // 타이핑이 끝난 뒤부터 F를 받는다(도중에 누른 건 무시).
-        while (!KeyPressedThisFrame(Key.F)) yield return null;
+        while (!KeyBinds.Pressed(RawKey.Interact)) yield return null;
 
         // 맥동을 멈추되 알파는 그 순간 값을 그대로 둔다 — 1로 되돌리면 툭 밝아졌다 사라져 보인다.
         // 남은 알파는 부모 textGroup 페이드에 곱해져 자연스럽게 같이 사라진다.

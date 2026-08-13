@@ -41,7 +41,8 @@ public class SwordUIProximity : MonoBehaviour
         if (fade != null) StopCoroutine(fade);
         // 알파만 올려서는 안 된다 — 오브젝트가 꺼져 있으면 CanvasGroup을 아무리 건드려도 안 보인다.
         // 켤 때는 먼저 활성화하고, 끌 때는 페이드가 끝난 뒤에 비활성화한다.
-        if (target > 0f) swordUI.SetActive(true);
+        // 획득 키는 상호작용 바인딩이다 — 띄울 때마다 현재 설정으로 키캡 글자를 맞춘다.
+        if (target > 0f) { swordUI.SetActive(true); KeyPromptLabel.Apply(swordUI, KeyBinds.Display(RawKey.Interact)); }
         fade = StartCoroutine(Fade(target));
     }
 

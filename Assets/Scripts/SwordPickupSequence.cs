@@ -95,7 +95,7 @@ public class SwordPickupSequence : MonoBehaviour
         if (done) return;
         if (proximity == null || !proximity.Shown) return;
         if (textSequence != null && textSequence.Busy) return;
-        if (!IntroTextSequence.KeyPressedThisFrame(Key.F)) return;
+        if (!KeyBinds.Pressed(RawKey.Interact)) return;
 
         done = true;
         StartCoroutine(Sequence());

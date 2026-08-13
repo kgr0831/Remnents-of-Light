@@ -56,6 +56,42 @@ TextureImporter:
   - first:
       213: -7495665492347345870
     second: Small Insect with shadow 20x28_17
+  - first:
+      213: -5346774942347600734
+    second: Small Insect with shadow 20x28_18
+  - first:
+      213: 5660731220493332823
+    second: Small Insect with shadow 20x28_19
+  - first:
+      213: -891891812953238492
+    second: Small Insect with shadow 20x28_20
+  - first:
+      213: 4589735548258620093
+    second: Small Insect with shadow 20x28_21
+  - first:
+      213: 6067526899995497594
+    second: Small Insect with shadow 20x28_22
+  - first:
+      213: -3339020498172767783
+    second: Small Insect with shadow 20x28_23
+  - first:
+      213: 5149195761476045086
+    second: Small Insect with shadow 20x28_24
+  - first:
+      213: 4937788438740340367
+    second: Small Insect with shadow 20x28_25
+  - first:
+      213: -5589119939391801866
+    second: Small Insect with shadow 20x28_26
+  - first:
+      213: -978262142035113550
+    second: Small Insect with shadow 20x28_27
+  - first:
+      213: 3230232393610056843
+    second: Small Insect with shadow 20x28_28
+  - first:
+      213: 5824543832569769255
+    second: Small Insect with shadow 20x28_29
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -154,12 +190,12 @@ TextureImporter:
       name: Small Insect with shadow 20x28_0
       rect:
         serializedVersion: 2
-        x: 2
-        y: 60
-        width: 12
-        height: 16
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 0
+        y: 56
+        width: 20
+        height: 28
+      alignment: 9
+      pivot: {x: 0.4, y: 0.53571427}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -176,12 +212,12 @@ TextureImporter:
       name: Small Insect with shadow 20x28_1
       rect:
         serializedVersion: 2
-        x: 22
-        y: 60
-        width: 12
-        height: 14
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 20
+        y: 56
+        width: 20
+        height: 28
+      alignment: 9
+      pivot: {x: 0.4, y: 0.53571427}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -198,12 +234,12 @@ TextureImporter:
       name: Small Insect with shadow 20x28_2
       rect:
         serializedVersion: 2
-        x: 42
-        y: 60
-        width: 12
-        height: 17
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 40
+        y: 56
+        width: 20
+        height: 28
+      alignment: 9
+      pivot: {x: 0.4, y: 0.53571427}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -220,12 +256,12 @@ TextureImporter:
       name: Small Insect with shadow 20x28_3
       rect:
         serializedVersion: 2
-        x: 62
-        y: 60
-        width: 12
-        height: 14
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 60
+        y: 56
+        width: 20
+        height: 28
+      alignment: 9
+      pivot: {x: 0.4, y: 0.53571427}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -242,12 +278,12 @@ TextureImporter:
       name: Small Insect with shadow 20x28_4
       rect:
         serializedVersion: 2
-        x: 2
-        y: 32
-        width: 12
-        height: 16
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 80
+        y: 56
+        width: 20
+        height: 28
+      alignment: 9
+      pivot: {x: 0.4, y: 0.53571427}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -264,12 +300,12 @@ TextureImporter:
       name: Small Insect with shadow 20x28_5
       rect:
         serializedVersion: 2
-        x: 21
-        y: 32
-        width: 12
-        height: 17
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 100
+        y: 56
+        width: 20
+        height: 28
+      alignment: 9
+      pivot: {x: 0.4, y: 0.53571427}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -286,12 +322,12 @@ TextureImporter:
       name: Small Insect with shadow 20x28_6
       rect:
         serializedVersion: 2
-        x: 42
-        y: 27
-        width: 19
-        height: 18
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 120
+        y: 56
+        width: 20
+        height: 28
+      alignment: 9
+      pivot: {x: 0.4, y: 0.53571427}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -308,12 +344,12 @@ TextureImporter:
       name: Small Insect with shadow 20x28_7
       rect:
         serializedVersion: 2
-        x: 62
-        y: 27
-        width: 15
-        height: 14
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 140
+        y: 56
+        width: 20
+        height: 28
+      alignment: 9
+      pivot: {x: 0.4, y: 0.53571427}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -330,12 +366,12 @@ TextureImporter:
       name: Small Insect with shadow 20x28_8
       rect:
         serializedVersion: 2
-        x: 82
-        y: 29
-        width: 15
-        height: 15
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 160
+        y: 56
+        width: 20
+        height: 28
+      alignment: 9
+      pivot: {x: 0.4, y: 0.53571427}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -352,12 +388,12 @@ TextureImporter:
       name: Small Insect with shadow 20x28_9
       rect:
         serializedVersion: 2
-        x: 102
-        y: 32
-        width: 12
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 180
+        y: 56
+        width: 20
+        height: 28
+      alignment: 9
+      pivot: {x: 0.4, y: 0.53571427}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -374,12 +410,12 @@ TextureImporter:
       name: Small Insect with shadow 20x28_10
       rect:
         serializedVersion: 2
-        x: 21
-        y: 8
-        width: 17
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 0
+        y: 28
+        width: 20
+        height: 28
+      alignment: 9
+      pivot: {x: 0.4, y: 0.53571427}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -396,12 +432,12 @@ TextureImporter:
       name: Small Insect with shadow 20x28_11
       rect:
         serializedVersion: 2
-        x: 41
-        y: 7
-        width: 18
-        height: 17
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 20
+        y: 28
+        width: 20
+        height: 28
+      alignment: 9
+      pivot: {x: 0.4, y: 0.53571427}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -418,12 +454,12 @@ TextureImporter:
       name: Small Insect with shadow 20x28_12
       rect:
         serializedVersion: 2
-        x: 60
-        y: 6
-        width: 25
-        height: 19
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 40
+        y: 28
+        width: 20
+        height: 28
+      alignment: 9
+      pivot: {x: 0.4, y: 0.53571427}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -440,12 +476,12 @@ TextureImporter:
       name: Small Insect with shadow 20x28_13
       rect:
         serializedVersion: 2
-        x: 84
-        y: 11
-        width: 11
-        height: 15
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 60
+        y: 28
+        width: 20
+        height: 28
+      alignment: 9
+      pivot: {x: 0.4, y: 0.53571427}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -462,12 +498,12 @@ TextureImporter:
       name: Small Insect with shadow 20x28_14
       rect:
         serializedVersion: 2
-        x: 95
-        y: 6
-        width: 26
-        height: 21
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 80
+        y: 28
+        width: 20
+        height: 28
+      alignment: 9
+      pivot: {x: 0.4, y: 0.53571427}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -484,12 +520,12 @@ TextureImporter:
       name: Small Insect with shadow 20x28_15
       rect:
         serializedVersion: 2
-        x: 145
-        y: 19
-        width: 9
-        height: 9
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 100
+        y: 28
+        width: 20
+        height: 28
+      alignment: 9
+      pivot: {x: 0.4, y: 0.53571427}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -506,12 +542,12 @@ TextureImporter:
       name: Small Insect with shadow 20x28_16
       rect:
         serializedVersion: 2
-        x: 185
-        y: 20
-        width: 9
-        height: 9
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 120
+        y: 28
+        width: 20
+        height: 28
+      alignment: 9
+      pivot: {x: 0.4, y: 0.53571427}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -528,12 +564,12 @@ TextureImporter:
       name: Small Insect with shadow 20x28_17
       rect:
         serializedVersion: 2
-        x: 2
-        y: 4
-        width: 12
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 140
+        y: 28
+        width: 20
+        height: 28
+      alignment: 9
+      pivot: {x: 0.4, y: 0.53571427}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -542,6 +578,270 @@ TextureImporter:
       bones: []
       spriteID: 234ab7dc2fb0af790800000000000000
       internalID: -7495665492347345870
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Small Insect with shadow 20x28_18
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 28
+        width: 20
+        height: 28
+      alignment: 9
+      pivot: {x: 0.4, y: 0.53571427}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2ac5963b4807cc5b0800000000000000
+      internalID: -5346774942347600734
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Small Insect with shadow 20x28_19
+      rect:
+        serializedVersion: 2
+        x: 180
+        y: 28
+        width: 20
+        height: 28
+      alignment: 9
+      pivot: {x: 0.4, y: 0.53571427}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 751f77e9d05fe8e40800000000000000
+      internalID: 5660731220493332823
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Small Insect with shadow 20x28_20
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 20
+        height: 28
+      alignment: 9
+      pivot: {x: 0.4, y: 0.53571427}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 424d7de1f1d5f93f0800000000000000
+      internalID: -891891812953238492
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Small Insect with shadow 20x28_21
+      rect:
+        serializedVersion: 2
+        x: 20
+        y: 0
+        width: 20
+        height: 28
+      alignment: 9
+      pivot: {x: 0.4, y: 0.53571427}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: db210f6e92402bf30800000000000000
+      internalID: 4589735548258620093
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Small Insect with shadow 20x28_22
+      rect:
+        serializedVersion: 2
+        x: 40
+        y: 0
+        width: 20
+        height: 28
+      alignment: 9
+      pivot: {x: 0.4, y: 0.53571427}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a74db53819f243450800000000000000
+      internalID: 6067526899995497594
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Small Insect with shadow 20x28_23
+      rect:
+        serializedVersion: 2
+        x: 60
+        y: 0
+        width: 20
+        height: 28
+      alignment: 9
+      pivot: {x: 0.4, y: 0.53571427}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9d11aac3c8a69a1d0800000000000000
+      internalID: -3339020498172767783
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Small Insect with shadow 20x28_24
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 0
+        width: 20
+        height: 28
+      alignment: 9
+      pivot: {x: 0.4, y: 0.53571427}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e190ab1734e957740800000000000000
+      internalID: 5149195761476045086
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Small Insect with shadow 20x28_25
+      rect:
+        serializedVersion: 2
+        x: 100
+        y: 0
+        width: 20
+        height: 28
+      alignment: 9
+      pivot: {x: 0.4, y: 0.53571427}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f8e062b6c6c868440800000000000000
+      internalID: 4937788438740340367
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Small Insect with shadow 20x28_26
+      rect:
+        serializedVersion: 2
+        x: 120
+        y: 0
+        width: 20
+        height: 28
+      alignment: 9
+      pivot: {x: 0.4, y: 0.53571427}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6f5bf7d07057f62b0800000000000000
+      internalID: -5589119939391801866
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Small Insect with shadow 20x28_27
+      rect:
+        serializedVersion: 2
+        x: 140
+        y: 0
+        width: 20
+        height: 28
+      alignment: 9
+      pivot: {x: 0.4, y: 0.53571427}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2b9c8cec3c38c62f0800000000000000
+      internalID: -978262142035113550
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Small Insect with shadow 20x28_28
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 0
+        width: 20
+        height: 28
+      alignment: 9
+      pivot: {x: 0.4, y: 0.53571427}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b84561b5f3714dc20800000000000000
+      internalID: 3230232393610056843
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Small Insect with shadow 20x28_29
+      rect:
+        serializedVersion: 2
+        x: 180
+        y: 0
+        width: 20
+        height: 28
+      alignment: 9
+      pivot: {x: 0.4, y: 0.53571427}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 72d630781cfe4d050800000000000000
+      internalID: 5824543832569769255
       vertices: []
       indices: 
       edges: []
@@ -570,7 +870,19 @@ TextureImporter:
       Small Insect with shadow 20x28_15: -2114147153941017876
       Small Insect with shadow 20x28_16: 3801442936636366860
       Small Insect with shadow 20x28_17: -7495665492347345870
+      Small Insect with shadow 20x28_18: -5346774942347600734
+      Small Insect with shadow 20x28_19: 5660731220493332823
       Small Insect with shadow 20x28_2: 255808761162481827
+      Small Insect with shadow 20x28_20: -891891812953238492
+      Small Insect with shadow 20x28_21: 4589735548258620093
+      Small Insect with shadow 20x28_22: 6067526899995497594
+      Small Insect with shadow 20x28_23: -3339020498172767783
+      Small Insect with shadow 20x28_24: 5149195761476045086
+      Small Insect with shadow 20x28_25: 4937788438740340367
+      Small Insect with shadow 20x28_26: -5589119939391801866
+      Small Insect with shadow 20x28_27: -978262142035113550
+      Small Insect with shadow 20x28_28: 3230232393610056843
+      Small Insect with shadow 20x28_29: 5824543832569769255
       Small Insect with shadow 20x28_3: 2140846683109620055
       Small Insect with shadow 20x28_4: 6189437166830827882
       Small Insect with shadow 20x28_5: 4591679954884141219

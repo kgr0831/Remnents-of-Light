@@ -539,7 +539,9 @@ public class DummyEnemy : MonoBehaviour
     // knockbackDistance: 부호가 방향(+오른쪽/-왼쪽), 크기가 밀려날 거리(유닛). 때린 쪽이 계산해서 넘긴다.
     // 반환값(bool): 이 타격으로 적이 죽었으면 true — C-1(광원 획득)의 "적 처치" 보너스를
     // 호출부(PlayerController.CheckAttackHit)가 Die() 별도 훅 없이 그 자리에서 바로 판단하게 해준다.
-    public bool TakeDamage(int damage, float knockbackDistance)
+    // virtual인 이유: 거대 군주 벌레(CorruptedBug)의 슈퍼아머가 "피해는 받되 경직·넉백만 무시"
+    // 하려면 이 지점을 감싸야 한다(GehennaHound 때와 같은 최소 확장 — 기본 동작은 그대로).
+    public virtual bool TakeDamage(int damage, float knockbackDistance)
     {
         if (dead || damage <= 0) return false;
 

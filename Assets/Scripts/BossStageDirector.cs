@@ -247,6 +247,7 @@ public class BossStageDirector : MonoBehaviour
     // 규칙이 두 구간([1]~[4], [5]~[13]) 모두에 같은 방식으로 걸리게 하기 위해서다.
     void BeginCutsceneLock()
     {
+        PauseMenuUI.CutsceneLock = true; // 연출 중엔 ESC를 받지 않는다(그쪽 주석 참고)
         TutorialGate.Allowed = TutorialAbility.None;
         PlayerController.ScriptedMoveX = null;
         DummyEnemy.AiFrozen = true;
@@ -255,6 +256,7 @@ public class BossStageDirector : MonoBehaviour
 
     void EndCutsceneLock()
     {
+        PauseMenuUI.CutsceneLock = false;
         PlayerController.ScriptedMoveX = null;
         TutorialGate.ResetAll();
         DummyEnemy.AiFrozen = false;

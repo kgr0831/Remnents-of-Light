@@ -124,12 +124,12 @@ TextureImporter:
       name: Medium Insect-idleMove_0
       rect:
         serializedVersion: 2
-        x: 6
-        y: 12
-        width: 18
-        height: 16
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 0
+        y: 0
+        width: 34
+        height: 37
+      alignment: 9
+      pivot: {x: 0.44117647, y: 0.5540541}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -146,12 +146,12 @@ TextureImporter:
       name: Medium Insect-idleMove_1
       rect:
         serializedVersion: 2
-        x: 40
-        y: 12
-        width: 18
-        height: 14
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 34
+        y: 0
+        width: 34
+        height: 37
+      alignment: 9
+      pivot: {x: 0.44117647, y: 0.5540541}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -168,12 +168,12 @@ TextureImporter:
       name: Medium Insect-idleMove_2
       rect:
         serializedVersion: 2
-        x: 74
-        y: 13
-        width: 18
-        height: 16
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 68
+        y: 0
+        width: 34
+        height: 37
+      alignment: 9
+      pivot: {x: 0.44117647, y: 0.5540541}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -190,12 +190,12 @@ TextureImporter:
       name: Medium Insect-idleMove_3
       rect:
         serializedVersion: 2
-        x: 108
-        y: 13
-        width: 18
-        height: 14
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 102
+        y: 0
+        width: 34
+        height: 37
+      alignment: 9
+      pivot: {x: 0.44117647, y: 0.5540541}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -212,12 +212,12 @@ TextureImporter:
       name: Medium Insect-idleMove_4
       rect:
         serializedVersion: 2
-        x: 142
-        y: 12
-        width: 18
-        height: 18
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 136
+        y: 0
+        width: 34
+        height: 37
+      alignment: 9
+      pivot: {x: 0.44117647, y: 0.5540541}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -234,12 +234,12 @@ TextureImporter:
       name: Medium Insect-idleMove_5
       rect:
         serializedVersion: 2
-        x: 176
-        y: 12
-        width: 18
-        height: 14
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 170
+        y: 0
+        width: 34
+        height: 37
+      alignment: 9
+      pivot: {x: 0.44117647, y: 0.5540541}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -256,12 +256,12 @@ TextureImporter:
       name: Medium Insect-idleMove_6
       rect:
         serializedVersion: 2
-        x: 210
-        y: 11
-        width: 18
-        height: 18
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 204
+        y: 0
+        width: 34
+        height: 37
+      alignment: 9
+      pivot: {x: 0.44117647, y: 0.5540541}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -278,12 +278,12 @@ TextureImporter:
       name: Medium Insect-idleMove_7
       rect:
         serializedVersion: 2
-        x: 244
-        y: 11
-        width: 18
-        height: 14
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 238
+        y: 0
+        width: 34
+        height: 37
+      alignment: 9
+      pivot: {x: 0.44117647, y: 0.5540541}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []

@@ -118,12 +118,12 @@ TextureImporter:
       name: Small Insect-Attack_0
       rect:
         serializedVersion: 2
-        x: 2
-        y: 10
-        width: 12
-        height: 10
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 0
+        y: 0
+        width: 20
+        height: 28
+      alignment: 9
+      pivot: {x: 0.4, y: 0.53571427}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -140,12 +140,12 @@ TextureImporter:
       name: Small Insect-Attack_1
       rect:
         serializedVersion: 2
-        x: 21
-        y: 12
-        width: 12
-        height: 9
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 20
+        y: 0
+        width: 20
+        height: 28
+      alignment: 9
+      pivot: {x: 0.4, y: 0.53571427}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -162,12 +162,12 @@ TextureImporter:
       name: Small Insect-Attack_2
       rect:
         serializedVersion: 2
-        x: 42
+        x: 40
         y: 0
-        width: 19
-        height: 17
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 20
+        height: 28
+      alignment: 9
+      pivot: {x: 0.4, y: 0.53571427}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -184,12 +184,12 @@ TextureImporter:
       name: Small Insect-Attack_3
       rect:
         serializedVersion: 2
-        x: 62
+        x: 60
         y: 0
-        width: 15
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 20
+        height: 28
+      alignment: 9
+      pivot: {x: 0.4, y: 0.53571427}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -206,12 +206,12 @@ TextureImporter:
       name: Small Insect-Attack_4
       rect:
         serializedVersion: 2
-        x: 82
-        y: 1
-        width: 15
-        height: 15
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 80
+        y: 0
+        width: 20
+        height: 28
+      alignment: 9
+      pivot: {x: 0.4, y: 0.53571427}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -228,12 +228,12 @@ TextureImporter:
       name: Small Insect-Attack_5
       rect:
         serializedVersion: 2
-        x: 102
-        y: 9
-        width: 12
-        height: 8
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 100
+        y: 0
+        width: 20
+        height: 28
+      alignment: 9
+      pivot: {x: 0.4, y: 0.53571427}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []

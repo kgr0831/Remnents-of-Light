@@ -144,6 +144,9 @@ public static class GameSfx
         var src = go.AddComponent<AudioSource>();
         src.playOnAwake = false;
         src.spatialBlend = 0f; // 2D — 카메라와의 거리와 무관하게 같은 크기로 들린다
+        // SFX 슬라이더가 여기에 걸린다. 그룹을 비워 두면 GameAudio의 씬 라우팅이 이 소스를 씬 BGM으로
+        // 오인해 집어가므로, 태어날 때부터 자기 그룹을 들고 나와야 한다(GameAudio.SfxGroup 주석 참고).
+        src.outputAudioMixerGroup = GameAudio.SfxGroup;
         return src;
     }
 }

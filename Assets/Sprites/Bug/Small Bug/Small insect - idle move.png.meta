@@ -112,12 +112,12 @@ TextureImporter:
       name: Small insect - idle move_0
       rect:
         serializedVersion: 2
-        x: 2
-        y: 10
-        width: 12
-        height: 10
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 0
+        y: 0
+        width: 20
+        height: 28
+      alignment: 9
+      pivot: {x: 0.4, y: 0.53571427}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -134,12 +134,12 @@ TextureImporter:
       name: Small insect - idle move_1
       rect:
         serializedVersion: 2
-        x: 22
-        y: 11
-        width: 12
-        height: 7
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 20
+        y: 0
+        width: 20
+        height: 28
+      alignment: 9
+      pivot: {x: 0.4, y: 0.53571427}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -156,12 +156,12 @@ TextureImporter:
       name: Small insect - idle move_2
       rect:
         serializedVersion: 2
-        x: 42
-        y: 10
-        width: 12
-        height: 11
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 40
+        y: 0
+        width: 20
+        height: 28
+      alignment: 9
+      pivot: {x: 0.4, y: 0.53571427}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -178,12 +178,12 @@ TextureImporter:
       name: Small insect - idle move_3
       rect:
         serializedVersion: 2
-        x: 62
-        y: 9
-        width: 12
-        height: 9
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 60
+        y: 0
+        width: 20
+        height: 28
+      alignment: 9
+      pivot: {x: 0.4, y: 0.53571427}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []

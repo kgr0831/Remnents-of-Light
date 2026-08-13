@@ -180,7 +180,7 @@ public class TutorialDirector : MonoBehaviour
         else if (steps.Length > 0 && steps[0].spawnPoint != null) Teleport(steps[0].spawnPoint.position);
 
         // ── 인트로: 검은 화면 위에 환영 문구 ────────────────────────────────────────────────
-        yield return panel.Open(systemLine, introMessage);
+        yield return panel.Open(systemLine, ApplyKeyNames(introMessage, TutorialGoal.None));
         yield return Wait(panelHold);
         yield return panel.Close();
 
@@ -198,7 +198,7 @@ public class TutorialDirector : MonoBehaviour
             yield return blackout.FadeTo(0f, fadeOutDuration);
             ScreenGlitchFx.End(ScreenGlitchFx.Source.Cutscene);
 
-            yield return panel.Open(systemLine, s.message);
+            yield return panel.Open(systemLine, ApplyKeyNames(s.message, s.goal));
             yield return Wait(panelHold);
             yield return panel.Close();
 
@@ -225,7 +225,7 @@ public class TutorialDirector : MonoBehaviour
         CurrentStepIndex = steps.Length;
         CurrentStepId = "outro";
         yield return Wait(blackHold);
-        yield return panel.Open(systemLine, outroMessage);
+        yield return panel.Open(systemLine, ApplyKeyNames(outroMessage, TutorialGoal.None));
         yield return Wait(panelHold);
         yield return panel.Close();
 
@@ -305,9 +305,155 @@ public class TutorialDirector : MonoBehaviour
 
     /// <summary>연출을 건너뛰라는 입력이 이번 프레임에 들어왔는가.
     /// 좌클릭은 공격 버튼이기도 하지만, 연출 구간에는 게이트가 공격을 막아 두므로 새어 나가지 않는다.</summary>
+    // ── 대사 속 키 표기 ─────────────────────────────────────────────────────────────────────
+    // 씬에 적힌 문구는 기본 키를 그대로 쓴다("Space키를 눌러 점프하세요"). 설정에서 키를 바꾸면 그
+    // 문구가 거짓말이 되므로, 패널에 띄우기 직전에 현재 바인딩 표기로 갈아끼운다.
+    //
+    // 새 대사를 쓸 때도 아래 표의 표기를 그대로 쓰면 자동으로 따라간다. 표에 없는 키를 문구에 쓰려면
+    // 여기에 한 줄 추가하면 된다.
+    //
+    // ⚠️ "F키"는 일부러 넣지 않았다 — F는 패링(확인키)과 상호작용 양쪽에 걸려 있어서 문맥으로 가를 수
+    //    없다. 잘못된 키로 바꿔치는 것보다 그대로 두는 편이 낫다.
+    static readonly (string literal, string action, string part)[] ActionTokens =
+    {
+        ("Space키", "Jump", null),
+        ("W키", "Move", "up"),
+        ("좌클릭", "Attack", null),
+        ("Shift키", "Dash", null),
+    };
+
+    static readonly (string literal, RawKey id)[] RawTokens =
+    {
+        ("alt키", RawKey.TimeAccel),
+        ("E키", RawKey.LightSpend),
+        ("R키", RawKey.Execution),
+    };
+
+    const string RightClickToken = "우클릭";
+
+    /// <summary>대사의 키 표기를 현재 설정으로 바꾼다.
+    ///
+    /// "우클릭"만은 스텝에 따라 갈린다 — 기본값에선 패링(탭)과 일섬 차지(홀드)가 같은 우클릭이지만
+    /// 설정에서 따로 바꿀 수 있는 별개 액션이라, 일섬 스텝에서는 차지 쪽 바인딩을 보여줘야 한다.
+    ///
+    /// ⚠️ 치환 결과는 다시 훑지 않는다(한 번의 스캔으로 끝낸다). 예를 들어 점프를 E로 바꾸면 "Space키"가
+    ///    "E키"가 되는데, 순차 Replace로 짜면 그 "E키"를 광원 방출 토큰이 또 집어가 연쇄 치환된다.
+    /// </summary>
+    string ApplyKeyNames(string message, TutorialGoal goal)
+    {
+        if (string.IsNullOrEmpty(message)) return message;
+
+        var built = new System.Text.StringBuilder(message.Length);
+        int i = 0;
+        while (i < message.Length)
+        {
+            string hit = null;
+            string replacement = null;
+
+            foreach (var token in ActionTokens)
+                if (MatchesAt(message, i, token.literal))
+                {
+                    hit = token.literal;
+                    replacement = WithKeySuffix(token.literal, KeyBinds.Display(token.action, token.part));
+                    break;
+                }
+
+            if (hit == null)
+                foreach (var token in RawTokens)
+                    if (MatchesAt(message, i, token.literal))
+                    {
+                        hit = token.literal;
+                        replacement = WithKeySuffix(token.literal, KeyBinds.Display(token.id));
+                        break;
+                    }
+
+            if (hit == null && MatchesAt(message, i, RightClickToken))
+            {
+                hit = RightClickToken;
+                replacement = KeyBinds.Display(goal == TutorialGoal.IlseomKill ? "Charge" : "Parry");
+            }
+
+            if (hit == null) { built.Append(message[i]); i++; continue; }
+            built.Append(replacement);
+            i += hit.Length;
+            i += AppendParticle(built, message, i, EndingOf(replacement)); // 뒤따르는 조사를 새 이름에 맞춘다
+        }
+        return built.ToString();
+    }
+
+    // ── 조사 ────────────────────────────────────────────────────────────────────────────────
+    // 키 이름만 바꾸면 뒤에 붙은 조사가 어긋난다("좌클릭으로" → "J으로", "우클릭을" → "K을").
+    // 대사에 적힌 조사를 그대로 두지 않고, 바뀐 이름의 **끝소리**에 맞는 형태로 다시 쓴다.
+
+    enum KoreanEnding { Vowel, Rieul, OtherConsonant }
+
+    /// <summary>조사 한 쌍. rieulUsesVowel은 "받침이 ㄹ이면 모음형을 쓴다"는 뜻 —
+    /// 'ㄹ로'는 "으로"가 아니라 "로"다(서울로). 을/은/이는 ㄹ 받침에서도 자음형을 쓴다(서울을).</summary>
+    static readonly (string consonant, string vowel, bool rieulUsesVowel)[] ParticlePairs =
+    {
+        ("으로", "로", true),
+        ("을", "를", false),
+        ("은", "는", false),
+        ("이", "가", false),
+        ("과", "와", false),
+    };
+
+    static int AppendParticle(System.Text.StringBuilder built, string message, int index, KoreanEnding ending)
+    {
+        for (int p = 0; p < ParticlePairs.Length; p++)
+        {
+            var pair = ParticlePairs[p];
+            int matched = MatchesAt(message, index, pair.consonant) ? pair.consonant.Length
+                        : MatchesAt(message, index, pair.vowel) ? pair.vowel.Length
+                        : 0;
+            if (matched == 0) continue;
+
+            bool useVowelForm = ending == KoreanEnding.Vowel || (pair.rieulUsesVowel && ending == KoreanEnding.Rieul);
+            built.Append(useVowelForm ? pair.vowel : pair.consonant);
+            return matched;
+        }
+        return 0;
+    }
+
+    /// <summary>표시 이름을 **한국어로 읽었을 때**의 끝소리를 판정한다.
+    /// 한글이면 마지막 음절의 받침을 유니코드로 직접 계산하고(좌클릭 → ㄱ), 알파벳·숫자는 읽는 소리로 본다
+    /// (K=케이 → 모음, R=알 → ㄹ, M=엠 → ㅁ, 1=일 → ㄹ).
+    /// 표에 없는 키 이름은 모음으로 본다 — 스페이스·시프트·알트·제이처럼 대부분이 모음으로 끝난다.</summary>
+    static KoreanEnding EndingOf(string display)
+    {
+        if (string.IsNullOrEmpty(display)) return KoreanEnding.Vowel;
+
+        char last = display[display.Length - 1];
+        if (last >= 0xAC00 && last <= 0xD7A3)
+        {
+            int jongseong = (last - 0xAC00) % 28; // 0 = 받침 없음, 8 = ㄹ
+            if (jongseong == 0) return KoreanEnding.Vowel;
+            return jongseong == 8 ? KoreanEnding.Rieul : KoreanEnding.OtherConsonant;
+        }
+
+        switch (display)
+        {
+            case "L": case "R": case "1": case "7": case "8": case "Ctrl":
+                return KoreanEnding.Rieul;                       // 엘 · 알 · 일 · 칠 · 팔 · 컨트롤
+            case "M": case "N": case "0": case "3": case "6": case "Tab":
+                return KoreanEnding.OtherConsonant;              // 엠 · 엔 · 영 · 삼 · 육 · 탭
+            default:
+                return KoreanEnding.Vowel;
+        }
+    }
+
+    static bool MatchesAt(string text, int index, string token) =>
+        index + token.Length <= text.Length &&
+        string.Compare(text, index, token, 0, token.Length, System.StringComparison.OrdinalIgnoreCase) == 0;
+
+    /// <summary>원래 표기가 "…키"였고 바뀐 바인딩도 키보드면 "키"를 붙여 어감을 유지한다
+    /// ("Space키" → "K키"). 마우스로 바뀌었으면 붙이지 않는다("우클릭키"가 되면 안 되므로).</summary>
+    static string WithKeySuffix(string literal, string display) =>
+        literal.EndsWith("키") && !display.EndsWith("클릭") ? display + "키" : display;
+
     static bool SkipInputThisFrame()
     {
-        if (IntroTextSequence.KeyPressedThisFrame(Key.F)) return true;
+        if (KeyBinds.Pressed(RawKey.Interact)) return true;
         var m = Mouse.current;
         return m != null && m.leftButton.wasPressedThisFrame;
     }

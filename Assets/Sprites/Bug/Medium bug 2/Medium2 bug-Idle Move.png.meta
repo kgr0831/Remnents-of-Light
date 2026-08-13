@@ -130,12 +130,12 @@ TextureImporter:
       name: Medium2 bug-Idle Move_0
       rect:
         serializedVersion: 2
-        x: 22
-        y: 1
-        width: 19
-        height: 26
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 0
+        y: 0
+        width: 88
+        height: 37
+      alignment: 9
+      pivot: {x: 0.35795453, y: 0.45945945}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -152,12 +152,12 @@ TextureImporter:
       name: Medium2 bug-Idle Move_1
       rect:
         serializedVersion: 2
-        x: 110
-        y: 1
-        width: 19
-        height: 26
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 88
+        y: 0
+        width: 88
+        height: 37
+      alignment: 9
+      pivot: {x: 0.35795453, y: 0.45945945}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -174,12 +174,12 @@ TextureImporter:
       name: Medium2 bug-Idle Move_2
       rect:
         serializedVersion: 2
-        x: 198
-        y: 1
-        width: 19
-        height: 27
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 176
+        y: 0
+        width: 88
+        height: 37
+      alignment: 9
+      pivot: {x: 0.35795453, y: 0.45945945}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -196,12 +196,12 @@ TextureImporter:
       name: Medium2 bug-Idle Move_3
       rect:
         serializedVersion: 2
-        x: 286
-        y: 1
-        width: 19
-        height: 27
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 264
+        y: 0
+        width: 88
+        height: 37
+      alignment: 9
+      pivot: {x: 0.35795453, y: 0.45945945}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -218,12 +218,12 @@ TextureImporter:
       name: Medium2 bug-Idle Move_4
       rect:
         serializedVersion: 2
-        x: 374
-        y: 7
-        width: 19
-        height: 22
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 352
+        y: 0
+        width: 88
+        height: 37
+      alignment: 9
+      pivot: {x: 0.35795453, y: 0.45945945}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -240,12 +240,12 @@ TextureImporter:
       name: Medium2 bug-Idle Move_5
       rect:
         serializedVersion: 2
-        x: 377
-        y: 1
-        width: 14
-        height: 7
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 440
+        y: 0
+        width: 88
+        height: 37
+      alignment: 9
+      pivot: {x: 0.35795453, y: 0.45945945}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -262,12 +262,12 @@ TextureImporter:
       name: Medium2 bug-Idle Move_6
       rect:
         serializedVersion: 2
-        x: 462
-        y: 7
-        width: 19
-        height: 20
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 528
+        y: 0
+        width: 88
+        height: 37
+      alignment: 9
+      pivot: {x: 0.35795453, y: 0.45945945}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -284,12 +284,12 @@ TextureImporter:
       name: Medium2 bug-Idle Move_7
       rect:
         serializedVersion: 2
-        x: 465
-        y: 1
-        width: 14
-        height: 7
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 616
+        y: 0
+        width: 88
+        height: 37
+      alignment: 9
+      pivot: {x: 0.35795453, y: 0.45945945}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -298,50 +298,6 @@ TextureImporter:
       bones: []
       spriteID: 1a3fc60d52cf634f0800000000000000
       internalID: -849214240371969119
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Medium2 bug-Idle Move_8
-      rect:
-        serializedVersion: 2
-        x: 550
-        y: 1
-        width: 19
-        height: 27
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 9dd3fc0324f64acb0800000000000000
-      internalID: -4853632168321139239
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Medium2 bug-Idle Move_9
-      rect:
-        serializedVersion: 2
-        x: 638
-        y: 1
-        width: 19
-        height: 25
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 63a6efd6c887923a0800000000000000
-      internalID: -6689683226946016714
       vertices: []
       indices: 
       edges: []

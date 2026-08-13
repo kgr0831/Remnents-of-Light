@@ -121,12 +121,12 @@ TextureImporter:
       name: Big Insect-Attack_0
       rect:
         serializedVersion: 2
-        x: 16
-        y: 8
-        width: 27
-        height: 30
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 0
+        y: 0
+        width: 72
+        height: 44
+      alignment: 9
+      pivot: {x: 0.4097222, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -143,12 +143,12 @@ TextureImporter:
       name: Big Insect-Attack_1
       rect:
         serializedVersion: 2
-        x: 86
-        y: 14
-        width: 27
-        height: 28
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 72
+        y: 0
+        width: 72
+        height: 44
+      alignment: 9
+      pivot: {x: 0.4097222, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -165,12 +165,12 @@ TextureImporter:
       name: Big Insect-Attack_2
       rect:
         serializedVersion: 2
-        x: 157
-        y: 17
-        width: 28
-        height: 26
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 144
+        y: 0
+        width: 72
+        height: 44
+      alignment: 9
+      pivot: {x: 0.4097222, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -187,12 +187,12 @@ TextureImporter:
       name: Big Insect-Attack_3
       rect:
         serializedVersion: 2
-        x: 234
-        y: 3
-        width: 30
-        height: 29
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 216
+        y: 0
+        width: 72
+        height: 44
+      alignment: 9
+      pivot: {x: 0.4097222, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -209,12 +209,12 @@ TextureImporter:
       name: Big Insect-Attack_4
       rect:
         serializedVersion: 2
-        x: 305
-        y: 4
-        width: 27
-        height: 29
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 288
+        y: 0
+        width: 72
+        height: 44
+      alignment: 9
+      pivot: {x: 0.4097222, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -231,12 +231,12 @@ TextureImporter:
       name: Big Insect-Attack_5
       rect:
         serializedVersion: 2
-        x: 354
-        y: 4
-        width: 78
-        height: 32
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 360
+        y: 0
+        width: 72
+        height: 44
+      alignment: 9
+      pivot: {x: 0.4097222, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -245,28 +245,6 @@ TextureImporter:
       bones: []
       spriteID: de6ba36f497df9ae0800000000000000
       internalID: -1540275512751245587
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Big Insect-Attack_6
-      rect:
-        serializedVersion: 2
-        x: 264
-        y: 2
-        width: 23
-        height: 8
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: a042158c09f469fe0800000000000000
-      internalID: -1182670368883530742
       vertices: []
       indices: 
       edges: []

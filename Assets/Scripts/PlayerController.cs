@@ -560,6 +560,11 @@ public class PlayerController : MonoBehaviour
     public float parryTapMaxHold = 0.2f;        // 이 시간 안에 떼면 패링(넘기면 일섬 차지 연출이 시작됨)
     public float parryMotionDuration = 0.4167f; // Glitch Samurai-Slash 1 클립 길이(attack1Duration과 동일)
     public float parryFailCooldown = 0.5f;      // 판정 실패 시 재입력 잠금
+    // 패링 성공 직후의 짧은 무적(실시간 초). 패링은 FindParryTarget이 고른 **한 마리**의 공격만
+    // 무효화하므로(ConsumeParry), 여러 마리가 동시에 찌르면 나머지 공격이 그대로 들어와 그 자리에서
+    // 실드가 소비된다(사용자 리포트 2026-08-13 "2번 연속으로 맞아서 바로 실드가 깨진다").
+    // 같은 순간에 겹쳐 들어온 공격만 흘려보내고, 실드는 그 뒤의 공격을 위해 남겨 둔다.
+    public float parryInvincibleDuration = 0.25f;
     public float parrySearchRadius = 5f;        // 후보 적 검색 반경 — 적 몸통은 창 길이(1.9)만큼 떨어져 있어 넉넉히
     public float parryFxHeightOffset = 0.35f;   // 겹침 중앙에서 텍스트/VFX를 띄울 높이(스펙 4 "약간 위쪽")
     public string parryText = "막아냄!";
@@ -730,9 +735,11 @@ public class PlayerController : MonoBehaviour
     bool isParrying;               // Slash 1 패링 모션 재생 중(이동·점프·대시·공격 잠금)
     float parryTimer;
     float parryCooldownCounter;
+    float parryInvincibleTimer;    // 패링 성공 직후 무적 잔여(실시간) — 동시에 들어온 다른 적의 공격을 흘린다
     bool parryShieldActive;        // 실드가 적 공격 1회를 막아줄 수 있는 상태인지(연출과 분리된 판정용 상태)
     ParryShieldFx parryShieldFx;
     InputAction chargeAction;      // PlayerActions "Charge" — 홀드 상태를 직접 폴링(PollChargeInput 주석 참고)
+    InputAction parryAction;       // PlayerActions "Parry" — 회피-카운터 윈도우가 열리는 순간의 홀드 상태 확인용
 
     bool isRampaging;              // 폭주 상태 — 잠금이 아니라 순수 버프라 대시/차지/패링/처형과 공존한다
     float rampageDrainAccum;       // 에너지가 정수라 1 미만의 소모분을 여기 모았다가 1 이상이 되면 깎는다
@@ -837,7 +844,10 @@ public class PlayerController : MonoBehaviour
 
         var playerInput = GetComponent<PlayerInput>();
         if (playerInput != null && playerInput.actions != null)
+        {
             chargeAction = playerInput.actions.FindAction("Charge");
+            parryAction = playerInput.actions.FindAction("Parry");
+        }
         if (chargeAction == null)
             Debug.LogWarning("[Ilseom] PlayerActions에 \"Charge\" 액션이 없어 우클릭을 직접 폴링합니다.");
     }
@@ -907,6 +917,9 @@ public class PlayerController : MonoBehaviour
         // 보고 대시하는 정상 플레이가 통째로 막혔다(사용자 리포트 "이 시간 동안은 대시 카운터가 안터져",
         // 실측: 평상시 0.35>0.25 통과 / 가속 중 0.35<0.625 실패 / 수정 후 0.875>0.625 통과).
         if (dodgeCounterGraceTimer > 0f) dodgeCounterGraceTimer -= Time.deltaTime;
+        // 패링 무적도 같은 이유로 **세계 시간**으로 센다 — 재는 대상이 "내 동작의 길이"가 아니라
+        // "동시에 들어오는 적 공격들과 겹치는가"라서, 적이 느려지면 같이 늘어나야 관계가 유지된다.
+        if (parryInvincibleTimer > 0f) parryInvincibleTimer -= Time.deltaTime;
         if (dashBufferTimer > 0f) dashBufferTimer -= PDelta;
         if (jumpSuppressTimer > 0f) jumpSuppressTimer -= PDelta;
 
@@ -1965,6 +1978,9 @@ public class PlayerController : MonoBehaviour
         }
 
         target.ConsumeParry();
+        // 같은 순간에 다른 적이 찌르고 있으면 그 공격은 ConsumeParry의 대상이 아니라 그대로 들어온다 —
+        // 그래서 방금 만든 실드가 곧바로 소비돼 버린다. 짧은 무적으로 그 겹침만 흘린다(위 필드 주석 참고).
+        parryInvincibleTimer = parryInvincibleDuration;
         ParrySuccessCount++;
         // 패링 성공음은 패링.wav가 아니라 실드파괴음(사용자 지시 2026-08-12). Sfx.Parry 항목은
         // GameSfxSet에 남겨 뒀다 — 되돌리려면 이 한 줄만 바꾸면 된다.
@@ -2314,7 +2330,7 @@ public class PlayerController : MonoBehaviour
         // R키는 InputSystem 액션이 아니라 직접 폴링한다 — PlayerActions에 "Execute" 액션이 없기 때문
         // (액션 추가는 .inputactions 편집이라 MCP가 필요). Update에서 읽으므로 wasPressedThisFrame이
         // 프레임과 어긋나지 않는다(코루틴 안에서 폴링했다가 입력을 놓쳤던 대시-카운터 사례와 다름).
-        if (!KeyPressedThisFrame(Key.R)) return;
+        if (!KeyBinds.Pressed(RawKey.Execution)) return;
 
         ExecutionUI.GetOrCreate().FlashHidePrompt();
         StartCoroutine(ExecutionRoutine(executionTarget));
@@ -2496,6 +2512,7 @@ public class PlayerController : MonoBehaviour
         dashCooldownCounter = 0f;
         jumpAttackCooldownCounter = 0f;
         parryCooldownCounter = 0f;
+        parryInvincibleTimer = 0f;
         ilseomCooldownCounter = 0f;
 
         // ── 회피 인정 창·타격 상태.
@@ -2593,7 +2610,7 @@ public class PlayerController : MonoBehaviour
     // 막기도 하고, 이 프로젝트는 이미 그런 키가 셋이라 컨벤션이 확립돼 있다).
     void PollTimeAccelInput()
     {
-        if (!KeyPressedThisFrame(Key.LeftAlt)) return;
+        if (!KeyBinds.Pressed(RawKey.TimeAccel)) return;
         if (isTimeAccelActive) EndTimeAccel("toggled_off");
         else TryStartTimeAccel();
     }
@@ -3023,17 +3040,19 @@ public class PlayerController : MonoBehaviour
 
         if (!isSpendingLight)
         {
-            if (KeyPressedThisFrame(Key.E))
+            if (KeyBinds.Pressed(RawKey.LightSpend))
             {
                 if (isRampaging) TestLog.Event("light_spend", "blocked_rampage");
-                else if (currentEnergy <= 0) TestLog.Event("light_spend", "blocked_no_energy");
+                // 게이트 아래에선 시작 자체를 막는다 — 안 그러면 시작한 다음 프레임에 곧바로 아래
+                // 정지 조건에 걸려 홀드음·연출만 한 프레임 깜빡인다(TryStartTimeAccel과 같은 형태).
+                else if (currentEnergy <= LightGateEnergy) TestLog.Event("light_spend", "blocked_low_energy");
                 else if (CanStartLightSpend()) StartLightSpend();
             }
             return;
         }
 
         if (isRampaging) { EndLightSpend("blocked_rampage"); return; }
-        if (!KeyHeld(Key.E)) { EndLightSpend("released"); return; }
+        if (!KeyBinds.Held(RawKey.LightSpend)) { EndLightSpend("released"); return; }
 
         lightSpendDrainAccum += lightSpendDrainPerSecond * Time.deltaTime;
         int spend = Mathf.FloorToInt(lightSpendDrainAccum);
@@ -3054,10 +3073,18 @@ public class PlayerController : MonoBehaviour
 
         if (currentEnergy <= 0) { EndLightSpend("energy_empty"); return; }
 
-        if (!lightSpendLowWarned && currentEnergy <= LightGateEnergy)
+        // ⚠️ 정지 조건에 lightSpendLowWarned를 걸면 안 된다(버그 수정 2026-08-13). 이 플래그는 붉은
+        //    경고를 1회만 띄우기 위한 것인데 정지까지 함께 묶여 있어서, 광원이 게이트 위로 회복되지
+        //    않은 채 E를 다시 누르면 두 번째 홀드부터는 게이트를 그냥 지나쳐 0까지 닳았다
+        //    (사용자 리포트 "1칸 남았을 때 멈추는 게 작동을 안 해"). 같은 문턱을 쓰는 시간가속은
+        //    처음부터 플래그 없이 수치만 본다(HandleTimeAccel) — 그쪽 형태에 맞춘다.
+        if (currentEnergy <= LightGateEnergy)
         {
-            lightSpendLowWarned = true;
-            PlayerHudUI.Instance?.FlashEnergyBarRed(); // 일섬 게이팅과 같은 피드백(사용자 지시 2026-08-11: "마지막 1칸이 붉은색으로 바뀌며 막아줌")
+            if (!lightSpendLowWarned)
+            {
+                lightSpendLowWarned = true;
+                PlayerHudUI.Instance?.FlashEnergyBarRed(); // 일섬 게이팅과 같은 피드백(사용자 지시 2026-08-11: "마지막 1칸이 붉은색으로 바뀌며 막아줌")
+            }
             EndLightSpend("low_energy");
             return;
         }
@@ -3347,7 +3374,7 @@ public class PlayerController : MonoBehaviour
     }
 
     // 물리 무적(i-frame): 대시는 실제 지속시간 그대로(1주차 스펙 불변), 일섬/처형은 발동 시퀀스 전체.
-    public bool IsInvincible => isDashing || ilseomActive || isExecuting || isDead;
+    public bool IsInvincible => isDashing || ilseomActive || isExecuting || isDead || parryInvincibleTimer > 0f;
 
     // DummyEnemy.CheckThrustHit가 찌르기가 실제로 닿는 순간 호출한다. 닷지 트리거는 dodgeCounterGraceTimer로
     // 판정 — 대시가 물리적으로 끝난 뒤에도 유예 시간 동안은 여전히 닷지로 잡아준다(타이밍 완화, 사용자 피드백).
@@ -3383,8 +3410,12 @@ public class PlayerController : MonoBehaviour
         // 윈도우가 조용히 만료될 때까지 반응이 없다가, 사용자가 떼었다 다시 눌러야 그제서야 잡히는 것처럼
         // 보였음("판정이 늦게 되는 것 같다" 버그의 실제 원인, 홀드 재현으로 확인). 윈도우가 열리는 시점의
         // 현재 홀드 상태를 한 번 직접 확인해 즉시 확인 처리한다.
-        bool heldAtWindowOpen = KeyHeld(Key.F) ||
-            (Mouse.current != null && Mouse.current.rightButton.isPressed);
+        // 설정에서 패링 키를 바꿔도 따라가도록 Parry 액션의 현재 홀드 상태를 그대로 읽는다 — 예전엔
+        // F+우클릭을 직접 폴링했는데, 그건 Parry 바인딩을 하드코딩으로 베낀 것이라 리바인딩하면
+        // 옛 키만 보게 된다. 액션 조회 실패 시 폴백은 PollChargeInput과 같은 구조.
+        bool heldAtWindowOpen = parryAction != null
+            ? parryAction.IsPressed()
+            : KeyBinds.HeldRaw(Key.F) || (Mouse.current != null && Mouse.current.rightButton.isPressed);
         if (heldAtWindowOpen) parryPressed = true;
         // 회피 성공 순간 대시를 연장(기본 2배) — 즉시 멈추지 않고 슬로우모션과 함께 계속 미끄러지듯
         // 나아감(UniTrio ExtendDash 참고). isDashing은 이 연장 구간 동안만 true로 유지되고, 아래

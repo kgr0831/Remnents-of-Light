@@ -30,6 +30,7 @@ public class TutorialMover : MonoBehaviour
     SpriteRenderer sr;
     Animator anim;
     Rigidbody2D rb;
+    InputAction moveAction; // PlayerActions "Move" — 설정에서 이동 키를 바꿔도 따라가야 하므로 액션을 읽는다
     float input;
     float footstepTimer; // PlayerController와 같은 규칙으로 GameSfx.TickFootstep이 관리한다
     bool landSfxArmed;   // 떨어져 본 적이 있어야 착지음이 울린다(시작 첫 프레임 헛울림 방지)
@@ -42,13 +43,22 @@ public class TutorialMover : MonoBehaviour
         // static이라 씬을 다시 로드해도 값이 남는다 — 컷신 도중 씬이 바뀌면 잠금이 영영 안 풀리므로
         // 플레이어가 새로 생길 때 초기화한다.
         InputLocked = false;
+
+        // 이 플레이어가 있는 씬(인트로·튜토리얼)엔 PlayerInput이 없어서 액션을 아무도 켜주지 않는다 —
+        // 직접 켠다. 끄지는 않는다: 액션이 켜져 있어도 비용이 없고, 씬이 바뀌면 실제 플레이어의
+        // PlayerInput이 같은 맵을 자기 방식대로 다시 켠다.
+        var asset = KeyBinds.Actions;
+        if (asset != null) moveAction = asset.FindAction("Move");
+        if (moveAction != null) moveAction.Enable();
     }
 
     void Update()
     {
-        input = InputLocked
-            ? 0f
+        // 액션을 못 찾았을 때만 기본 A/D를 직접 훑는다(에셋이 빠져도 인트로가 멈추지 않게 하는 폴백).
+        float raw = moveAction != null
+            ? moveAction.ReadValue<Vector2>().x
             : (KeyHeld(Key.D) ? 1f : 0f) - (KeyHeld(Key.A) ? 1f : 0f);
+        input = InputLocked ? 0f : raw;
 
         if (input != 0f) sr.flipX = input < 0f;
         if (anim != null) anim.SetBool(IdMoving, input != 0f);

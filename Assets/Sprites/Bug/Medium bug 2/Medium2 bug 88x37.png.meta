@@ -241,12 +241,12 @@ TextureImporter:
       name: Medium2 bug 88x37_0
       rect:
         serializedVersion: 2
-        x: 22
-        y: 75
-        width: 19
-        height: 26
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 0
+        y: 74
+        width: 88
+        height: 37
+      alignment: 9
+      pivot: {x: 0.35795453, y: 0.4054054}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -263,12 +263,12 @@ TextureImporter:
       name: Medium2 bug 88x37_1
       rect:
         serializedVersion: 2
-        x: 110
-        y: 75
-        width: 19
-        height: 26
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 88
+        y: 74
+        width: 88
+        height: 37
+      alignment: 9
+      pivot: {x: 0.35795453, y: 0.4054054}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -285,12 +285,12 @@ TextureImporter:
       name: Medium2 bug 88x37_2
       rect:
         serializedVersion: 2
-        x: 198
-        y: 75
-        width: 19
-        height: 27
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 176
+        y: 74
+        width: 88
+        height: 37
+      alignment: 9
+      pivot: {x: 0.35795453, y: 0.4054054}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -307,12 +307,12 @@ TextureImporter:
       name: Medium2 bug 88x37_3
       rect:
         serializedVersion: 2
-        x: 286
-        y: 75
-        width: 19
-        height: 27
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 264
+        y: 74
+        width: 88
+        height: 37
+      alignment: 9
+      pivot: {x: 0.35795453, y: 0.4054054}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -329,12 +329,12 @@ TextureImporter:
       name: Medium2 bug 88x37_4
       rect:
         serializedVersion: 2
-        x: 374
-        y: 81
-        width: 19
-        height: 22
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 352
+        y: 74
+        width: 88
+        height: 37
+      alignment: 9
+      pivot: {x: 0.35795453, y: 0.4054054}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -351,12 +351,12 @@ TextureImporter:
       name: Medium2 bug 88x37_5
       rect:
         serializedVersion: 2
-        x: 377
-        y: 75
-        width: 14
-        height: 7
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 440
+        y: 74
+        width: 88
+        height: 37
+      alignment: 9
+      pivot: {x: 0.35795453, y: 0.4054054}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -373,12 +373,12 @@ TextureImporter:
       name: Medium2 bug 88x37_6
       rect:
         serializedVersion: 2
-        x: 462
-        y: 81
-        width: 19
-        height: 20
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 528
+        y: 74
+        width: 88
+        height: 37
+      alignment: 9
+      pivot: {x: 0.35795453, y: 0.4054054}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -395,12 +395,12 @@ TextureImporter:
       name: Medium2 bug 88x37_7
       rect:
         serializedVersion: 2
-        x: 465
-        y: 75
-        width: 14
-        height: 7
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 616
+        y: 74
+        width: 88
+        height: 37
+      alignment: 9
+      pivot: {x: 0.35795453, y: 0.4054054}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -417,12 +417,12 @@ TextureImporter:
       name: Medium2 bug 88x37_8
       rect:
         serializedVersion: 2
-        x: 550
-        y: 75
-        width: 19
-        height: 27
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 704
+        y: 74
+        width: 88
+        height: 37
+      alignment: 9
+      pivot: {x: 0.35795453, y: 0.4054054}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -439,12 +439,12 @@ TextureImporter:
       name: Medium2 bug 88x37_9
       rect:
         serializedVersion: 2
-        x: 638
-        y: 75
-        width: 19
-        height: 25
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 792
+        y: 74
+        width: 88
+        height: 37
+      alignment: 9
+      pivot: {x: 0.35795453, y: 0.4054054}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -461,12 +461,12 @@ TextureImporter:
       name: Medium2 bug 88x37_10
       rect:
         serializedVersion: 2
-        x: 22
-        y: 38
-        width: 19
-        height: 27
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 880
+        y: 74
+        width: 88
+        height: 37
+      alignment: 9
+      pivot: {x: 0.35795453, y: 0.4054054}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -483,12 +483,12 @@ TextureImporter:
       name: Medium2 bug 88x37_11
       rect:
         serializedVersion: 2
-        x: 109
-        y: 38
-        width: 20
-        height: 26
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 0
+        y: 37
+        width: 88
+        height: 37
+      alignment: 9
+      pivot: {x: 0.35795453, y: 0.4054054}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -505,12 +505,12 @@ TextureImporter:
       name: Medium2 bug 88x37_12
       rect:
         serializedVersion: 2
-        x: 195
-        y: 46
-        width: 19
-        height: 22
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 88
+        y: 37
+        width: 88
+        height: 37
+      alignment: 9
+      pivot: {x: 0.35795453, y: 0.4054054}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -527,12 +527,12 @@ TextureImporter:
       name: Medium2 bug 88x37_13
       rect:
         serializedVersion: 2
-        x: 282
-        y: 48
-        width: 19
-        height: 19
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 176
+        y: 37
+        width: 88
+        height: 37
+      alignment: 9
+      pivot: {x: 0.35795453, y: 0.4054054}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -549,12 +549,12 @@ TextureImporter:
       name: Medium2 bug 88x37_14
       rect:
         serializedVersion: 2
-        x: 377
-        y: 38
-        width: 27
-        height: 22
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 264
+        y: 37
+        width: 88
+        height: 37
+      alignment: 9
+      pivot: {x: 0.35795453, y: 0.4054054}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -571,12 +571,12 @@ TextureImporter:
       name: Medium2 bug 88x37_15
       rect:
         serializedVersion: 2
-        x: 391
-        y: 36
-        width: 46
-        height: 12
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 352
+        y: 37
+        width: 88
+        height: 37
+      alignment: 9
+      pivot: {x: 0.35795453, y: 0.4054054}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -593,12 +593,12 @@ TextureImporter:
       name: Medium2 bug 88x37_16
       rect:
         serializedVersion: 2
-        x: 464
-        y: 38
-        width: 64
-        height: 21
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 440
+        y: 37
+        width: 88
+        height: 37
+      alignment: 9
+      pivot: {x: 0.35795453, y: 0.4054054}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -615,12 +615,12 @@ TextureImporter:
       name: Medium2 bug 88x37_17
       rect:
         serializedVersion: 2
-        x: 527
-        y: 2
-        width: 91
-        height: 60
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 528
+        y: 37
+        width: 88
+        height: 37
+      alignment: 9
+      pivot: {x: 0.35795453, y: 0.4054054}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -637,12 +637,12 @@ TextureImporter:
       name: Medium2 bug 88x37_18
       rect:
         serializedVersion: 2
-        x: 638
-        y: 38
-        width: 19
-        height: 25
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 616
+        y: 37
+        width: 88
+        height: 37
+      alignment: 9
+      pivot: {x: 0.35795453, y: 0.4054054}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -659,12 +659,12 @@ TextureImporter:
       name: Medium2 bug 88x37_19
       rect:
         serializedVersion: 2
-        x: 201
-        y: 38
-        width: 14
-        height: 7
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 704
+        y: 37
+        width: 88
+        height: 37
+      alignment: 9
+      pivot: {x: 0.35795453, y: 0.4054054}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -681,12 +681,12 @@ TextureImporter:
       name: Medium2 bug 88x37_20
       rect:
         serializedVersion: 2
-        x: 289
-        y: 38
-        width: 14
-        height: 7
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 792
+        y: 37
+        width: 88
+        height: 37
+      alignment: 9
+      pivot: {x: 0.35795453, y: 0.4054054}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -703,12 +703,12 @@ TextureImporter:
       name: Medium2 bug 88x37_21
       rect:
         serializedVersion: 2
-        x: 674
-        y: 1
-        width: 80
-        height: 45
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 880
+        y: 37
+        width: 88
+        height: 37
+      alignment: 9
+      pivot: {x: 0.35795453, y: 0.4054054}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -725,12 +725,12 @@ TextureImporter:
       name: Medium2 bug 88x37_22
       rect:
         serializedVersion: 2
-        x: 803
-        y: 8
-        width: 40
-        height: 30
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 0
+        y: 0
+        width: 88
+        height: 37
+      alignment: 9
+      pivot: {x: 0.35795453, y: 0.4054054}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -747,12 +747,12 @@ TextureImporter:
       name: Medium2 bug 88x37_23
       rect:
         serializedVersion: 2
-        x: 22
-        y: 1
-        width: 19
-        height: 25
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 88
+        y: 0
+        width: 88
+        height: 37
+      alignment: 9
+      pivot: {x: 0.35795453, y: 0.4054054}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -769,12 +769,12 @@ TextureImporter:
       name: Medium2 bug 88x37_24
       rect:
         serializedVersion: 2
-        x: 66
-        y: 2
-        width: 79
-        height: 28
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 176
+        y: 0
+        width: 88
+        height: 37
+      alignment: 9
+      pivot: {x: 0.35795453, y: 0.4054054}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -791,12 +791,12 @@ TextureImporter:
       name: Medium2 bug 88x37_25
       rect:
         serializedVersion: 2
-        x: 179
-        y: 6
-        width: 24
-        height: 24
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 264
+        y: 0
+        width: 88
+        height: 37
+      alignment: 9
+      pivot: {x: 0.35795453, y: 0.4054054}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -813,12 +813,12 @@ TextureImporter:
       name: Medium2 bug 88x37_26
       rect:
         serializedVersion: 2
-        x: 198
-        y: 24
-        width: 9
-        height: 9
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 352
+        y: 0
+        width: 88
+        height: 37
+      alignment: 9
+      pivot: {x: 0.35795453, y: 0.4054054}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -835,12 +835,12 @@ TextureImporter:
       name: Medium2 bug 88x37_27
       rect:
         serializedVersion: 2
-        x: 199
-        y: 5
-        width: 9
-        height: 7
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 440
+        y: 0
+        width: 88
+        height: 37
+      alignment: 9
+      pivot: {x: 0.35795453, y: 0.4054054}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -857,12 +857,12 @@ TextureImporter:
       name: Medium2 bug 88x37_28
       rect:
         serializedVersion: 2
-        x: 205
-        y: 16
-        width: 15
-        height: 15
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 528
+        y: 0
+        width: 88
+        height: 37
+      alignment: 9
+      pivot: {x: 0.35795453, y: 0.4054054}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -879,12 +879,12 @@ TextureImporter:
       name: Medium2 bug 88x37_29
       rect:
         serializedVersion: 2
-        x: 209
-        y: 4
-        width: 8
-        height: 6
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 616
+        y: 0
+        width: 88
+        height: 37
+      alignment: 9
+      pivot: {x: 0.35795453, y: 0.4054054}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -901,12 +901,12 @@ TextureImporter:
       name: Medium2 bug 88x37_30
       rect:
         serializedVersion: 2
-        x: 214
-        y: 8
-        width: 18
-        height: 12
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 704
+        y: 0
+        width: 88
+        height: 37
+      alignment: 9
+      pivot: {x: 0.35795453, y: 0.4054054}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -923,12 +923,12 @@ TextureImporter:
       name: Medium2 bug 88x37_31
       rect:
         serializedVersion: 2
-        x: 266
-        y: 5
-        width: 21
-        height: 14
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 792
+        y: 0
+        width: 88
+        height: 37
+      alignment: 9
+      pivot: {x: 0.35795453, y: 0.4054054}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -945,12 +945,12 @@ TextureImporter:
       name: Medium2 bug 88x37_32
       rect:
         serializedVersion: 2
-        x: 277
-        y: 18
-        width: 11
-        height: 12
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 880
+        y: 0
+        width: 88
+        height: 37
+      alignment: 9
+      pivot: {x: 0.35795453, y: 0.4054054}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -959,314 +959,6 @@ TextureImporter:
       bones: []
       spriteID: 3864b78b2d7a0da00800000000000000
       internalID: 779307259015153283
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Medium2 bug 88x37_33
-      rect:
-        serializedVersion: 2
-        x: 286
-        y: 25
-        width: 9
-        height: 9
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 73d39ad4092d15700800000000000000
-      internalID: 527434148599119159
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Medium2 bug 88x37_34
-      rect:
-        serializedVersion: 2
-        x: 286
-        y: 4
-        width: 8
-        height: 7
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 4c485730617cf26a0800000000000000
-      internalID: -6471735242146872124
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Medium2 bug 88x37_35
-      rect:
-        serializedVersion: 2
-        x: 293
-        y: 16
-        width: 11
-        height: 9
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: b492a01dd5b4f74d0800000000000000
-      internalID: -3134703949315430069
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Medium2 bug 88x37_36
-      rect:
-        serializedVersion: 2
-        x: 295
-        y: 27
-        width: 6
-        height: 6
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 45e1d5ff515c93870800000000000000
-      internalID: 8663172056493137492
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Medium2 bug 88x37_37
-      rect:
-        serializedVersion: 2
-        x: 298
-        y: 3
-        width: 24
-        height: 16
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 3eb60d2f82bd12b90800000000000000
-      internalID: -7268287354680349725
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Medium2 bug 88x37_38
-      rect:
-        serializedVersion: 2
-        x: 299
-        y: 21
-        width: 9
-        height: 9
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 65d3020564a57dd80800000000000000
-      internalID: -8226006936330420906
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Medium2 bug 88x37_39
-      rect:
-        serializedVersion: 2
-        x: 353
-        y: 3
-        width: 30
-        height: 32
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 2a14ab2a2da415ef0800000000000000
-      internalID: -121233446428589662
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Medium2 bug 88x37_40
-      rect:
-        serializedVersion: 2
-        x: 381
-        y: 17
-        width: 15
-        height: 17
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: b9964a8aae66a39b0800000000000000
-      internalID: -5099650470005937765
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Medium2 bug 88x37_41
-      rect:
-        serializedVersion: 2
-        x: 387
-        y: 2
-        width: 24
-        height: 16
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 1e9c4ab221e4d1cc0800000000000000
-      internalID: -3738746275699045919
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Medium2 bug 88x37_42
-      rect:
-        serializedVersion: 2
-        x: 440
-        y: 2
-        width: 31
-        height: 34
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 89932648bad64abb0800000000000000
-      internalID: -4925691509008615016
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Medium2 bug 88x37_43
-      rect:
-        serializedVersion: 2
-        x: 472
-        y: 2
-        width: 28
-        height: 33
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 3f7921dd424e71b10800000000000000
-      internalID: 1952279810467338227
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Medium2 bug 88x37_44
-      rect:
-        serializedVersion: 2
-        x: 562
-        y: 24
-        width: 10
-        height: 11
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: a771c18e6d4ed35a0800000000000000
-      internalID: -6539819472203802758
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Medium2 bug 88x37_45
-      rect:
-        serializedVersion: 2
-        x: 624
-        y: 1
-        width: 42
-        height: 36
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: c3e77e87d72170740800000000000000
-      internalID: 5118079831638507068
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Medium2 bug 88x37_46
-      rect:
-        serializedVersion: 2
-        x: 915
-        y: 26
-        width: 9
-        height: 9
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 3c8a7ef02c8022c60800000000000000
-      internalID: 7791799934887897283
       vertices: []
       indices: 
       edges: []

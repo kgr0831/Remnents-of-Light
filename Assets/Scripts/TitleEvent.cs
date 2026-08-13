@@ -20,6 +20,7 @@ public class TitleEvent : MonoBehaviour
     Coroutine _titleCo = null;
     Coroutine _anyKeyCo = null;
     bool _canAnyKey = false;
+    Text _settingsHint = null; // "ESC 설정" 안내 — 씬을 고치지 않으려고 Press Any Key 텍스트를 복제해 만든다
 
     void Start()
     {
@@ -29,11 +30,41 @@ public class TitleEvent : MonoBehaviour
         if (_pressAnyKeyText != null)
             _pressAnyKeyText.gameObject.SetActive(false);
 
+        CreateSettingsHint();
+
         _titleCo = StartCoroutine(Co_TitleEvent());
+    }
+
+    // 원본을 복제하면 폰트·색·아웃라인 등 씬에서 잡아둔 스타일을 그대로 물려받는다
+    // (같은 캔버스 아래에 들어가므로 별도 배선도 필요 없다).
+    void CreateSettingsHint()
+    {
+        if (_pressAnyKeyText == null) return;
+
+        _settingsHint = Instantiate(_pressAnyKeyText, _pressAnyKeyText.transform.parent);
+        _settingsHint.name = "SettingsHint";
+        _settingsHint.text = "ESC : 설정";
+        _settingsHint.fontSize = Mathf.Max(8, Mathf.RoundToInt(_pressAnyKeyText.fontSize * 0.7f));
+        _settingsHint.rectTransform.anchoredPosition =
+            _pressAnyKeyText.rectTransform.anchoredPosition + new Vector2(0f, -70f);
+        _settingsHint.gameObject.SetActive(false);
     }
 
     void Update()
     {
+        // 설정창이 떠 있는 동안엔 어떤 입력도 씬 전환으로 이어지면 안 된다 — 슬라이더를 끄는 클릭까지
+        // "아무 키"로 잡혀 게임이 시작돼버린다.
+        if (SettingsPanelUI.IsOpen) return;
+        // 설정창을 ESC로 닫은 그 프레임 — 그 ESC가 "아무 키"로 잡혀 게임이 시작되는 것을 막는다.
+        if (Time.frameCount == SettingsPanelUI.LastCloseFrame) return;
+
+        // ESC는 "아무 키"에서 빼내 설정창 전용으로 쓴다(anyKey보다 먼저 보고 빠져나가야 한다).
+        if (_canAnyKey && _anyKeyCo == null && KeyBinds.PressedRaw(Key.Escape))
+        {
+            SettingsPanelUI.Open();
+            return;
+        }
+
         bool anyInput = (Keyboard.current != null && Keyboard.current.anyKey.wasPressedThisFrame)
             || (Mouse.current != null && (Mouse.current.leftButton.wasPressedThisFrame
                 || Mouse.current.rightButton.wasPressedThisFrame
@@ -97,6 +128,8 @@ public class TitleEvent : MonoBehaviour
         // 1-4. "Press Any Key" 텍스트 켜고 입력 대기 상태로 전환
         if (_pressAnyKeyText != null)
             _pressAnyKeyText.gameObject.SetActive(true);
+        if (_settingsHint != null)
+            _settingsHint.gameObject.SetActive(true);
 
         _canAnyKey = true; // 이제부터 키 입력 가능!
     }
@@ -107,6 +140,8 @@ public class TitleEvent : MonoBehaviour
         // Press Any Key 텍스트 숨기기
         if (_pressAnyKeyText != null)
             _pressAnyKeyText.gameObject.SetActive(false);
+        if (_settingsHint != null)
+            _settingsHint.gameObject.SetActive(false);
 
         Color panelColor = _teamPanel.color;
         float al = 0f;

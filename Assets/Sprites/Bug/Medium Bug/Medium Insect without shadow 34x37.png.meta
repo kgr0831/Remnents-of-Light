@@ -211,12 +211,12 @@ TextureImporter:
       name: Medium Insect without shadow 34x37_0
       rect:
         serializedVersion: 2
-        x: 6
-        y: 86
-        width: 18
-        height: 16
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 0
+        y: 74
+        width: 34
+        height: 37
+      alignment: 9
+      pivot: {x: 0.44117647, y: 0.5540541}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -233,12 +233,12 @@ TextureImporter:
       name: Medium Insect without shadow 34x37_1
       rect:
         serializedVersion: 2
-        x: 40
-        y: 86
-        width: 18
-        height: 14
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 34
+        y: 74
+        width: 34
+        height: 37
+      alignment: 9
+      pivot: {x: 0.44117647, y: 0.5540541}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -255,12 +255,12 @@ TextureImporter:
       name: Medium Insect without shadow 34x37_2
       rect:
         serializedVersion: 2
-        x: 74
-        y: 87
-        width: 18
-        height: 16
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 68
+        y: 74
+        width: 34
+        height: 37
+      alignment: 9
+      pivot: {x: 0.44117647, y: 0.5540541}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -277,12 +277,12 @@ TextureImporter:
       name: Medium Insect without shadow 34x37_3
       rect:
         serializedVersion: 2
-        x: 108
-        y: 87
-        width: 18
-        height: 14
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 102
+        y: 74
+        width: 34
+        height: 37
+      alignment: 9
+      pivot: {x: 0.44117647, y: 0.5540541}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -299,12 +299,12 @@ TextureImporter:
       name: Medium Insect without shadow 34x37_4
       rect:
         serializedVersion: 2
-        x: 142
-        y: 86
-        width: 18
-        height: 18
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 136
+        y: 74
+        width: 34
+        height: 37
+      alignment: 9
+      pivot: {x: 0.44117647, y: 0.5540541}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -321,12 +321,12 @@ TextureImporter:
       name: Medium Insect without shadow 34x37_5
       rect:
         serializedVersion: 2
-        x: 176
-        y: 86
-        width: 18
-        height: 14
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 170
+        y: 74
+        width: 34
+        height: 37
+      alignment: 9
+      pivot: {x: 0.44117647, y: 0.5540541}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -343,12 +343,12 @@ TextureImporter:
       name: Medium Insect without shadow 34x37_6
       rect:
         serializedVersion: 2
-        x: 210
-        y: 85
-        width: 18
-        height: 18
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 204
+        y: 74
+        width: 34
+        height: 37
+      alignment: 9
+      pivot: {x: 0.44117647, y: 0.5540541}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -365,12 +365,12 @@ TextureImporter:
       name: Medium Insect without shadow 34x37_7
       rect:
         serializedVersion: 2
-        x: 244
-        y: 85
-        width: 18
-        height: 14
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 238
+        y: 74
+        width: 34
+        height: 37
+      alignment: 9
+      pivot: {x: 0.44117647, y: 0.5540541}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -387,12 +387,12 @@ TextureImporter:
       name: Medium Insect without shadow 34x37_8
       rect:
         serializedVersion: 2
-        x: 6
-        y: 49
-        width: 18
-        height: 17
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 272
+        y: 74
+        width: 34
+        height: 37
+      alignment: 9
+      pivot: {x: 0.44117647, y: 0.5540541}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -409,12 +409,12 @@ TextureImporter:
       name: Medium Insect without shadow 34x37_9
       rect:
         serializedVersion: 2
-        x: 40
-        y: 49
-        width: 18
-        height: 15
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 306
+        y: 74
+        width: 34
+        height: 37
+      alignment: 9
+      pivot: {x: 0.44117647, y: 0.5540541}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -431,12 +431,12 @@ TextureImporter:
       name: Medium Insect without shadow 34x37_10
       rect:
         serializedVersion: 2
-        x: 72
-        y: 55
-        width: 19
-        height: 15
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 0
+        y: 37
+        width: 34
+        height: 37
+      alignment: 9
+      pivot: {x: 0.44117647, y: 0.5540541}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -453,12 +453,12 @@ TextureImporter:
       name: Medium Insect without shadow 34x37_11
       rect:
         serializedVersion: 2
-        x: 105
-        y: 56
-        width: 19
-        height: 12
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 34
+        y: 37
+        width: 34
+        height: 37
+      alignment: 9
+      pivot: {x: 0.44117647, y: 0.5540541}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -475,12 +475,12 @@ TextureImporter:
       name: Medium Insect without shadow 34x37_12
       rect:
         serializedVersion: 2
-        x: 144
-        y: 36
-        width: 25
-        height: 27
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 68
+        y: 37
+        width: 34
+        height: 37
+      alignment: 9
+      pivot: {x: 0.44117647, y: 0.5540541}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -497,12 +497,12 @@ TextureImporter:
       name: Medium Insect without shadow 34x37_13
       rect:
         serializedVersion: 2
-        x: 178
-        y: 43
-        width: 17
-        height: 15
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 102
+        y: 37
+        width: 34
+        height: 37
+      alignment: 9
+      pivot: {x: 0.44117647, y: 0.5540541}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -519,12 +519,12 @@ TextureImporter:
       name: Medium Insect without shadow 34x37_14
       rect:
         serializedVersion: 2
-        x: 212
-        y: 36
-        width: 25
-        height: 24
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 136
+        y: 37
+        width: 34
+        height: 37
+      alignment: 9
+      pivot: {x: 0.44117647, y: 0.5540541}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -541,12 +541,12 @@ TextureImporter:
       name: Medium Insect without shadow 34x37_15
       rect:
         serializedVersion: 2
-        x: 245
+        x: 170
         y: 37
-        width: 26
-        height: 22
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 34
+        height: 37
+      alignment: 9
+      pivot: {x: 0.44117647, y: 0.5540541}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -563,12 +563,12 @@ TextureImporter:
       name: Medium Insect without shadow 34x37_16
       rect:
         serializedVersion: 2
-        x: 278
-        y: 16
-        width: 37
-        height: 49
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 204
+        y: 37
+        width: 34
+        height: 37
+      alignment: 9
+      pivot: {x: 0.44117647, y: 0.5540541}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -585,12 +585,12 @@ TextureImporter:
       name: Medium Insect without shadow 34x37_17
       rect:
         serializedVersion: 2
-        x: 312
-        y: 49
-        width: 18
-        height: 14
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 238
+        y: 37
+        width: 34
+        height: 37
+      alignment: 9
+      pivot: {x: 0.44117647, y: 0.5540541}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -607,12 +607,12 @@ TextureImporter:
       name: Medium Insect without shadow 34x37_18
       rect:
         serializedVersion: 2
-        x: 182
-        y: 36
-        width: 21
-        height: 6
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 272
+        y: 37
+        width: 34
+        height: 37
+      alignment: 9
+      pivot: {x: 0.44117647, y: 0.5540541}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -629,12 +629,12 @@ TextureImporter:
       name: Medium Insect without shadow 34x37_19
       rect:
         serializedVersion: 2
-        x: 182
-        y: 6
-        width: 32
-        height: 30
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 306
+        y: 37
+        width: 34
+        height: 37
+      alignment: 9
+      pivot: {x: 0.44117647, y: 0.5540541}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -651,12 +651,12 @@ TextureImporter:
       name: Medium Insect without shadow 34x37_20
       rect:
         serializedVersion: 2
-        x: 249
-        y: 28
-        width: 11
-        height: 14
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 0
+        y: 0
+        width: 34
+        height: 37
+      alignment: 9
+      pivot: {x: 0.44117647, y: 0.5540541}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -673,12 +673,12 @@ TextureImporter:
       name: Medium Insect without shadow 34x37_21
       rect:
         serializedVersion: 2
-        x: 319
-        y: 29
-        width: 21
-        height: 14
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 34
+        y: 0
+        width: 34
+        height: 37
+      alignment: 9
+      pivot: {x: 0.44117647, y: 0.5540541}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -695,12 +695,12 @@ TextureImporter:
       name: Medium Insect without shadow 34x37_22
       rect:
         serializedVersion: 2
-        x: 6
-        y: 12
-        width: 18
-        height: 17
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 68
+        y: 0
+        width: 34
+        height: 37
+      alignment: 9
+      pivot: {x: 0.44117647, y: 0.5540541}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -717,12 +717,12 @@ TextureImporter:
       name: Medium Insect without shadow 34x37_23
       rect:
         serializedVersion: 2
-        x: 42
-        y: 13
-        width: 20
-        height: 19
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 102
+        y: 0
+        width: 34
+        height: 37
+      alignment: 9
+      pivot: {x: 0.44117647, y: 0.5540541}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -739,12 +739,12 @@ TextureImporter:
       name: Medium Insect without shadow 34x37_24
       rect:
         serializedVersion: 2
-        x: 71
-        y: 10
-        width: 8
-        height: 6
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 136
+        y: 0
+        width: 34
+        height: 37
+      alignment: 9
+      pivot: {x: 0.44117647, y: 0.5540541}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -761,12 +761,12 @@ TextureImporter:
       name: Medium Insect without shadow 34x37_25
       rect:
         serializedVersion: 2
-        x: 73
-        y: 22
-        width: 7
-        height: 7
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 170
+        y: 0
+        width: 34
+        height: 37
+      alignment: 9
+      pivot: {x: 0.44117647, y: 0.5540541}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -783,12 +783,12 @@ TextureImporter:
       name: Medium Insect without shadow 34x37_26
       rect:
         serializedVersion: 2
-        x: 75
-        y: 15
-        width: 6
-        height: 6
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 204
+        y: 0
+        width: 34
+        height: 37
+      alignment: 9
+      pivot: {x: 0.44117647, y: 0.5540541}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -805,12 +805,12 @@ TextureImporter:
       name: Medium Insect without shadow 34x37_27
       rect:
         serializedVersion: 2
-        x: 78
-        y: 8
-        width: 15
-        height: 8
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 238
+        y: 0
+        width: 34
+        height: 37
+      alignment: 9
+      pivot: {x: 0.44117647, y: 0.5540541}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -827,12 +827,12 @@ TextureImporter:
       name: Medium Insect without shadow 34x37_28
       rect:
         serializedVersion: 2
-        x: 80
-        y: 20
-        width: 10
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 272
+        y: 0
+        width: 34
+        height: 37
+      alignment: 9
+      pivot: {x: 0.44117647, y: 0.5540541}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -849,12 +849,12 @@ TextureImporter:
       name: Medium Insect without shadow 34x37_29
       rect:
         serializedVersion: 2
-        x: 81
-        y: 15
-        width: 9
-        height: 7
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 306
+        y: 0
+        width: 34
+        height: 37
+      alignment: 9
+      pivot: {x: 0.44117647, y: 0.5540541}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -863,160 +863,6 @@ TextureImporter:
       bones: []
       spriteID: 8ceebc8c89771b9a0800000000000000
       internalID: -6219058112334401848
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Medium Insect without shadow 34x37_30
-      rect:
-        serializedVersion: 2
-        x: 87
-        y: 14
-        width: 12
-        height: 15
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: b6beb346ab60e9f00800000000000000
-      internalID: 1125344354504534891
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Medium Insect without shadow 34x37_31
-      rect:
-        serializedVersion: 2
-        x: 103
-        y: 9
-        width: 11
-        height: 18
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 2dd3610ba98a0b090800000000000000
-      internalID: -8020725554014175790
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Medium Insect without shadow 34x37_32
-      rect:
-        serializedVersion: 2
-        x: 112
-        y: 7
-        width: 34
-        height: 21
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: bb2153c39b6899df0800000000000000
-      internalID: -172958980539870533
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Medium Insect without shadow 34x37_33
-      rect:
-        serializedVersion: 2
-        x: 114
-        y: 23
-        width: 10
-        height: 11
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: cdec6f1c395858b70800000000000000
-      internalID: 8900667108228517596
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Medium Insect without shadow 34x37_34
-      rect:
-        serializedVersion: 2
-        x: 148
-        y: 7
-        width: 21
-        height: 28
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: d743d58611f0cba50800000000000000
-      internalID: 6538117326474916989
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Medium Insect without shadow 34x37_35
-      rect:
-        serializedVersion: 2
-        x: 171
-        y: 8
-        width: 8
-        height: 18
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: a9d67d1286acdaa30800000000000000
-      internalID: 4228258173763939738
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Medium Insect without shadow 34x37_36
-      rect:
-        serializedVersion: 2
-        x: 225
-        y: 11
-        width: 42
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 86fbd8837262095c0800000000000000
-      internalID: -4210823701697020056
       vertices: []
       indices: 
       edges: []

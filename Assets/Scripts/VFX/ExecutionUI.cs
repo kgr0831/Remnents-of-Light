@@ -107,6 +107,8 @@ public class ExecutionUI : MonoBehaviour
         RestoreColors();
         _prompt.transform.localScale    = Vector3.one;
         _prompt.transform.localPosition = new Vector3(PromptOffset.x, PromptOffset.y, 0f);
+        // 띄울 때마다 다시 읽는다 — 일시정지 중에 처형 키를 바꿔도 다음 프롬프트부터 반영된다.
+        KeyPromptLabel.Apply(_prompt, KeyBinds.Display(RawKey.Execution));
         _prompt.SetActive(true);
         StartFade(1f, fadeDuration, false);
     }
