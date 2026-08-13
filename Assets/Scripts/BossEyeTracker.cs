@@ -262,6 +262,18 @@ public class BossEyeTracker : MonoBehaviour
     [Tooltip("보스가 물러나는 동안 같이 페이드 아웃할 BGM(Main Camera의 AudioSource). 비워두면 BGM은 건드리지 않는다")]
     public AudioSource bgm;
 
+    // 사용자 리포트(2026-08-13): "빔 SFX가 들리기는 하는데 너무 작아서 BGM에 묻힙니다".
+    // 효과음 볼륨은 이미 1(최대)이라 더 올릴 데가 없다 — 그래서 소리를 키우는 대신 BGM을 눌러
+    // 자리를 비워 준다(더킹). 노이즈가 떠 있는 동안만 걸리고, 꺼지면 원래 볼륨으로 돌아온다.
+    [Header("빔 노이즈 중 BGM 더킹")]
+    [Tooltip("노이즈가 켜져 있는 동안 BGM 볼륨에 곱할 배율. 1이면 더킹 없음")]
+    [Range(0f, 1f)] public float beamNoiseBgmDuck = 0.3f;
+    [Tooltip("더킹이 걸리고 풀리는 데 걸리는 시간(초)")]
+    public float beamNoiseBgmDuckFade = 0.25f;
+
+    float bgmVolumeBeforeDuck = -1f;  // 음수 = 더킹 안 걸린 상태
+    Coroutine bgmDuckRoutine;
+
     Quaternion restRotation;
     Light2D beamLight;
     Light2D glowLight;
@@ -725,8 +737,12 @@ public class BossEyeTracker : MonoBehaviour
             exposureDamageTimer = 0f; // 첫 피해는 한 주기를 꽉 채운 뒤(자아 붕괴와 같은 규칙)
             ScreenGlitchFx.Begin(ScreenGlitchFx.Source.BossBeam);
             // 사용자 지시(2026-08-13): "빔에 의해 노이즈가 나타날 때 BossBeamSFX 재생".
-            // 노이즈를 켜는 이 지점 하나에만 건다 — 노출이 끊겼다 다시 걸리면 다시 울린다.
-            GameSfx.Play(Sfx.BossBeamNoise);
+            // ⚠️ Play(1회)가 아니라 PlayLoop다 — 노이즈는 노출이 끊길 때까지 계속 떠 있는 상태라
+            //    1회 재생으로는 클립이 끝나는 순간 노이즈만 남고 소리가 사라진다(사용자 리포트
+            //    2026-08-13 "루프로 재생되지 않거나 들리지 않는 버그"). 정지는 ClearExposure 한 곳이
+            //    전담한다 — 노출 해제·퇴장·비활성화가 전부 그리로 모인다.
+            GameSfx.PlayLoop(Sfx.BossBeamNoise);
+            DuckBgm(true);
             TestLog.Event("boss_beam", $"exposure_break after={exposureTimer:F2}s");
         }
 
@@ -767,7 +783,52 @@ public class BossEyeTracker : MonoBehaviour
         if (!exposureBroken) return;
         exposureBroken = false;
         ScreenGlitchFx.End(ScreenGlitchFx.Source.BossBeam);
+        GameSfx.StopLoop(Sfx.BossBeamNoise);   // 노이즈와 소리는 항상 같이 켜지고 같이 꺼진다
+        DuckBgm(false);
         TestLog.Event("boss_beam", "exposure_clear");
+    }
+
+    /// <summary>노이즈가 도는 동안 BGM을 눌러 빔 효과음이 묻히지 않게 한다.
+    ///
+    /// 기준 볼륨은 더킹이 **걸리는 순간**에 잡는다 — 씬 감독(BossStageDirector)이 연출 끝에 볼륨을
+    /// 넣어 주고, 퇴장 연출은 거기서부터 0으로 내리기 때문에 "원래 볼륨"을 미리 캐시해 두면 어긋난다.
+    /// 오브젝트가 꺼지는 중이면 코루틴을 못 돌리므로 그 자리에서 값을 되돌린다(볼륨이 눌린 채 남으면
+    /// 다음 씬까지 조용해진다).</summary>
+    void DuckBgm(bool on)
+    {
+        if (bgm == null || beamNoiseBgmDuck >= 1f) return;
+        if (on == (bgmVolumeBeforeDuck >= 0f)) return;   // 이미 그 상태면 아무것도 안 한다
+
+        float target;
+        if (on)
+        {
+            bgmVolumeBeforeDuck = bgm.volume;
+            target = bgmVolumeBeforeDuck * Mathf.Clamp01(beamNoiseBgmDuck);
+        }
+        else
+        {
+            target = bgmVolumeBeforeDuck;
+            bgmVolumeBeforeDuck = -1f;
+        }
+
+        if (bgmDuckRoutine != null) { StopCoroutine(bgmDuckRoutine); bgmDuckRoutine = null; }
+        if (!isActiveAndEnabled) { bgm.volume = target; return; }
+        bgmDuckRoutine = StartCoroutine(FadeBgmVolume(target, beamNoiseBgmDuckFade));
+    }
+
+    IEnumerator FadeBgmVolume(float target, float duration)
+    {
+        float from = bgm.volume;
+        float d = Mathf.Max(0.01f, duration);
+        float t = 0f;
+        while (t < d)
+        {
+            t += Mathf.Min(Time.unscaledDeltaTime, IntroMaxStep);
+            bgm.volume = Mathf.Lerp(from, target, Mathf.Clamp01(t / d));
+            yield return null;
+        }
+        bgm.volume = target;
+        bgmDuckRoutine = null;
     }
 
     // ── 등장 연출 (BossStageDirector 전용) ────────────────────────────────────────────────────

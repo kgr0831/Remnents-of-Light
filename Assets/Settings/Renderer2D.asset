@@ -142,5 +142,5 @@ MonoBehaviour:
   Intensity: 0
   Seed: 1598
   ScanlineDensity: 140
-  ScanlineJitter: 0.09
-  NoiseAmount: 0.35
+  ScanlineJitter: 0.05
+  NoiseAmount: 0.18

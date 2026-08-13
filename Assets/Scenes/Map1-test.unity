@@ -433428,7 +433428,7 @@ MonoBehaviour:
   dashHitstop: 1
   hitstopDuration: 0.05
   hitstopScale: 0
-  maxHealth: 5
+  maxHealth: 8
   currentHealth: 0
   fallDeathDistance: 20
   fallDeathDamage: 1

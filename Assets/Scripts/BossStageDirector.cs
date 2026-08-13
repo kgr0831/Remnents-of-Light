@@ -142,14 +142,20 @@ public class BossStageDirector : MonoBehaviour
         // 보스는 이 시점엔 씬에 찍어둔 자리(플레이어 바로 옆)에 서 있다 — 화면 밖으로 치워 둔다.
         if (boss != null) boss.IntroPlaceAtSpawn();
 
+        // ⚠️ 자동 보행은 암전이 걷히기를 기다리지 않고 **첫 프레임부터** 시작한다(사용자 지시
+        //    2026-08-13 "걷는 것부터 시작 / IntroScene_3와 아예 이어지는 느낌"). 걸음을 [2] 뒤로
+        //    미루면 암전이 걷히는 1.2초 동안 플레이어가 제자리에 서 있어 Idle(그리고 스폰 낙하 때문에
+        //    Land)이 재생된다 — 앞 씬에서 걸어 나온 흐름이 거기서 한 번 끊긴다.
+        SnapPlayerToGround();
+        PlayerController.ScriptedMoveX = Mathf.Sign(walkDirection);
+
         TestLog.Event("boss_stage", "[ASSERT] step1 letterbox+lock ready");
 
-        // ── [2] 암전 페이드 아웃 ──────────────────────────────────────────────────────
+        // ── [2] 암전 페이드 아웃 (걸어가는 중에 걷힌다) ───────────────────────────────
         yield return blackout.FadeTo(0f, blackoutFadeDuration);
         TestLog.Event("boss_stage", "[ASSERT] step2 blackout_cleared");
 
-        // ── [3] 입력 없이 자동 보행 ───────────────────────────────────────────────────
-        PlayerController.ScriptedMoveX = Mathf.Sign(walkDirection);
+        // ── [3] walkTrigger에 닿을 때까지 계속 걷는다 ────────────────────────────────
         float walked = 0f;
         while (walkTrigger != null && !walkTrigger.Fired && walked < walkTimeout)
         {
@@ -257,6 +263,35 @@ public class BossStageDirector : MonoBehaviour
 
     // ── 개별 동작 ───────────────────────────────────────────────────────────────────────
 
+    /// <summary>씬에 찍어둔 플레이어 위치가 지면보다 살짝 떠 있으면 그만큼 내려 붙인다.
+    ///
+    /// 이게 없으면 씬 시작 직후 짧은 낙하 → 착지가 생겨 Land 애니메이션(과 착지음)이 한 번 튄다.
+    /// 앞 씬에서 걸어 들어온 흐름이 거기서 끊기므로, 첫 프레임부터 그냥 지면에 서 있게 만든다.
+    /// 큰 간격(발판이 아예 없는 배치)은 건드리지 않는다 — 의도적인 낙하 연출까지 없애면 안 된다.</summary>
+    void SnapPlayerToGround()
+    {
+        if (player == null) return;
+
+        var col = player.GetComponent<Collider2D>();
+        if (col == null) return;
+
+        int groundMask = LayerMask.GetMask("Ground");
+        if (groundMask == 0) return;
+
+        // 콜라이더 바닥에서 아래로 쏜다. 바닥 자신에 맞지 않도록 살짝 위에서 출발한다.
+        var hit = Physics2D.Raycast(new Vector2(col.bounds.center.x, col.bounds.min.y + 0.05f),
+                                    Vector2.down, MaxGroundSnapDistance + 0.05f, groundMask);
+        if (hit.collider == null) return;
+
+        float gap = col.bounds.min.y - hit.point.y;
+        if (gap <= 0.001f || gap > MaxGroundSnapDistance) return;
+
+        player.position -= new Vector3(0f, gap, 0f);
+        TestLog.Event("boss_stage", $"ground_snap gap={gap:F3}");
+    }
+
+    const float MaxGroundSnapDistance = 1.5f;
+
     /// <summary>플레이어보다 X가 작은(=지나온 쪽) 살아 있는 적을 전부 처형한다. 죽인 수를 돌려준다.</summary>
     int ExecuteEnemiesBehindPlayer()
     {
@@ -273,7 +308,8 @@ public class BossStageDirector : MonoBehaviour
             e.TakeDamage(e.currentHp);
             killed++;
         }
-        if (killed > 0) GameSfx.Play(Sfx.Execution);
+        // ⚠️ 처형 효과음은 내지 않는다(사용자 지시 2026-08-13 "보스로 인한 처형은 sfx 재생 안합니다").
+        //    플레이어가 낸 처형이 아니라 보스가 쓸어버리는 연출이라 같은 소리를 쓰면 주체가 헷갈린다.
         return killed;
     }
 

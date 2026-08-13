@@ -479,7 +479,9 @@ public class PlayerController : MonoBehaviour
     // "소모속도 2배"가 곱해져 1.5 × 2 = 3배 = **초당 7.2**. 초월·폭주 드레인과 달리 **실시간 기준**이라
     // 느려진 세계 시간과 무관하게 실제 1초당 7.2씩 닳는다(광원 100이면 약 13.9초).
     public float timeAccelDrainMultiplier = 3f;
-    // 이 % 이하로 내려가면 강제 해제되고, 다시 이 위로 회복할 때까지 재진입도 막힌다.
+    // ⚠️ 고아 필드(2026-08-13) — 시간가속의 해제 문턱은 이제 E홀드·일섬과 같은 LightGateEnergy(광원
+    //    1칸)를 쓴다(사용자 지시 "alt로 시간가속할 때도 광원 1칸 남으면 정지"). 문턱이 동작마다 따로
+    //    놀지 않게 프로퍼티 하나로 모은 것이라, 이 %값은 더 이상 아무 데서도 읽지 않는다. 삭제는 별도 승인.
     public int timeAccelMinEnergyPercent = 10;
     // 가속 중 잔상 스폰 간격 — 대시(afterImageInterval=0.01s)는 0.18초짜리라 촘촘해도 되지만,
     // 가속은 수 초간 이어져서 그 값을 그대로 쓰면 초당 100개가 쌓인다.
@@ -2547,10 +2549,14 @@ public class PlayerController : MonoBehaviour
     /// 플레이어는 씬에 하나뿐이라 정적으로 노출한다(SectionCamera.LateUpdate가 쓴다).</summary>
     public static float PlayerTimeMultiplier { get; private set; } = 1f;
 
-    /// <summary>가속이 강제 해제되는 광원 수치(기본 10%). 여기까지 떨어지면 풀리고, 이 위로 회복할
-    /// 때까지 재진입도 막힌다(사용자 지시).</summary>
-    public int TimeAccelMinEnergy =>
-        Mathf.Clamp(Mathf.CeilToInt(maxEnergy * timeAccelMinEnergyPercent / 100f), 0, maxEnergy);
+    /// <summary>가속이 강제 해제되는 광원 수치. 여기까지 떨어지면 풀리고, 이 위로 회복할 때까지
+    /// 재진입도 막힌다.
+    ///
+    /// ⚠️ 전용 %필드(timeAccelMinEnergyPercent, 10%)를 버리고 E홀드·일섬과 같은
+    ///    <see cref="LightGateEnergy"/>(광원 1칸)를 공유한다 — 사용자 지시 2026-08-13 "alt로
+    ///    시간가속할 때도 광원 1칸 남으면 정지". 문턱을 하나로 모아 두면 폭주 자동 진입(1/8)과의
+    ///    간격도 세 동작 모두에서 똑같이 유지된다(LightGateEnergy 주석 참고).</summary>
+    public int TimeAccelMinEnergy => LightGateEnergy;
 
     public bool IsTimeAccelActive => isTimeAccelActive;
     public bool IsDodgeCountering => isDodgeCountering; // 회피-카운터 시퀀스 진행 중(테스트가 읽는다)
